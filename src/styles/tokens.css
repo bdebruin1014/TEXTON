@@ -1,0 +1,48 @@
+:root {
+  /* Primary - Deep forest green */
+  --color-primary: #1b3022;
+  --color-primary-hover: #264733;
+  --color-primary-accent: #6b9e7a;
+  --color-primary-100: #dde6df;
+  --color-primary-50: #f1f5f4;
+
+  /* Navigation */
+  --color-nav-bg: #112233;
+  --color-nav-muted: #94a3b8;
+  --color-nav-active: #48bb78;
+
+  /* Surfaces */
+  --color-background: #f1f5f9;
+  --color-card: #ffffff;
+  --color-sidebar: #ffffff;
+
+  /* Text */
+  --color-foreground: #112233;
+  --color-muted: #64748b;
+
+  /* Borders */
+  --color-border: #e2e8f0;
+
+  /* Status */
+  --color-success: #4a7a5b;
+  --color-success-bg: #dde6df;
+  --color-warning: #c4841d;
+  --color-warning-bg: #f3e8d0;
+  --color-info: #3b6fa0;
+  --color-info-bg: #dbeafe;
+  --color-destructive: #b84040;
+  --color-destructive-bg: #f0d4d4;
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+  --sidebar-active-border: #1b3022;
+  --sidebar-active-bg: #f1f5f4;
+  --sidebar-active-text: #1b3022;
+  --sidebar-hover-bg: #f0fdf4;
+
+  /* Right Panel */
+  --right-panel-width: 260px;
+
+  /* Layout */
+  --topnav-height: 52px;
+}
