@@ -29,6 +29,8 @@ const NAV_SECTIONS = [
       { label: "Cost Codes", path: "/admin/cost-codes" },
       { label: "Documents", path: "/admin/documents" },
       { label: "Folder Templates", path: "/admin/documents/folder-templates" },
+      { label: "Document Tags", path: "/admin/documents/tags" },
+      { label: "Storage", path: "/admin/documents/storage" },
     ],
   },
   {

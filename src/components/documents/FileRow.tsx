@@ -1,6 +1,8 @@
 import {
   Archive,
   ArrowRightLeft,
+  Clock,
+  Copy,
   Download,
   Eye,
   FileSpreadsheet,
@@ -9,6 +11,7 @@ import {
   Image,
   MoreHorizontal,
   Pencil,
+  Tag,
   File as FileIcon,
   Trash2,
 } from "lucide-react";
@@ -18,6 +21,7 @@ import { getFileIcon } from "@/lib/documents/icons";
 import { getOfficeAppName } from "@/lib/documents/webdav";
 import { formatFileSize } from "@/lib/documents/storage";
 import type { DocumentRecord } from "@/hooks/useDocuments";
+import { TagEditor } from "./TagEditor";
 
 const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   FileText,
@@ -39,6 +43,8 @@ interface FileRowProps {
   onArchive: (id: string) => void;
   onDelete: (doc: DocumentRecord) => void;
   onEditInPlace: (doc: DocumentRecord) => void;
+  onPreview?: (doc: DocumentRecord) => void;
+  onVersionHistory?: (doc: DocumentRecord) => void;
 }
 
 export function FileRow({
@@ -51,11 +57,20 @@ export function FileRow({
   onArchive,
   onDelete,
   onEditInPlace,
+  onPreview,
+  onVersionHistory,
 }: FileRowProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showTags, setShowTags] = useState(false);
   const iconConfig = getFileIcon(doc.file_extension);
   const IconComponent = ICON_MAP[iconConfig.icon] ?? FileIcon;
   const officeApp = getOfficeAppName(doc.file_extension);
+
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}${window.location.pathname}?doc=${doc.id}`;
+    navigator.clipboard.writeText(url);
+    setMenuOpen(false);
+  };
 
   return (
     <tr className="group border-b border-border transition-colors hover:bg-accent/30">
@@ -68,7 +83,11 @@ export function FileRow({
         />
       </td>
       <td className="px-3 py-2">
-        <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={() => onPreview?.(doc)}
+          className="flex items-center gap-2.5 text-left"
+        >
           <IconComponent className="h-5 w-5 shrink-0" style={{ color: iconConfig.color }} />
           <div className="min-w-0">
             <div className="truncate text-sm font-medium text-foreground">
@@ -77,8 +96,24 @@ export function FileRow({
                 <span className="text-muted-foreground">{doc.file_extension}</span>
               )}
             </div>
+            {/* Tags pills */}
+            {doc.tags && doc.tags.length > 0 && (
+              <div className="mt-0.5 flex flex-wrap gap-1">
+                {doc.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-block rounded-full bg-green-50 px-1.5 py-0.5 text-[9px] font-medium text-[#1B3022]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {doc.tags.length > 3 && (
+                  <span className="text-[9px] text-muted-foreground">+{doc.tags.length - 3}</span>
+                )}
+              </div>
+            )}
           </div>
-        </div>
+        </button>
       </td>
       <td className="px-3 py-2">
         <span
@@ -114,7 +149,16 @@ export function FileRow({
         {menuOpen && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-            <div className="absolute right-0 top-full z-50 min-w-[180px] rounded-lg border border-border bg-white py-1 shadow-lg">
+            <div className="absolute right-0 top-full z-50 min-w-[200px] rounded-lg border border-border bg-white py-1 shadow-lg">
+              {/* Preview */}
+              <button
+                type="button"
+                onClick={() => { onPreview?.(doc); setMenuOpen(false); }}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+              >
+                <Eye className="h-3.5 w-3.5" /> Preview
+              </button>
+              {/* Download */}
               <button
                 type="button"
                 onClick={() => { onDownload(doc); setMenuOpen(false); }}
@@ -122,6 +166,7 @@ export function FileRow({
               >
                 <Download className="h-3.5 w-3.5" /> Download
               </button>
+              {/* Edit in Office */}
               {officeApp && (
                 <button
                   type="button"
@@ -131,6 +176,8 @@ export function FileRow({
                   <Pencil className="h-3.5 w-3.5" /> Edit in {officeApp}
                 </button>
               )}
+              <div className="my-1 border-t border-border" />
+              {/* Rename */}
               <button
                 type="button"
                 onClick={() => {
@@ -140,8 +187,9 @@ export function FileRow({
                 }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Eye className="h-3.5 w-3.5" /> Rename
+                <Pencil className="h-3.5 w-3.5" /> Rename
               </button>
+              {/* Move to Folder */}
               <button
                 type="button"
                 onClick={() => { onMove(doc.id); setMenuOpen(false); }}
@@ -149,6 +197,32 @@ export function FileRow({
               >
                 <ArrowRightLeft className="h-3.5 w-3.5" /> Move to Folder
               </button>
+              {/* Tags */}
+              <button
+                type="button"
+                onClick={() => { setShowTags(true); setMenuOpen(false); }}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+              >
+                <Tag className="h-3.5 w-3.5" /> Tags
+              </button>
+              {/* Version History */}
+              <button
+                type="button"
+                onClick={() => { onVersionHistory?.(doc); setMenuOpen(false); }}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+              >
+                <Clock className="h-3.5 w-3.5" /> Version History
+              </button>
+              {/* Copy Link */}
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+              >
+                <Copy className="h-3.5 w-3.5" /> Copy Link
+              </button>
+              <div className="my-1 border-t border-border" />
+              {/* Archive */}
               <button
                 type="button"
                 onClick={() => { onArchive(doc.id); setMenuOpen(false); }}
@@ -156,7 +230,7 @@ export function FileRow({
               >
                 <Archive className="h-3.5 w-3.5" /> Archive
               </button>
-              <div className="my-1 border-t border-border" />
+              {/* Delete */}
               <button
                 type="button"
                 onClick={() => { onDelete(doc); setMenuOpen(false); }}
@@ -166,6 +240,16 @@ export function FileRow({
               </button>
             </div>
           </>
+        )}
+
+        {/* Tag editor popover */}
+        {showTags && (
+          <TagEditor
+            documentId={doc.id}
+            currentTags={doc.tags ?? []}
+            onTagsChange={() => setShowTags(false)}
+            onClose={() => setShowTags(false)}
+          />
         )}
       </td>
     </tr>

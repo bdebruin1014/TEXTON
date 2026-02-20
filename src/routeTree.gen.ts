@@ -147,6 +147,8 @@ import { Route as AuthenticatedConstructionJobIdFilesRouteImport } from './route
 import { Route as AuthenticatedConstructionJobIdDailyLogsRouteImport } from './routes/_authenticated/construction/$jobId/daily-logs'
 import { Route as AuthenticatedConstructionJobIdChangeOrdersRouteImport } from './routes/_authenticated/construction/$jobId/change-orders'
 import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './routes/_authenticated/construction/$jobId/budget'
+import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_authenticated/admin/documents/tags'
+import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
 import { Route as AuthenticatedOperationsRchContractsContractIdRouteRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/route'
@@ -982,6 +984,18 @@ const AuthenticatedConstructionJobIdBudgetRoute =
     path: '/budget',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedAdminDocumentsTagsRoute =
+  AuthenticatedAdminDocumentsTagsRouteImport.update({
+    id: '/tags',
+    path: '/tags',
+    getParentRoute: () => AuthenticatedAdminDocumentsRoute,
+  } as any)
+const AuthenticatedAdminDocumentsStorageRoute =
+  AuthenticatedAdminDocumentsStorageRouteImport.update({
+    id: '/storage',
+    path: '/storage',
+    getParentRoute: () => AuthenticatedAdminDocumentsRoute,
+  } as any)
 const AuthenticatedAccountingReconciliationsStartRoute =
   AuthenticatedAccountingReconciliationsStartRouteImport.update({
     id: '/start',
@@ -1157,6 +1171,8 @@ export interface FileRoutesByFullPath {
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
+  '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1296,6 +1312,8 @@ export interface FileRoutesByTo {
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
+  '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1452,6 +1470,8 @@ export interface FileRoutesById {
   '/_authenticated/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
+  '/_authenticated/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/_authenticated/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/_authenticated/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/_authenticated/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1608,6 +1628,8 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/documents/storage'
+    | '/admin/documents/tags'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -1747,6 +1769,8 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/documents/storage'
+    | '/admin/documents/tags'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -1902,6 +1926,8 @@ export interface FileRouteTypes {
     | '/_authenticated/operations/rch-contracts/$contractId'
     | '/_authenticated/accounting/reconciliations/history'
     | '/_authenticated/accounting/reconciliations/start'
+    | '/_authenticated/admin/documents/storage'
+    | '/_authenticated/admin/documents/tags'
     | '/_authenticated/construction/$jobId/budget'
     | '/_authenticated/construction/$jobId/change-orders'
     | '/_authenticated/construction/$jobId/daily-logs'
@@ -2959,6 +2985,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdBudgetRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/admin/documents/tags': {
+      id: '/_authenticated/admin/documents/tags'
+      path: '/tags'
+      fullPath: '/admin/documents/tags'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentsTagsRouteImport
+      parentRoute: typeof AuthenticatedAdminDocumentsRoute
+    }
+    '/_authenticated/admin/documents/storage': {
+      id: '/_authenticated/admin/documents/storage'
+      path: '/storage'
+      fullPath: '/admin/documents/storage'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentsStorageRouteImport
+      parentRoute: typeof AuthenticatedAdminDocumentsRoute
+    }
     '/_authenticated/accounting/reconciliations/start': {
       id: '/_authenticated/accounting/reconciliations/start'
       path: '/start'
@@ -3133,12 +3173,17 @@ const AuthenticatedAccountingRouteRouteWithChildren =
   )
 
 interface AuthenticatedAdminDocumentsRouteChildren {
+  AuthenticatedAdminDocumentsStorageRoute: typeof AuthenticatedAdminDocumentsStorageRoute
+  AuthenticatedAdminDocumentsTagsRoute: typeof AuthenticatedAdminDocumentsTagsRoute
   AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute
   AuthenticatedAdminDocumentsFolderTemplatesIndexRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRoute
 }
 
 const AuthenticatedAdminDocumentsRouteChildren: AuthenticatedAdminDocumentsRouteChildren =
   {
+    AuthenticatedAdminDocumentsStorageRoute:
+      AuthenticatedAdminDocumentsStorageRoute,
+    AuthenticatedAdminDocumentsTagsRoute: AuthenticatedAdminDocumentsTagsRoute,
     AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute:
       AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute,
     AuthenticatedAdminDocumentsFolderTemplatesIndexRoute:

@@ -1,4 +1,4 @@
-import { FolderPlus, Search, Upload } from "lucide-react";
+import { FileText, FolderPlus, Search, Upload } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCreateFolder, useDeleteFolder, useDocumentFolders, useRenameFolder } from "@/hooks/useDocumentFolders";
@@ -14,12 +14,16 @@ import {
 import type { DocumentRecord } from "@/hooks/useDocuments";
 import { formatFileSize } from "@/lib/documents/storage";
 import { getEditInPlaceUrl } from "@/lib/documents/webdav";
+import { ActivityLog } from "./ActivityLog";
 import { BulkActionBar } from "./BulkActionBar";
 import { FileList } from "./FileList";
+import { FilePreviewModal } from "./FilePreviewModal";
 import { FileUploadZone } from "./FileUploadZone";
 import { FolderTree } from "./FolderTree";
+import { GenerateDocumentModal } from "./GenerateDocumentModal";
 import { MoveToFolderDialog } from "./MoveToFolderDialog";
 import { NewFolderDialog } from "./NewFolderDialog";
+import { VersionHistoryPanel } from "./VersionHistoryPanel";
 
 interface DocumentBrowserProps {
   recordType: "project" | "job" | "disposition" | "opportunity" | "entity" | "contact";
@@ -30,8 +34,12 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFileIds, setSelectedFileIds] = useState<Set<string>>(new Set());
-  const [showNewFolder, setShowNewFolder] = useState<string | null | false>(false); // false = hidden, null = root, string = parent id
+  const [showNewFolder, setShowNewFolder] = useState<string | null | false>(false);
   const [moveDocId, setMoveDocId] = useState<string | null>(null);
+  const [previewDoc, setPreviewDoc] = useState<DocumentRecord | null>(null);
+  const [versionDoc, setVersionDoc] = useState<DocumentRecord | null>(null);
+  const [showGenerate, setShowGenerate] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: folders = [], isLoading: foldersLoading } = useDocumentFolders(recordType, recordId);
@@ -183,6 +191,16 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             New Folder
           </button>
 
+          {/* Generate */}
+          <button
+            type="button"
+            onClick={() => setShowGenerate(true)}
+            className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
+          >
+            <FileText className="h-3.5 w-3.5" />
+            Generate
+          </button>
+
           {/* Upload */}
           <button
             type="button"
@@ -245,13 +263,31 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
               }
             }}
             onEditInPlace={handleEditInPlace}
+            onPreview={(doc) => setPreviewDoc(doc)}
+            onVersionHistory={(doc) => setVersionDoc(doc)}
           />
         </FileUploadZone>
 
         {/* Footer */}
-        <div className="border-t border-border px-4 py-2 text-xs text-muted-foreground">
-          {documents.length} document{documents.length !== 1 ? "s" : ""} · {formatFileSize(totalSize)} total
+        <div className="flex items-center justify-between border-t border-border px-4 py-2 text-xs text-muted-foreground">
+          <span>
+            {documents.length} document{documents.length !== 1 ? "s" : ""} · {formatFileSize(totalSize)} total
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowActivity(!showActivity)}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            {showActivity ? "Hide Activity" : "Activity Log"}
+          </button>
         </div>
+
+        {/* Activity Log (collapsible) */}
+        {showActivity && (
+          <div className="max-h-48 overflow-y-auto border-t border-border bg-gray-50 px-4 py-3">
+            <ActivityLog recordType={recordType} recordId={recordId} />
+          </div>
+        )}
       </div>
 
       {/* Move dialog */}
@@ -264,6 +300,43 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             setMoveDocId(null);
           }}
           onClose={() => setMoveDocId(null)}
+        />
+      )}
+
+      {/* File preview modal */}
+      <FilePreviewModal
+        document={previewDoc}
+        onClose={() => setPreviewDoc(null)}
+        onDownload={(doc: DocumentRecord) => downloadDoc.mutate(doc)}
+        onEditInPlace={handleEditInPlace}
+      />
+
+      {/* Version history panel */}
+      <VersionHistoryPanel
+        document={versionDoc}
+        onClose={() => setVersionDoc(null)}
+        onDownloadVersion={(doc: DocumentRecord) => downloadDoc.mutate(doc)}
+        onRestoreVersion={(doc: DocumentRecord) => {
+          // Restore creates a copy as the new current version
+          uploadDoc.mutate({
+            file: new File([], doc.original_filename),
+            recordType,
+            recordId,
+            folderId: activeFolderId,
+            folderPath: getFolderPath(activeFolderId),
+          });
+          setVersionDoc(null);
+        }}
+      />
+
+      {/* Generate document modal */}
+      {showGenerate && (
+        <GenerateDocumentModal
+          recordType={recordType}
+          recordId={recordId}
+          folderId={activeFolderId}
+          onClose={() => setShowGenerate(false)}
+          onGenerated={() => setShowGenerate(false)}
         />
       )}
     </div>

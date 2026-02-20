@@ -17,6 +17,8 @@ interface FileListProps {
   onArchive: (id: string) => void;
   onDelete: (doc: DocumentRecord) => void;
   onEditInPlace: (doc: DocumentRecord) => void;
+  onPreview?: (doc: DocumentRecord) => void;
+  onVersionHistory?: (doc: DocumentRecord) => void;
 }
 
 export function FileList({
@@ -30,6 +32,8 @@ export function FileList({
   onArchive,
   onDelete,
   onEditInPlace,
+  onPreview,
+  onVersionHistory,
 }: FileListProps) {
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -131,6 +135,8 @@ export function FileList({
             onArchive={onArchive}
             onDelete={onDelete}
             onEditInPlace={onEditInPlace}
+            onPreview={onPreview}
+            onVersionHistory={onVersionHistory}
           />
         ))}
       </tbody>
