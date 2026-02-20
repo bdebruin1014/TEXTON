@@ -16,8 +16,8 @@ interface FeeDefaults {
   am_fee: number | null;
   builder_warranty: number | null;
   builders_risk: number | null;
-  purchaser_fee: number | null;
-  accounting_fee: number | null;
+  po_fee: number | null;
+  bookkeeping: number | null;
   pm_fee: number | null;
   utilities: number | null;
 }
@@ -27,8 +27,8 @@ const FEE_LABELS: Record<keyof typeof FIXED_PER_HOUSE_FEES, string> = {
   am_fee: "Asset Management Fee",
   builder_warranty: "Builder Warranty Reserve",
   builders_risk: "Builder's Risk Insurance",
-  purchaser_fee: "Purchaser Fee",
-  accounting_fee: "Accounting Fee",
+  po_fee: "PO Fee",
+  bookkeeping: "Bookkeeping",
   pm_fee: "Project Management Fee",
   utilities: "Utilities During Construction",
 };
@@ -123,8 +123,8 @@ function FeeSchedule() {
           <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3">
             <p className="text-sm font-semibold text-amber-900">Section 7 — Contingency</p>
             <p className="mt-1 text-sm text-amber-800">
-              GREATER of <span className="font-mono font-bold">{formatCurrency(10_000)}</span> or{" "}
-              <span className="font-mono font-bold">5%</span> of Sections 1-5
+              LOWER of <span className="font-mono font-bold">{formatCurrency(10_000)}</span> or{" "}
+              <span className="font-mono font-bold">5%</span> of Sections 1-5 (capped at $10K)
             </p>
             <p className="mt-1 text-xs text-amber-600">
               Example: If Sections 1-5 = $300,000 → Contingency = {formatCurrency(computeContingency(300_000))}
@@ -158,15 +158,11 @@ function FeeSchedule() {
             value={fees?.builders_risk ?? FIXED_PER_HOUSE_FEES.builders_risk}
             onSave={save("builders_risk")}
           />
+          <CurrencyInput label="PO Fee" value={fees?.po_fee ?? FIXED_PER_HOUSE_FEES.po_fee} onSave={save("po_fee")} />
           <CurrencyInput
-            label="Purchaser Fee"
-            value={fees?.purchaser_fee ?? FIXED_PER_HOUSE_FEES.purchaser_fee}
-            onSave={save("purchaser_fee")}
-          />
-          <CurrencyInput
-            label="Accounting Fee"
-            value={fees?.accounting_fee ?? FIXED_PER_HOUSE_FEES.accounting_fee}
-            onSave={save("accounting_fee")}
+            label="Bookkeeping"
+            value={fees?.bookkeeping ?? FIXED_PER_HOUSE_FEES.bookkeeping}
+            onSave={save("bookkeeping")}
           />
           <CurrencyInput
             label="Project Management Fee"

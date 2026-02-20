@@ -92,12 +92,16 @@ export function calculateDealSheet(inputs: DealSheetInputs): DealSheetResults {
 
   // Total project cost
   const total_project_cost =
-    total_lot_basis + total_contract_cost + total_fixed_per_house + inputs.site_work_total + (inputs.other_site_costs ?? 0);
+    total_lot_basis +
+    total_contract_cost +
+    total_fixed_per_house +
+    inputs.site_work_total +
+    (inputs.other_site_costs ?? 0);
 
   // Financing
   const loan_amount = total_project_cost * inputs.ltc_ratio;
   const equity_required = total_project_cost - loan_amount;
-  const durationFraction = inputs.project_duration_days / 365;
+  const durationFraction = inputs.project_duration_days / 360;
   const interest_cost = loan_amount * inputs.interest_rate * durationFraction;
   const cost_of_capital_amount = equity_required * inputs.cost_of_capital * durationFraction;
   const total_all_in = total_project_cost + interest_cost + cost_of_capital_amount;
@@ -148,6 +152,64 @@ export function calculateDealSheet(inputs: DealSheetInputs): DealSheetResults {
     profit_verdict,
     land_verdict,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Sensitivity analysis
+// ---------------------------------------------------------------------------
+
+export interface SensitivityScenario {
+  label: string;
+  net_profit: number;
+  net_profit_margin: number;
+  profit_verdict: DealSheetResults["profit_verdict"];
+}
+
+function runScenario(
+  base: DealSheetInputs,
+  label: string,
+  costMultiplier: number,
+  aspMultiplier: number,
+  extraDays: number,
+): SensitivityScenario {
+  const adjusted: DealSheetInputs = {
+    ...base,
+    sticks_bricks: base.sticks_bricks * costMultiplier,
+    site_work_total: base.site_work_total * costMultiplier,
+    asset_sales_price: base.asset_sales_price * aspMultiplier,
+    project_duration_days: base.project_duration_days + extraDays,
+  };
+  const r = calculateDealSheet(adjusted);
+  return { label, net_profit: r.net_profit, net_profit_margin: r.net_profit_margin, profit_verdict: r.profit_verdict };
+}
+
+export interface SensitivityResults {
+  base: SensitivityScenario;
+  bestCase: SensitivityScenario;
+  worstCase: SensitivityScenario;
+  costOverrun10: SensitivityScenario;
+  aspDecline10: SensitivityScenario;
+  delay30Days: SensitivityScenario;
+  breakevenASP: number;
+  minimumASP5pct: number;
+}
+
+export function runSensitivityAnalysis(inputs: DealSheetInputs): SensitivityResults {
+  const base = runScenario(inputs, "Base Case", 1.0, 1.0, 0);
+  const bestCase = runScenario(inputs, "Best Case", 0.95, 1.05, 0);
+  const worstCase = runScenario(inputs, "Worst Case", 1.1, 0.9, 30);
+  const costOverrun10 = runScenario(inputs, "10% Cost Overrun", 1.1, 1.0, 0);
+  const aspDecline10 = runScenario(inputs, "10% ASP Decline", 1.0, 0.9, 0);
+  const delay30Days = runScenario(inputs, "30-Day Delay", 1.0, 1.0, 30);
+
+  // Breakeven ASP: totalAllIn / (1 - sellingCostRate)
+  const baseResult = calculateDealSheet(inputs);
+  const sellingCostRate = inputs.selling_cost_rate;
+  const concessions = inputs.selling_concessions ?? 0;
+  const breakevenASP = (baseResult.total_all_in + concessions) / (1 - sellingCostRate);
+  const minimumASP5pct = (baseResult.total_all_in + concessions) / (1 - sellingCostRate - 0.05);
+
+  return { base, bestCase, worstCase, costOverrun10, aspDecline10, delay30Days, breakevenASP, minimumASP5pct };
 }
 
 // Re-export for convenience

@@ -91,14 +91,14 @@ export const ENTITY_TYPES = [
 ] as const;
 
 export const FIXED_PER_HOUSE_FEES = {
-  builder_fee: 15_000, // Flat builder fee
-  am_fee: 5_000, // Asset Management — ONLY for RCH-related entity owners, paid at sale
-  builder_warranty: 5_000, // Warranty reserve
-  builders_risk: 1_500, // Builders risk insurance
-  purchaser_fee: 3_000, // Purchaser fee (was "PO Fee")
-  accounting_fee: 1_500, // Accounting fee
-  pm_fee: 3_000, // Project management fee
-  utilities: 1_400, // Utility charges during construction
+  builder_fee: 15_000,
+  am_fee: 5_000, // RCH-related entities only
+  builder_warranty: 5_000,
+  builders_risk: 1_500,
+  po_fee: 3_000, // was "purchaser_fee"
+  bookkeeping: 1_500, // was "accounting_fee"
+  pm_fee: 3_500,
+  utilities: 1_400,
 } as const;
 
 // Total per-house: $35,400 (RCH-related) or $30,400 (third-party, no AM fee)
@@ -111,8 +111,8 @@ export const totalFixedPerHouse = (isRchRelated: boolean) =>
 // Builder Fee formula (Section 6 of contract budget): GREATER of $25K or 10% of Sections 1-5
 export const computeBuilderFee = (sections1to5: number) => Math.max(25_000, sections1to5 * 0.1);
 
-// Contingency formula (Section 7): GREATER of $10K or 5% of Sections 1-5
-export const computeContingency = (sections1to5: number) => Math.max(10_000, sections1to5 * 0.05);
+// Contingency formula (Section 7): CAPPED at lower of $10K or 5% of Sections 1-5
+export const computeContingency = (sections1to5: number) => Math.min(10_000, sections1to5 * 0.05);
 
 export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   // Opportunity — muted/desaturated v3.2
