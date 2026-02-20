@@ -5,22 +5,43 @@ import type { SaveStatus } from "@/hooks/useAutoSave";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
+export interface FloorPlanData {
+  id: string;
+  name: string;
+  heated_sqft: number | null;
+  plan_type: string | null;
+  bed_count: number | null;
+  bath_count: number | null;
+  stories: number | null;
+  garage_bays: number | null;
+  garage_type: string | null;
+  width_ft: number | null;
+  depth_ft: number | null;
+  base_construction_cost: number | null;
+  contract_snb: number | null;
+  dm_budget_snb: number | null;
+  contract_total: number | null;
+}
+
 interface FloorPlanSelectProps {
   label: string;
   value: string | null | undefined;
-  projectId: string;
+  projectId?: string;
   onSave: (value: string) => Promise<void>;
+  onPlanLoaded?: (plan: FloorPlanData) => void;
   className?: string;
   disabled?: boolean;
 }
 
-interface FloorPlan {
-  id: string;
-  name: string;
-  heated_sqft: number | null;
-}
-
-export function FloorPlanSelect({ label, value, projectId, onSave, className, disabled }: FloorPlanSelectProps) {
+export function FloorPlanSelect({
+  label,
+  value,
+  projectId,
+  onSave,
+  onPlanLoaded,
+  className,
+  disabled,
+}: FloorPlanSelectProps) {
   const [localValue, setLocalValue] = useState(value ?? "");
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -28,18 +49,24 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
     setLocalValue(value ?? "");
   }, [value]);
 
-  const { data: plans = [] } = useQuery<FloorPlan[]>({
-    queryKey: ["floor-plans-select", projectId],
+  const { data: plans = [] } = useQuery<FloorPlanData[]>({
+    queryKey: ["floor-plans-select", projectId ?? "global"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("floor_plans")
-        .select("id, name, heated_sqft")
-        .eq("project_id", projectId)
+        .select(
+          "id, name, heated_sqft, plan_type, bed_count, bath_count, stories, garage_bays, garage_type, width_ft, depth_ft, base_construction_cost, contract_snb, dm_budget_snb, contract_total",
+        )
         .order("name");
+      if (projectId) {
+        query = query.eq("project_id", projectId);
+      } else {
+        query = query.eq("status", "Active");
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },
-    enabled: !!projectId,
   });
 
   const handleChange = async (newValue: string) => {
@@ -50,21 +77,26 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
       await onSave(newValue);
       setStatus("saved");
       setTimeout(() => setStatus("idle"), 2000);
+
+      if (onPlanLoaded && newValue) {
+        const selected = plans.find((p) => p.id === newValue);
+        if (selected) onPlanLoaded(selected);
+      }
     } catch {
       setStatus("error");
     }
   };
 
   return (
-    <div className="space-y-1.5">
+    <label className="block space-y-1.5">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-foreground">{label}</label>
+        <span className="text-sm font-medium text-foreground">{label}</span>
         <SaveIndicator status={status} />
       </div>
       <select
         value={localValue}
         onChange={(e) => handleChange(e.target.value)}
-        disabled={disabled || !projectId}
+        disabled={disabled}
         className={cn(
           "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors",
           "focus:border-primary focus:ring-1 focus:ring-primary",
@@ -76,10 +108,11 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
         {plans.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
-            {p.heated_sqft ? ` (${p.heated_sqft.toLocaleString()} sf)` : ""}
+            {p.plan_type ? ` [${p.plan_type}]` : ""}
+            {p.heated_sqft ? ` ${p.heated_sqft.toLocaleString()} sf` : ""}
           </option>
         ))}
       </select>
-    </div>
+    </label>
   );
 }
