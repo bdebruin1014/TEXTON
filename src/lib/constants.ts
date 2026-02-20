@@ -87,9 +87,7 @@ export const ENTITY_TYPES = [
   "operating",
   "spe",
   "fund",
-  "nonprofit",
   "investor",
-  "management",
 ] as const;
 
 export const FIXED_PER_HOUSE_FEES = {

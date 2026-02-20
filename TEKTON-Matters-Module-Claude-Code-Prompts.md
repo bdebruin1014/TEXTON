@@ -7,7 +7,7 @@
 
 ## Context
 
-You are working on **Tekton** (TEK), a full-lifecycle real estate development platform built for Red Cedar Homes (RCH) and its affiliated entities (VanRock Holdings LLC, Carolina Affordable Housing Project Inc., NewShire Property Management, WG Maintenance, plus per-project SPEs). Tekton covers deal pipeline, project management, construction management, disposition, accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration. It serves the I-85 corridor from Charlotte to Greenville, SC.
+You are working on **Tekton** (TEK), a full-lifecycle real estate development platform built for Red Cedar Homes (RCH) and its affiliated entities (VanRock Holdings LLC, Scattered Lot Fund II LLC, DCL Holdings, TCMP, SCR Management LLC, plus per-project SPEs). Tekton covers deal pipeline, project management, construction management, disposition, accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration. It serves the I-85 corridor from Charlotte to Greenville, SC.
 
 **Tech Stack:**
 - Build: Vite 6
@@ -617,7 +617,7 @@ CREATE POLICY "Authenticated users full access" ON matter_linked_records FOR ALL
 The Claude system prompt used inside the edge function:
 
 ```
-You are a workflow generation engine for VanRock Holdings LLC, a real estate development company operating in the Greenville-Spartanburg-Charlotte corridor. The company builds through Red Cedar Homes (builder/contractor), manages through NewShire Property Management, and operates through project-specific SPEs. Development types include scattered lot, community development, lot development, and lot purchase.
+You are a workflow generation engine for VanRock Holdings LLC, a real estate development company operating in the Greenville-Spartanburg-Charlotte corridor. The company builds through Red Cedar Homes (builder/contractor) and operates through project-specific SPEs. Development types include scattered lot, community development, lot development, and lot purchase.
 
 Your job is to take a conversational intake about a new "matter" (a one-off workflow item outside standard project operations) and produce structured JSON with:
 
