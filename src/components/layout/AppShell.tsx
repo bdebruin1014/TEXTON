@@ -1,4 +1,5 @@
 import { CommandPalette } from "./CommandPalette";
+import { RecordTabBar } from "./RecordTabBar";
 import { RightPanel } from "./RightPanel";
 import { TopNav } from "./TopNav";
 
@@ -8,13 +9,14 @@ interface AppShellProps {
 }
 
 /**
- * Full application shell with TopNav, optional sidebar, main content, and right panel.
+ * Full application shell with TopNav, record tabs, optional sidebar, main content, and right panel.
  * Used by _authenticated layout to wrap all authenticated pages.
  */
 export function AppShell({ sidebar, children }: AppShellProps) {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <TopNav />
+      <RecordTabBar />
       <div className="flex flex-1 overflow-hidden">
         {sidebar}
         <main className="flex-1 overflow-y-auto bg-background p-6">{children}</main>

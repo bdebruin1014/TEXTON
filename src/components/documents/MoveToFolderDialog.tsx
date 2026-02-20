@@ -1,4 +1,3 @@
-import { Check, Folder, Layers, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
@@ -33,9 +32,8 @@ export function MoveToFolderDialog({ folders, currentFolderId, onMove, onClose }
           )}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
         >
-          <Folder className="h-4 w-4 shrink-0" />
           <span className="truncate">{folder.name}</span>
-          {isSelected && <Check className="ml-auto h-3.5 w-3.5 shrink-0" />}
+          {isSelected && <span className="ml-auto h-3.5 w-3.5 shrink-0 text-xs">&#10003;</span>}
         </button>
         {children.map((child) => renderFolder(child, depth + 1))}
       </div>
@@ -48,7 +46,7 @@ export function MoveToFolderDialog({ folders, currentFolderId, onMove, onClose }
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Move to Folder</h3>
           <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
+            <span className="h-4 w-4 text-sm leading-none">&times;</span>
           </button>
         </div>
 
@@ -62,9 +60,8 @@ export function MoveToFolderDialog({ folders, currentFolderId, onMove, onClose }
               selectedId === null ? "bg-[#1B3022]/10 text-[#1B3022] font-medium" : "text-foreground hover:bg-accent/50",
             )}
           >
-            <Layers className="h-4 w-4 shrink-0" />
             <span>No Folder (Root)</span>
-            {selectedId === null && <Check className="ml-auto h-3.5 w-3.5 shrink-0" />}
+            {selectedId === null && <span className="ml-auto h-3.5 w-3.5 shrink-0 text-xs">&#10003;</span>}
           </button>
 
           {rootFolders.map((folder) => renderFolder(folder, 0))}

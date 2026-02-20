@@ -1,5 +1,3 @@
-import { Download, FileText } from "lucide-react";
-
 interface ShareFileRowProps {
   name: string;
   fileExtension: string;
@@ -29,7 +27,6 @@ export function ShareFileRow({
 }: ShareFileRowProps) {
   return (
     <div className="flex items-center gap-3 rounded-lg border border-[#E2E8F0] bg-white px-4 py-3 transition-colors hover:bg-slate-50">
-      <FileText className="h-5 w-5 shrink-0 text-[#1B3022]/60" />
       <div className="min-w-0 flex-1">
         <div className="truncate text-sm font-medium text-slate-900">
           {name}
@@ -46,7 +43,6 @@ export function ShareFileRow({
           disabled={isDownloading}
           className="flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
         >
-          <Download className="h-3.5 w-3.5" />
           {isDownloading ? "..." : "Download"}
         </button>
       )}

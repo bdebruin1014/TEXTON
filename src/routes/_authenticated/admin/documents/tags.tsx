@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Pencil, Trash2, Tag, Check, X } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import {
   useDocumentTags,
@@ -105,7 +105,6 @@ function TableSkeleton() {
 function EmptyState() {
   return (
     <div className="bg-white border border-border rounded-lg p-12 text-center">
-      <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
       <h3 className="text-sm font-semibold text-slate-700 mb-1">No tags yet</h3>
       <p className="text-sm text-slate-500">Create your first tag to start organizing documents.</p>
     </div>
@@ -172,19 +171,18 @@ function TagRow({
               onClick={commitEdit}
               className="p-1 rounded hover:bg-emerald-100 text-emerald-700 transition-colors"
             >
-              <Check className="w-4 h-4" />
+              {"✓"}
             </button>
             <button
               type="button"
               onClick={cancelEdit}
               className="p-1 rounded hover:bg-slate-200 text-slate-500 transition-colors"
             >
-              <X className="w-4 h-4" />
+              {"×"}
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <Tag className="w-4 h-4 text-slate-400" />
             <span className="text-sm font-medium text-slate-800">{tag.name}</span>
           </div>
         )}
@@ -206,7 +204,7 @@ function TagRow({
             className="p-1.5 rounded hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors disabled:opacity-50"
             title="Rename tag"
           >
-            <Pencil className="w-4 h-4" />
+            <span className="text-xs font-medium">Edit</span>
           </button>
           <button
             type="button"
@@ -214,7 +212,7 @@ function TagRow({
             className="p-1.5 rounded hover:bg-red-50 text-slate-500 hover:text-red-600 transition-colors"
             title="Delete tag"
           >
-            <Trash2 className="w-4 h-4" />
+            <span className="text-xs font-medium">Delete</span>
           </button>
         </div>
       </td>
@@ -293,7 +291,6 @@ function DocumentTagsPage() {
             "bg-[#1B3022] hover:bg-[#1B3022]/90",
           )}
         >
-          <Plus className="w-4 h-4" />
           Add Tag
         </button>
       </div>
@@ -343,7 +340,7 @@ function DocumentTagsPage() {
                   disabled={!newTagName.trim() || addTagMutation.isPending}
                   className="inline-flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium text-white bg-[#1B3022] hover:bg-[#1B3022]/90 disabled:opacity-50 transition-colors"
                 >
-                  <Check className="w-4 h-4" />
+                  {"✓"}{" "}
                   Add
                 </button>
                 <button
@@ -354,7 +351,7 @@ function DocumentTagsPage() {
                   }}
                   className="p-1.5 rounded hover:bg-slate-100 text-slate-500 transition-colors"
                 >
-                  <X className="w-4 h-4" />
+                  {"×"}
                 </button>
               </div>
             </div>
@@ -383,7 +380,6 @@ function DocumentTagsPage() {
                 <tr className="border-b border-border bg-emerald-50/50">
                   <td className="px-4 py-3" colSpan={2}>
                     <div className="flex items-center gap-2">
-                      <Tag className="w-4 h-4 text-slate-400" />
                       <input
                         ref={addInputRef}
                         type="text"
@@ -409,7 +405,7 @@ function DocumentTagsPage() {
                         disabled={!newTagName.trim() || addTagMutation.isPending}
                         className="p-1.5 rounded hover:bg-emerald-100 text-emerald-700 transition-colors disabled:opacity-50"
                       >
-                        <Check className="w-4 h-4" />
+                        {"✓"}
                       </button>
                       <button
                         type="button"
@@ -419,7 +415,7 @@ function DocumentTagsPage() {
                         }}
                         className="p-1.5 rounded hover:bg-slate-200 text-slate-500 transition-colors"
                       >
-                        <X className="w-4 h-4" />
+                        {"×"}
                       </button>
                     </div>
                   </td>

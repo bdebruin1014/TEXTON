@@ -1,4 +1,3 @@
-import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -52,7 +51,7 @@ export function ContactSearchInput({ onSelect, selectedContact, onClear }: Conta
           </div>
         </div>
         <button type="button" onClick={onClear} className="text-muted-foreground hover:text-foreground">
-          <X className="h-4 w-4" />
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
     );
@@ -60,8 +59,7 @@ export function ContactSearchInput({ onSelect, selectedContact, onClear }: Conta
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2">
-        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+      <div className="flex items-center rounded-md border border-border bg-white px-3 py-2">
         <input
           ref={inputRef}
           type="text"

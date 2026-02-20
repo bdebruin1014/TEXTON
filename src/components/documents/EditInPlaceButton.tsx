@@ -1,4 +1,3 @@
-import { Pencil } from "lucide-react";
 import { canEditInPlace, getEditInPlaceUrl, getOfficeAppName } from "@/lib/documents/webdav";
 
 interface EditInPlaceButtonProps {
@@ -44,7 +43,6 @@ export function EditInPlaceButton({ document }: EditInPlaceButtonProps) {
       onClick={handleClick}
       className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#1B3022] transition-colors hover:bg-accent/50"
     >
-      <Pencil className="h-3 w-3" />
       Edit in {appName}
     </button>
   );

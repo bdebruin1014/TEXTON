@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 export interface SearchFilters {
@@ -124,13 +124,12 @@ export default function DocumentSearch({
       <div className="flex items-center gap-2">
         {/* Search input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
           <input
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Search documents..."
-            className="w-full rounded-lg border border-border bg-white py-2 pl-9 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022] transition-colors"
+            className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022] transition-colors"
           />
           {value && (
             <button
@@ -139,7 +138,7 @@ export default function DocumentSearch({
               className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-gray-400 hover:text-gray-600"
               aria-label="Clear search"
             >
-              <X className="h-3.5 w-3.5" />
+              <span className="text-xs leading-none">&times;</span>
             </button>
           )}
         </div>
@@ -157,7 +156,6 @@ export default function DocumentSearch({
             )}
             aria-label="Toggle filters"
           >
-            <SlidersHorizontal className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
               <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#1B3022] px-1.5 text-xs font-semibold text-white">
@@ -276,7 +274,7 @@ export default function DocumentSearch({
                 className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
                 aria-label={`Remove ${getFileTypeLabel(filters.fileType)} filter`}
               >
-                <X className="h-3 w-3" />
+                <span className="text-xs leading-none">&times;</span>
               </button>
             </span>
           )}
@@ -290,7 +288,7 @@ export default function DocumentSearch({
                 className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
                 aria-label={`Remove ${getDateRangeLabel(filters.dateRange)} filter`}
               >
-                <X className="h-3 w-3" />
+                <span className="text-xs leading-none">&times;</span>
               </button>
             </span>
           )}
@@ -307,7 +305,7 @@ export default function DocumentSearch({
                 className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
                 aria-label={`Remove ${tag} tag`}
               >
-                <X className="h-3 w-3" />
+                <span className="text-xs leading-none">&times;</span>
               </button>
             </span>
           ))}

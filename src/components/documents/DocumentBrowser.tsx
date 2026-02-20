@@ -1,4 +1,3 @@
-import { FileText, FolderPlus, Search, Send, Upload } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCreateFolder, useDeleteFolder, useDocumentFolders, useRenameFolder } from "@/hooks/useDocumentFolders";
@@ -183,7 +182,7 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
 
           {/* Search */}
           <div className="flex items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1.5">
-            <Search className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Search</span>
             <input
               type="text"
               value={searchQuery}
@@ -199,7 +198,6 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             onClick={() => setShowNewFolder(activeFolderId)}
             className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
           >
-            <FolderPlus className="h-3.5 w-3.5" />
             New Folder
           </button>
 
@@ -209,7 +207,6 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             onClick={() => setShowGenerate(true)}
             className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
           >
-            <FileText className="h-3.5 w-3.5" />
             Generate
           </button>
 
@@ -219,7 +216,6 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             onClick={() => setShowUploadRequest(true)}
             className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
           >
-            <Send className="h-3.5 w-3.5" />
             Request Upload
           </button>
 
@@ -229,7 +225,6 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1.5 rounded-md bg-button px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            <Upload className="h-3.5 w-3.5" />
             Upload
           </button>
           <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelect} />

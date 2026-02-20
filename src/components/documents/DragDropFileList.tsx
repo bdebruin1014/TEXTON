@@ -1,17 +1,5 @@
 import { useState, useCallback, useRef, type DragEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  FileText,
-  Image,
-  FileSpreadsheet,
-  File,
-  Download,
-  Pencil,
-  Trash2,
-  MoreVertical,
-  GripVertical,
-  FolderInput,
-} from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
@@ -66,12 +54,12 @@ function formatFileSize(bytes: number | null): string {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
 
-function getFileIcon(ext: string | null) {
+function getFileLabel(ext: string | null): string {
   const e = (ext ?? "").toLowerCase().replace(".", "");
-  if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(e)) return Image;
-  if (["xls", "xlsx", "csv"].includes(e)) return FileSpreadsheet;
-  if (["pdf", "doc", "docx", "txt", "rtf"].includes(e)) return FileText;
-  return File;
+  if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(e)) return "IMG";
+  if (["xls", "xlsx", "csv"].includes(e)) return "XLS";
+  if (["pdf", "doc", "docx", "txt", "rtf"].includes(e)) return "DOC";
+  return "FILE";
 }
 
 // ---------------------------------------------------------------------------
@@ -284,7 +272,7 @@ export function DragDropFileList({
   if (documents.length === 0) {
     return (
       <div className="bg-white border border-border rounded-lg p-12 text-center">
-        <FolderInput className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+        <span className="block w-12 h-12 text-slate-300 mx-auto mb-4 text-3xl leading-[3rem] text-center">--</span>
         <h3 className="text-sm font-semibold text-slate-700 mb-1">No documents</h3>
         <p className="text-sm text-slate-500">Upload files or drag documents here to get started.</p>
       </div>
@@ -321,7 +309,7 @@ export function DragDropFileList({
         </thead>
         <tbody>
           {documents.map((doc, index) => {
-            const Icon = getFileIcon(doc.file_extension);
+            const fileLabel = getFileLabel(doc.file_extension);
             const isSelected = selectedIds.has(doc.id);
             const isDragOver = dragOverIndex === index;
 
@@ -356,13 +344,13 @@ export function DragDropFileList({
 
                 {/* Drag handle */}
                 <td className="px-1 py-3 text-slate-400 cursor-grab active:cursor-grabbing">
-                  <GripVertical className="w-4 h-4" />
+                  <span className="text-xs select-none">::</span>
                 </td>
 
                 {/* Name */}
                 <td className="px-3 py-3">
                   <div className="flex items-center gap-2">
-                    <Icon className="w-5 h-5 text-slate-400 shrink-0" />
+                    <span className="text-xs font-semibold text-slate-400 shrink-0 w-5 text-center">{fileLabel}</span>
                     <span className="text-sm font-medium text-slate-800 truncate">{doc.name}</span>
                     {doc.file_extension && (
                       <span className="text-xs text-slate-400 uppercase">{doc.file_extension.replace(".", "")}</span>
@@ -383,7 +371,7 @@ export function DragDropFileList({
                     className="p-1 rounded hover:bg-slate-100 transition-colors"
                     onClick={() => setActiveMenuId(activeMenuId === doc.id ? null : doc.id)}
                   >
-                    <MoreVertical className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm text-slate-500 font-bold leading-none">&middot;&middot;&middot;</span>
                   </button>
 
                   {activeMenuId === doc.id && (
@@ -400,7 +388,6 @@ export function DragDropFileList({
                               setActiveMenuId(null);
                             }}
                           >
-                            <Download className="w-4 h-4" />
                             Download
                           </button>
                         )}
@@ -413,7 +400,6 @@ export function DragDropFileList({
                               setActiveMenuId(null);
                             }}
                           >
-                            <Pencil className="w-4 h-4" />
                             Rename
                           </button>
                         )}
@@ -426,7 +412,6 @@ export function DragDropFileList({
                               setActiveMenuId(null);
                             }}
                           >
-                            <Trash2 className="w-4 h-4" />
                             Delete
                           </button>
                         )}

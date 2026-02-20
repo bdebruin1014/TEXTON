@@ -1,4 +1,3 @@
-import { Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useUploadDocument } from "@/hooks/useDocuments";
@@ -101,7 +100,7 @@ export function FileUploadZone({
       {isDragging && (
         <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg border-2 border-dashed border-[#1B3022] bg-[#1B3022]/5">
           <div className="flex flex-col items-center gap-2 text-[#1B3022]">
-            <Upload className="h-8 w-8" />
+            <span className="text-lg font-bold">Upload</span>
             <span className="text-sm font-medium">Drop files to upload</span>
           </div>
         </div>

@@ -1,4 +1,3 @@
-import { Check, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { UploadSuccessAnimation } from "./UploadSuccessAnimation";
 
@@ -90,7 +89,7 @@ export function UploadRequestItemCard({
               : "border-2 border-slate-300"
           }`}
         >
-          {(isFulfilled || justUploaded) && <Check className="h-3.5 w-3.5" />}
+          {(isFulfilled || justUploaded) && <span className="text-xs">{"\u2713"}</span>}
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium text-slate-900">
@@ -146,7 +145,7 @@ export function UploadRequestItemCard({
               </div>
             ) : (
               <>
-                <Upload className="mx-auto h-5 w-5 text-slate-400" />
+                <span className="mx-auto text-sm text-slate-400">Upload</span>
                 <p className="mt-1 text-xs text-slate-500">
                   Drag & drop file here or <span className="text-[#1B3022] font-medium">click to browse</span>
                 </p>

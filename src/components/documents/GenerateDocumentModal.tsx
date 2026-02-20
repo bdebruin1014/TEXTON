@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-import { X, FileText, FileSpreadsheet, File, Search, Loader2, LayoutGrid, CheckCircle2 } from "lucide-react";
 
 interface GenerateDocumentModalProps {
   recordType: string;
@@ -21,16 +20,16 @@ interface DocumentTemplate {
   template_content: string | null;
 }
 
-function getFileIcon(fileType: string) {
+function getFileLabel(fileType: string) {
   switch (fileType) {
     case "docx":
-      return <FileText className="h-8 w-8 text-blue-600" />;
+      return <span className="text-sm font-bold text-blue-600">DOCX</span>;
     case "pdf":
-      return <File className="h-8 w-8 text-red-600" />;
+      return <span className="text-sm font-bold text-red-600">PDF</span>;
     case "xlsx":
-      return <FileSpreadsheet className="h-8 w-8 text-green-600" />;
+      return <span className="text-sm font-bold text-green-600">XLSX</span>;
     default:
-      return <File className="h-8 w-8 text-gray-500" />;
+      return <span className="text-sm font-bold text-gray-500">FILE</span>;
   }
 }
 
@@ -121,7 +120,6 @@ export function GenerateDocumentModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <LayoutGrid className="h-5 w-5 text-[#1B3022]" />
             <h2 className="text-lg font-semibold text-gray-900">Generate Document</h2>
           </div>
           <button
@@ -129,20 +127,19 @@ export function GenerateDocumentModal({
             onClick={onClose}
             className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
           >
-            <X className="h-5 w-5" />
+            <span className="text-lg leading-none">&times;</span>
           </button>
         </div>
 
         {/* Search */}
         <div className="px-6 pt-4 pb-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search templates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white py-2 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
+              className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
             />
           </div>
         </div>
@@ -151,17 +148,17 @@ export function GenerateDocumentModal({
         <div className="flex-1 overflow-y-auto px-6 py-3">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-              <Loader2 className="h-8 w-8 animate-spin mb-3" />
+              <span className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-current border-t-transparent mb-3" />
               <p className="text-sm">Loading templates...</p>
             </div>
           ) : isError ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-              <File className="h-8 w-8 mb-3" />
+              <span className="block h-8 w-8 mb-3 text-2xl leading-8 text-center">!</span>
               <p className="text-sm text-red-500">Failed to load templates. Please try again.</p>
             </div>
           ) : filteredTemplates.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-              <FileText className="h-8 w-8 mb-3" />
+              <span className="block h-8 w-8 mb-3 text-2xl leading-8 text-center">--</span>
               <p className="text-sm">
                 {searchQuery ? "No templates match your search." : "No templates available."}
               </p>
@@ -183,10 +180,10 @@ export function GenerateDocumentModal({
                     )}
                   >
                     {isSelected && (
-                      <CheckCircle2 className="absolute top-3 right-3 h-5 w-5 text-[#1B3022]" />
+                      <span className="absolute top-3 right-3 text-sm font-bold text-[#1B3022]">&check;</span>
                     )}
                     <div className="flex items-center gap-3">
-                      {getFileIcon(template.file_type)}
+                      {getFileLabel(template.file_type)}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{template.name}</p>
                         {template.category && (
@@ -246,7 +243,7 @@ export function GenerateDocumentModal({
                   : "bg-gray-300 cursor-not-allowed"
               )}
             >
-              {generateMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {generateMutation.isPending && <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
               Generate Document
             </button>
           </div>

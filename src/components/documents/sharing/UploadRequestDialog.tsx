@@ -1,4 +1,3 @@
-import { Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
 import { useCreateUploadRequest } from "@/hooks/useUploadRequests";
@@ -107,7 +106,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-semibold text-foreground">Request Documents</h2>
           <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">
-            <X className="h-5 w-5" />
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
@@ -241,7 +240,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                         onClick={() => removeItem(index)}
                         className="text-muted-foreground hover:text-destructive"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <span className="text-xs">Remove</span>
                       </button>
                     )}
                   </div>
@@ -259,7 +258,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                 onClick={addItem}
                 className="flex items-center gap-1 text-sm font-medium text-[#1B3022] hover:underline"
               >
-                <Plus className="h-4 w-4" /> Add Item
+                Add Item
               </button>
             </div>
           </div>

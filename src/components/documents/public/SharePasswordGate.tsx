@@ -1,4 +1,3 @@
-import { Lock } from "lucide-react";
 import { useState } from "react";
 
 interface SharePasswordGateProps {
@@ -12,7 +11,6 @@ export function SharePasswordGate({ onSubmit, error }: SharePasswordGateProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] px-4">
       <div className="w-full max-w-sm rounded-xl border border-[#E2E8F0] bg-white p-8 shadow-sm text-center">
-        <Lock className="mx-auto mb-4 h-10 w-10 text-[#1B3022]/40" />
         <h1 className="text-lg font-semibold text-slate-900">Password Required</h1>
         <p className="mt-1 text-sm text-slate-500">This share link is password protected.</p>
         <form

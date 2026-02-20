@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ChevronDown, ChevronRight, Folder, GripVertical, Plus, Trash2 } from "lucide-react";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -216,16 +216,14 @@ function FolderTemplateEditor() {
           className="group flex items-center gap-1 border-b border-border/50 py-1.5 hover:bg-accent/30"
           style={{ paddingLeft: `${depth * 20 + 8}px` }}
         >
-          <GripVertical className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100" />
+          <span className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100 text-xs leading-none">{"⋮⋮"}</span>
           {hasChildren ? (
             <button type="button" onClick={() => toggleExpand(item.id)} className="shrink-0 p-0.5">
-              {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+              {isExpanded ? "▾" : "▸"}
             </button>
           ) : (
             <span className="w-[18px] shrink-0" />
           )}
-          <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
-
           {isEditing ? (
             <input
               ref={editInputRef}
@@ -254,7 +252,6 @@ function FolderTemplateEditor() {
             className="shrink-0 rounded p-0.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground"
             title="Add subfolder"
           >
-            <Plus className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
@@ -266,7 +263,7 @@ function FolderTemplateEditor() {
             className="shrink-0 rounded p-0.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
             title="Delete"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <span className="text-xs font-medium">Delete</span>
           </button>
         </div>
         {isExpanded && children.map((child) => renderItem(child, depth + 1))}
@@ -288,7 +285,7 @@ function FolderTemplateEditor() {
           to="/admin/documents/folder-templates"
           className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
+          {"←"}
           Back to Folder Templates
         </Link>
         <h2 className="text-lg font-semibold text-foreground">{template.name}</h2>
@@ -321,7 +318,7 @@ function FolderTemplateEditor() {
             onClick={() => addItem(null)}
             className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#1B3022] hover:bg-accent/50"
           >
-            <Plus className="h-3.5 w-3.5" /> Add Folder
+            Add Folder
           </button>
         </div>
         <div className="max-h-[500px] overflow-y-auto">

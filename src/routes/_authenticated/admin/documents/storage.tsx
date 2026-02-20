@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { HardDrive, FileText, BarChart3 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
@@ -173,18 +173,15 @@ function FormSkeleton() {
 // ---------------------------------------------------------------------------
 
 function SummaryCard({
-  icon: Icon,
   label,
   value,
 }: {
-  icon: typeof HardDrive;
   label: string;
   value: string;
 }) {
   return (
     <div className="bg-white border border-border rounded-lg p-5">
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-slate-400" />
         <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</span>
       </div>
       <p className="text-2xl font-bold text-slate-900">{value}</p>
@@ -213,9 +210,9 @@ function StorageUsagePage() {
         <>
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <SummaryCard icon={HardDrive} label="Total Storage Used" value={formatBytes(storage.totalSize)} />
-            <SummaryCard icon={FileText} label="Total Documents" value={storage.totalDocuments.toLocaleString()} />
-            <SummaryCard icon={BarChart3} label="Average File Size" value={formatBytes(storage.averageFileSize)} />
+            <SummaryCard label="Total Storage Used" value={formatBytes(storage.totalSize)} />
+            <SummaryCard label="Total Documents" value={storage.totalDocuments.toLocaleString()} />
+            <SummaryCard label="Average File Size" value={formatBytes(storage.averageFileSize)} />
           </div>
 
           {/* Visual overview bar */}

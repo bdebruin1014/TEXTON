@@ -1,4 +1,3 @@
-import { ChevronDown, ChevronRight, Folder, FolderOpen, Share2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
@@ -62,15 +61,10 @@ export function FolderTreeItem({
             }}
             className="flex h-4 w-4 shrink-0 items-center justify-center"
           >
-            {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+            {expanded ? <span className="h-3 w-3 text-xs leading-none">&#9662;</span> : <span className="h-3 w-3 text-xs leading-none">&#9656;</span>}
           </span>
         ) : (
           <span className="h-4 w-4 shrink-0" />
-        )}
-        {isActive ? (
-          <FolderOpen className="h-4 w-4 shrink-0 text-[#1B3022]" />
-        ) : (
-          <Folder className="h-4 w-4 shrink-0 text-muted-foreground" />
         )}
         <span className="truncate">{folder.name}</span>
       </button>
@@ -97,7 +91,7 @@ export function FolderTreeItem({
                 onClick={() => { onShareFolder(folder.id, folder.name); closeMenu(); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Share2 className="h-3.5 w-3.5" /> Share Folder
+                Share Folder
               </button>
             )}
             <button

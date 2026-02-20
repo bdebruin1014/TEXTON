@@ -1,31 +1,30 @@
 export interface FileIconConfig {
-  icon: string;
-  color: string;
   label: string;
+  color: string;
 }
 
 export const FILE_ICONS: Record<string, FileIconConfig> = {
-  ".pdf": { icon: "FileText", color: "#EF4444", label: "PDF" },
-  ".docx": { icon: "FileText", color: "#3B82F6", label: "DOCX" },
-  ".doc": { icon: "FileText", color: "#3B82F6", label: "DOC" },
-  ".xlsx": { icon: "FileSpreadsheet", color: "#10B981", label: "XLSX" },
-  ".xls": { icon: "FileSpreadsheet", color: "#10B981", label: "XLS" },
-  ".pptx": { icon: "Presentation", color: "#F59E0B", label: "PPTX" },
-  ".ppt": { icon: "Presentation", color: "#F59E0B", label: "PPT" },
-  ".png": { icon: "Image", color: "#8B5CF6", label: "PNG" },
-  ".jpg": { icon: "Image", color: "#8B5CF6", label: "JPG" },
-  ".jpeg": { icon: "Image", color: "#8B5CF6", label: "JPEG" },
-  ".gif": { icon: "Image", color: "#8B5CF6", label: "GIF" },
-  ".svg": { icon: "Image", color: "#8B5CF6", label: "SVG" },
-  ".zip": { icon: "Archive", color: "#6B7280", label: "ZIP" },
-  ".rar": { icon: "Archive", color: "#6B7280", label: "RAR" },
-  ".txt": { icon: "File", color: "#6B7280", label: "TXT" },
-  ".csv": { icon: "FileSpreadsheet", color: "#6B7280", label: "CSV" },
-  ".mp4": { icon: "Film", color: "#EC4899", label: "MP4" },
-  ".mov": { icon: "Film", color: "#EC4899", label: "MOV" },
+  ".pdf": { color: "#946060", label: "PDF" },
+  ".docx": { color: "#4A6B8A", label: "DOCX" },
+  ".doc": { color: "#4A6B8A", label: "DOC" },
+  ".xlsx": { color: "#4A7A5B", label: "XLSX" },
+  ".xls": { color: "#4A7A5B", label: "XLS" },
+  ".pptx": { color: "#9A7B4A", label: "PPTX" },
+  ".ppt": { color: "#9A7B4A", label: "PPT" },
+  ".png": { color: "#6B5B80", label: "PNG" },
+  ".jpg": { color: "#6B5B80", label: "JPG" },
+  ".jpeg": { color: "#6B5B80", label: "JPEG" },
+  ".gif": { color: "#6B5B80", label: "GIF" },
+  ".svg": { color: "#6B5B80", label: "SVG" },
+  ".zip": { color: "#8896A6", label: "ZIP" },
+  ".rar": { color: "#8896A6", label: "RAR" },
+  ".txt": { color: "#8896A6", label: "TXT" },
+  ".csv": { color: "#8896A6", label: "CSV" },
+  ".mp4": { color: "#946060", label: "MP4" },
+  ".mov": { color: "#946060", label: "MOV" },
 };
 
-const DEFAULT_ICON: FileIconConfig = { icon: "File", color: "#6B7280", label: "FILE" };
+const DEFAULT_ICON: FileIconConfig = { color: "#8896A6", label: "FILE" };
 
 export function getFileIcon(extension: string | null | undefined): FileIconConfig {
   if (!extension) return DEFAULT_ICON;

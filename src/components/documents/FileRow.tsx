@@ -1,21 +1,3 @@
-import {
-  Archive,
-  ArrowRightLeft,
-  Clock,
-  Copy,
-  Download,
-  Eye,
-  FileSpreadsheet,
-  FileText,
-  Film,
-  Image,
-  MoreHorizontal,
-  Pencil,
-  Tag,
-  File as FileIcon,
-  Trash2,
-  Share2,
-} from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { getFileIcon } from "@/lib/documents/icons";
@@ -23,16 +5,6 @@ import { getOfficeAppName } from "@/lib/documents/webdav";
 import { formatFileSize } from "@/lib/documents/storage";
 import type { DocumentRecord } from "@/hooks/useDocuments";
 import { TagEditor } from "./TagEditor";
-
-const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
-  FileText,
-  FileSpreadsheet,
-  Image,
-  Film,
-  File: FileIcon,
-  Archive,
-  Presentation: FileIcon,
-};
 
 interface FileRowProps {
   doc: DocumentRecord;
@@ -66,7 +38,6 @@ export function FileRow({
   const [menuOpen, setMenuOpen] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const iconConfig = getFileIcon(doc.file_extension);
-  const IconComponent = ICON_MAP[iconConfig.icon] ?? FileIcon;
   const officeApp = getOfficeAppName(doc.file_extension);
 
   const handleCopyLink = () => {
@@ -91,7 +62,12 @@ export function FileRow({
           onClick={() => onPreview?.(doc)}
           className="flex items-center gap-2.5 text-left"
         >
-          <IconComponent className="h-5 w-5 shrink-0" style={{ color: iconConfig.color }} />
+          <span
+            className="inline-flex h-5 w-8 shrink-0 items-center justify-center rounded text-[9px] font-bold uppercase"
+            style={{ backgroundColor: `${iconConfig.color}20`, color: iconConfig.color }}
+          >
+            {iconConfig.label}
+          </span>
           <div className="min-w-0">
             <div className="truncate text-sm font-medium text-foreground">
               {doc.name}
@@ -133,7 +109,6 @@ export function FileRow({
             onClick={() => onEditInPlace(doc)}
             className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#1B3022] transition-colors hover:bg-accent/50"
           >
-            <Pencil className="h-3 w-3" />
             Edit in {officeApp}
           </button>
         )}
@@ -146,7 +121,7 @@ export function FileRow({
           onClick={() => setMenuOpen(!menuOpen)}
           className="rounded p-1 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent/50"
         >
-          <MoreHorizontal className="h-4 w-4" />
+          <span className="h-4 w-4 text-sm leading-none">&hellip;</span>
         </button>
 
         {menuOpen && (
@@ -159,7 +134,7 @@ export function FileRow({
                 onClick={() => { onPreview?.(doc); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Eye className="h-3.5 w-3.5" /> Preview
+                Preview
               </button>
               {/* Download */}
               <button
@@ -167,7 +142,7 @@ export function FileRow({
                 onClick={() => { onDownload(doc); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Download className="h-3.5 w-3.5" /> Download
+                Download
               </button>
               {/* Edit in Office */}
               {officeApp && (
@@ -176,7 +151,7 @@ export function FileRow({
                   onClick={() => { onEditInPlace(doc); setMenuOpen(false); }}
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
                 >
-                  <Pencil className="h-3.5 w-3.5" /> Edit in {officeApp}
+                  Edit in {officeApp}
                 </button>
               )}
               {/* Share */}
@@ -186,7 +161,7 @@ export function FileRow({
                   onClick={() => { onShare(doc); setMenuOpen(false); }}
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
                 >
-                  <Share2 className="h-3.5 w-3.5" /> Share
+                  Share
                 </button>
               )}
               <div className="my-1 border-t border-border" />
@@ -200,7 +175,7 @@ export function FileRow({
                 }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Pencil className="h-3.5 w-3.5" /> Rename
+                Rename
               </button>
               {/* Move to Folder */}
               <button
@@ -208,7 +183,7 @@ export function FileRow({
                 onClick={() => { onMove(doc.id); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <ArrowRightLeft className="h-3.5 w-3.5" /> Move to Folder
+                Move to Folder
               </button>
               {/* Tags */}
               <button
@@ -216,7 +191,7 @@ export function FileRow({
                 onClick={() => { setShowTags(true); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Tag className="h-3.5 w-3.5" /> Tags
+                Tags
               </button>
               {/* Version History */}
               <button
@@ -224,7 +199,7 @@ export function FileRow({
                 onClick={() => { onVersionHistory?.(doc); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Clock className="h-3.5 w-3.5" /> Version History
+                Version History
               </button>
               {/* Copy Link */}
               <button
@@ -232,7 +207,7 @@ export function FileRow({
                 onClick={handleCopyLink}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Copy className="h-3.5 w-3.5" /> Copy Link
+                Copy Link
               </button>
               <div className="my-1 border-t border-border" />
               {/* Archive */}
@@ -241,7 +216,7 @@ export function FileRow({
                 onClick={() => { onArchive(doc.id); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
-                <Archive className="h-3.5 w-3.5" /> Archive
+                Archive
               </button>
               {/* Delete */}
               <button
@@ -249,7 +224,7 @@ export function FileRow({
                 onClick={() => { onDelete(doc); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-accent/50"
               >
-                <Trash2 className="h-3.5 w-3.5" /> Delete
+                Delete
               </button>
             </div>
           </>

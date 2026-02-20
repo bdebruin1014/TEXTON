@@ -1,4 +1,3 @@
-import { FolderPlus, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
 import { FolderTreeItem } from "./FolderTreeItem";
@@ -42,7 +41,6 @@ export function FolderTree({
               : "border-transparent text-muted-foreground",
           )}
         >
-          <Layers className="h-4 w-4 shrink-0" />
           All Documents
         </button>
 
@@ -70,7 +68,6 @@ export function FolderTree({
           onClick={() => onAddFolder(null)}
           className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
         >
-          <FolderPlus className="h-4 w-4" />
           New Folder
         </button>
       </div>

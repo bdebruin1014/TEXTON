@@ -1,4 +1,3 @@
-import { Copy, Link, X } from "lucide-react";
 import { useState } from "react";
 import type { DocumentRecord } from "@/hooks/useDocuments";
 import { getShareUrl, useCreateShare } from "@/hooks/useDocumentShares";
@@ -93,7 +92,7 @@ export function ShareDialog({
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-semibold text-foreground">Share Documents</h2>
           <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">
-            <X className="h-5 w-5" />
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
@@ -240,14 +239,13 @@ export function ShareDialog({
           {createdToken && (
             <div className="rounded-lg border border-border bg-accent/20 px-4 py-3">
               <div className="flex items-center gap-2 text-sm">
-                <Link className="h-4 w-4 text-muted-foreground" />
                 <span className="flex-1 truncate font-mono text-xs">{getShareUrl(createdToken)}</span>
                 <button
                   type="button"
                   onClick={handleCopyLink}
                   className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#1B3022] hover:bg-accent/50"
                 >
-                  <Copy className="h-3 w-3" /> Copy
+                  Copy
                 </button>
               </div>
             </div>

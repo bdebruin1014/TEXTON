@@ -1,4 +1,3 @@
-import { Download } from "lucide-react";
 import { useState } from "react";
 import type { ShareAccessData } from "@/hooks/useShareAccess";
 import { useShareDownload } from "@/hooks/useShareAccess";
@@ -82,7 +81,7 @@ export function SharePage({ data, token }: SharePageProps) {
                 type="button"
                 className="inline-flex items-center gap-2 rounded-lg bg-[#1B3022] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1B3022]/90"
               >
-                <Download className="h-4 w-4" /> Download All
+                Download All
               </button>
             </div>
           )}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle, Clock, Send } from "lucide-react";
+
 import { useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -87,7 +87,6 @@ function Signatures() {
             disabled={sending}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Send className="h-4 w-4" />
             {sending ? "Sending..." : "Send for Signature"}
           </button>
         )}
@@ -107,10 +106,8 @@ function Signatures() {
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-3">
             {clientSigned ? (
-              <CheckCircle className="h-6 w-6 text-success" />
-            ) : (
-              <Clock className="h-6 w-6 text-warning" />
-            )}
+              <span className="text-lg text-success">{"✓"}</span>
+            ) : null}
             <h3 className="text-sm font-semibold text-foreground">Client Signature</h3>
           </div>
           <div className="space-y-2">
@@ -131,8 +128,7 @@ function Signatures() {
               onClick={handleMarkClientSigned}
               className="mt-4 flex items-center gap-1.5 rounded-lg border border-border bg-transparent px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-50"
             >
-              <CheckCircle className="h-4 w-4" />
-              Mark as Signed
+              {"✓"} Mark as Signed
             </button>
           )}
         </div>
@@ -141,10 +137,8 @@ function Signatures() {
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-3">
             {rchSigned ? (
-              <CheckCircle className="h-6 w-6 text-success" />
-            ) : (
-              <Clock className="h-6 w-6 text-warning" />
-            )}
+              <span className="text-lg text-success">{"✓"}</span>
+            ) : null}
             <h3 className="text-sm font-semibold text-foreground">RCH Signature</h3>
           </div>
           <div className="space-y-2">
@@ -165,8 +159,7 @@ function Signatures() {
               onClick={handleMarkRchSigned}
               className="mt-4 flex items-center gap-1.5 rounded-lg border border-border bg-transparent px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-50"
             >
-              <CheckCircle className="h-4 w-4" />
-              Mark as Signed
+              {"✓"} Mark as Signed
             </button>
           )}
         </div>
@@ -175,7 +168,7 @@ function Signatures() {
       {/* Fully Executed Banner */}
       {fullyExecuted && (
         <div className="mt-6 rounded-lg border-2 border-success bg-green-50 px-4 py-4 text-center">
-          <CheckCircle className="mx-auto mb-2 h-8 w-8 text-success" />
+          <span className="mx-auto mb-2 block text-2xl text-success">{"✓"}</span>
           <p className="text-sm font-semibold text-success">Contract Fully Executed</p>
           <p className="mt-1 text-xs text-muted">
             Client signed {formatDate(contract.client_signed_at)} &middot; RCH signed{" "}

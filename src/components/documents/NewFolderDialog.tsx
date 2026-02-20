@@ -1,4 +1,3 @@
-import { FolderPlus } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface NewFolderDialogProps {
@@ -21,7 +20,6 @@ export function NewFolderDialog({ onSubmit, onCancel }: NewFolderDialogProps) {
 
   return (
     <div className="flex items-center gap-2 rounded-lg border border-[#1B3022] bg-white px-3 py-2 shadow-sm">
-      <FolderPlus className="h-4 w-4 shrink-0 text-[#1B3022]" />
       <input
         ref={inputRef}
         autoFocus

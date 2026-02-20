@@ -1,31 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
-import {
-  X,
-  Download,
-  ExternalLink,
-  FileText,
-  FileSpreadsheet,
-  Image,
-  Film,
-  Presentation,
-  Archive,
-  File as GenericFileIcon,
-} from 'lucide-react';
 import { cn, formatDate } from '@/lib/utils';
 import { getSignedUrl, formatFileSize } from '@/lib/documents/storage';
 import { getOfficeAppName } from '@/lib/documents/webdav';
 import { getFileIcon } from '@/lib/documents/icons';
 import type { DocumentRecord } from '@/hooks/useDocuments';
 
-const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
-  FileText,
-  FileSpreadsheet,
-  Image,
-  Film,
-  Presentation,
-  Archive,
-  File: GenericFileIcon,
-};
+function FileLabel({ label, className }: { label: string; className?: string }) {
+  return <span className={cn("font-bold", className)}>{label}</span>;
+}
 
 interface FilePreviewModalProps {
   document: DocumentRecord | null;
@@ -119,7 +101,6 @@ export function FilePreviewModal({
 
   const ext = normalizeExtension(document.file_extension);
   const iconConfig = getFileIcon(document.file_extension);
-  const Icon = ICON_MAP[iconConfig.icon] ?? GenericFileIcon;
   const officeAppName = isOfficeFile(document.file_extension)
     ? getOfficeAppName(document.file_extension)
     : null;
@@ -173,7 +154,7 @@ export function FilePreviewModal({
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-              <Icon className="h-8 w-8 text-[#1B3022]" />
+              <FileLabel label={iconConfig.label} className="text-lg text-[#1B3022]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {document.name}
@@ -195,7 +176,6 @@ export function FilePreviewModal({
                 onClick={() => onEditInPlace(document)}
                 className="inline-flex items-center gap-2 rounded-lg bg-[#1B3022] px-4 py-2 text-sm font-medium text-white hover:bg-[#1B3022]/90 transition-colors"
               >
-                <ExternalLink className="h-4 w-4" />
                 Edit in {officeAppName}
               </button>
               <button
@@ -203,7 +183,6 @@ export function FilePreviewModal({
                 onClick={() => onDownload(document)}
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                <Download className="h-4 w-4" />
                 Download
               </button>
             </div>
@@ -217,7 +196,7 @@ export function FilePreviewModal({
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-            <Icon className="h-8 w-8 text-[#1B3022]" />
+            <FileLabel label={iconConfig.label} className="text-lg text-[#1B3022]" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
             {document.name}
@@ -241,7 +220,6 @@ export function FilePreviewModal({
               onClick={() => onDownload(document)}
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <Download className="h-4 w-4" />
               Download
             </button>
           </div>
@@ -259,7 +237,7 @@ export function FilePreviewModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <Icon className="h-5 w-5 text-[#1B3022] shrink-0" />
+            <FileLabel label={iconConfig.label} className="text-sm text-[#1B3022] shrink-0" />
             <h2 className="text-base font-semibold text-gray-900 truncate">
               {document.name}
             </h2>
@@ -270,7 +248,7 @@ export function FilePreviewModal({
             className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Close preview"
           >
-            <X className="h-5 w-5" />
+            <span className="text-lg leading-none">&times;</span>
           </button>
         </div>
 
@@ -285,7 +263,6 @@ export function FilePreviewModal({
               onClick={() => onDownload(document)}
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <Download className="h-4 w-4" />
               Download
             </button>
           </div>

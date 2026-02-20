@@ -206,16 +206,9 @@ function Handoff() {
                       }`}
                     >
                       {handoffItem.is_complete && (
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          role="img"
-                          aria-label="Completed"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
+                        <span className="text-xs font-bold leading-none" aria-label="Completed">
+                          {"\u2713"}
+                        </span>
                       )}
                     </div>
                   </button>

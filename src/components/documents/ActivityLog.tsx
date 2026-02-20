@@ -1,15 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  Upload,
-  Download,
-  Eye,
-  Pencil,
-  Type,
-  ArrowRightLeft,
-  Archive,
-  Trash2,
-  Activity,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
@@ -40,19 +29,19 @@ interface DocumentActivityRecord {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const ACTION_CONFIG: Record<string, { icon: typeof Upload; label: string; color: string }> = {
-  upload: { icon: Upload, label: "uploaded", color: "text-emerald-600 bg-emerald-50" },
-  download: { icon: Download, label: "downloaded", color: "text-blue-600 bg-blue-50" },
-  view: { icon: Eye, label: "viewed", color: "text-slate-600 bg-slate-100" },
-  edit: { icon: Pencil, label: "edited", color: "text-amber-600 bg-amber-50" },
-  rename: { icon: Type, label: "renamed", color: "text-purple-600 bg-purple-50" },
-  move: { icon: ArrowRightLeft, label: "moved", color: "text-indigo-600 bg-indigo-50" },
-  archive: { icon: Archive, label: "archived", color: "text-orange-600 bg-orange-50" },
-  delete: { icon: Trash2, label: "deleted", color: "text-red-600 bg-red-50" },
+const ACTION_CONFIG: Record<string, { text: string; label: string; color: string }> = {
+  upload: { text: "Up", label: "uploaded", color: "text-emerald-600 bg-emerald-50" },
+  download: { text: "Dl", label: "downloaded", color: "text-blue-600 bg-blue-50" },
+  view: { text: "Vw", label: "viewed", color: "text-slate-600 bg-slate-100" },
+  edit: { text: "Ed", label: "edited", color: "text-amber-600 bg-amber-50" },
+  rename: { text: "Rn", label: "renamed", color: "text-purple-600 bg-purple-50" },
+  move: { text: "Mv", label: "moved", color: "text-indigo-600 bg-indigo-50" },
+  archive: { text: "Ar", label: "archived", color: "text-orange-600 bg-orange-50" },
+  delete: { text: "Del", label: "deleted", color: "text-red-600 bg-red-50" },
 };
 
 function getActionConfig(action: string) {
-  return ACTION_CONFIG[action.toLowerCase()] ?? { icon: Activity, label: action, color: "text-slate-600 bg-slate-100" };
+  return ACTION_CONFIG[action.toLowerCase()] ?? { text: "?", label: action, color: "text-slate-600 bg-slate-100" };
 }
 
 function formatRelativeTime(dateStr: string): string {
@@ -100,7 +89,7 @@ function ActivitySkeleton() {
 function EmptyActivity() {
   return (
     <div className="text-center py-8">
-      <Activity className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+      <span className="block w-10 h-10 text-slate-300 mx-auto mb-3 text-2xl leading-10 text-center">--</span>
       <p className="text-sm text-slate-500">No activity recorded yet.</p>
     </div>
   );
@@ -144,7 +133,6 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
     <div className="space-y-1">
       {activities.map((activity, index) => {
         const config = getActionConfig(activity.action);
-        const Icon = config.icon;
         const isLast = index === activities.length - 1;
 
         return (
@@ -161,7 +149,7 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
                 config.color,
               )}
             >
-              <Icon className="w-4 h-4" />
+              <span className="text-xs font-bold">{config.text}</span>
             </div>
 
             {/* Content */}

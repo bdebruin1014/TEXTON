@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CheckCircle, HardHat, Loader2 } from "lucide-react";
+
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -129,7 +129,6 @@ function CreateJobs() {
                   className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
                 >
                   <div className="flex items-center gap-4">
-                    <HardHat className="h-4 w-4 text-muted" />
                     <div>
                       <p className="text-sm font-medium text-foreground">{unit.lot_number ?? "---"}</p>
                       <p className="text-xs text-muted">
@@ -137,7 +136,7 @@ function CreateJobs() {
                       </p>
                     </div>
                   </div>
-                  {createdJobIds.length > 0 && <CheckCircle className="h-4 w-4 text-success" />}
+                  {createdJobIds.length > 0 && <span className="text-sm text-success">{"✓"}</span>}
                 </div>
               ))}
             </div>
@@ -146,7 +145,7 @@ function CreateJobs() {
           {/* Create Jobs Button */}
           {jobsAlreadyCreated || createdJobIds.length > 0 ? (
             <div className="rounded-lg border-2 border-success bg-green-50 px-4 py-4 text-center">
-              <CheckCircle className="mx-auto mb-2 h-8 w-8 text-success" />
+              <span className="mx-auto mb-2 block text-2xl text-success">{"✓"}</span>
               <p className="text-sm font-semibold text-success">Jobs Created Successfully</p>
               <p className="mt-1 text-xs text-muted">
                 {createdJobIds.length || units.length} job(s) have been created from this contract
@@ -170,12 +169,11 @@ function CreateJobs() {
             >
               {creating ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   Creating {units.length} Job(s)...
                 </>
               ) : (
                 <>
-                  <HardHat className="h-4 w-4" />
                   Create {units.length} Job(s)
                 </>
               )}

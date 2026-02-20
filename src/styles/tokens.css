@@ -1,4 +1,4 @@
-/* TEK·TON Design System v3.3 */
+/* TEK·TON Design System v3.2 */
 :root {
   /* ——— CORE TRIAD ——— */
   --color-primary: #1B3022;
@@ -21,13 +21,23 @@
   --color-nav-active: #6B9E7A;
 
   /* ——— SURFACES ——— */
-  --color-background: #F7F8FA;
+  --color-background: #F0F3F7;
   --color-card: #FFFFFF;
   --color-card-foreground: #112233;
-  --color-card-hover: #F9FAFB;
-  --color-sidebar: #FFFFFF;
+  --color-card-hover: #FAFBFC;
   --color-popover: #FFFFFF;
   --color-popover-foreground: #112233;
+
+  /* ——— SIDEBAR — DARK (Qualia pattern) ——— */
+  --color-sidebar: #1E2A30;
+  --sidebar-width: 240px;
+  --sidebar-active-border: #6B9E7A;
+  --sidebar-active-bg: rgba(107, 158, 122, 0.12);
+  --sidebar-active-text: #FFFFFF;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-text: #A0AEC0;
+  --sidebar-heading: #7B8FA3;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
 
   /* ——— TEXT HIERARCHY ——— */
   --color-foreground: #112233;
@@ -76,23 +86,16 @@
   --color-chart-5: #946060;
 
   /* ——— SHADOWS ——— */
-  --shadow-sm: 0 1px 3px rgba(17, 34, 51, 0.06);
-  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.08), 0 1px 2px rgba(17, 34, 51, 0.04);
-  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.10), 0 2px 4px rgba(17, 34, 51, 0.06);
-  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.12), 0 4px 8px rgba(17, 34, 51, 0.08);
+  --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);
+  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.06), 0 1px 2px rgba(17, 34, 51, 0.04);
+  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.08), 0 2px 4px rgba(17, 34, 51, 0.04);
+  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.10), 0 4px 8px rgba(17, 34, 51, 0.06);
 
   /* ——— RADIUS ——— */
-  --radius: 0.5rem;
+  --radius: 0.625rem;
   --radius-sm: 0.375rem;
-  --radius-lg: 0.625rem;
-  --radius-xl: 0.75rem;
-
-  /* ——— SIDEBAR ——— */
-  --sidebar-width: 240px;
-  --sidebar-active-border: #1B3022;
-  --sidebar-active-bg: #F1F5F4;
-  --sidebar-active-text: #1B3022;
-  --sidebar-hover-bg: #F5F7F6;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
 
   /* ——— LAYOUT ——— */
   --right-panel-width: 260px;

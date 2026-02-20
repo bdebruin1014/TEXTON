@@ -1,4 +1,3 @@
-import { Clock, Copy, MoreHorizontal, Send, XCircle } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import {
@@ -41,7 +40,6 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
   if (requests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center">
-        <Send className="h-10 w-10 text-muted-foreground/40 mb-3" />
         <h3 className="text-sm font-semibold text-foreground">No upload requests yet</h3>
         <p className="text-sm text-muted-foreground mt-1">
           Request documents from external parties using the "Request Upload" button.
@@ -110,7 +108,7 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
                       onClick={() => setMenuOpenId(menuOpenId === req.id ? null : req.id)}
                       className="rounded p-1 text-muted-foreground hover:bg-accent/50"
                     >
-                      <MoreHorizontal className="h-4 w-4" />
+                      <span aria-hidden="true">...</span>
                     </button>
                     {menuOpenId === req.id && (
                       <>
@@ -124,7 +122,7 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
                             }}
                             className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-accent/50"
                           >
-                            <Copy className="h-3.5 w-3.5" /> Copy Link
+                            Copy Link
                           </button>
                           {(req.status === "pending" || req.status === "partial") && (
                             <>
@@ -136,7 +134,7 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
                                 }}
                                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-accent/50"
                               >
-                                <Clock className="h-3.5 w-3.5" /> Send Reminder
+                                Resend Reminder
                               </button>
                               <button
                                 type="button"
@@ -146,7 +144,7 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
                                 }}
                                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-accent/50"
                               >
-                                <XCircle className="h-3.5 w-3.5" /> Cancel
+                                Cancel
                               </button>
                             </>
                           )}

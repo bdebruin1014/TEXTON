@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+
 import { useCallback, useMemo } from "react";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
@@ -104,8 +104,7 @@ function DealSheetDetail() {
             to="/operations/deal-sheets"
             className="flex items-center gap-1 text-sm text-muted hover:text-foreground transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Deal Sheets
+            {"←"} Back to Deal Sheets
           </Link>
         </div>
         <FormSkeleton fields={8} />
@@ -121,8 +120,7 @@ function DealSheetDetail() {
           to="/operations/deal-sheets"
           className="mb-3 flex items-center gap-1 text-sm text-muted hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Deal Sheets
+          {"←"} Back to Deal Sheets
         </Link>
         <h1 className="text-xl font-semibold text-foreground">{dealSheet.name ?? "Untitled Deal Sheet"}</h1>
         {dealSheet.address && <p className="mt-0.5 text-sm text-muted">{dealSheet.address}</p>}

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
+
 import { useMemo, useState } from "react";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
@@ -149,7 +149,6 @@ function EsignIndex() {
             onClick={() => addDocument.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
             New E-Sign
           </button>
         </div>
@@ -167,7 +166,6 @@ function EsignIndex() {
                 onClick={() => addDocument.mutate()}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               >
-                <Plus className="h-4 w-4" />
                 New E-Sign
               </button>
             }

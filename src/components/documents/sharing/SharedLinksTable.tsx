@@ -1,4 +1,3 @@
-import { Copy, ExternalLink, MoreHorizontal, XCircle } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { getShareUrl, useDocumentShares, useRevokeShare } from "@/hooks/useDocumentShares";
@@ -32,7 +31,6 @@ export function SharedLinksTable({ recordType, recordId }: SharedLinksTableProps
   if (shares.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center">
-        <ExternalLink className="h-10 w-10 text-muted-foreground/40 mb-3" />
         <h3 className="text-sm font-semibold text-foreground">No shared links yet</h3>
         <p className="text-sm text-muted-foreground mt-1">
           Share files or folders from the Documents tab to create share links.
@@ -95,7 +93,7 @@ export function SharedLinksTable({ recordType, recordId }: SharedLinksTableProps
                     onClick={() => setMenuOpenId(menuOpenId === share.id ? null : share.id)}
                     className="rounded p-1 text-muted-foreground hover:bg-accent/50"
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <span aria-hidden="true">...</span>
                   </button>
                   {menuOpenId === share.id && (
                     <>
@@ -109,7 +107,7 @@ export function SharedLinksTable({ recordType, recordId }: SharedLinksTableProps
                           }}
                           className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-accent/50"
                         >
-                          <Copy className="h-3.5 w-3.5" /> Copy Link
+                          Copy Link
                         </button>
                         {share.status === "active" && (
                           <button
@@ -120,7 +118,7 @@ export function SharedLinksTable({ recordType, recordId }: SharedLinksTableProps
                             }}
                             className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-accent/50"
                           >
-                            <XCircle className="h-3.5 w-3.5" /> Revoke
+                            Revoke
                           </button>
                         )}
                       </div>

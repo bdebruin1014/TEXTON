@@ -34,6 +34,7 @@ import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPurchasingIndexRouteImport } from './routes/_authenticated/purchasing/index'
 import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
 import { Route as AuthenticatedPipelineIndexRouteImport } from './routes/_authenticated/pipeline/index'
+import { Route as AuthenticatedOperationsIndexRouteImport } from './routes/_authenticated/operations/index'
 import { Route as AuthenticatedInvestorsIndexRouteImport } from './routes/_authenticated/investors/index'
 import { Route as AuthenticatedDispositionIndexRouteImport } from './routes/_authenticated/disposition/index'
 import { Route as AuthenticatedContactsIndexRouteImport } from './routes/_authenticated/contacts/index'
@@ -319,6 +320,12 @@ const AuthenticatedPipelineIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedPipelineRouteRoute,
+  } as any)
+const AuthenticatedOperationsIndexRoute =
+  AuthenticatedOperationsIndexRouteImport.update({
+    id: '/operations/',
+    path: '/operations/',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedInvestorsIndexRoute =
   AuthenticatedInvestorsIndexRouteImport.update({
@@ -1293,6 +1300,7 @@ export interface FileRoutesByFullPath {
   '/contacts/': typeof AuthenticatedContactsIndexRoute
   '/disposition/': typeof AuthenticatedDispositionIndexRoute
   '/investors/': typeof AuthenticatedInvestorsIndexRoute
+  '/operations/': typeof AuthenticatedOperationsIndexRoute
   '/pipeline/': typeof AuthenticatedPipelineIndexRoute
   '/projects/': typeof AuthenticatedProjectsIndexRoute
   '/purchasing/': typeof AuthenticatedPurchasingIndexRoute
@@ -1452,6 +1460,7 @@ export interface FileRoutesByTo {
   '/contacts': typeof AuthenticatedContactsIndexRoute
   '/disposition': typeof AuthenticatedDispositionIndexRoute
   '/investors': typeof AuthenticatedInvestorsIndexRoute
+  '/operations': typeof AuthenticatedOperationsIndexRoute
   '/pipeline': typeof AuthenticatedPipelineIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
   '/purchasing': typeof AuthenticatedPurchasingIndexRoute
@@ -1628,6 +1637,7 @@ export interface FileRoutesById {
   '/_authenticated/contacts/': typeof AuthenticatedContactsIndexRoute
   '/_authenticated/disposition/': typeof AuthenticatedDispositionIndexRoute
   '/_authenticated/investors/': typeof AuthenticatedInvestorsIndexRoute
+  '/_authenticated/operations/': typeof AuthenticatedOperationsIndexRoute
   '/_authenticated/pipeline/': typeof AuthenticatedPipelineIndexRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
   '/_authenticated/purchasing/': typeof AuthenticatedPurchasingIndexRoute
@@ -1804,6 +1814,7 @@ export interface FileRouteTypes {
     | '/contacts/'
     | '/disposition/'
     | '/investors/'
+    | '/operations/'
     | '/pipeline/'
     | '/projects/'
     | '/purchasing/'
@@ -1963,6 +1974,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/disposition'
     | '/investors'
+    | '/operations'
     | '/pipeline'
     | '/projects'
     | '/purchasing'
@@ -2138,6 +2150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/contacts/'
     | '/_authenticated/disposition/'
     | '/_authenticated/investors/'
+    | '/_authenticated/operations/'
     | '/_authenticated/pipeline/'
     | '/_authenticated/projects/'
     | '/_authenticated/purchasing/'
@@ -2426,6 +2439,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pipeline/'
       preLoaderRoute: typeof AuthenticatedPipelineIndexRouteImport
       parentRoute: typeof AuthenticatedPipelineRouteRoute
+    }
+    '/_authenticated/operations/': {
+      id: '/_authenticated/operations/'
+      path: '/operations'
+      fullPath: '/operations/'
+      preLoaderRoute: typeof AuthenticatedOperationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/investors/': {
       id: '/_authenticated/investors/'
@@ -4086,6 +4106,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedCalendarIndexRoute: typeof AuthenticatedCalendarIndexRoute
+  AuthenticatedOperationsIndexRoute: typeof AuthenticatedOperationsIndexRoute
   AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
   AuthenticatedOperationsRchContractsContractIdRouteRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   AuthenticatedOperationsDealSheetsDealSheetIdRoute: typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
@@ -4115,6 +4136,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedCalendarIndexRoute: AuthenticatedCalendarIndexRoute,
+  AuthenticatedOperationsIndexRoute: AuthenticatedOperationsIndexRoute,
   AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
   AuthenticatedOperationsRchContractsContractIdRouteRoute:
     AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren,

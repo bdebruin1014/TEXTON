@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X } from 'lucide-react';
+
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
@@ -179,7 +179,7 @@ export function TagEditor({
               className="p-0 text-green-600 hover:text-red-500 transition-colors"
               aria-label={`Remove tag ${tag}`}
             >
-              <X className="h-3 w-3" />
+              <span className="text-xs leading-none">&times;</span>
             </button>
           </span>
         ))}

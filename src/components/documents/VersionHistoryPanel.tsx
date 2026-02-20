@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { X, Download, RotateCcw, FileText } from 'lucide-react';
+
 import { supabase } from '@/lib/supabase';
 import { formatDate, cn } from '@/lib/utils';
 import { formatFileSize } from '@/lib/documents/storage';
@@ -70,14 +70,13 @@ export function VersionHistoryPanel({
             className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Close version history"
           >
-            <X className="h-5 w-5" />
+            <span className="text-lg leading-none">&times;</span>
           </button>
         </div>
 
         {/* Document info */}
         <div className="px-4 py-3 border-b border-border bg-gray-50">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-gray-500 shrink-0" />
             <span className="text-sm font-medium text-gray-900 truncate">
               {document.original_filename}
             </span>
@@ -150,7 +149,7 @@ export function VersionHistoryPanel({
                           title="Download this version"
                           aria-label={`Download version ${version.version}`}
                         >
-                          <Download className="h-4 w-4" />
+                          <span className="text-xs font-medium">Download</span>
                         </button>
                         {!isCurrent && (
                           <button
@@ -159,7 +158,7 @@ export function VersionHistoryPanel({
                             title="Restore this version"
                             aria-label={`Restore version ${version.version}`}
                           >
-                            <RotateCcw className="h-4 w-4" />
+                            <span className="text-xs font-medium">Restore</span>
                           </button>
                         )}
                       </div>

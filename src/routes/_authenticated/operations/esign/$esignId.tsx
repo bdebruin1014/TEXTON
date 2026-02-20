@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, Ban, RefreshCw } from "lucide-react";
+
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -150,8 +150,7 @@ function EsignDetail() {
       {/* Header */}
       <div className="mb-6">
         <Link to="/operations/esign" className="mb-3 flex items-center gap-1 text-sm text-primary hover:underline">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to E-Sign Documents
+          {"←"} Back to E-Sign Documents
         </Link>
         <div className="flex items-center justify-between">
           <div>
@@ -172,7 +171,6 @@ function EsignDetail() {
                 disabled={voidDocument.isPending}
                 className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <Ban className="h-4 w-4" />
                 {voidDocument.isPending ? "Voiding..." : "Void Document"}
               </button>
               <button
@@ -181,7 +179,6 @@ function EsignDetail() {
                 disabled={resendDocument.isPending}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <RefreshCw className="h-4 w-4" />
                 {resendDocument.isPending ? "Resending..." : "Resend"}
               </button>
             </div>

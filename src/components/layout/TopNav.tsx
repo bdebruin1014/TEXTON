@@ -1,5 +1,4 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ChevronDown, LogOut, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { TektonLogo } from "@/components/layout/Logo";
 import { useAuth } from "@/hooks/useAuth";
@@ -7,23 +6,13 @@ import { NAV_MODULES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
 
-const OPERATIONS_ITEMS = [
-  { label: "Deal Sheets", path: "/operations/deal-sheets" },
-  { label: "E-Sign Documents", path: "/operations/esign" },
-  { label: "RCH Contracts", path: "/operations/rch-contracts" },
-];
-
 export function TopNav() {
   const location = useRouterState({ select: (s) => s.location });
   const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [opsOpen, setOpsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const opsRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
-
-  const isOpsActive = location.pathname.startsWith("/operations");
 
   const fullName = (user?.user_metadata?.full_name as string) ?? "";
   const userEmail = user?.email ?? "";
@@ -38,9 +27,6 @@ export function TopNav() {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (opsRef.current && !opsRef.current.contains(e.target as Node)) {
-        setOpsOpen(false);
-      }
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setUserMenuOpen(false);
       }
@@ -67,21 +53,6 @@ export function TopNav() {
       <nav className="flex items-center gap-0.5">
         {NAV_MODULES.map((mod) => {
           const isActive = location.pathname.startsWith(mod.path);
-          const isDisabled = "disabled" in mod && mod.disabled;
-
-          if (isDisabled) {
-            return (
-              <Link
-                key={mod.label}
-                to={mod.path}
-                className="relative rounded-md px-3 py-3.5 text-[13px] font-medium opacity-40"
-                style={{ color: "var(--color-nav-muted)" }}
-              >
-                {mod.label}
-              </Link>
-            );
-          }
-
           return (
             <Link
               key={mod.label}
@@ -108,53 +79,6 @@ export function TopNav() {
           );
         })}
 
-        {/* Operations Dropdown */}
-        <div ref={opsRef} className="relative">
-          <button
-            type="button"
-            onClick={() => setOpsOpen((o) => !o)}
-            aria-expanded={opsOpen}
-            aria-haspopup="true"
-            aria-label="Operations menu"
-            className={cn(
-              "relative flex items-center gap-1 rounded-md px-3 py-3.5 text-[13px] font-medium transition-colors",
-              isOpsActive ? "text-white" : "hover:bg-white/[0.04]",
-            )}
-            style={{ color: isOpsActive ? "#FFFFFF" : "var(--color-nav-muted)" }}
-          >
-            <span>Operations</span>
-            <ChevronDown className="h-3 w-3" />
-            {isOpsActive && (
-              <span
-                className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t-sm"
-                style={{
-                  background: "var(--color-nav-active)",
-                  boxShadow: "0 0 8px rgba(107, 158, 122, 0.4)",
-                }}
-              />
-            )}
-          </button>
-          {opsOpen && (
-            <div className="absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border border-white/10 bg-[#112233] py-1 shadow-lg">
-              {OPERATIONS_ITEMS.map((item) => {
-                const active = location.pathname.startsWith(item.path);
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setOpsOpen(false)}
-                    className={cn(
-                      "block px-3 py-2 text-xs font-medium transition-colors",
-                      active ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5 hover:text-white",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
       </nav>
 
       {/* Right Side */}
@@ -201,9 +125,8 @@ export function TopNav() {
               <Link
                 to="/settings"
                 onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="block px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
               >
-                <Settings className="h-3.5 w-3.5" />
                 Account Settings
               </Link>
               <button
@@ -213,9 +136,8 @@ export function TopNav() {
                   await signOut();
                   navigate({ to: "/login" });
                 }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="block w-full px-3 py-2 text-left text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
               >
-                <LogOut className="h-3.5 w-3.5" />
                 Sign Out
               </button>
             </div>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Eye, FileText } from "lucide-react";
+
 import { useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -70,7 +70,6 @@ function ContractPreview() {
           disabled={generating}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <FileText className="h-4 w-4" />
           {generating ? "Generating..." : "Generate Contract"}
         </button>
       </div>
@@ -137,7 +136,7 @@ function ContractPreview() {
 
       {/* Placeholder for PDF preview */}
       <div className="rounded-lg border-2 border-dashed border-border bg-gray-50 p-12 text-center">
-        <Eye className="mx-auto mb-3 h-12 w-12 text-muted" />
+        <p className="mb-3 text-center text-sm font-medium text-muted">Preview</p>
         <p className="text-sm font-medium text-foreground">Document Preview</p>
         <p className="mt-1 text-sm text-muted">
           Click "Generate Contract" to create a PDF document from the contract data above.

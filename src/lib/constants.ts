@@ -186,10 +186,9 @@ export const NAV_MODULES = [
   { label: "Projects", path: "/projects" },
   { label: "Construction", path: "/construction" },
   { label: "Disposition", path: "/disposition" },
-  { label: "Accounting", path: "/accounting" },
   { label: "Contacts", path: "/contacts" },
-  { label: "Workflows", path: "/workflows" },
   { label: "Calendar", path: "/calendar" },
-  { label: "Tools", path: "/tools", disabled: true },
+  { label: "Workflows", path: "/workflows" },
+  { label: "Operations", path: "/operations" },
   { label: "Admin", path: "/admin" },
 ] as const;
