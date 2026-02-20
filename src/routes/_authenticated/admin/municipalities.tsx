@@ -7,7 +7,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/municipalities")({
   component: Municipalities,
@@ -26,6 +26,8 @@ interface Municipality {
   architect: number | null;
   engineering: number | null;
   survey: number | null;
+  verified_date: string | null;
+  verified_by: string | null;
 }
 
 function Municipalities() {
@@ -113,6 +115,20 @@ function Municipalities() {
       cell: ({ row }) => (
         <span className="font-semibold text-foreground">{formatCurrency(computeTotal(row.original))}</span>
       ),
+    },
+    {
+      accessorKey: "verified_date",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Verified" />,
+      cell: ({ row }) => (
+        <span className="text-sm text-muted">
+          {row.getValue("verified_date") ? formatDate(row.getValue("verified_date")) : "—"}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "verified_by",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="By" />,
+      cell: ({ row }) => <span className="text-sm text-muted">{row.getValue("verified_by") ?? "—"}</span>,
     },
     {
       id: "actions",

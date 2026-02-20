@@ -16,12 +16,20 @@ interface FloorPlan {
   id: string;
   name: string;
   elevation: string | null;
+  plan_type: string | null;
   heated_sqft: number | null;
   total_sqft: number | null;
   bed_count: number | null;
   bath_count: number | null;
   stories: number | null;
   garage_bays: number | null;
+  garage_type: string | null;
+  width_ft: number | null;
+  depth_ft: number | null;
+  dm_budget_snb: number | null;
+  contract_snb: number | null;
+  contract_total: number | null;
+  cost_per_sf: number | null;
   base_construction_cost: number | null;
   base_sale_price: number | null;
   status: string;
@@ -93,11 +101,48 @@ function FloorPlansAdmin() {
       cell: ({ row }) => row.getValue("stories") ?? "—",
     },
     {
-      accessorKey: "garage_bays",
+      accessorKey: "plan_type",
+      header: "Type",
+      cell: ({ row }) => {
+        const val = row.getValue("plan_type") as string | null;
+        if (!val) return "—";
+        const color =
+          val === "SFH"
+            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+            : "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+        return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{val}</span>;
+      },
+    },
+    {
+      accessorKey: "garage_type",
       header: "Garage",
       cell: ({ row }) => {
-        const val = row.getValue("garage_bays") as number | null;
-        return val != null ? `${val}-car` : "—";
+        const val = row.getValue("garage_type") as string | null;
+        return val ?? "—";
+      },
+    },
+    {
+      accessorKey: "contract_snb",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Contract S&B" />,
+      cell: ({ row }) => {
+        const val = row.getValue("contract_snb") as number | null;
+        return val != null ? formatCurrency(val) : "—";
+      },
+    },
+    {
+      accessorKey: "dm_budget_snb",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="DM Budget S&B" />,
+      cell: ({ row }) => {
+        const val = row.getValue("dm_budget_snb") as number | null;
+        return val != null ? formatCurrency(val) : "—";
+      },
+    },
+    {
+      accessorKey: "cost_per_sf",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="$/SF" />,
+      cell: ({ row }) => {
+        const val = row.getValue("cost_per_sf") as number | null;
+        return val != null ? `$${Math.round(val).toLocaleString()}` : "—";
       },
     },
     {
@@ -139,8 +184,7 @@ function FloorPlansAdmin() {
           onClick={() => addPlan.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add Floor Plan
+          + Add Floor Plan
         </button>
       </div>
 
