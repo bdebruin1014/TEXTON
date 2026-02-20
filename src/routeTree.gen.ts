@@ -150,6 +150,7 @@ import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './rout
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
 import { Route as AuthenticatedOperationsRchContractsContractIdRouteRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/route'
+import { Route as AuthenticatedAdminDocumentsFolderTemplatesIndexRouteImport } from './routes/_authenticated/admin/documents/folder-templates/index'
 import { Route as AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/upgrades'
 import { Route as AuthenticatedOperationsRchContractsContractIdUnitsRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/units'
 import { Route as AuthenticatedOperationsRchContractsContractIdSterlingRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/sterling'
@@ -160,6 +161,7 @@ import { Route as AuthenticatedOperationsRchContractsContractIdFilesRouteImport 
 import { Route as AuthenticatedOperationsRchContractsContractIdCreateJobsRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/create-jobs'
 import { Route as AuthenticatedOperationsRchContractsContractIdContractPreviewRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/contract-preview'
 import { Route as AuthenticatedOperationsRchContractsContractIdBudgetRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/budget'
+import { Route as AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/documents/folder-templates/$templateId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -998,6 +1000,12 @@ const AuthenticatedOperationsRchContractsContractIdRouteRoute =
     path: '/operations/rch-contracts/$contractId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminDocumentsFolderTemplatesIndexRoute =
+  AuthenticatedAdminDocumentsFolderTemplatesIndexRouteImport.update({
+    id: '/folder-templates/',
+    path: '/folder-templates/',
+    getParentRoute: () => AuthenticatedAdminDocumentsRoute,
+  } as any)
 const AuthenticatedOperationsRchContractsContractIdUpgradesRoute =
   AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport.update({
     id: '/upgrades',
@@ -1070,6 +1078,12 @@ const AuthenticatedOperationsRchContractsContractIdBudgetRoute =
     getParentRoute: () =>
       AuthenticatedOperationsRchContractsContractIdRouteRoute,
   } as any)
+const AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute =
+  AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRouteImport.update({
+    id: '/folder-templates/$templateId',
+    path: '/folder-templates/$templateId',
+    getParentRoute: () => AuthenticatedAdminDocumentsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -1104,7 +1118,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
-  '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
@@ -1212,6 +1226,7 @@ export interface FileRoutesByFullPath {
   '/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/admin/documents/folder-templates/$templateId': typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute
   '/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
   '/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
   '/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
@@ -1222,6 +1237,7 @@ export interface FileRoutesByFullPath {
   '/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
   '/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
   '/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
+  '/admin/documents/folder-templates/': typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1241,7 +1257,7 @@ export interface FileRoutesByTo {
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
-  '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
@@ -1349,6 +1365,7 @@ export interface FileRoutesByTo {
   '/operations/rch-contracts': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/admin/documents/folder-templates/$templateId': typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute
   '/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
   '/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
   '/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
@@ -1359,6 +1376,7 @@ export interface FileRoutesByTo {
   '/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
   '/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
   '/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
+  '/admin/documents/folder-templates': typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1395,7 +1413,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/_authenticated/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/_authenticated/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
-  '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/_authenticated/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/_authenticated/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/_authenticated/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
@@ -1503,6 +1521,7 @@ export interface FileRoutesById {
   '/_authenticated/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/_authenticated/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/_authenticated/admin/documents/folder-templates/$templateId': typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute
   '/_authenticated/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
   '/_authenticated/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
   '/_authenticated/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
@@ -1513,6 +1532,7 @@ export interface FileRoutesById {
   '/_authenticated/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
   '/_authenticated/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
   '/_authenticated/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
+  '/_authenticated/admin/documents/folder-templates/': typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1657,6 +1677,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/'
     | '/pipeline/$opportunityId/'
     | '/projects/$projectId/'
+    | '/admin/documents/folder-templates/$templateId'
     | '/operations/rch-contracts/$contractId/budget'
     | '/operations/rch-contracts/$contractId/contract-preview'
     | '/operations/rch-contracts/$contractId/create-jobs'
@@ -1667,6 +1688,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId/sterling'
     | '/operations/rch-contracts/$contractId/units'
     | '/operations/rch-contracts/$contractId/upgrades'
+    | '/admin/documents/folder-templates/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1794,6 +1816,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts'
     | '/pipeline/$opportunityId'
     | '/projects/$projectId'
+    | '/admin/documents/folder-templates/$templateId'
     | '/operations/rch-contracts/$contractId/budget'
     | '/operations/rch-contracts/$contractId/contract-preview'
     | '/operations/rch-contracts/$contractId/create-jobs'
@@ -1804,6 +1827,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId/sterling'
     | '/operations/rch-contracts/$contractId/units'
     | '/operations/rch-contracts/$contractId/upgrades'
+    | '/admin/documents/folder-templates'
   id:
     | '__root__'
     | '/'
@@ -1947,6 +1971,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operations/rch-contracts/'
     | '/_authenticated/pipeline/$opportunityId/'
     | '/_authenticated/projects/$projectId/'
+    | '/_authenticated/admin/documents/folder-templates/$templateId'
     | '/_authenticated/operations/rch-contracts/$contractId/budget'
     | '/_authenticated/operations/rch-contracts/$contractId/contract-preview'
     | '/_authenticated/operations/rch-contracts/$contractId/create-jobs'
@@ -1957,6 +1982,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operations/rch-contracts/$contractId/sterling'
     | '/_authenticated/operations/rch-contracts/$contractId/units'
     | '/_authenticated/operations/rch-contracts/$contractId/upgrades'
+    | '/_authenticated/admin/documents/folder-templates/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2954,6 +2980,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/documents/folder-templates/': {
+      id: '/_authenticated/admin/documents/folder-templates/'
+      path: '/folder-templates'
+      fullPath: '/admin/documents/folder-templates/'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminDocumentsRoute
+    }
     '/_authenticated/operations/rch-contracts/$contractId/upgrades': {
       id: '/_authenticated/operations/rch-contracts/$contractId/upgrades'
       path: '/upgrades'
@@ -3024,6 +3057,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdBudgetRouteImport
       parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
     }
+    '/_authenticated/admin/documents/folder-templates/$templateId': {
+      id: '/_authenticated/admin/documents/folder-templates/$templateId'
+      path: '/folder-templates/$templateId'
+      fullPath: '/admin/documents/folder-templates/$templateId'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRouteImport
+      parentRoute: typeof AuthenticatedAdminDocumentsRoute
+    }
   }
 }
 
@@ -3092,11 +3132,29 @@ const AuthenticatedAccountingRouteRouteWithChildren =
     AuthenticatedAccountingRouteRouteChildren,
   )
 
+interface AuthenticatedAdminDocumentsRouteChildren {
+  AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute
+  AuthenticatedAdminDocumentsFolderTemplatesIndexRoute: typeof AuthenticatedAdminDocumentsFolderTemplatesIndexRoute
+}
+
+const AuthenticatedAdminDocumentsRouteChildren: AuthenticatedAdminDocumentsRouteChildren =
+  {
+    AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute:
+      AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute,
+    AuthenticatedAdminDocumentsFolderTemplatesIndexRoute:
+      AuthenticatedAdminDocumentsFolderTemplatesIndexRoute,
+  }
+
+const AuthenticatedAdminDocumentsRouteWithChildren =
+  AuthenticatedAdminDocumentsRoute._addFileChildren(
+    AuthenticatedAdminDocumentsRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAuditLogRoute: typeof AuthenticatedAdminAuditLogRoute
   AuthenticatedAdminBankAccountsRoute: typeof AuthenticatedAdminBankAccountsRoute
   AuthenticatedAdminCostCodesRoute: typeof AuthenticatedAdminCostCodesRoute
-  AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
+  AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRouteWithChildren
   AuthenticatedAdminEntitiesRoute: typeof AuthenticatedAdminEntitiesRoute
   AuthenticatedAdminEsignTemplatesRoute: typeof AuthenticatedAdminEsignTemplatesRoute
   AuthenticatedAdminFeeScheduleRoute: typeof AuthenticatedAdminFeeScheduleRoute
@@ -3113,7 +3171,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminAuditLogRoute: AuthenticatedAdminAuditLogRoute,
     AuthenticatedAdminBankAccountsRoute: AuthenticatedAdminBankAccountsRoute,
     AuthenticatedAdminCostCodesRoute: AuthenticatedAdminCostCodesRoute,
-    AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
+    AuthenticatedAdminDocumentsRoute:
+      AuthenticatedAdminDocumentsRouteWithChildren,
     AuthenticatedAdminEntitiesRoute: AuthenticatedAdminEntitiesRoute,
     AuthenticatedAdminEsignTemplatesRoute:
       AuthenticatedAdminEsignTemplatesRoute,
