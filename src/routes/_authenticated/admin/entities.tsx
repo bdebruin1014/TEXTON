@@ -38,7 +38,7 @@ function EntitiesAdmin() {
     mutationFn: async () => {
       const { error } = await supabase.from("entities").insert({
         name: "New Entity",
-        entity_type: "SPE",
+        entity_type: "spe",
         status: "Active",
       });
       if (error) throw error;
@@ -58,7 +58,7 @@ function EntitiesAdmin() {
       cell: ({ row }) => {
         const val = row.getValue("entity_type") as string | null;
         return val ? (
-          <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">{val}</span>
+          <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium uppercase text-primary">{val}</span>
         ) : (
           "—"
         );
@@ -94,7 +94,7 @@ function EntitiesAdmin() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Entities</h1>
-          <p className="mt-0.5 text-sm text-muted">{entities.length} entities (SPEs and parent companies)</p>
+          <p className="mt-0.5 text-sm text-muted">{entities.length} entities</p>
         </div>
         <button
           type="button"

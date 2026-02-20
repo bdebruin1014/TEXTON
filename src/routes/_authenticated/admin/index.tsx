@@ -14,6 +14,8 @@ const CARDS = [
   { label: "Cost Codes", description: "Standardized cost taxonomy", path: "/admin/cost-codes" },
   { label: "Documents", description: "Document template management", path: "/admin/documents" },
   { label: "Integrations", description: "Microsoft 365, DocuSeal, Bank Feeds", path: "/admin/integrations" },
+  { label: "Municipalities", description: "Jurisdiction fee schedules", path: "/admin/municipalities" },
+  { label: "E-Sign Templates", description: "DocuSeal template management", path: "/admin/esign-templates" },
   { label: "Audit Log", description: "System-wide audit trail", path: "/admin/audit-log" },
 ] as const;
 

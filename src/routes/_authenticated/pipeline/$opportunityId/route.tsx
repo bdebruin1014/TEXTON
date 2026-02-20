@@ -45,7 +45,7 @@ function OpportunityLayout() {
     {
       label: "Analysis",
       items: [
-        { label: "Deal Analyzer", path: `${basePath}/deal-analyzer` },
+        { label: "Deal Sheet", path: `${basePath}/deal-sheet` },
         { label: "Due Diligence", path: `${basePath}/due-diligence` },
         { label: "Underwriting", path: `${basePath}/underwriting` },
       ],

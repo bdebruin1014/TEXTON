@@ -5,22 +5,49 @@ import type { SaveStatus } from "@/hooks/useAutoSave";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
-interface FloorPlanSelectProps {
+export interface MunicipalityFees {
+  water_tap: number | null;
+  sewer_tap: number | null;
+  gas_tap: number | null;
+  permitting: number | null;
+  impact: number | null;
+  architect: number | null;
+  engineering: number | null;
+  survey: number | null;
+}
+
+interface MunicipalitySelectProps {
   label: string;
   value: string | null | undefined;
-  projectId: string;
   onSave: (value: string) => Promise<void>;
+  onFeesLoaded?: (fees: MunicipalityFees) => void;
   className?: string;
   disabled?: boolean;
 }
 
-interface FloorPlan {
+interface Municipality {
   id: string;
   name: string;
-  heated_sqft: number | null;
+  county: string | null;
+  state: string | null;
+  water_tap: number | null;
+  sewer_tap: number | null;
+  gas_tap: number | null;
+  permitting: number | null;
+  impact: number | null;
+  architect: number | null;
+  engineering: number | null;
+  survey: number | null;
 }
 
-export function FloorPlanSelect({ label, value, projectId, onSave, className, disabled }: FloorPlanSelectProps) {
+export function MunicipalitySelect({
+  label,
+  value,
+  onSave,
+  onFeesLoaded,
+  className,
+  disabled,
+}: MunicipalitySelectProps) {
   const [localValue, setLocalValue] = useState(value ?? "");
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -28,18 +55,16 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
     setLocalValue(value ?? "");
   }, [value]);
 
-  const { data: plans = [] } = useQuery<FloorPlan[]>({
-    queryKey: ["floor-plans-select", projectId],
+  const { data: municipalities = [] } = useQuery<Municipality[]>({
+    queryKey: ["municipalities-select"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("floor_plans")
-        .select("id, name, heated_sqft")
-        .eq("project_id", projectId)
+        .from("municipalities")
+        .select("id, name, county, state, water_tap, sewer_tap, gas_tap, permitting, impact, architect, engineering, survey")
         .order("name");
       if (error) throw error;
       return data ?? [];
     },
-    enabled: !!projectId,
   });
 
   const handleChange = async (newValue: string) => {
@@ -50,6 +75,22 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
       await onSave(newValue);
       setStatus("saved");
       setTimeout(() => setStatus("idle"), 2000);
+
+      if (onFeesLoaded && newValue) {
+        const selected = municipalities.find((m) => m.id === newValue);
+        if (selected) {
+          onFeesLoaded({
+            water_tap: selected.water_tap,
+            sewer_tap: selected.sewer_tap,
+            gas_tap: selected.gas_tap,
+            permitting: selected.permitting,
+            impact: selected.impact,
+            architect: selected.architect,
+            engineering: selected.engineering,
+            survey: selected.survey,
+          });
+        }
+      }
     } catch {
       setStatus("error");
     }
@@ -64,7 +105,7 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
       <select
         value={localValue}
         onChange={(e) => handleChange(e.target.value)}
-        disabled={disabled || !projectId}
+        disabled={disabled}
         className={cn(
           "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors",
           "focus:border-primary focus:ring-1 focus:ring-primary",
@@ -72,11 +113,11 @@ export function FloorPlanSelect({ label, value, projectId, onSave, className, di
           className,
         )}
       >
-        <option value="">Select floor plan...</option>
-        {plans.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-            {p.heated_sqft ? ` (${p.heated_sqft.toLocaleString()} sf)` : ""}
+        <option value="">Select municipality...</option>
+        {municipalities.map((m) => (
+          <option key={m.id} value={m.id}>
+            {m.name}
+            {m.county ? ` (${m.county})` : ""}
           </option>
         ))}
       </select>

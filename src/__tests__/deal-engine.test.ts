@@ -1,146 +1,129 @@
 import { describe, expect, it } from "vitest";
-import { calculateDeal, type DealInputs } from "@/lib/deal-engine";
+import { calculateDealSheet, type DealSheetInputs } from "@/lib/deal-engine";
 
-const BASE_INPUTS: DealInputs = {
-  purchase_price: 80000,
-  site_work: 15000,
-  base_build_cost: 180000,
-  upgrade_package: 25000,
-  asp: 450000,
-  concessions: 5000,
-  duration_months: 8,
-  interest_rate: 0.1,
-  ltc_ratio: 0.75,
+const BASE_INPUTS: DealSheetInputs = {
+  lot_purchase_price: 80_000,
+  closing_costs: 3_000,
+  acquisition_commission: 0,
+  acquisition_bonus: 0,
+  other_lot_costs: 0,
+  sticks_bricks: 180_000,
+  upgrades: 25_000,
+  soft_costs: 10_000,
+  land_prep: 5_000,
+  site_specific: 0,
+  site_work_total: 15_000,
+  other_site_costs: 0,
+  is_rch_related_owner: true,
+  asset_sales_price: 450_000,
+  selling_cost_rate: 0.085,
+  selling_concessions: 5_000,
+  ltc_ratio: 0.85,
+  interest_rate: 0.10,
+  cost_of_capital: 0.16,
+  project_duration_days: 120,
 };
 
-describe("calculateDeal", () => {
-  it("calculates cost breakdown correctly", () => {
-    const result = calculateDeal(BASE_INPUTS);
+describe("calculateDealSheet", () => {
+  it("calculates lot basis correctly", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // 80000 + 3000 + 0 + 0 + 0
+    expect(result.total_lot_basis).toBe(83_000);
+  });
 
-    expect(result.land_cost).toBe(80000);
-    expect(result.hard_costs).toBe(220000); // 15000 + 180000 + 25000
-    // Default fees: 15000+5000+1500+3000+3500+1400+10000 = 39400
-    expect(result.fixed_costs).toBe(39400);
-    expect(result.total_project_cost).toBe(339400);
+  it("calculates contract sections correctly", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // sections 1-5: 180000 + 25000 + 10000 + 5000 + 0 = 220000
+    expect(result.sections_1_to_5).toBe(220_000);
+    // builder fee: max(25000, 220000*0.10) = max(25000, 22000) = 25000
+    expect(result.builder_fee).toBe(25_000);
+    // contingency: max(10000, 220000*0.05) = max(10000, 11000) = 11000
+    expect(result.contingency).toBe(11_000);
+    // total contract: 220000 + 25000 + 11000 = 256000
+    expect(result.total_contract_cost).toBe(256_000);
+  });
+
+  it("calculates fixed per-house fees for RCH-related", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // 15000+5000+5000+1500+3000+1500+3000+1400 = 35400
+    expect(result.total_fixed_per_house).toBe(35_400);
+  });
+
+  it("excludes AM fee for non-RCH-related", () => {
+    const result = calculateDealSheet({ ...BASE_INPUTS, is_rch_related_owner: false });
+    // 35400 - 5000 = 30400
+    expect(result.total_fixed_per_house).toBe(30_400);
+  });
+
+  it("calculates total project cost correctly", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // lot_basis(83000) + contract(256000) + fixed(35400) + site_work(15000) + other_site(0) = 389400
+    expect(result.total_project_cost).toBe(389_400);
   });
 
   it("calculates financing correctly", () => {
-    const result = calculateDeal(BASE_INPUTS);
-
-    expect(result.loan_amount).toBe(254550); // 339400 * 0.75
-    expect(result.equity_required).toBe(84850); // 339400 * 0.25
-    // interest: 254550 * 0.10 * (8/12)
-    expect(result.interest_expense).toBeCloseTo(16970, 0);
+    const result = calculateDealSheet(BASE_INPUTS);
+    // loan: 389400 * 0.85 = 330990
+    expect(result.loan_amount).toBeCloseTo(330_990, 0);
+    // equity: 389400 - 330990 = 58410
+    expect(result.equity_required).toBeCloseTo(58_410, 0);
+    // interest: 330990 * 0.10 * (120/365) = 10881.86
+    expect(result.interest_cost).toBeCloseTo(10_881.86, 0);
+    // cost of capital: 58410 * 0.16 * (120/365)
+    expect(result.cost_of_capital_amount).toBeCloseTo(3_072.26, 0);
   });
 
-  it("calculates revenue and profit correctly", () => {
-    const result = calculateDeal(BASE_INPUTS);
-
-    expect(result.gross_revenue).toBe(450000);
-    expect(result.net_revenue).toBe(445000); // 450000 - 5000
-    expect(result.gross_profit).toBe(105600); // 445000 - 339400
-    expect(result.net_profit).toBeCloseTo(88630, 0); // 105600 - 16970
+  it("calculates sales and net profit correctly", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // selling costs: 450000 * 0.085 = 38250
+    expect(result.selling_costs).toBeCloseTo(38_250, 0);
+    // net proceeds: 450000 - 38250 - 5000 = 406750
+    expect(result.net_proceeds).toBeCloseTo(406_750, 0);
+    // net profit: 406750 - (389400 + interest + coc)
+    expect(result.net_profit).toBeCloseTo(3_395.61, 0);
   });
 
   it("calculates margins correctly", () => {
-    const result = calculateDeal(BASE_INPUTS);
-
-    expect(result.gross_margin).toBeCloseTo(105600 / 450000, 4);
-    expect(result.net_margin).toBeCloseTo(88630 / 450000, 3);
+    const result = calculateDealSheet(BASE_INPUTS);
+    expect(result.net_profit_margin).toBeCloseTo(0.00754, 2);
+    // land_cost_ratio: (83000 + 15000 + 0) / 450000
+    expect(result.land_cost_ratio).toBeCloseTo(0.2178, 3);
   });
 
-  it("calculates ROI and annualized ROI", () => {
-    const result = calculateDeal(BASE_INPUTS);
-
-    // ROI = net_profit / equity_required = 88630 / 84850
-    expect(result.roi).toBeCloseTo(1.0445, 3);
-    // Annualized ROI = ROI * (12/8) = 1.0445 * 1.5
-    expect(result.annualized_roi).toBeCloseTo(1.5668, 3);
-    // >25% => Strong Buy
-    expect(result.annualized_roi).toBeGreaterThan(0.25);
+  it("returns correct verdicts", () => {
+    const result = calculateDealSheet(BASE_INPUTS);
+    // <5% margin = NO GO, 20-25% land = ACCEPTABLE
+    expect(result.profit_verdict).toBe("NO GO");
+    expect(result.land_verdict).toBe("ACCEPTABLE");
   });
 
-  it("returns Strong Buy for high annualized ROI (>=25%)", () => {
-    const result = calculateDeal(BASE_INPUTS);
-
-    expect(result.verdict).toBe("Strong Buy");
-    expect(result.verdict_color).toBe("#4A7A5B");
-  });
-
-  it("returns Pass for negative/low ROI deal", () => {
-    const result = calculateDeal({
+  it("returns STRONG profit verdict for high-margin deal", () => {
+    const result = calculateDealSheet({
       ...BASE_INPUTS,
-      asp: 340000, // barely covers costs
+      asset_sales_price: 600_000,
     });
-
-    expect(result.verdict).toBe("Pass");
-    expect(result.verdict_color).toBe("#B84040");
-  });
-
-  it("returns correct verdict for varying ROI levels", () => {
-    // With lower ASP, check verdict maps correctly
-    const result = calculateDeal({
-      ...BASE_INPUTS,
-      asp: 400000,
-      duration_months: 12,
-    });
-
-    // All verdicts should be one of the valid values
-    expect(["Strong Buy", "Buy", "Hold", "Pass"]).toContain(result.verdict);
-    // Verify verdict_color is always set
-    expect(result.verdict_color).toBeTruthy();
-  });
-
-  it("handles 100% LTC (zero equity)", () => {
-    const result = calculateDeal({
-      ...BASE_INPUTS,
-      ltc_ratio: 1.0,
-    });
-
-    expect(result.equity_required).toBe(0);
-    expect(result.roi).toBe(0);
-    expect(result.annualized_roi).toBe(0);
-  });
-
-  it("handles zero duration", () => {
-    const result = calculateDeal({
-      ...BASE_INPUTS,
-      duration_months: 0,
-    });
-
-    expect(result.interest_expense).toBe(0);
-    expect(result.annualized_roi).toBe(0);
+    expect(result.profit_verdict).toBe("STRONG");
   });
 
   it("handles zero sales price", () => {
-    const result = calculateDeal({
+    const result = calculateDealSheet({
       ...BASE_INPUTS,
-      asp: 0,
+      asset_sales_price: 0,
     });
-
-    expect(result.gross_revenue).toBe(0);
-    expect(result.gross_margin).toBe(0);
-    expect(result.net_margin).toBe(0);
-    expect(result.verdict).toBe("Pass");
+    expect(result.net_profit_margin).toBe(0);
+    expect(result.land_cost_ratio).toBe(0);
+    expect(result.profit_verdict).toBe("NO GO");
   });
 
-  it("applies custom fee overrides", () => {
-    const result = calculateDeal(BASE_INPUTS, {
-      builder_fee: 20000, // override from default 15000
+  it("uses builder fee formula correctly for large builds", () => {
+    const result = calculateDealSheet({
+      ...BASE_INPUTS,
+      sticks_bricks: 300_000,
     });
-
-    // New fixed costs: 20000+5000+1500+3000+3500+1400+10000 = 44400
-    expect(result.fixed_costs).toBe(44400);
-    expect(result.total_project_cost).toBe(344400);
-  });
-
-  it("applies partial fee overrides, keeping defaults for others", () => {
-    const result = calculateDeal(BASE_INPUTS, {
-      warranty: 0,
-      contingency: 0,
-    });
-
-    // Fixed costs: 15000+0+1500+3000+3500+1400+0 = 24400
-    expect(result.fixed_costs).toBe(24400);
+    // sections 1-5: 300000+25000+10000+5000+0 = 340000
+    // builder fee: max(25000, 340000*0.10) = 34000
+    expect(result.builder_fee).toBe(34_000);
+    // contingency: max(10000, 340000*0.05) = 17000
+    expect(result.contingency).toBe(17_000);
   });
 });

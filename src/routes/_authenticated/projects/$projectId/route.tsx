@@ -45,11 +45,13 @@ function ProjectLayout() {
         { label: "Horizontal", path: `${basePath}/horizontal` },
         { label: "Lot Inventory", path: `${basePath}/lot-inventory` },
         { label: "Plans & Pricing", path: `${basePath}/plans-pricing` },
+        { label: "Plan Catalog", path: `${basePath}/plan-catalog` },
       ],
     },
     {
       label: "Financial",
       items: [
+        { label: "Deal Sheet", path: `${basePath}/deal-sheet` },
         { label: "Budget & Financials", path: `${basePath}/budget` },
         { label: "Draw Management", path: `${basePath}/draws` },
         { label: "Loan Tracking", path: `${basePath}/loans` },

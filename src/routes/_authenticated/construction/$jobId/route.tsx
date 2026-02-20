@@ -55,6 +55,7 @@ function JobLayout() {
     {
       label: "Closeout",
       items: [
+        { label: "Handoff", path: `${basePath}/handoff` },
         { label: "Punch List", path: `${basePath}/punch-list` },
         { label: "Warranty", path: `${basePath}/warranty` },
         { label: "Files", path: `${basePath}/files` },

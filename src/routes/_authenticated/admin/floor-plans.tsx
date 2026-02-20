@@ -16,12 +16,14 @@ interface FloorPlan {
   id: string;
   name: string;
   elevation: string | null;
-  sqft: number | null;
-  beds: number | null;
-  baths: number | null;
+  heated_sqft: number | null;
+  total_sqft: number | null;
+  bed_count: number | null;
+  bath_count: number | null;
   stories: number | null;
-  garage: string | null;
-  base_cost: number | null;
+  garage_bays: number | null;
+  base_construction_cost: number | null;
+  base_sale_price: number | null;
   status: string;
 }
 
@@ -60,22 +62,30 @@ function FloorPlansAdmin() {
       cell: ({ row }) => <span className="text-sm text-muted">{row.getValue("elevation") ?? "—"}</span>,
     },
     {
-      accessorKey: "sqft",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Sq Ft" />,
+      accessorKey: "heated_sqft",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Heated SF" />,
       cell: ({ row }) => {
-        const val = row.getValue("sqft") as number | null;
+        const val = row.getValue("heated_sqft") as number | null;
         return val ? val.toLocaleString() : "—";
       },
     },
     {
-      accessorKey: "beds",
-      header: "Beds",
-      cell: ({ row }) => row.getValue("beds") ?? "—",
+      accessorKey: "total_sqft",
+      header: "Total SF",
+      cell: ({ row }) => {
+        const val = row.getValue("total_sqft") as number | null;
+        return val ? val.toLocaleString() : "—";
+      },
     },
     {
-      accessorKey: "baths",
+      accessorKey: "bed_count",
+      header: "Beds",
+      cell: ({ row }) => row.getValue("bed_count") ?? "—",
+    },
+    {
+      accessorKey: "bath_count",
       header: "Baths",
-      cell: ({ row }) => row.getValue("baths") ?? "—",
+      cell: ({ row }) => row.getValue("bath_count") ?? "—",
     },
     {
       accessorKey: "stories",
@@ -83,15 +93,26 @@ function FloorPlansAdmin() {
       cell: ({ row }) => row.getValue("stories") ?? "—",
     },
     {
-      accessorKey: "garage",
+      accessorKey: "garage_bays",
       header: "Garage",
-      cell: ({ row }) => <span className="text-sm text-muted">{row.getValue("garage") ?? "—"}</span>,
+      cell: ({ row }) => {
+        const val = row.getValue("garage_bays") as number | null;
+        return val != null ? `${val}-car` : "—";
+      },
     },
     {
-      accessorKey: "base_cost",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Base Cost" />,
+      accessorKey: "base_construction_cost",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Build Cost" />,
       cell: ({ row }) => {
-        const val = row.getValue("base_cost") as number | null;
+        const val = row.getValue("base_construction_cost") as number | null;
+        return val != null ? <span className="font-medium">{formatCurrency(val)}</span> : "—";
+      },
+    },
+    {
+      accessorKey: "base_sale_price",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Base Price" />,
+      cell: ({ row }) => {
+        const val = row.getValue("base_sale_price") as number | null;
         return val != null ? <span className="font-medium">{formatCurrency(val)}</span> : "—";
       },
     },

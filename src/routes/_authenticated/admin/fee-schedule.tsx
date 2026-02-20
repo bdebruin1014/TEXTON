@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { computeBuilderFee, computeContingency, FIXED_PER_HOUSE_FEES, totalFixedPerHouse } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
+import { formatCurrency } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/fee-schedule")({
   component: FeeSchedule,
@@ -11,18 +13,25 @@ export const Route = createFileRoute("/_authenticated/admin/fee-schedule")({
 interface FeeDefaults {
   id: string;
   builder_fee: number | null;
-  warranty: number | null;
+  am_fee: number | null;
+  builder_warranty: number | null;
   builders_risk: number | null;
-  po_fee: number | null;
+  purchaser_fee: number | null;
+  accounting_fee: number | null;
   pm_fee: number | null;
-  utility: number | null;
-  contingency_cap: number | null;
-  permit_fee: number | null;
-  impact_fee: number | null;
-  survey: number | null;
-  architecture: number | null;
-  closing_costs: number | null;
+  utilities: number | null;
 }
+
+const FEE_LABELS: Record<keyof typeof FIXED_PER_HOUSE_FEES, string> = {
+  builder_fee: "Builder Fee",
+  am_fee: "Asset Management Fee",
+  builder_warranty: "Builder Warranty Reserve",
+  builders_risk: "Builder's Risk Insurance",
+  purchaser_fee: "Purchaser Fee",
+  accounting_fee: "Accounting Fee",
+  pm_fee: "Project Management Fee",
+  utilities: "Utilities During Construction",
+};
 
 function FeeSchedule() {
   const queryClient = useQueryClient();
@@ -61,40 +70,114 @@ function FeeSchedule() {
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-foreground">Fee Schedule</h1>
-        <p className="mt-0.5 text-sm text-muted">Organization default fixed per-house costs (auto-saves)</p>
+        <p className="mt-0.5 text-sm text-muted">
+          Fixed per-house fees (8 standard line items), builder fee formula, and contingency formula
+        </p>
       </div>
 
-      {/* Core Fees */}
+      {/* Reference Card: Fixed Per-House Fees */}
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Core Builder Fees</h2>
-        <div className="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
-          <CurrencyInput label="Builder Fee" value={fees?.builder_fee ?? 15000} onSave={save("builder_fee")} />
-          <CurrencyInput label="Warranty Reserve" value={fees?.warranty ?? 5000} onSave={save("warranty")} />
-          <CurrencyInput
-            label="Builder's Risk Insurance"
-            value={fees?.builders_risk ?? 1500}
-            onSave={save("builders_risk")}
-          />
-          <CurrencyInput label="PO Fee" value={fees?.po_fee ?? 3000} onSave={save("po_fee")} />
-          <CurrencyInput label="PM Fee" value={fees?.pm_fee ?? 3500} onSave={save("pm_fee")} />
-          <CurrencyInput label="Utility Hookup" value={fees?.utility ?? 1400} onSave={save("utility")} />
-          <CurrencyInput
-            label="Contingency Cap"
-            value={fees?.contingency_cap ?? 10000}
-            onSave={save("contingency_cap")}
-          />
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">
+          Fixed Per-House Fees (Reference)
+        </h2>
+        <div className="space-y-2">
+          {(Object.entries(FIXED_PER_HOUSE_FEES) as [keyof typeof FIXED_PER_HOUSE_FEES, number][]).map(
+            ([key, amount]) => (
+              <div key={key} className="flex items-center justify-between rounded-md bg-gray-50 px-4 py-2">
+                <span className="text-sm font-medium text-foreground">{FEE_LABELS[key]}</span>
+                <span className="font-mono text-sm font-semibold text-foreground">{formatCurrency(amount)}</span>
+              </div>
+            ),
+          )}
+        </div>
+
+        {/* Totals */}
+        <div className="mt-4 border-t border-border pt-4">
+          <div className="flex items-center justify-between px-4 py-1">
+            <span className="text-sm font-semibold text-foreground">Total (RCH-related entity)</span>
+            <span className="font-mono text-sm font-bold text-primary">{formatCurrency(totalFixedPerHouse(true))}</span>
+          </div>
+          <div className="flex items-center justify-between px-4 py-1">
+            <span className="text-sm font-semibold text-foreground">Total (Third-party, no AM fee)</span>
+            <span className="font-mono text-sm font-bold text-primary">
+              {formatCurrency(totalFixedPerHouse(false))}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Additional Fees */}
+      {/* Builder Fee & Contingency Formulas */}
+      <div className="mb-8 rounded-lg border border-border bg-card p-6">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Computed Fee Formulas</h2>
+        <div className="space-y-3">
+          <div className="rounded-md border border-blue-200 bg-blue-50 px-4 py-3">
+            <p className="text-sm font-semibold text-blue-900">Section 6 — Builder Fee</p>
+            <p className="mt-1 text-sm text-blue-800">
+              GREATER of <span className="font-mono font-bold">{formatCurrency(25_000)}</span> or{" "}
+              <span className="font-mono font-bold">10%</span> of Sections 1-5
+            </p>
+            <p className="mt-1 text-xs text-blue-600">
+              Example: If Sections 1-5 = $300,000 → Builder Fee = {formatCurrency(computeBuilderFee(300_000))}
+            </p>
+          </div>
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3">
+            <p className="text-sm font-semibold text-amber-900">Section 7 — Contingency</p>
+            <p className="mt-1 text-sm text-amber-800">
+              GREATER of <span className="font-mono font-bold">{formatCurrency(10_000)}</span> or{" "}
+              <span className="font-mono font-bold">5%</span> of Sections 1-5
+            </p>
+            <p className="mt-1 text-xs text-amber-600">
+              Example: If Sections 1-5 = $300,000 → Contingency = {formatCurrency(computeContingency(300_000))}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Organization-Level Overrides */}
       <div className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Additional Fees</h2>
+        <h2 className="mb-1 text-sm font-semibold uppercase tracking-wider text-muted">Organization-Level Overrides</h2>
+        <p className="mb-4 text-xs text-muted">Override default amounts for your organization. Changes auto-save.</p>
         <div className="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
-          <CurrencyInput label="Permit Fee" value={fees?.permit_fee ?? 0} onSave={save("permit_fee")} />
-          <CurrencyInput label="Impact Fee" value={fees?.impact_fee ?? 0} onSave={save("impact_fee")} />
-          <CurrencyInput label="Survey" value={fees?.survey ?? 0} onSave={save("survey")} />
-          <CurrencyInput label="Architecture" value={fees?.architecture ?? 0} onSave={save("architecture")} />
-          <CurrencyInput label="Closing Costs" value={fees?.closing_costs ?? 0} onSave={save("closing_costs")} />
+          <CurrencyInput
+            label="Builder Fee"
+            value={fees?.builder_fee ?? FIXED_PER_HOUSE_FEES.builder_fee}
+            onSave={save("builder_fee")}
+          />
+          <CurrencyInput
+            label="Asset Management Fee"
+            value={fees?.am_fee ?? FIXED_PER_HOUSE_FEES.am_fee}
+            onSave={save("am_fee")}
+          />
+          <CurrencyInput
+            label="Builder Warranty Reserve"
+            value={fees?.builder_warranty ?? FIXED_PER_HOUSE_FEES.builder_warranty}
+            onSave={save("builder_warranty")}
+          />
+          <CurrencyInput
+            label="Builder's Risk Insurance"
+            value={fees?.builders_risk ?? FIXED_PER_HOUSE_FEES.builders_risk}
+            onSave={save("builders_risk")}
+          />
+          <CurrencyInput
+            label="Purchaser Fee"
+            value={fees?.purchaser_fee ?? FIXED_PER_HOUSE_FEES.purchaser_fee}
+            onSave={save("purchaser_fee")}
+          />
+          <CurrencyInput
+            label="Accounting Fee"
+            value={fees?.accounting_fee ?? FIXED_PER_HOUSE_FEES.accounting_fee}
+            onSave={save("accounting_fee")}
+          />
+          <CurrencyInput
+            label="Project Management Fee"
+            value={fees?.pm_fee ?? FIXED_PER_HOUSE_FEES.pm_fee}
+            onSave={save("pm_fee")}
+          />
+          <CurrencyInput
+            label="Utilities During Construction"
+            value={fees?.utilities ?? FIXED_PER_HOUSE_FEES.utilities}
+            onSave={save("utilities")}
+          />
         </div>
       </div>
     </div>

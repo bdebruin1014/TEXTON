@@ -5,13 +5,13 @@ import { useCallback, useMemo, useState } from "react";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
-import { FEE_DEFAULTS } from "@/lib/constants";
-import { calculateDeal, type DealInputs } from "@/lib/deal-engine";
+import { FIXED_PER_HOUSE_FEES } from "@/lib/constants";
+import { calculateDealSheet, type DealSheetInputs } from "@/lib/deal-engine";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
-export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId/deal-analyzer")({
-  component: DealAnalyzer,
+export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId/deal-sheet")({
+  component: DealSheet,
 });
 
 interface DealAnalysis {
@@ -31,7 +31,7 @@ interface DealAnalysis {
   created_at: string;
 }
 
-function DealAnalyzer() {
+function DealSheet() {
   const { opportunityId } = Route.useParams();
   const queryClient = useQueryClient();
   const [selectedVersion, setSelectedVersion] = useState<string | null>(null);
@@ -101,25 +101,32 @@ function DealAnalyzer() {
 
   const dealOutputs = useMemo(() => {
     if (!activeAnalysis) return null;
-    const inputs: DealInputs = {
-      purchase_price: activeAnalysis.purchase_price ?? 0,
-      site_work: activeAnalysis.site_work ?? 0,
-      base_build_cost: activeAnalysis.base_build_cost ?? 0,
-      upgrade_package: activeAnalysis.upgrade_package ?? 0,
-      asp: activeAnalysis.asp ?? 0,
-      concessions: activeAnalysis.concessions ?? 0,
-      duration_months: activeAnalysis.duration_months ?? 8,
-      interest_rate: activeAnalysis.interest_rate ?? 0.1,
-      ltc_ratio: activeAnalysis.ltc_ratio ?? 0.75,
+    const inputs: DealSheetInputs = {
+      lot_purchase_price: activeAnalysis.purchase_price ?? 0,
+      closing_costs: 0,
+      sticks_bricks: activeAnalysis.base_build_cost ?? 0,
+      upgrades: activeAnalysis.upgrade_package ?? 0,
+      soft_costs: 0,
+      land_prep: 0,
+      site_specific: 0,
+      site_work_total: activeAnalysis.site_work ?? 0,
+      is_rch_related_owner: true,
+      asset_sales_price: activeAnalysis.asp ?? 0,
+      selling_cost_rate: 0.085,
+      selling_concessions: activeAnalysis.concessions ?? 0,
+      ltc_ratio: activeAnalysis.ltc_ratio ?? 0.85,
+      interest_rate: activeAnalysis.interest_rate ?? 0.10,
+      cost_of_capital: 0.16,
+      project_duration_days: (activeAnalysis.duration_months ?? 4) * 30,
     };
-    return calculateDeal(inputs);
+    return calculateDealSheet(inputs);
   }, [activeAnalysis]);
 
   if (!activeAnalysis) {
     return (
       <div>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Deal Analyzer</h2>
+          <h2 className="text-lg font-semibold text-foreground">Deal Sheet</h2>
           <button
             type="button"
             onClick={() => createAnalysis.mutate()}
@@ -140,7 +147,7 @@ function DealAnalyzer() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold text-foreground">Deal Analyzer</h2>
+          <h2 className="text-lg font-semibold text-foreground">Deal Sheet</h2>
           {analyses.length > 1 && (
             <select
               value={activeAnalysis.id}
@@ -214,10 +221,10 @@ function DealAnalyzer() {
           {/* Fixed Costs */}
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">
-              Fixed Costs (Org Defaults)
+              Fixed Per-House Fees
             </h3>
             <div className="space-y-2">
-              {Object.entries(FEE_DEFAULTS).map(([key, val]) => (
+              {Object.entries(FIXED_PER_HOUSE_FEES).map(([key, val]) => (
                 <div key={key} className="flex items-center justify-between py-1">
                   <span className="text-sm text-muted">
                     {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -232,24 +239,22 @@ function DealAnalyzer() {
         {/* Outputs Column */}
         {dealOutputs && (
           <div className="space-y-6">
-            {/* Verdict */}
-            <div className="rounded-lg border-2 bg-card p-6" style={{ borderColor: dealOutputs.verdict_color }}>
-              <div className="text-center">
-                <p className="text-sm font-semibold uppercase tracking-wider text-muted">Verdict</p>
-                <p className="mt-1 text-3xl font-bold" style={{ color: dealOutputs.verdict_color }}>
-                  {dealOutputs.verdict}
-                </p>
-                <p className="mt-1 text-sm text-muted">Annualized ROI: {formatPercent(dealOutputs.annualized_roi)}</p>
-              </div>
+            {/* Verdicts */}
+            <div className="grid grid-cols-2 gap-4">
+              <VerdictCard label="Net Profit Margin" value={formatPercent(dealOutputs.net_profit_margin)} verdict={dealOutputs.profit_verdict} />
+              <VerdictCard label="Land Cost Ratio" value={formatPercent(dealOutputs.land_cost_ratio)} verdict={dealOutputs.land_verdict} />
             </div>
 
             {/* Cost Summary */}
             <div className="rounded-lg border border-border bg-card p-6">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Cost Summary</h3>
               <div className="space-y-2">
-                <OutputRow label="Land Cost" value={formatCurrency(dealOutputs.land_cost)} />
-                <OutputRow label="Hard Costs" value={formatCurrency(dealOutputs.hard_costs)} />
-                <OutputRow label="Fixed Costs" value={formatCurrency(dealOutputs.fixed_costs)} />
+                <OutputRow label="Total Lot Basis" value={formatCurrency(dealOutputs.total_lot_basis)} />
+                <OutputRow label="Sections 1-5" value={formatCurrency(dealOutputs.sections_1_to_5)} />
+                <OutputRow label="Builder Fee (S6)" value={formatCurrency(dealOutputs.builder_fee)} />
+                <OutputRow label="Contingency (S7)" value={formatCurrency(dealOutputs.contingency)} />
+                <OutputRow label="Total Contract Cost" value={formatCurrency(dealOutputs.total_contract_cost)} />
+                <OutputRow label="Fixed Per-House" value={formatCurrency(dealOutputs.total_fixed_per_house)} />
                 <div className="border-t border-border pt-2">
                   <OutputRow label="Total Project Cost" value={formatCurrency(dealOutputs.total_project_cost)} bold />
                 </div>
@@ -262,7 +267,11 @@ function DealAnalyzer() {
               <div className="space-y-2">
                 <OutputRow label="Loan Amount" value={formatCurrency(dealOutputs.loan_amount)} />
                 <OutputRow label="Equity Required" value={formatCurrency(dealOutputs.equity_required)} />
-                <OutputRow label="Interest Expense" value={formatCurrency(dealOutputs.interest_expense)} />
+                <OutputRow label="Interest Cost" value={formatCurrency(dealOutputs.interest_cost)} />
+                <OutputRow label="Cost of Capital" value={formatCurrency(dealOutputs.cost_of_capital_amount)} />
+                <div className="border-t border-border pt-2">
+                  <OutputRow label="Total All-In" value={formatCurrency(dealOutputs.total_all_in)} bold />
+                </div>
               </div>
             </div>
 
@@ -270,15 +279,12 @@ function DealAnalyzer() {
             <div className="rounded-lg border border-border bg-card p-6">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Returns</h3>
               <div className="space-y-2">
-                <OutputRow label="Gross Revenue" value={formatCurrency(dealOutputs.gross_revenue)} />
-                <OutputRow label="Net Revenue" value={formatCurrency(dealOutputs.net_revenue)} />
-                <OutputRow label="Gross Profit" value={formatCurrency(dealOutputs.gross_profit)} />
-                <OutputRow label="Net Profit" value={formatCurrency(dealOutputs.net_profit)} bold />
+                <OutputRow label="Selling Costs" value={formatCurrency(dealOutputs.selling_costs)} />
+                <OutputRow label="Net Proceeds" value={formatCurrency(dealOutputs.net_proceeds)} />
                 <div className="border-t border-border pt-2">
-                  <OutputRow label="Gross Margin" value={formatPercent(dealOutputs.gross_margin)} />
-                  <OutputRow label="Net Margin" value={formatPercent(dealOutputs.net_margin)} />
-                  <OutputRow label="ROI (on Equity)" value={formatPercent(dealOutputs.roi)} />
-                  <OutputRow label="Annualized ROI" value={formatPercent(dealOutputs.annualized_roi)} bold />
+                  <OutputRow label="Net Profit" value={formatCurrency(dealOutputs.net_profit)} bold />
+                  <OutputRow label="Net Profit Margin" value={formatPercent(dealOutputs.net_profit_margin)} />
+                  <OutputRow label="Land Cost Ratio" value={formatPercent(dealOutputs.land_cost_ratio)} />
                 </div>
               </div>
             </div>
@@ -294,6 +300,27 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
     <div className="flex items-center justify-between py-0.5">
       <span className="text-sm text-muted">{label}</span>
       <span className={`text-sm ${bold ? "font-semibold text-foreground" : "text-foreground"}`}>{value}</span>
+    </div>
+  );
+}
+
+const VERDICT_COLORS: Record<string, string> = {
+  STRONG: "#4A7A5B",
+  GOOD: "#48BB78",
+  ACCEPTABLE: "#48BB78",
+  MARGINAL: "#C4841D",
+  CAUTION: "#C4841D",
+  "NO GO": "#B84040",
+  OVERPAYING: "#B84040",
+};
+
+function VerdictCard({ label, value, verdict }: { label: string; value: string; verdict: string }) {
+  const color = VERDICT_COLORS[verdict] ?? "#6B7280";
+  return (
+    <div className="rounded-lg border-2 bg-card p-4 text-center" style={{ borderColor: color }}>
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</p>
+      <p className="mt-1 text-xl font-bold" style={{ color }}>{verdict}</p>
+      <p className="mt-0.5 text-sm text-muted">{value}</p>
     </div>
   );
 }

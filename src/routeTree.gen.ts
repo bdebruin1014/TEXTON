@@ -52,9 +52,11 @@ import { Route as AuthenticatedContactsCustomersRouteImport } from './routes/_au
 import { Route as AuthenticatedContactsCompanyIdRouteImport } from './routes/_authenticated/contacts/$companyId'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminPermissionsRouteImport } from './routes/_authenticated/admin/permissions'
+import { Route as AuthenticatedAdminMunicipalitiesRouteImport } from './routes/_authenticated/admin/municipalities'
 import { Route as AuthenticatedAdminIntegrationsRouteImport } from './routes/_authenticated/admin/integrations'
 import { Route as AuthenticatedAdminFloorPlansRouteImport } from './routes/_authenticated/admin/floor-plans'
 import { Route as AuthenticatedAdminFeeScheduleRouteImport } from './routes/_authenticated/admin/fee-schedule'
+import { Route as AuthenticatedAdminEsignTemplatesRouteImport } from './routes/_authenticated/admin/esign-templates'
 import { Route as AuthenticatedAdminEntitiesRouteImport } from './routes/_authenticated/admin/entities'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin/documents'
 import { Route as AuthenticatedAdminCostCodesRouteImport } from './routes/_authenticated/admin/cost-codes'
@@ -78,12 +80,16 @@ import { Route as AuthenticatedConstructionJobIdRouteRouteImport } from './route
 import { Route as AuthenticatedAccountingReconciliationsRouteRouteImport } from './routes/_authenticated/accounting/reconciliations/route'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects/$projectId/index'
 import { Route as AuthenticatedPipelineOpportunityIdIndexRouteImport } from './routes/_authenticated/pipeline/$opportunityId/index'
+import { Route as AuthenticatedOperationsRchContractsIndexRouteImport } from './routes/_authenticated/operations/rch-contracts/index'
+import { Route as AuthenticatedOperationsEsignIndexRouteImport } from './routes/_authenticated/operations/esign/index'
+import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './routes/_authenticated/operations/deal-sheets/index'
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
 import { Route as AuthenticatedAccountingReconciliationsIndexRouteImport } from './routes/_authenticated/accounting/reconciliations/index'
 import { Route as AuthenticatedProjectsProjectIdTimelineRouteImport } from './routes/_authenticated/projects/$projectId/timeline'
 import { Route as AuthenticatedProjectsProjectIdPropertyDetailsRouteImport } from './routes/_authenticated/projects/$projectId/property-details'
 import { Route as AuthenticatedProjectsProjectIdPlansPricingRouteImport } from './routes/_authenticated/projects/$projectId/plans-pricing'
+import { Route as AuthenticatedProjectsProjectIdPlanCatalogRouteImport } from './routes/_authenticated/projects/$projectId/plan-catalog'
 import { Route as AuthenticatedProjectsProjectIdParcelsRouteImport } from './routes/_authenticated/projects/$projectId/parcels'
 import { Route as AuthenticatedProjectsProjectIdLotInventoryRouteImport } from './routes/_authenticated/projects/$projectId/lot-inventory'
 import { Route as AuthenticatedProjectsProjectIdLoansRouteImport } from './routes/_authenticated/projects/$projectId/loans'
@@ -96,6 +102,7 @@ import { Route as AuthenticatedProjectsProjectIdEntitlementsRouteImport } from '
 import { Route as AuthenticatedProjectsProjectIdDueDiligenceRouteImport } from './routes/_authenticated/projects/$projectId/due-diligence'
 import { Route as AuthenticatedProjectsProjectIdDrawsRouteImport } from './routes/_authenticated/projects/$projectId/draws'
 import { Route as AuthenticatedProjectsProjectIdDispoSummaryRouteImport } from './routes/_authenticated/projects/$projectId/dispo-summary'
+import { Route as AuthenticatedProjectsProjectIdDealSheetRouteImport } from './routes/_authenticated/projects/$projectId/deal-sheet'
 import { Route as AuthenticatedProjectsProjectIdContactsRouteImport } from './routes/_authenticated/projects/$projectId/contacts'
 import { Route as AuthenticatedProjectsProjectIdCloseoutRouteImport } from './routes/_authenticated/projects/$projectId/closeout'
 import { Route as AuthenticatedProjectsProjectIdBudgetRouteImport } from './routes/_authenticated/projects/$projectId/budget'
@@ -106,10 +113,12 @@ import { Route as AuthenticatedPipelineOpportunityIdParcelsRouteImport } from '.
 import { Route as AuthenticatedPipelineOpportunityIdOfferContractRouteImport } from './routes/_authenticated/pipeline/$opportunityId/offer-contract'
 import { Route as AuthenticatedPipelineOpportunityIdDueDiligenceRouteImport } from './routes/_authenticated/pipeline/$opportunityId/due-diligence'
 import { Route as AuthenticatedPipelineOpportunityIdDocumentsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/documents'
-import { Route as AuthenticatedPipelineOpportunityIdDealAnalyzerRouteImport } from './routes/_authenticated/pipeline/$opportunityId/deal-analyzer'
+import { Route as AuthenticatedPipelineOpportunityIdDealSheetRouteImport } from './routes/_authenticated/pipeline/$opportunityId/deal-sheet'
 import { Route as AuthenticatedPipelineOpportunityIdContactsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/contacts'
 import { Route as AuthenticatedPipelineOpportunityIdCompsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/comps'
 import { Route as AuthenticatedPipelineOpportunityIdBasicInfoRouteImport } from './routes/_authenticated/pipeline/$opportunityId/basic-info'
+import { Route as AuthenticatedOperationsEsignEsignIdRouteImport } from './routes/_authenticated/operations/esign/$esignId'
+import { Route as AuthenticatedOperationsDealSheetsDealSheetIdRouteImport } from './routes/_authenticated/operations/deal-sheets/$dealSheetId'
 import { Route as AuthenticatedDispositionDispositionIdWarrantyRouteImport } from './routes/_authenticated/disposition/$dispositionId/warranty'
 import { Route as AuthenticatedDispositionDispositionIdShowingsRouteImport } from './routes/_authenticated/disposition/$dispositionId/showings'
 import { Route as AuthenticatedDispositionDispositionIdSettlementRouteImport } from './routes/_authenticated/disposition/$dispositionId/settlement'
@@ -133,12 +142,24 @@ import { Route as AuthenticatedConstructionJobIdPhotosRouteImport } from './rout
 import { Route as AuthenticatedConstructionJobIdPermitsRouteImport } from './routes/_authenticated/construction/$jobId/permits'
 import { Route as AuthenticatedConstructionJobIdJobInfoRouteImport } from './routes/_authenticated/construction/$jobId/job-info'
 import { Route as AuthenticatedConstructionJobIdInspectionsRouteImport } from './routes/_authenticated/construction/$jobId/inspections'
+import { Route as AuthenticatedConstructionJobIdHandoffRouteImport } from './routes/_authenticated/construction/$jobId/handoff'
 import { Route as AuthenticatedConstructionJobIdFilesRouteImport } from './routes/_authenticated/construction/$jobId/files'
 import { Route as AuthenticatedConstructionJobIdDailyLogsRouteImport } from './routes/_authenticated/construction/$jobId/daily-logs'
 import { Route as AuthenticatedConstructionJobIdChangeOrdersRouteImport } from './routes/_authenticated/construction/$jobId/change-orders'
 import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './routes/_authenticated/construction/$jobId/budget'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
+import { Route as AuthenticatedOperationsRchContractsContractIdRouteRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/route'
+import { Route as AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/upgrades'
+import { Route as AuthenticatedOperationsRchContractsContractIdUnitsRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/units'
+import { Route as AuthenticatedOperationsRchContractsContractIdSterlingRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/sterling'
+import { Route as AuthenticatedOperationsRchContractsContractIdSignaturesRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/signatures'
+import { Route as AuthenticatedOperationsRchContractsContractIdOverviewRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/overview'
+import { Route as AuthenticatedOperationsRchContractsContractIdLotConditionsRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/lot-conditions'
+import { Route as AuthenticatedOperationsRchContractsContractIdFilesRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/files'
+import { Route as AuthenticatedOperationsRchContractsContractIdCreateJobsRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/create-jobs'
+import { Route as AuthenticatedOperationsRchContractsContractIdContractPreviewRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/contract-preview'
+import { Route as AuthenticatedOperationsRchContractsContractIdBudgetRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/budget'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -389,6 +410,12 @@ const AuthenticatedAdminPermissionsRoute =
     path: '/permissions',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminMunicipalitiesRoute =
+  AuthenticatedAdminMunicipalitiesRouteImport.update({
+    id: '/municipalities',
+    path: '/municipalities',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminIntegrationsRoute =
   AuthenticatedAdminIntegrationsRouteImport.update({
     id: '/integrations',
@@ -405,6 +432,12 @@ const AuthenticatedAdminFeeScheduleRoute =
   AuthenticatedAdminFeeScheduleRouteImport.update({
     id: '/fee-schedule',
     path: '/fee-schedule',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminEsignTemplatesRoute =
+  AuthenticatedAdminEsignTemplatesRouteImport.update({
+    id: '/esign-templates',
+    path: '/esign-templates',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminEntitiesRoute =
@@ -545,6 +578,24 @@ const AuthenticatedPipelineOpportunityIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
   } as any)
+const AuthenticatedOperationsRchContractsIndexRoute =
+  AuthenticatedOperationsRchContractsIndexRouteImport.update({
+    id: '/operations/rch-contracts/',
+    path: '/operations/rch-contracts/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperationsEsignIndexRoute =
+  AuthenticatedOperationsEsignIndexRouteImport.update({
+    id: '/operations/esign/',
+    path: '/operations/esign/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperationsDealSheetsIndexRoute =
+  AuthenticatedOperationsDealSheetsIndexRouteImport.update({
+    id: '/operations/deal-sheets/',
+    path: '/operations/deal-sheets/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDispositionDispositionIdIndexRoute =
   AuthenticatedDispositionDispositionIdIndexRouteImport.update({
     id: '/',
@@ -579,6 +630,12 @@ const AuthenticatedProjectsProjectIdPlansPricingRoute =
   AuthenticatedProjectsProjectIdPlansPricingRouteImport.update({
     id: '/plans-pricing',
     path: '/plans-pricing',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
+  } as any)
+const AuthenticatedProjectsProjectIdPlanCatalogRoute =
+  AuthenticatedProjectsProjectIdPlanCatalogRouteImport.update({
+    id: '/plan-catalog',
+    path: '/plan-catalog',
     getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
   } as any)
 const AuthenticatedProjectsProjectIdParcelsRoute =
@@ -653,6 +710,12 @@ const AuthenticatedProjectsProjectIdDispoSummaryRoute =
     path: '/dispo-summary',
     getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
   } as any)
+const AuthenticatedProjectsProjectIdDealSheetRoute =
+  AuthenticatedProjectsProjectIdDealSheetRouteImport.update({
+    id: '/deal-sheet',
+    path: '/deal-sheet',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdContactsRoute =
   AuthenticatedProjectsProjectIdContactsRouteImport.update({
     id: '/contacts',
@@ -713,10 +776,10 @@ const AuthenticatedPipelineOpportunityIdDocumentsRoute =
     path: '/documents',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
   } as any)
-const AuthenticatedPipelineOpportunityIdDealAnalyzerRoute =
-  AuthenticatedPipelineOpportunityIdDealAnalyzerRouteImport.update({
-    id: '/deal-analyzer',
-    path: '/deal-analyzer',
+const AuthenticatedPipelineOpportunityIdDealSheetRoute =
+  AuthenticatedPipelineOpportunityIdDealSheetRouteImport.update({
+    id: '/deal-sheet',
+    path: '/deal-sheet',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
   } as any)
 const AuthenticatedPipelineOpportunityIdContactsRoute =
@@ -736,6 +799,18 @@ const AuthenticatedPipelineOpportunityIdBasicInfoRoute =
     id: '/basic-info',
     path: '/basic-info',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsEsignEsignIdRoute =
+  AuthenticatedOperationsEsignEsignIdRouteImport.update({
+    id: '/operations/esign/$esignId',
+    path: '/operations/esign/$esignId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperationsDealSheetsDealSheetIdRoute =
+  AuthenticatedOperationsDealSheetsDealSheetIdRouteImport.update({
+    id: '/operations/deal-sheets/$dealSheetId',
+    path: '/operations/deal-sheets/$dealSheetId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedDispositionDispositionIdWarrantyRoute =
   AuthenticatedDispositionDispositionIdWarrantyRouteImport.update({
@@ -875,6 +950,12 @@ const AuthenticatedConstructionJobIdInspectionsRoute =
     path: '/inspections',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedConstructionJobIdHandoffRoute =
+  AuthenticatedConstructionJobIdHandoffRouteImport.update({
+    id: '/handoff',
+    path: '/handoff',
+    getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
+  } as any)
 const AuthenticatedConstructionJobIdFilesRoute =
   AuthenticatedConstructionJobIdFilesRouteImport.update({
     id: '/files',
@@ -910,6 +991,84 @@ const AuthenticatedAccountingReconciliationsHistoryRoute =
     id: '/history',
     path: '/history',
     getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdRouteRoute =
+  AuthenticatedOperationsRchContractsContractIdRouteRouteImport.update({
+    id: '/operations/rch-contracts/$contractId',
+    path: '/operations/rch-contracts/$contractId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdUpgradesRoute =
+  AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport.update({
+    id: '/upgrades',
+    path: '/upgrades',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdUnitsRoute =
+  AuthenticatedOperationsRchContractsContractIdUnitsRouteImport.update({
+    id: '/units',
+    path: '/units',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdSterlingRoute =
+  AuthenticatedOperationsRchContractsContractIdSterlingRouteImport.update({
+    id: '/sterling',
+    path: '/sterling',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdSignaturesRoute =
+  AuthenticatedOperationsRchContractsContractIdSignaturesRouteImport.update({
+    id: '/signatures',
+    path: '/signatures',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdOverviewRoute =
+  AuthenticatedOperationsRchContractsContractIdOverviewRouteImport.update({
+    id: '/overview',
+    path: '/overview',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdLotConditionsRoute =
+  AuthenticatedOperationsRchContractsContractIdLotConditionsRouteImport.update({
+    id: '/lot-conditions',
+    path: '/lot-conditions',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdFilesRoute =
+  AuthenticatedOperationsRchContractsContractIdFilesRouteImport.update({
+    id: '/files',
+    path: '/files',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdCreateJobsRoute =
+  AuthenticatedOperationsRchContractsContractIdCreateJobsRouteImport.update({
+    id: '/create-jobs',
+    path: '/create-jobs',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsRchContractsContractIdContractPreviewRoute =
+  AuthenticatedOperationsRchContractsContractIdContractPreviewRouteImport.update(
+    {
+      id: '/contract-preview',
+      path: '/contract-preview',
+      getParentRoute: () =>
+        AuthenticatedOperationsRchContractsContractIdRouteRoute,
+    } as any,
+  )
+const AuthenticatedOperationsRchContractsContractIdBudgetRoute =
+  AuthenticatedOperationsRchContractsContractIdBudgetRouteImport.update({
+    id: '/budget',
+    path: '/budget',
+    getParentRoute: () =>
+      AuthenticatedOperationsRchContractsContractIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -947,9 +1106,11 @@ export interface FileRoutesByFullPath {
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
+  '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
   '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
+  '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
@@ -979,12 +1140,14 @@ export interface FileRoutesByFullPath {
   '/purchasing/': typeof AuthenticatedPurchasingIndexRoute
   '/tools/': typeof AuthenticatedToolsIndexRoute
   '/workflows/': typeof AuthenticatedWorkflowsIndexRoute
+  '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
   '/construction/$jobId/files': typeof AuthenticatedConstructionJobIdFilesRoute
+  '/construction/$jobId/handoff': typeof AuthenticatedConstructionJobIdHandoffRoute
   '/construction/$jobId/inspections': typeof AuthenticatedConstructionJobIdInspectionsRoute
   '/construction/$jobId/job-info': typeof AuthenticatedConstructionJobIdJobInfoRoute
   '/construction/$jobId/permits': typeof AuthenticatedConstructionJobIdPermitsRoute
@@ -1008,10 +1171,12 @@ export interface FileRoutesByFullPath {
   '/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
+  '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
-  '/pipeline/$opportunityId/deal-analyzer': typeof AuthenticatedPipelineOpportunityIdDealAnalyzerRoute
+  '/pipeline/$opportunityId/deal-sheet': typeof AuthenticatedPipelineOpportunityIdDealSheetRoute
   '/pipeline/$opportunityId/documents': typeof AuthenticatedPipelineOpportunityIdDocumentsRoute
   '/pipeline/$opportunityId/due-diligence': typeof AuthenticatedPipelineOpportunityIdDueDiligenceRoute
   '/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
@@ -1022,6 +1187,7 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
   '/projects/$projectId/contacts': typeof AuthenticatedProjectsProjectIdContactsRoute
+  '/projects/$projectId/deal-sheet': typeof AuthenticatedProjectsProjectIdDealSheetRoute
   '/projects/$projectId/dispo-summary': typeof AuthenticatedProjectsProjectIdDispoSummaryRoute
   '/projects/$projectId/draws': typeof AuthenticatedProjectsProjectIdDrawsRoute
   '/projects/$projectId/due-diligence': typeof AuthenticatedProjectsProjectIdDueDiligenceRoute
@@ -1034,14 +1200,28 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/loans': typeof AuthenticatedProjectsProjectIdLoansRoute
   '/projects/$projectId/lot-inventory': typeof AuthenticatedProjectsProjectIdLotInventoryRoute
   '/projects/$projectId/parcels': typeof AuthenticatedProjectsProjectIdParcelsRoute
+  '/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
+  '/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
+  '/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
+  '/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
+  '/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
+  '/operations/rch-contracts/$contractId/files': typeof AuthenticatedOperationsRchContractsContractIdFilesRoute
+  '/operations/rch-contracts/$contractId/lot-conditions': typeof AuthenticatedOperationsRchContractsContractIdLotConditionsRoute
+  '/operations/rch-contracts/$contractId/overview': typeof AuthenticatedOperationsRchContractsContractIdOverviewRoute
+  '/operations/rch-contracts/$contractId/signatures': typeof AuthenticatedOperationsRchContractsContractIdSignaturesRoute
+  '/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
+  '/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
+  '/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1063,9 +1243,11 @@ export interface FileRoutesByTo {
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
+  '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
   '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
+  '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
@@ -1095,12 +1277,14 @@ export interface FileRoutesByTo {
   '/purchasing': typeof AuthenticatedPurchasingIndexRoute
   '/tools': typeof AuthenticatedToolsIndexRoute
   '/workflows': typeof AuthenticatedWorkflowsIndexRoute
+  '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
   '/construction/$jobId/files': typeof AuthenticatedConstructionJobIdFilesRoute
+  '/construction/$jobId/handoff': typeof AuthenticatedConstructionJobIdHandoffRoute
   '/construction/$jobId/inspections': typeof AuthenticatedConstructionJobIdInspectionsRoute
   '/construction/$jobId/job-info': typeof AuthenticatedConstructionJobIdJobInfoRoute
   '/construction/$jobId/permits': typeof AuthenticatedConstructionJobIdPermitsRoute
@@ -1124,10 +1308,12 @@ export interface FileRoutesByTo {
   '/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
+  '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
-  '/pipeline/$opportunityId/deal-analyzer': typeof AuthenticatedPipelineOpportunityIdDealAnalyzerRoute
+  '/pipeline/$opportunityId/deal-sheet': typeof AuthenticatedPipelineOpportunityIdDealSheetRoute
   '/pipeline/$opportunityId/documents': typeof AuthenticatedPipelineOpportunityIdDocumentsRoute
   '/pipeline/$opportunityId/due-diligence': typeof AuthenticatedPipelineOpportunityIdDueDiligenceRoute
   '/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
@@ -1138,6 +1324,7 @@ export interface FileRoutesByTo {
   '/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
   '/projects/$projectId/contacts': typeof AuthenticatedProjectsProjectIdContactsRoute
+  '/projects/$projectId/deal-sheet': typeof AuthenticatedProjectsProjectIdDealSheetRoute
   '/projects/$projectId/dispo-summary': typeof AuthenticatedProjectsProjectIdDispoSummaryRoute
   '/projects/$projectId/draws': typeof AuthenticatedProjectsProjectIdDrawsRoute
   '/projects/$projectId/due-diligence': typeof AuthenticatedProjectsProjectIdDueDiligenceRoute
@@ -1150,14 +1337,28 @@ export interface FileRoutesByTo {
   '/projects/$projectId/loans': typeof AuthenticatedProjectsProjectIdLoansRoute
   '/projects/$projectId/lot-inventory': typeof AuthenticatedProjectsProjectIdLotInventoryRoute
   '/projects/$projectId/parcels': typeof AuthenticatedProjectsProjectIdParcelsRoute
+  '/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/operations/deal-sheets': typeof AuthenticatedOperationsDealSheetsIndexRoute
+  '/operations/esign': typeof AuthenticatedOperationsEsignIndexRoute
+  '/operations/rch-contracts': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
+  '/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
+  '/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
+  '/operations/rch-contracts/$contractId/files': typeof AuthenticatedOperationsRchContractsContractIdFilesRoute
+  '/operations/rch-contracts/$contractId/lot-conditions': typeof AuthenticatedOperationsRchContractsContractIdLotConditionsRoute
+  '/operations/rch-contracts/$contractId/overview': typeof AuthenticatedOperationsRchContractsContractIdOverviewRoute
+  '/operations/rch-contracts/$contractId/signatures': typeof AuthenticatedOperationsRchContractsContractIdSignaturesRoute
+  '/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
+  '/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
+  '/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1196,9 +1397,11 @@ export interface FileRoutesById {
   '/_authenticated/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/entities': typeof AuthenticatedAdminEntitiesRoute
+  '/_authenticated/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/_authenticated/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
   '/_authenticated/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
   '/_authenticated/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
+  '/_authenticated/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/_authenticated/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
@@ -1228,12 +1431,14 @@ export interface FileRoutesById {
   '/_authenticated/purchasing/': typeof AuthenticatedPurchasingIndexRoute
   '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
   '/_authenticated/workflows/': typeof AuthenticatedWorkflowsIndexRoute
+  '/_authenticated/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/_authenticated/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/_authenticated/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/_authenticated/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
   '/_authenticated/construction/$jobId/files': typeof AuthenticatedConstructionJobIdFilesRoute
+  '/_authenticated/construction/$jobId/handoff': typeof AuthenticatedConstructionJobIdHandoffRoute
   '/_authenticated/construction/$jobId/inspections': typeof AuthenticatedConstructionJobIdInspectionsRoute
   '/_authenticated/construction/$jobId/job-info': typeof AuthenticatedConstructionJobIdJobInfoRoute
   '/_authenticated/construction/$jobId/permits': typeof AuthenticatedConstructionJobIdPermitsRoute
@@ -1257,10 +1462,12 @@ export interface FileRoutesById {
   '/_authenticated/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
   '/_authenticated/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/_authenticated/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/_authenticated/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
+  '/_authenticated/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/_authenticated/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/_authenticated/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/_authenticated/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
-  '/_authenticated/pipeline/$opportunityId/deal-analyzer': typeof AuthenticatedPipelineOpportunityIdDealAnalyzerRoute
+  '/_authenticated/pipeline/$opportunityId/deal-sheet': typeof AuthenticatedPipelineOpportunityIdDealSheetRoute
   '/_authenticated/pipeline/$opportunityId/documents': typeof AuthenticatedPipelineOpportunityIdDocumentsRoute
   '/_authenticated/pipeline/$opportunityId/due-diligence': typeof AuthenticatedPipelineOpportunityIdDueDiligenceRoute
   '/_authenticated/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
@@ -1271,6 +1478,7 @@ export interface FileRoutesById {
   '/_authenticated/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/_authenticated/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
   '/_authenticated/projects/$projectId/contacts': typeof AuthenticatedProjectsProjectIdContactsRoute
+  '/_authenticated/projects/$projectId/deal-sheet': typeof AuthenticatedProjectsProjectIdDealSheetRoute
   '/_authenticated/projects/$projectId/dispo-summary': typeof AuthenticatedProjectsProjectIdDispoSummaryRoute
   '/_authenticated/projects/$projectId/draws': typeof AuthenticatedProjectsProjectIdDrawsRoute
   '/_authenticated/projects/$projectId/due-diligence': typeof AuthenticatedProjectsProjectIdDueDiligenceRoute
@@ -1283,14 +1491,28 @@ export interface FileRoutesById {
   '/_authenticated/projects/$projectId/loans': typeof AuthenticatedProjectsProjectIdLoansRoute
   '/_authenticated/projects/$projectId/lot-inventory': typeof AuthenticatedProjectsProjectIdLotInventoryRoute
   '/_authenticated/projects/$projectId/parcels': typeof AuthenticatedProjectsProjectIdParcelsRoute
+  '/_authenticated/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/_authenticated/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/_authenticated/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
   '/_authenticated/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/_authenticated/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/_authenticated/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
+  '/_authenticated/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
+  '/_authenticated/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/_authenticated/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
+  '/_authenticated/operations/rch-contracts/$contractId/budget': typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
+  '/_authenticated/operations/rch-contracts/$contractId/contract-preview': typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
+  '/_authenticated/operations/rch-contracts/$contractId/create-jobs': typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
+  '/_authenticated/operations/rch-contracts/$contractId/files': typeof AuthenticatedOperationsRchContractsContractIdFilesRoute
+  '/_authenticated/operations/rch-contracts/$contractId/lot-conditions': typeof AuthenticatedOperationsRchContractsContractIdLotConditionsRoute
+  '/_authenticated/operations/rch-contracts/$contractId/overview': typeof AuthenticatedOperationsRchContractsContractIdOverviewRoute
+  '/_authenticated/operations/rch-contracts/$contractId/signatures': typeof AuthenticatedOperationsRchContractsContractIdSignaturesRoute
+  '/_authenticated/operations/rch-contracts/$contractId/sterling': typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
+  '/_authenticated/operations/rch-contracts/$contractId/units': typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
+  '/_authenticated/operations/rch-contracts/$contractId/upgrades': typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1329,9 +1551,11 @@ export interface FileRouteTypes {
     | '/admin/cost-codes'
     | '/admin/documents'
     | '/admin/entities'
+    | '/admin/esign-templates'
     | '/admin/fee-schedule'
     | '/admin/floor-plans'
     | '/admin/integrations'
+    | '/admin/municipalities'
     | '/admin/permissions'
     | '/admin/users'
     | '/contacts/$companyId'
@@ -1361,12 +1585,14 @@ export interface FileRouteTypes {
     | '/purchasing/'
     | '/tools/'
     | '/workflows/'
+    | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
     | '/construction/$jobId/files'
+    | '/construction/$jobId/handoff'
     | '/construction/$jobId/inspections'
     | '/construction/$jobId/job-info'
     | '/construction/$jobId/permits'
@@ -1390,10 +1616,12 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/settlement'
     | '/disposition/$dispositionId/showings'
     | '/disposition/$dispositionId/warranty'
+    | '/operations/deal-sheets/$dealSheetId'
+    | '/operations/esign/$esignId'
     | '/pipeline/$opportunityId/basic-info'
     | '/pipeline/$opportunityId/comps'
     | '/pipeline/$opportunityId/contacts'
-    | '/pipeline/$opportunityId/deal-analyzer'
+    | '/pipeline/$opportunityId/deal-sheet'
     | '/pipeline/$opportunityId/documents'
     | '/pipeline/$opportunityId/due-diligence'
     | '/pipeline/$opportunityId/offer-contract'
@@ -1404,6 +1632,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId/budget'
     | '/projects/$projectId/closeout'
     | '/projects/$projectId/contacts'
+    | '/projects/$projectId/deal-sheet'
     | '/projects/$projectId/dispo-summary'
     | '/projects/$projectId/draws'
     | '/projects/$projectId/due-diligence'
@@ -1416,14 +1645,28 @@ export interface FileRouteTypes {
     | '/projects/$projectId/loans'
     | '/projects/$projectId/lot-inventory'
     | '/projects/$projectId/parcels'
+    | '/projects/$projectId/plan-catalog'
     | '/projects/$projectId/plans-pricing'
     | '/projects/$projectId/property-details'
     | '/projects/$projectId/timeline'
     | '/accounting/reconciliations/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
+    | '/operations/deal-sheets/'
+    | '/operations/esign/'
+    | '/operations/rch-contracts/'
     | '/pipeline/$opportunityId/'
     | '/projects/$projectId/'
+    | '/operations/rch-contracts/$contractId/budget'
+    | '/operations/rch-contracts/$contractId/contract-preview'
+    | '/operations/rch-contracts/$contractId/create-jobs'
+    | '/operations/rch-contracts/$contractId/files'
+    | '/operations/rch-contracts/$contractId/lot-conditions'
+    | '/operations/rch-contracts/$contractId/overview'
+    | '/operations/rch-contracts/$contractId/signatures'
+    | '/operations/rch-contracts/$contractId/sterling'
+    | '/operations/rch-contracts/$contractId/units'
+    | '/operations/rch-contracts/$contractId/upgrades'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1445,9 +1688,11 @@ export interface FileRouteTypes {
     | '/admin/cost-codes'
     | '/admin/documents'
     | '/admin/entities'
+    | '/admin/esign-templates'
     | '/admin/fee-schedule'
     | '/admin/floor-plans'
     | '/admin/integrations'
+    | '/admin/municipalities'
     | '/admin/permissions'
     | '/admin/users'
     | '/contacts/$companyId'
@@ -1477,12 +1722,14 @@ export interface FileRouteTypes {
     | '/purchasing'
     | '/tools'
     | '/workflows'
+    | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
     | '/construction/$jobId/files'
+    | '/construction/$jobId/handoff'
     | '/construction/$jobId/inspections'
     | '/construction/$jobId/job-info'
     | '/construction/$jobId/permits'
@@ -1506,10 +1753,12 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/settlement'
     | '/disposition/$dispositionId/showings'
     | '/disposition/$dispositionId/warranty'
+    | '/operations/deal-sheets/$dealSheetId'
+    | '/operations/esign/$esignId'
     | '/pipeline/$opportunityId/basic-info'
     | '/pipeline/$opportunityId/comps'
     | '/pipeline/$opportunityId/contacts'
-    | '/pipeline/$opportunityId/deal-analyzer'
+    | '/pipeline/$opportunityId/deal-sheet'
     | '/pipeline/$opportunityId/documents'
     | '/pipeline/$opportunityId/due-diligence'
     | '/pipeline/$opportunityId/offer-contract'
@@ -1520,6 +1769,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId/budget'
     | '/projects/$projectId/closeout'
     | '/projects/$projectId/contacts'
+    | '/projects/$projectId/deal-sheet'
     | '/projects/$projectId/dispo-summary'
     | '/projects/$projectId/draws'
     | '/projects/$projectId/due-diligence'
@@ -1532,14 +1782,28 @@ export interface FileRouteTypes {
     | '/projects/$projectId/loans'
     | '/projects/$projectId/lot-inventory'
     | '/projects/$projectId/parcels'
+    | '/projects/$projectId/plan-catalog'
     | '/projects/$projectId/plans-pricing'
     | '/projects/$projectId/property-details'
     | '/projects/$projectId/timeline'
     | '/accounting/reconciliations'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
+    | '/operations/deal-sheets'
+    | '/operations/esign'
+    | '/operations/rch-contracts'
     | '/pipeline/$opportunityId'
     | '/projects/$projectId'
+    | '/operations/rch-contracts/$contractId/budget'
+    | '/operations/rch-contracts/$contractId/contract-preview'
+    | '/operations/rch-contracts/$contractId/create-jobs'
+    | '/operations/rch-contracts/$contractId/files'
+    | '/operations/rch-contracts/$contractId/lot-conditions'
+    | '/operations/rch-contracts/$contractId/overview'
+    | '/operations/rch-contracts/$contractId/signatures'
+    | '/operations/rch-contracts/$contractId/sterling'
+    | '/operations/rch-contracts/$contractId/units'
+    | '/operations/rch-contracts/$contractId/upgrades'
   id:
     | '__root__'
     | '/'
@@ -1577,9 +1841,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/cost-codes'
     | '/_authenticated/admin/documents'
     | '/_authenticated/admin/entities'
+    | '/_authenticated/admin/esign-templates'
     | '/_authenticated/admin/fee-schedule'
     | '/_authenticated/admin/floor-plans'
     | '/_authenticated/admin/integrations'
+    | '/_authenticated/admin/municipalities'
     | '/_authenticated/admin/permissions'
     | '/_authenticated/admin/users'
     | '/_authenticated/contacts/$companyId'
@@ -1609,12 +1875,14 @@ export interface FileRouteTypes {
     | '/_authenticated/purchasing/'
     | '/_authenticated/tools/'
     | '/_authenticated/workflows/'
+    | '/_authenticated/operations/rch-contracts/$contractId'
     | '/_authenticated/accounting/reconciliations/history'
     | '/_authenticated/accounting/reconciliations/start'
     | '/_authenticated/construction/$jobId/budget'
     | '/_authenticated/construction/$jobId/change-orders'
     | '/_authenticated/construction/$jobId/daily-logs'
     | '/_authenticated/construction/$jobId/files'
+    | '/_authenticated/construction/$jobId/handoff'
     | '/_authenticated/construction/$jobId/inspections'
     | '/_authenticated/construction/$jobId/job-info'
     | '/_authenticated/construction/$jobId/permits'
@@ -1638,10 +1906,12 @@ export interface FileRouteTypes {
     | '/_authenticated/disposition/$dispositionId/settlement'
     | '/_authenticated/disposition/$dispositionId/showings'
     | '/_authenticated/disposition/$dispositionId/warranty'
+    | '/_authenticated/operations/deal-sheets/$dealSheetId'
+    | '/_authenticated/operations/esign/$esignId'
     | '/_authenticated/pipeline/$opportunityId/basic-info'
     | '/_authenticated/pipeline/$opportunityId/comps'
     | '/_authenticated/pipeline/$opportunityId/contacts'
-    | '/_authenticated/pipeline/$opportunityId/deal-analyzer'
+    | '/_authenticated/pipeline/$opportunityId/deal-sheet'
     | '/_authenticated/pipeline/$opportunityId/documents'
     | '/_authenticated/pipeline/$opportunityId/due-diligence'
     | '/_authenticated/pipeline/$opportunityId/offer-contract'
@@ -1652,6 +1922,7 @@ export interface FileRouteTypes {
     | '/_authenticated/projects/$projectId/budget'
     | '/_authenticated/projects/$projectId/closeout'
     | '/_authenticated/projects/$projectId/contacts'
+    | '/_authenticated/projects/$projectId/deal-sheet'
     | '/_authenticated/projects/$projectId/dispo-summary'
     | '/_authenticated/projects/$projectId/draws'
     | '/_authenticated/projects/$projectId/due-diligence'
@@ -1664,14 +1935,28 @@ export interface FileRouteTypes {
     | '/_authenticated/projects/$projectId/loans'
     | '/_authenticated/projects/$projectId/lot-inventory'
     | '/_authenticated/projects/$projectId/parcels'
+    | '/_authenticated/projects/$projectId/plan-catalog'
     | '/_authenticated/projects/$projectId/plans-pricing'
     | '/_authenticated/projects/$projectId/property-details'
     | '/_authenticated/projects/$projectId/timeline'
     | '/_authenticated/accounting/reconciliations/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
+    | '/_authenticated/operations/deal-sheets/'
+    | '/_authenticated/operations/esign/'
+    | '/_authenticated/operations/rch-contracts/'
     | '/_authenticated/pipeline/$opportunityId/'
     | '/_authenticated/projects/$projectId/'
+    | '/_authenticated/operations/rch-contracts/$contractId/budget'
+    | '/_authenticated/operations/rch-contracts/$contractId/contract-preview'
+    | '/_authenticated/operations/rch-contracts/$contractId/create-jobs'
+    | '/_authenticated/operations/rch-contracts/$contractId/files'
+    | '/_authenticated/operations/rch-contracts/$contractId/lot-conditions'
+    | '/_authenticated/operations/rch-contracts/$contractId/overview'
+    | '/_authenticated/operations/rch-contracts/$contractId/signatures'
+    | '/_authenticated/operations/rch-contracts/$contractId/sterling'
+    | '/_authenticated/operations/rch-contracts/$contractId/units'
+    | '/_authenticated/operations/rch-contracts/$contractId/upgrades'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1983,6 +2268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPermissionsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/municipalities': {
+      id: '/_authenticated/admin/municipalities'
+      path: '/municipalities'
+      fullPath: '/admin/municipalities'
+      preLoaderRoute: typeof AuthenticatedAdminMunicipalitiesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/integrations': {
       id: '/_authenticated/admin/integrations'
       path: '/integrations'
@@ -2002,6 +2294,13 @@ declare module '@tanstack/react-router' {
       path: '/fee-schedule'
       fullPath: '/admin/fee-schedule'
       preLoaderRoute: typeof AuthenticatedAdminFeeScheduleRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/esign-templates': {
+      id: '/_authenticated/admin/esign-templates'
+      path: '/esign-templates'
+      fullPath: '/admin/esign-templates'
+      preLoaderRoute: typeof AuthenticatedAdminEsignTemplatesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/entities': {
@@ -2165,6 +2464,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdIndexRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
     }
+    '/_authenticated/operations/rch-contracts/': {
+      id: '/_authenticated/operations/rch-contracts/'
+      path: '/operations/rch-contracts'
+      fullPath: '/operations/rch-contracts/'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operations/esign/': {
+      id: '/_authenticated/operations/esign/'
+      path: '/operations/esign'
+      fullPath: '/operations/esign/'
+      preLoaderRoute: typeof AuthenticatedOperationsEsignIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operations/deal-sheets/': {
+      id: '/_authenticated/operations/deal-sheets/'
+      path: '/operations/deal-sheets'
+      fullPath: '/operations/deal-sheets/'
+      preLoaderRoute: typeof AuthenticatedOperationsDealSheetsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/disposition/$dispositionId/': {
       id: '/_authenticated/disposition/$dispositionId/'
       path: '/'
@@ -2205,6 +2525,13 @@ declare module '@tanstack/react-router' {
       path: '/plans-pricing'
       fullPath: '/projects/$projectId/plans-pricing'
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdPlansPricingRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
+    }
+    '/_authenticated/projects/$projectId/plan-catalog': {
+      id: '/_authenticated/projects/$projectId/plan-catalog'
+      path: '/plan-catalog'
+      fullPath: '/projects/$projectId/plan-catalog'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdPlanCatalogRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
     }
     '/_authenticated/projects/$projectId/parcels': {
@@ -2291,6 +2618,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdDispoSummaryRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
     }
+    '/_authenticated/projects/$projectId/deal-sheet': {
+      id: '/_authenticated/projects/$projectId/deal-sheet'
+      path: '/deal-sheet'
+      fullPath: '/projects/$projectId/deal-sheet'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdDealSheetRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
+    }
     '/_authenticated/projects/$projectId/contacts': {
       id: '/_authenticated/projects/$projectId/contacts'
       path: '/contacts'
@@ -2361,11 +2695,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdDocumentsRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
     }
-    '/_authenticated/pipeline/$opportunityId/deal-analyzer': {
-      id: '/_authenticated/pipeline/$opportunityId/deal-analyzer'
-      path: '/deal-analyzer'
-      fullPath: '/pipeline/$opportunityId/deal-analyzer'
-      preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdDealAnalyzerRouteImport
+    '/_authenticated/pipeline/$opportunityId/deal-sheet': {
+      id: '/_authenticated/pipeline/$opportunityId/deal-sheet'
+      path: '/deal-sheet'
+      fullPath: '/pipeline/$opportunityId/deal-sheet'
+      preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdDealSheetRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
     }
     '/_authenticated/pipeline/$opportunityId/contacts': {
@@ -2388,6 +2722,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/pipeline/$opportunityId/basic-info'
       preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdBasicInfoRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
+    }
+    '/_authenticated/operations/esign/$esignId': {
+      id: '/_authenticated/operations/esign/$esignId'
+      path: '/operations/esign/$esignId'
+      fullPath: '/operations/esign/$esignId'
+      preLoaderRoute: typeof AuthenticatedOperationsEsignEsignIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operations/deal-sheets/$dealSheetId': {
+      id: '/_authenticated/operations/deal-sheets/$dealSheetId'
+      path: '/operations/deal-sheets/$dealSheetId'
+      fullPath: '/operations/deal-sheets/$dealSheetId'
+      preLoaderRoute: typeof AuthenticatedOperationsDealSheetsDealSheetIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/disposition/$dispositionId/warranty': {
       id: '/_authenticated/disposition/$dispositionId/warranty'
@@ -2550,6 +2898,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdInspectionsRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/construction/$jobId/handoff': {
+      id: '/_authenticated/construction/$jobId/handoff'
+      path: '/handoff'
+      fullPath: '/construction/$jobId/handoff'
+      preLoaderRoute: typeof AuthenticatedConstructionJobIdHandoffRouteImport
+      parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
+    }
     '/_authenticated/construction/$jobId/files': {
       id: '/_authenticated/construction/$jobId/files'
       path: '/files'
@@ -2591,6 +2946,83 @@ declare module '@tanstack/react-router' {
       fullPath: '/accounting/reconciliations/history'
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsHistoryRouteImport
       parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId': {
+      id: '/_authenticated/operations/rch-contracts/$contractId'
+      path: '/operations/rch-contracts/$contractId'
+      fullPath: '/operations/rch-contracts/$contractId'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/upgrades': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/upgrades'
+      path: '/upgrades'
+      fullPath: '/operations/rch-contracts/$contractId/upgrades'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/units': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/units'
+      path: '/units'
+      fullPath: '/operations/rch-contracts/$contractId/units'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdUnitsRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/sterling': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/sterling'
+      path: '/sterling'
+      fullPath: '/operations/rch-contracts/$contractId/sterling'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdSterlingRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/signatures': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/signatures'
+      path: '/signatures'
+      fullPath: '/operations/rch-contracts/$contractId/signatures'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdSignaturesRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/overview': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/overview'
+      path: '/overview'
+      fullPath: '/operations/rch-contracts/$contractId/overview'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdOverviewRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/lot-conditions': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/lot-conditions'
+      path: '/lot-conditions'
+      fullPath: '/operations/rch-contracts/$contractId/lot-conditions'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdLotConditionsRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/files': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/files'
+      path: '/files'
+      fullPath: '/operations/rch-contracts/$contractId/files'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdFilesRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/create-jobs': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/create-jobs'
+      path: '/create-jobs'
+      fullPath: '/operations/rch-contracts/$contractId/create-jobs'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/contract-preview': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/contract-preview'
+      path: '/contract-preview'
+      fullPath: '/operations/rch-contracts/$contractId/contract-preview'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
+    }
+    '/_authenticated/operations/rch-contracts/$contractId/budget': {
+      id: '/_authenticated/operations/rch-contracts/$contractId/budget'
+      path: '/budget'
+      fullPath: '/operations/rch-contracts/$contractId/budget'
+      preLoaderRoute: typeof AuthenticatedOperationsRchContractsContractIdBudgetRouteImport
+      parentRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRoute
     }
   }
 }
@@ -2666,9 +3098,11 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCostCodesRoute: typeof AuthenticatedAdminCostCodesRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminEntitiesRoute: typeof AuthenticatedAdminEntitiesRoute
+  AuthenticatedAdminEsignTemplatesRoute: typeof AuthenticatedAdminEsignTemplatesRoute
   AuthenticatedAdminFeeScheduleRoute: typeof AuthenticatedAdminFeeScheduleRoute
   AuthenticatedAdminFloorPlansRoute: typeof AuthenticatedAdminFloorPlansRoute
   AuthenticatedAdminIntegrationsRoute: typeof AuthenticatedAdminIntegrationsRoute
+  AuthenticatedAdminMunicipalitiesRoute: typeof AuthenticatedAdminMunicipalitiesRoute
   AuthenticatedAdminPermissionsRoute: typeof AuthenticatedAdminPermissionsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -2681,9 +3115,13 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminCostCodesRoute: AuthenticatedAdminCostCodesRoute,
     AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
     AuthenticatedAdminEntitiesRoute: AuthenticatedAdminEntitiesRoute,
+    AuthenticatedAdminEsignTemplatesRoute:
+      AuthenticatedAdminEsignTemplatesRoute,
     AuthenticatedAdminFeeScheduleRoute: AuthenticatedAdminFeeScheduleRoute,
     AuthenticatedAdminFloorPlansRoute: AuthenticatedAdminFloorPlansRoute,
     AuthenticatedAdminIntegrationsRoute: AuthenticatedAdminIntegrationsRoute,
+    AuthenticatedAdminMunicipalitiesRoute:
+      AuthenticatedAdminMunicipalitiesRoute,
     AuthenticatedAdminPermissionsRoute: AuthenticatedAdminPermissionsRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -2699,6 +3137,7 @@ interface AuthenticatedConstructionJobIdRouteRouteChildren {
   AuthenticatedConstructionJobIdChangeOrdersRoute: typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   AuthenticatedConstructionJobIdDailyLogsRoute: typeof AuthenticatedConstructionJobIdDailyLogsRoute
   AuthenticatedConstructionJobIdFilesRoute: typeof AuthenticatedConstructionJobIdFilesRoute
+  AuthenticatedConstructionJobIdHandoffRoute: typeof AuthenticatedConstructionJobIdHandoffRoute
   AuthenticatedConstructionJobIdInspectionsRoute: typeof AuthenticatedConstructionJobIdInspectionsRoute
   AuthenticatedConstructionJobIdJobInfoRoute: typeof AuthenticatedConstructionJobIdJobInfoRoute
   AuthenticatedConstructionJobIdPermitsRoute: typeof AuthenticatedConstructionJobIdPermitsRoute
@@ -2722,6 +3161,8 @@ const AuthenticatedConstructionJobIdRouteRouteChildren: AuthenticatedConstructio
       AuthenticatedConstructionJobIdDailyLogsRoute,
     AuthenticatedConstructionJobIdFilesRoute:
       AuthenticatedConstructionJobIdFilesRoute,
+    AuthenticatedConstructionJobIdHandoffRoute:
+      AuthenticatedConstructionJobIdHandoffRoute,
     AuthenticatedConstructionJobIdInspectionsRoute:
       AuthenticatedConstructionJobIdInspectionsRoute,
     AuthenticatedConstructionJobIdJobInfoRoute:
@@ -2885,7 +3326,7 @@ interface AuthenticatedPipelineOpportunityIdRouteRouteChildren {
   AuthenticatedPipelineOpportunityIdBasicInfoRoute: typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   AuthenticatedPipelineOpportunityIdCompsRoute: typeof AuthenticatedPipelineOpportunityIdCompsRoute
   AuthenticatedPipelineOpportunityIdContactsRoute: typeof AuthenticatedPipelineOpportunityIdContactsRoute
-  AuthenticatedPipelineOpportunityIdDealAnalyzerRoute: typeof AuthenticatedPipelineOpportunityIdDealAnalyzerRoute
+  AuthenticatedPipelineOpportunityIdDealSheetRoute: typeof AuthenticatedPipelineOpportunityIdDealSheetRoute
   AuthenticatedPipelineOpportunityIdDocumentsRoute: typeof AuthenticatedPipelineOpportunityIdDocumentsRoute
   AuthenticatedPipelineOpportunityIdDueDiligenceRoute: typeof AuthenticatedPipelineOpportunityIdDueDiligenceRoute
   AuthenticatedPipelineOpportunityIdOfferContractRoute: typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
@@ -2903,8 +3344,8 @@ const AuthenticatedPipelineOpportunityIdRouteRouteChildren: AuthenticatedPipelin
       AuthenticatedPipelineOpportunityIdCompsRoute,
     AuthenticatedPipelineOpportunityIdContactsRoute:
       AuthenticatedPipelineOpportunityIdContactsRoute,
-    AuthenticatedPipelineOpportunityIdDealAnalyzerRoute:
-      AuthenticatedPipelineOpportunityIdDealAnalyzerRoute,
+    AuthenticatedPipelineOpportunityIdDealSheetRoute:
+      AuthenticatedPipelineOpportunityIdDealSheetRoute,
     AuthenticatedPipelineOpportunityIdDocumentsRoute:
       AuthenticatedPipelineOpportunityIdDocumentsRoute,
     AuthenticatedPipelineOpportunityIdDueDiligenceRoute:
@@ -2948,6 +3389,7 @@ interface AuthenticatedProjectsProjectIdRouteRouteChildren {
   AuthenticatedProjectsProjectIdBudgetRoute: typeof AuthenticatedProjectsProjectIdBudgetRoute
   AuthenticatedProjectsProjectIdCloseoutRoute: typeof AuthenticatedProjectsProjectIdCloseoutRoute
   AuthenticatedProjectsProjectIdContactsRoute: typeof AuthenticatedProjectsProjectIdContactsRoute
+  AuthenticatedProjectsProjectIdDealSheetRoute: typeof AuthenticatedProjectsProjectIdDealSheetRoute
   AuthenticatedProjectsProjectIdDispoSummaryRoute: typeof AuthenticatedProjectsProjectIdDispoSummaryRoute
   AuthenticatedProjectsProjectIdDrawsRoute: typeof AuthenticatedProjectsProjectIdDrawsRoute
   AuthenticatedProjectsProjectIdDueDiligenceRoute: typeof AuthenticatedProjectsProjectIdDueDiligenceRoute
@@ -2960,6 +3402,7 @@ interface AuthenticatedProjectsProjectIdRouteRouteChildren {
   AuthenticatedProjectsProjectIdLoansRoute: typeof AuthenticatedProjectsProjectIdLoansRoute
   AuthenticatedProjectsProjectIdLotInventoryRoute: typeof AuthenticatedProjectsProjectIdLotInventoryRoute
   AuthenticatedProjectsProjectIdParcelsRoute: typeof AuthenticatedProjectsProjectIdParcelsRoute
+  AuthenticatedProjectsProjectIdPlanCatalogRoute: typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   AuthenticatedProjectsProjectIdPlansPricingRoute: typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   AuthenticatedProjectsProjectIdPropertyDetailsRoute: typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
   AuthenticatedProjectsProjectIdTimelineRoute: typeof AuthenticatedProjectsProjectIdTimelineRoute
@@ -2976,6 +3419,8 @@ const AuthenticatedProjectsProjectIdRouteRouteChildren: AuthenticatedProjectsPro
       AuthenticatedProjectsProjectIdCloseoutRoute,
     AuthenticatedProjectsProjectIdContactsRoute:
       AuthenticatedProjectsProjectIdContactsRoute,
+    AuthenticatedProjectsProjectIdDealSheetRoute:
+      AuthenticatedProjectsProjectIdDealSheetRoute,
     AuthenticatedProjectsProjectIdDispoSummaryRoute:
       AuthenticatedProjectsProjectIdDispoSummaryRoute,
     AuthenticatedProjectsProjectIdDrawsRoute:
@@ -3000,6 +3445,8 @@ const AuthenticatedProjectsProjectIdRouteRouteChildren: AuthenticatedProjectsPro
       AuthenticatedProjectsProjectIdLotInventoryRoute,
     AuthenticatedProjectsProjectIdParcelsRoute:
       AuthenticatedProjectsProjectIdParcelsRoute,
+    AuthenticatedProjectsProjectIdPlanCatalogRoute:
+      AuthenticatedProjectsProjectIdPlanCatalogRoute,
     AuthenticatedProjectsProjectIdPlansPricingRoute:
       AuthenticatedProjectsProjectIdPlansPricingRoute,
     AuthenticatedProjectsProjectIdPropertyDetailsRoute:
@@ -3085,6 +3532,48 @@ const AuthenticatedWorkflowsRouteRouteWithChildren =
     AuthenticatedWorkflowsRouteRouteChildren,
   )
 
+interface AuthenticatedOperationsRchContractsContractIdRouteRouteChildren {
+  AuthenticatedOperationsRchContractsContractIdBudgetRoute: typeof AuthenticatedOperationsRchContractsContractIdBudgetRoute
+  AuthenticatedOperationsRchContractsContractIdContractPreviewRoute: typeof AuthenticatedOperationsRchContractsContractIdContractPreviewRoute
+  AuthenticatedOperationsRchContractsContractIdCreateJobsRoute: typeof AuthenticatedOperationsRchContractsContractIdCreateJobsRoute
+  AuthenticatedOperationsRchContractsContractIdFilesRoute: typeof AuthenticatedOperationsRchContractsContractIdFilesRoute
+  AuthenticatedOperationsRchContractsContractIdLotConditionsRoute: typeof AuthenticatedOperationsRchContractsContractIdLotConditionsRoute
+  AuthenticatedOperationsRchContractsContractIdOverviewRoute: typeof AuthenticatedOperationsRchContractsContractIdOverviewRoute
+  AuthenticatedOperationsRchContractsContractIdSignaturesRoute: typeof AuthenticatedOperationsRchContractsContractIdSignaturesRoute
+  AuthenticatedOperationsRchContractsContractIdSterlingRoute: typeof AuthenticatedOperationsRchContractsContractIdSterlingRoute
+  AuthenticatedOperationsRchContractsContractIdUnitsRoute: typeof AuthenticatedOperationsRchContractsContractIdUnitsRoute
+  AuthenticatedOperationsRchContractsContractIdUpgradesRoute: typeof AuthenticatedOperationsRchContractsContractIdUpgradesRoute
+}
+
+const AuthenticatedOperationsRchContractsContractIdRouteRouteChildren: AuthenticatedOperationsRchContractsContractIdRouteRouteChildren =
+  {
+    AuthenticatedOperationsRchContractsContractIdBudgetRoute:
+      AuthenticatedOperationsRchContractsContractIdBudgetRoute,
+    AuthenticatedOperationsRchContractsContractIdContractPreviewRoute:
+      AuthenticatedOperationsRchContractsContractIdContractPreviewRoute,
+    AuthenticatedOperationsRchContractsContractIdCreateJobsRoute:
+      AuthenticatedOperationsRchContractsContractIdCreateJobsRoute,
+    AuthenticatedOperationsRchContractsContractIdFilesRoute:
+      AuthenticatedOperationsRchContractsContractIdFilesRoute,
+    AuthenticatedOperationsRchContractsContractIdLotConditionsRoute:
+      AuthenticatedOperationsRchContractsContractIdLotConditionsRoute,
+    AuthenticatedOperationsRchContractsContractIdOverviewRoute:
+      AuthenticatedOperationsRchContractsContractIdOverviewRoute,
+    AuthenticatedOperationsRchContractsContractIdSignaturesRoute:
+      AuthenticatedOperationsRchContractsContractIdSignaturesRoute,
+    AuthenticatedOperationsRchContractsContractIdSterlingRoute:
+      AuthenticatedOperationsRchContractsContractIdSterlingRoute,
+    AuthenticatedOperationsRchContractsContractIdUnitsRoute:
+      AuthenticatedOperationsRchContractsContractIdUnitsRoute,
+    AuthenticatedOperationsRchContractsContractIdUpgradesRoute:
+      AuthenticatedOperationsRchContractsContractIdUpgradesRoute,
+  }
+
+const AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren =
+  AuthenticatedOperationsRchContractsContractIdRouteRoute._addFileChildren(
+    AuthenticatedOperationsRchContractsContractIdRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAccountingRouteRoute: typeof AuthenticatedAccountingRouteRouteWithChildren
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
@@ -3099,6 +3588,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedCalendarIndexRoute: typeof AuthenticatedCalendarIndexRoute
   AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
+  AuthenticatedOperationsRchContractsContractIdRouteRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
+  AuthenticatedOperationsDealSheetsDealSheetIdRoute: typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
+  AuthenticatedOperationsEsignEsignIdRoute: typeof AuthenticatedOperationsEsignEsignIdRoute
+  AuthenticatedOperationsDealSheetsIndexRoute: typeof AuthenticatedOperationsDealSheetsIndexRoute
+  AuthenticatedOperationsEsignIndexRoute: typeof AuthenticatedOperationsEsignIndexRoute
+  AuthenticatedOperationsRchContractsIndexRoute: typeof AuthenticatedOperationsRchContractsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -3121,6 +3616,18 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedCalendarIndexRoute: AuthenticatedCalendarIndexRoute,
   AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
+  AuthenticatedOperationsRchContractsContractIdRouteRoute:
+    AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren,
+  AuthenticatedOperationsDealSheetsDealSheetIdRoute:
+    AuthenticatedOperationsDealSheetsDealSheetIdRoute,
+  AuthenticatedOperationsEsignEsignIdRoute:
+    AuthenticatedOperationsEsignEsignIdRoute,
+  AuthenticatedOperationsDealSheetsIndexRoute:
+    AuthenticatedOperationsDealSheetsIndexRoute,
+  AuthenticatedOperationsEsignIndexRoute:
+    AuthenticatedOperationsEsignIndexRoute,
+  AuthenticatedOperationsRchContractsIndexRoute:
+    AuthenticatedOperationsRchContractsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

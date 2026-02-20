@@ -14,13 +14,12 @@ export const Route = createFileRoute("/_authenticated/projects/$projectId/plans-
 
 interface FloorPlan {
   id: string;
-  plan_name: string;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  square_footage: number | null;
-  base_price: number | null;
-  construction_cost: number | null;
-  lot_count: number | null;
+  name: string;
+  bed_count: number | null;
+  bath_count: number | null;
+  heated_sqft: number | null;
+  base_sale_price: number | null;
+  base_construction_cost: number | null;
 }
 
 function PlansPricing() {
@@ -34,7 +33,7 @@ function PlansPricing() {
         .from("floor_plans")
         .select("*")
         .eq("project_id", projectId)
-        .order("plan_name", { ascending: true });
+        .order("name", { ascending: true });
       if (error) throw error;
       return data ?? [];
     },
@@ -44,7 +43,7 @@ function PlansPricing() {
     mutationFn: async () => {
       const { error } = await supabase.from("floor_plans").insert({
         project_id: projectId,
-        plan_name: "New Plan",
+        name: "New Plan",
       });
       if (error) throw error;
     },
@@ -59,44 +58,43 @@ function PlansPricing() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["floor-plans", projectId] }),
   });
 
-  const totalUnits = plans.reduce((sum, p) => sum + (p.lot_count ?? 0), 0);
-  const avgPrice = plans.length > 0 ? plans.reduce((sum, p) => sum + (p.base_price ?? 0), 0) / plans.length : 0;
+  const avgPrice = plans.length > 0 ? plans.reduce((sum, p) => sum + (p.base_sale_price ?? 0), 0) / plans.length : 0;
 
   const columns: ColumnDef<FloorPlan, unknown>[] = [
     {
-      accessorKey: "plan_name",
+      accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Plan Name" />,
-      cell: ({ row }) => <span className="font-medium">{row.getValue("plan_name")}</span>,
+      cell: ({ row }) => <span className="font-medium">{row.getValue("name")}</span>,
     },
     {
-      accessorKey: "bedrooms",
+      accessorKey: "bed_count",
       header: "Beds",
     },
     {
-      accessorKey: "bathrooms",
+      accessorKey: "bath_count",
       header: "Baths",
     },
     {
-      accessorKey: "square_footage",
-      header: "Sq Ft",
+      accessorKey: "heated_sqft",
+      header: "Heated SF",
       cell: ({ row }) => {
-        const val = row.getValue("square_footage") as number | null;
+        const val = row.getValue("heated_sqft") as number | null;
         return val ? `${val.toLocaleString()}` : "—";
       },
     },
     {
-      accessorKey: "base_price",
+      accessorKey: "base_sale_price",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Base Price" />,
       cell: ({ row }) => {
-        const val = row.getValue("base_price") as number | null;
+        const val = row.getValue("base_sale_price") as number | null;
         return val ? formatCurrency(val) : "—";
       },
     },
     {
-      accessorKey: "construction_cost",
+      accessorKey: "base_construction_cost",
       header: "Build Cost",
       cell: ({ row }) => {
-        const val = row.getValue("construction_cost") as number | null;
+        const val = row.getValue("base_construction_cost") as number | null;
         return val ? formatCurrency(val) : "—";
       },
     },
@@ -104,16 +102,12 @@ function PlansPricing() {
       id: "margin",
       header: "Margin",
       cell: ({ row }) => {
-        const price = row.original.base_price;
-        const cost = row.original.construction_cost;
+        const price = row.original.base_sale_price;
+        const cost = row.original.base_construction_cost;
         if (!price || !cost) return "—";
         const margin = ((price - cost) / price) * 100;
         return `${margin.toFixed(1)}%`;
       },
-    },
-    {
-      accessorKey: "lot_count",
-      header: "Units",
     },
     {
       id: "actions",
@@ -139,7 +133,7 @@ function PlansPricing() {
           <h2 className="text-lg font-semibold text-foreground">Home Plans & Pricing</h2>
           {plans.length > 0 && (
             <p className="mt-0.5 text-sm text-muted">
-              {plans.length} plans · {totalUnits} units · Avg {formatCurrency(avgPrice)}
+              {plans.length} plans · Avg {formatCurrency(avgPrice)}
             </p>
           )}
         </div>
@@ -166,7 +160,7 @@ function PlansPricing() {
       ) : plans.length === 0 ? (
         <EmptyState title="No floor plans" description="Add floor plans to define your product mix and pricing" />
       ) : (
-        <DataTable columns={columns} data={plans} searchKey="plan_name" searchPlaceholder="Search plans..." />
+        <DataTable columns={columns} data={plans} searchKey="name" searchPlaceholder="Search plans..." />
       )}
     </div>
   );

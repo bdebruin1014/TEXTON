@@ -1,134 +1,154 @@
-import { FEE_DEFAULTS } from "./constants";
+import { computeBuilderFee, computeContingency, FIXED_PER_HOUSE_FEES, totalFixedPerHouse } from "./constants";
 
-export interface DealInputs {
-  purchase_price: number;
-  site_work: number;
-  base_build_cost: number;
-  upgrade_package: number;
-  asp: number; // anticipated sales price
-  concessions: number;
-  duration_months: number;
-  interest_rate: number; // annual, as decimal (e.g. 0.10 for 10%)
-  ltc_ratio: number; // loan-to-cost ratio as decimal (e.g. 0.75)
+export interface DealSheetInputs {
+  // Lot acquisition
+  lot_purchase_price: number;
+  closing_costs: number;
+  acquisition_commission?: number;
+  acquisition_bonus?: number;
+  other_lot_costs?: number;
+
+  // Construction (from floor plan + municipality + overrides)
+  sticks_bricks: number;
+  upgrades: number;
+  soft_costs: number;
+  land_prep: number;
+  site_specific: number;
+
+  // Site work
+  site_work_total: number;
+  other_site_costs?: number;
+
+  // Fixed per-house
+  is_rch_related_owner: boolean;
+
+  // Sales
+  asset_sales_price: number;
+  selling_cost_rate: number; // default 0.085
+  selling_concessions?: number;
+
+  // Financing
+  ltc_ratio: number; // default 0.85
+  interest_rate: number; // default 0.10
+  cost_of_capital: number; // default 0.16
+  project_duration_days: number; // default 120
 }
 
-export interface DealFees {
-  builder_fee: number;
-  warranty: number;
-  builders_risk: number;
-  po_fee: number;
-  pm_fee: number;
-  utility: number;
-  contingency: number;
-}
+export interface DealSheetResults {
+  // Lot basis
+  total_lot_basis: number;
 
-export interface DealOutputs {
-  // Cost breakdown
-  land_cost: number;
-  hard_costs: number;
-  fixed_costs: number;
+  // Contract sections
+  sections_1_to_5: number;
+  builder_fee: number; // Section 6: GREATER($25K, 10% of S1-5)
+  contingency: number; // Section 7: GREATER($10K, 5% of S1-5)
+  total_contract_cost: number;
+
+  // Fixed per-house
+  total_fixed_per_house: number;
+
+  // Total project cost
   total_project_cost: number;
 
   // Financing
   loan_amount: number;
   equity_required: number;
-  interest_expense: number;
+  interest_cost: number;
+  cost_of_capital_amount: number;
+  total_all_in: number;
 
-  // Revenue
-  gross_revenue: number;
-  net_revenue: number;
+  // Sales
+  selling_costs: number;
+  net_proceeds: number;
 
-  // Profit
-  gross_profit: number;
+  // Results
   net_profit: number;
-
-  // Margins & returns
-  gross_margin: number;
-  net_margin: number;
-  roi: number;
-  annualized_roi: number;
-
-  // Verdict
-  verdict: "Strong Buy" | "Buy" | "Hold" | "Pass";
-  verdict_color: string;
+  net_profit_margin: number;
+  land_cost_ratio: number;
+  profit_verdict: "STRONG" | "GOOD" | "MARGINAL" | "NO GO";
+  land_verdict: "STRONG" | "ACCEPTABLE" | "CAUTION" | "OVERPAYING";
 }
 
-function getDefaultFees(): DealFees {
-  return {
-    builder_fee: FEE_DEFAULTS.builder_fee,
-    warranty: FEE_DEFAULTS.warranty,
-    builders_risk: FEE_DEFAULTS.builders_risk,
-    po_fee: FEE_DEFAULTS.po_fee,
-    pm_fee: FEE_DEFAULTS.pm_fee,
-    utility: FEE_DEFAULTS.utility,
-    contingency: FEE_DEFAULTS.contingency_cap,
-  };
-}
+export function calculateDealSheet(inputs: DealSheetInputs): DealSheetResults {
+  // Lot basis
+  const total_lot_basis =
+    inputs.lot_purchase_price +
+    inputs.closing_costs +
+    (inputs.acquisition_commission ?? 0) +
+    (inputs.acquisition_bonus ?? 0) +
+    (inputs.other_lot_costs ?? 0);
 
-export function calculateDeal(inputs: DealInputs, fees?: Partial<DealFees>): DealOutputs {
-  const f = { ...getDefaultFees(), ...fees };
+  // Contract sections 1-5
+  const sections_1_to_5 =
+    inputs.sticks_bricks + inputs.upgrades + inputs.soft_costs + inputs.land_prep + inputs.site_specific;
 
-  // Costs
-  const land_cost = inputs.purchase_price;
-  const hard_costs = inputs.site_work + inputs.base_build_cost + inputs.upgrade_package;
-  const fixed_costs = f.builder_fee + f.warranty + f.builders_risk + f.po_fee + f.pm_fee + f.utility + f.contingency;
-  const total_project_cost = land_cost + hard_costs + fixed_costs;
+  // Section 6 & 7
+  const builder_fee = computeBuilderFee(sections_1_to_5);
+  const contingency = computeContingency(sections_1_to_5);
+  const total_contract_cost = sections_1_to_5 + builder_fee + contingency;
+
+  // Fixed per-house
+  const total_fixed_per_house = totalFixedPerHouse(inputs.is_rch_related_owner);
+
+  // Total project cost
+  const total_project_cost =
+    total_lot_basis + total_contract_cost + total_fixed_per_house + inputs.site_work_total + (inputs.other_site_costs ?? 0);
 
   // Financing
   const loan_amount = total_project_cost * inputs.ltc_ratio;
   const equity_required = total_project_cost - loan_amount;
-  const interest_expense = loan_amount * inputs.interest_rate * (inputs.duration_months / 12);
+  const durationFraction = inputs.project_duration_days / 365;
+  const interest_cost = loan_amount * inputs.interest_rate * durationFraction;
+  const cost_of_capital_amount = equity_required * inputs.cost_of_capital * durationFraction;
+  const total_all_in = total_project_cost + interest_cost + cost_of_capital_amount;
 
-  // Revenue
-  const gross_revenue = inputs.asp;
-  const net_revenue = gross_revenue - inputs.concessions;
+  // Sales
+  const selling_costs = inputs.asset_sales_price * inputs.selling_cost_rate;
+  const net_proceeds = inputs.asset_sales_price - selling_costs - (inputs.selling_concessions ?? 0);
 
-  // Profit
-  const gross_profit = net_revenue - total_project_cost;
-  const net_profit = gross_profit - interest_expense;
+  // Results
+  const net_profit = net_proceeds - total_all_in;
+  const net_profit_margin = inputs.asset_sales_price > 0 ? net_profit / inputs.asset_sales_price : 0;
+  const land_cost_ratio =
+    inputs.asset_sales_price > 0
+      ? (total_lot_basis + inputs.site_work_total + (inputs.other_site_costs ?? 0)) / inputs.asset_sales_price
+      : 0;
 
-  // Margins
-  const gross_margin = gross_revenue > 0 ? gross_profit / gross_revenue : 0;
-  const net_margin = gross_revenue > 0 ? net_profit / gross_revenue : 0;
+  // Scoring
+  let profit_verdict: DealSheetResults["profit_verdict"];
+  if (net_profit_margin > 0.1) profit_verdict = "STRONG";
+  else if (net_profit_margin >= 0.07) profit_verdict = "GOOD";
+  else if (net_profit_margin >= 0.05) profit_verdict = "MARGINAL";
+  else profit_verdict = "NO GO";
 
-  // ROI (on equity)
-  const roi = equity_required > 0 ? net_profit / equity_required : 0;
-  const annualized_roi = inputs.duration_months > 0 ? roi * (12 / inputs.duration_months) : 0;
-
-  // Verdict
-  let verdict: DealOutputs["verdict"];
-  let verdict_color: string;
-  if (annualized_roi >= 0.25) {
-    verdict = "Strong Buy";
-    verdict_color = "#4A7A5B";
-  } else if (annualized_roi >= 0.15) {
-    verdict = "Buy";
-    verdict_color = "#4A7A5B";
-  } else if (annualized_roi >= 0.08) {
-    verdict = "Hold";
-    verdict_color = "#C4841D";
-  } else {
-    verdict = "Pass";
-    verdict_color = "#B84040";
-  }
+  let land_verdict: DealSheetResults["land_verdict"];
+  if (land_cost_ratio < 0.2) land_verdict = "STRONG";
+  else if (land_cost_ratio <= 0.25) land_verdict = "ACCEPTABLE";
+  else if (land_cost_ratio <= 0.3) land_verdict = "CAUTION";
+  else land_verdict = "OVERPAYING";
 
   return {
-    land_cost,
-    hard_costs,
-    fixed_costs,
+    total_lot_basis,
+    sections_1_to_5,
+    builder_fee,
+    contingency,
+    total_contract_cost,
+    total_fixed_per_house,
     total_project_cost,
     loan_amount,
     equity_required,
-    interest_expense,
-    gross_revenue,
-    net_revenue,
-    gross_profit,
+    interest_cost,
+    cost_of_capital_amount,
+    total_all_in,
+    selling_costs,
+    net_proceeds,
     net_profit,
-    gross_margin,
-    net_margin,
-    roi,
-    annualized_roi,
-    verdict,
-    verdict_color,
+    net_profit_margin,
+    land_cost_ratio,
+    profit_verdict,
+    land_verdict,
   };
 }
+
+// Re-export for convenience
+export { FIXED_PER_HOUSE_FEES, totalFixedPerHouse, computeBuilderFee, computeContingency };

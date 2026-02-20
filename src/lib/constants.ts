@@ -68,17 +68,53 @@ export const PO_STATUSES = [
   "Void",
 ] as const;
 
+export const ESIGN_STATUSES = [
+  "Draft",
+  "Sent",
+  "Viewed",
+  "Partially Signed",
+  "Completed",
+  "Declined",
+  "Voided",
+  "Expired",
+] as const;
+
 export const PROJECT_TYPES = ["Scattered Lot", "Community Development", "Lot Development", "Lot Purchase"] as const;
 
-export const FEE_DEFAULTS = {
-  builder_fee: 15000,
-  warranty: 5000,
-  builders_risk: 1500,
-  po_fee: 3000,
-  pm_fee: 3500,
-  utility: 1400,
-  contingency_cap: 10000,
+export const ENTITY_TYPES = [
+  "holding",
+  "builder",
+  "operating",
+  "spe",
+  "fund",
+  "nonprofit",
+  "investor",
+  "management",
+] as const;
+
+export const FIXED_PER_HOUSE_FEES = {
+  builder_fee: 15_000, // Flat builder fee
+  am_fee: 5_000, // Asset Management — ONLY for RCH-related entity owners, paid at sale
+  builder_warranty: 5_000, // Warranty reserve
+  builders_risk: 1_500, // Builders risk insurance
+  purchaser_fee: 3_000, // Purchaser fee (was "PO Fee")
+  accounting_fee: 1_500, // Accounting fee
+  pm_fee: 3_000, // Project management fee
+  utilities: 1_400, // Utility charges during construction
 } as const;
+
+// Total per-house: $35,400 (RCH-related) or $30,400 (third-party, no AM fee)
+export const totalFixedPerHouse = (isRchRelated: boolean) =>
+  Object.entries(FIXED_PER_HOUSE_FEES).reduce(
+    (sum, [key, val]) => sum + (key === "am_fee" && !isRchRelated ? 0 : val),
+    0,
+  );
+
+// Builder Fee formula (Section 6 of contract budget): GREATER of $25K or 10% of Sections 1-5
+export const computeBuilderFee = (sections1to5: number) => Math.max(25_000, sections1to5 * 0.1);
+
+// Contingency formula (Section 7): GREATER of $10K or 5% of Sections 1-5
+export const computeContingency = (sections1to5: number) => Math.max(10_000, sections1to5 * 0.05);
 
 export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   // Opportunity — muted/desaturated v3.2
@@ -137,6 +173,14 @@ export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   Invoiced: { bg: "bg-info-bg", text: "text-info-text" },
   Paid: { bg: "bg-success-bg", text: "text-success-text" },
   Void: { bg: "bg-destructive-bg", text: "text-destructive-text" },
+
+  // E-Sign
+  Sent: { bg: "bg-info-bg", text: "text-info-text" },
+  Viewed: { bg: "bg-info-bg", text: "text-info-text" },
+  "Partially Signed": { bg: "bg-warning-bg", text: "text-warning-text" },
+  Declined: { bg: "bg-destructive-bg", text: "text-destructive-text" },
+  Voided: { bg: "bg-accent", text: "text-muted-foreground" },
+  Expired: { bg: "bg-warning-bg", text: "text-warning-text" },
 };
 
 export const NAV_MODULES = [

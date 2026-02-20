@@ -18,13 +18,10 @@ interface Comp {
   address: string | null;
   sale_price: number | null;
   sale_date: string | null;
-  sqft: number | null;
+  square_footage: number | null;
   price_per_sqft: number | null;
   beds: number | null;
   baths: number | null;
-  lot_size: string | null;
-  days_on_market: number | null;
-  notes: string | null;
 }
 
 function Comps() {
@@ -83,10 +80,10 @@ function Comps() {
       cell: ({ row }) => formatDate(row.getValue("sale_date")),
     },
     {
-      accessorKey: "sqft",
+      accessorKey: "square_footage",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Sq Ft" />,
       cell: ({ row }) => {
-        const val = row.getValue("sqft") as number | null;
+        const val = row.getValue("square_footage") as number | null;
         return val ? val.toLocaleString() : "—";
       },
     },
