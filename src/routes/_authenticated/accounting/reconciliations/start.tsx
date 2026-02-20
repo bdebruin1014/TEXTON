@@ -180,7 +180,7 @@ function StartReconciliation() {
           type="button"
           onClick={() => startRecon.mutate()}
           disabled={!selectedAccount || !statementBalance || !statementDate}
-          className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-button px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           Start Reconciliation
         </button>

@@ -98,7 +98,7 @@ function CalendarPage() {
                 type="button"
                 onClick={() => changeView(key)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                  currentView === key ? "bg-primary text-white" : "text-muted hover:bg-card-hover"
+                  currentView === key ? "bg-button text-white" : "text-muted hover:bg-card-hover"
                 } ${key === "dayGridMonth" ? "rounded-l-lg" : key === "timeGridDay" ? "rounded-r-lg" : ""}`}
               >
                 {label}
@@ -107,7 +107,7 @@ function CalendarPage() {
           </div>
           <button
             type="button"
-            className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
             +
             New Event

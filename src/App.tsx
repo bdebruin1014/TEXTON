@@ -29,7 +29,7 @@ function ErrorFallback() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
+          className="mt-4 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white hover:bg-button-hover"
         >
           Reload Page
         </button>

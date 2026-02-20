@@ -118,7 +118,7 @@ function AuditLog() {
               type="button"
               onClick={() => setActionFilter(filter)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                actionFilter === filter ? "bg-primary text-white" : "bg-accent text-muted hover:bg-border"
+                actionFilter === filter ? "bg-button text-white" : "bg-accent text-muted hover:bg-border"
               }`}
             >
               {filter}

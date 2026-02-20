@@ -74,7 +74,7 @@ function DashboardPage() {
           <button
             type="button"
             onClick={() => navigate({ to: "/pipeline" })}
-            className="rounded-[var(--radius)] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover"
+            className="rounded-[var(--radius)] bg-button px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-button-hover"
           >
             + New Opportunity
           </button>

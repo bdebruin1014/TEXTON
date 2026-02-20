@@ -72,7 +72,7 @@ function OpportunityLayout() {
       <div className="border-r border-t border-border bg-sidebar px-4 py-3" style={{ width: "var(--sidebar-width)" }}>
         <button
           type="button"
-          className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-50"
+          className="w-full rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
           disabled={opp?.status !== "Closed - Won"}
           title={opp?.status !== "Closed - Won" ? "Status must be Closed - Won to convert" : "Convert to Project"}
         >

@@ -93,7 +93,7 @@ function Reports() {
                       type="button"
                       onClick={() => generateReport(report.id)}
                       disabled={generating === report.id}
-                      className="flex items-center gap-1.5 rounded bg-primary px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-primary-hover disabled:opacity-50"
+                      className="flex items-center gap-1.5 rounded bg-button px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-button-hover disabled:opacity-50"
                     >
                       {generating === report.id ? (
                         <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />

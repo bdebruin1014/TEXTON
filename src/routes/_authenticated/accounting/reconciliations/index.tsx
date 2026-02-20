@@ -73,7 +73,7 @@ function ReconciliationDashboard() {
         </div>
         <Link
           to="/accounting/reconciliations/start"
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+          className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           Start Reconciliation
         </Link>

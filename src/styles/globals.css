@@ -11,6 +11,11 @@
   --color-primary-100: #DDE6DF;
   --color-primary-50: #F1F5F4;
 
+  /* ——— BUTTONS — matches T logo green ——— */
+  --color-button: #6B9E7A;
+  --color-button-hover: #5A8D69;
+  --color-button-foreground: #FFFFFF;
+
   /* ——— NAVIGATION ——— */
   --color-nav-bg: #0D1B24;
   --color-nav-foreground: #F1F5F9;
@@ -18,11 +23,11 @@
   --color-nav-active: #6B9E7A;
 
   /* ——— SURFACES ——— */
-  --color-background: #F0F3F7;
+  --color-background: #F7F8FA;
   --color-card: #FFFFFF;
   --color-card-foreground: #112233;
-  --color-card-hover: #FAFBFC;
-  --color-sidebar: #FAFBFD;
+  --color-card-hover: #F9FAFB;
+  --color-sidebar: #FFFFFF;
   --color-popover: #FFFFFF;
   --color-popover-foreground: #112233;
 
@@ -73,19 +78,19 @@
   --color-chart-5: #946060;
 
   /* ——— SHADOWS ——— */
-  --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);
-  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.06), 0 1px 2px rgba(17, 34, 51, 0.04);
-  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.08), 0 2px 4px rgba(17, 34, 51, 0.04);
-  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.10), 0 4px 8px rgba(17, 34, 51, 0.06);
+  --shadow-sm: 0 1px 3px rgba(17, 34, 51, 0.06);
+  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.08), 0 1px 2px rgba(17, 34, 51, 0.04);
+  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.10), 0 2px 4px rgba(17, 34, 51, 0.06);
+  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.12), 0 4px 8px rgba(17, 34, 51, 0.08);
 
   /* ——— RADIUS ——— */
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --radius-sm: 0.375rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1.25rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.75rem;
 
   /* ——— FONTS ——— */
-  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
@@ -100,25 +105,25 @@
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Scrollbar styling */
+  /* Scrollbar — visible and usable */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--color-background);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: 3px;
+    background: #B0BEC5;
+    border-radius: 5px;
+    border: 2px solid var(--color-background);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(137, 150, 166, 0.3);
+    background: #90A4AE;
   }
 }

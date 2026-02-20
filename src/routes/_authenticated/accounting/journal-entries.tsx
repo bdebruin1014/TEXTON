@@ -226,7 +226,7 @@ function JournalEntries() {
         <button
           type="button"
           onClick={() => addEntry.mutate()}
-          className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+          className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           +
           New Journal Entry
@@ -257,7 +257,7 @@ function JournalEntries() {
                 <button
                   type="button"
                   onClick={() => addLine.mutate(expandedJE)}
-                  className="flex items-center gap-1 rounded bg-primary px-2 py-1 text-xs font-medium text-white hover:bg-primary-hover"
+                  className="flex items-center gap-1 rounded bg-button px-2 py-1 text-xs font-medium text-white hover:bg-button-hover"
                 >
                   +
                   Add Line

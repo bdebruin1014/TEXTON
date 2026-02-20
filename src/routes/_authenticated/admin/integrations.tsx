@@ -62,7 +62,7 @@ function Integrations() {
                 </span>
                 <button
                   type="button"
-                  className="rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
+                  className="rounded-lg bg-button px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-button-hover"
                 >
                   Connect
                 </button>
