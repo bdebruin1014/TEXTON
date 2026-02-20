@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
@@ -159,7 +158,7 @@ function JournalEntries() {
           <span className="text-xs font-medium text-success">Balanced</span>
         ) : (
           <span className="flex items-center gap-1 text-xs font-medium text-destructive">
-            <AlertCircle className="h-3 w-3" />
+            
             Off by {formatCurrency(Math.abs(debits - credits))}
           </span>
         );
@@ -184,7 +183,7 @@ function JournalEntries() {
                   e.stopPropagation();
                   updateStatus.mutate({ id: je.id, status: "Posted" });
                 }}
-                className="rounded px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-green-50"
+                className="rounded px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
               >
                 Post
               </button>
@@ -196,7 +195,7 @@ function JournalEntries() {
                   e.stopPropagation();
                   updateStatus.mutate({ id: je.id, status: "Void" });
                 }}
-                className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-red-50"
+                className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive-bg"
               >
                 Void
               </button>
@@ -209,7 +208,7 @@ function JournalEntries() {
               }}
               className="rounded p-1 text-muted transition-colors hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4" />
+              
             </button>
           </div>
         );
@@ -229,7 +228,7 @@ function JournalEntries() {
           onClick={() => addEntry.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New Journal Entry
         </button>
       </div>
@@ -260,7 +259,7 @@ function JournalEntries() {
                   onClick={() => addLine.mutate(expandedJE)}
                   className="flex items-center gap-1 rounded bg-primary px-2 py-1 text-xs font-medium text-white hover:bg-primary-hover"
                 >
-                  <Plus className="h-3 w-3" />
+                  +
                   Add Line
                 </button>
               </div>

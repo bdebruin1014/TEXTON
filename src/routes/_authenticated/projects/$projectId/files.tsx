@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText, Plus, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -100,8 +99,8 @@ function Files() {
 
   const columns: ColumnDef<Document, unknown>[] = [
     {
-      id: "icon",
-      cell: () => <FileText className="h-4 w-4 text-muted" />,
+      id: "type",
+      cell: () => <span className="text-xs text-muted">Doc</span>,
       size: 40,
     },
     {
@@ -135,7 +134,7 @@ function Files() {
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
         >
-          <Trash2 className="h-4 w-4" />
+          
         </button>
       ),
     },
@@ -150,7 +149,7 @@ function Files() {
           onClick={() => fileInputRef.current?.click()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Upload className="h-4 w-4" />
+          
           {activeTab === "insurance" ? "Add Insurance Certificate" : "Upload Document"}
         </button>
         <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelect} />
@@ -184,14 +183,14 @@ function Files() {
               ? "Upload insurance certificates for this project"
               : "Upload documents related to this project"
           }
-          icon={<FileText className="h-12 w-12" />}
+         
           action={
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
             >
-              <Plus className="h-4 w-4" />
+              +
               {activeTab === "insurance" ? "Add Certificate" : "Upload Document"}
             </button>
           }

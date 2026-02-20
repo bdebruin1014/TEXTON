@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { HardHat, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
@@ -158,7 +157,7 @@ function ConstructionIndex() {
             onClick={handleCreate}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Job
           </button>
         </div>
@@ -169,14 +168,14 @@ function ConstructionIndex() {
           <EmptyState
             title="No jobs yet"
             description="Create a new job to start tracking construction"
-            icon={<HardHat className="h-12 w-12" />}
+           
             action={
               <button
                 type="button"
                 onClick={handleCreate}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               >
-                <Plus className="h-4 w-4" />
+                +
                 New Job
               </button>
             }

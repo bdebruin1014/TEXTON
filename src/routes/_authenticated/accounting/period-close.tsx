@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle, Circle, Lock, Unlock } from "lucide-react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
 import { useEntityStore } from "@/stores/entityStore";
@@ -101,9 +100,9 @@ function PeriodClose() {
             <button
               type="button"
               onClick={reopenPeriod}
-              className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+              className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
-              <Unlock className="h-4 w-4" />
+              
               Reopen Period
             </button>
           ) : (
@@ -113,7 +112,7 @@ function PeriodClose() {
               disabled={!allComplete}
               className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <Lock className="h-4 w-4" />
+              
               Close Period
             </button>
           )}
@@ -122,7 +121,7 @@ function PeriodClose() {
 
       {/* Progress Bar */}
       <div className="mb-6">
-        <div className="h-2 w-full rounded-full bg-gray-100">
+        <div className="h-2 w-full rounded-full bg-accent">
           <div
             className={`h-2 rounded-full transition-all ${isClosed ? "bg-success" : "bg-primary"}`}
             style={{ width: `${(completedSteps / CLOSE_STEPS.length) * 100}%` }}
@@ -140,7 +139,7 @@ function PeriodClose() {
             return (
               <div
                 key={step.key}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-50"
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-card-hover"
               >
                 <button
                   type="button"
@@ -149,9 +148,9 @@ function PeriodClose() {
                   className="shrink-0 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isComplete ? (
-                    <CheckCircle className="h-5 w-5 text-success" />
+                    <span className="text-success font-bold">{"\u2022"}</span>
                   ) : (
-                    <Circle className="h-5 w-5 text-muted" />
+                    <span className="text-muted">{"\u25CB"}</span>
                   )}
                 </button>
                 <div className="flex min-w-0 flex-1 items-center justify-between">

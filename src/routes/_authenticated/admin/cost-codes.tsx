@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus, Upload } from "lucide-react";
 import { useRef } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -73,7 +72,7 @@ function CostCodes() {
       header: "Category",
       cell: ({ row }) => {
         const val = row.getValue("category") as string | null;
-        return val ? <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
+        return val ? <span className="rounded bg-accent px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
       },
     },
     {
@@ -86,7 +85,7 @@ function CostCodes() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const color = status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600";
+        const color = status === "Active" ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
       },
     },
@@ -103,9 +102,9 @@ function CostCodes() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            <Upload className="h-4 w-4" />
+            
             Import Cost Codes
           </button>
           <button
@@ -113,7 +112,7 @@ function CostCodes() {
             onClick={() => addCode.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             Add Cost Code
           </button>
           <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleImport} />

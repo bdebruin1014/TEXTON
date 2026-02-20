@@ -4,7 +4,6 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -25,7 +24,7 @@ interface CalendarEvent {
 const EVENT_COLORS: Record<string, string> = {
   milestone: "#1B3022",
   inspection: "#3B6FA0",
-  closing: "#48BB78",
+  closing: "#4A7A5B",
   construction: "#C4841D",
   capital_call: "#8B5CF6",
   meeting: "#6366F1",
@@ -99,7 +98,7 @@ function CalendarPage() {
                 type="button"
                 onClick={() => changeView(key)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-                  currentView === key ? "bg-primary text-white" : "text-muted hover:bg-gray-50"
+                  currentView === key ? "bg-primary text-white" : "text-muted hover:bg-card-hover"
                 } ${key === "dayGridMonth" ? "rounded-l-lg" : key === "timeGridDay" ? "rounded-r-lg" : ""}`}
               >
                 {label}
@@ -110,7 +109,7 @@ function CalendarPage() {
             type="button"
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Event
           </button>
         </div>

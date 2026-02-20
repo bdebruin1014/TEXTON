@@ -90,7 +90,7 @@ function StartReconciliation() {
           <button
             type="button"
             onClick={() => undoPrevious.mutate()}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
             Undo Previous
           </button>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Upload } from "lucide-react";
+
 import { useRef } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
@@ -87,17 +87,15 @@ function Settlement() {
           <button
             type="button"
             onClick={() => settlementInputRef.current?.click()}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            <Upload className="h-3.5 w-3.5" />
             Upload Settlement Statement
           </button>
           <button
             type="button"
             onClick={() => wireInputRef.current?.click()}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            <Upload className="h-3.5 w-3.5" />
             Upload Wire Confirmation
           </button>
           <input

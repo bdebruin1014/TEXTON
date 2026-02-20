@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText, Plus, Trash2, Upload } from "lucide-react";
+
 import { useRef } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -93,7 +93,7 @@ function Documents() {
   const columns: ColumnDef<Document, unknown>[] = [
     {
       id: "icon",
-      cell: () => <FileText className="h-4 w-4 text-muted" />,
+      cell: () => null,
       size: 40,
     },
     {
@@ -127,7 +127,7 @@ function Documents() {
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
         >
-          <Trash2 className="h-4 w-4" />
+          Delete
         </button>
       ),
     },
@@ -142,7 +142,6 @@ function Documents() {
           onClick={() => fileInputRef.current?.click()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Upload className="h-4 w-4" />
           Upload Document
         </button>
         <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelect} />
@@ -154,14 +153,13 @@ function Documents() {
         <EmptyState
           title="No documents"
           description="Upload documents related to this opportunity"
-          icon={<FileText className="h-12 w-12" />}
+         
           action={
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
             >
-              <Plus className="h-4 w-4" />
               Upload Document
             </button>
           }

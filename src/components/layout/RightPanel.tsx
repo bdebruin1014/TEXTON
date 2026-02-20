@@ -1,14 +1,13 @@
-import { Activity, CheckSquare, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
 
 type Tab = "tasks" | "notes" | "activity";
 
-const tabs: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: "tasks", label: "Tasks", icon: CheckSquare },
-  { id: "notes", label: "Notes", icon: MessageSquare },
-  { id: "activity", label: "Activity", icon: Activity },
+const tabs: { id: Tab; label: string }[] = [
+  { id: "tasks", label: "Tasks" },
+  { id: "notes", label: "Notes" },
+  { id: "activity", label: "Activity" },
 ];
 
 export function RightPanel() {
@@ -25,30 +24,26 @@ export function RightPanel() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <div className="flex gap-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  "flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors",
-                  activeTab === tab.id ? "bg-primary-50 text-primary" : "text-muted hover:text-foreground",
-                )}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {tab.label}
-              </button>
-            );
-          })}
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "rounded-md px-2 py-1 text-xs font-medium transition-colors",
+                activeTab === tab.id ? "bg-primary-50 text-primary" : "text-muted hover:text-foreground",
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
         <button
           type="button"
           onClick={() => setRightPanelOpen(false)}
-          className="rounded-md p-1 text-muted transition-colors hover:text-foreground"
+          className="rounded-md px-1.5 py-0.5 text-xs text-muted transition-colors hover:text-foreground"
         >
-          <X className="h-3.5 w-3.5" />
+          {"\u00D7"}
         </button>
       </div>
 

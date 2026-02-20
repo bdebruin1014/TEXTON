@@ -53,7 +53,7 @@ export function IndexSidebar({ title, filters, activeFilter, onFilterChange, met
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-xs",
-                  activeFilter === item.value ? "bg-primary/10 font-medium text-primary" : "bg-gray-100 text-muted",
+                  activeFilter === item.value ? "bg-primary/10 font-medium text-primary" : "bg-accent text-muted",
                 )}
               >
                 {item.count}

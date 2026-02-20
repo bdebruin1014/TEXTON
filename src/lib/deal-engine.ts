@@ -103,7 +103,7 @@ export function calculateDeal(inputs: DealInputs, fees?: Partial<DealFees>): Dea
     verdict_color = "#4A7A5B";
   } else if (annualized_roi >= 0.15) {
     verdict = "Buy";
-    verdict_color = "#48BB78";
+    verdict_color = "#4A7A5B";
   } else if (annualized_roi >= 0.08) {
     verdict = "Hold";
     verdict_color = "#C4841D";

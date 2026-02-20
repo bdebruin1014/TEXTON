@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import { useState } from "react";
 import { useEntityStore } from "@/stores/entityStore";
 
@@ -98,23 +97,21 @@ function Reports() {
                     >
                       {generating === report.id ? (
                         <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />
-                      ) : (
-                        <FileText className="h-3 w-3" />
-                      )}
+                      ) : null}
                       Generate
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-gray-50"
+                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
                     >
-                      <Download className="h-3 w-3" />
+                      Download
                       PDF
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-gray-50"
+                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
                     >
-                      <FileSpreadsheet className="h-3 w-3" />
+                      
                       Excel
                     </button>
                   </div>

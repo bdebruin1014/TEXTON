@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle, Circle } from "lucide-react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
 
@@ -105,7 +104,7 @@ function Closeout() {
       {/* Progress bar */}
       {items.length > 0 && (
         <div className="mb-6">
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div
               className="h-2 rounded-full bg-success transition-all"
               style={{ width: `${(completedCount / items.length) * 100}%` }}
@@ -129,9 +128,9 @@ function Closeout() {
               className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors hover:bg-primary-50"
             >
               {item.completed ? (
-                <CheckCircle className="h-5 w-5 flex-shrink-0 text-success" />
+                <span className="text-success font-bold">{"\u2022"}</span>
               ) : (
-                <Circle className="h-5 w-5 flex-shrink-0 text-muted" />
+                <span className="text-muted">{"\u25CB"}</span>
               )}
               <span className={`text-sm ${item.completed ? "text-muted line-through" : "text-foreground"}`}>
                 {item.item_name}

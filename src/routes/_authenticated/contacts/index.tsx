@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Building2, ChevronDown, ChevronRight, Plus } from "lucide-react";
+
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -104,8 +104,7 @@ function CompaniesIndex() {
           onClick={() => addCompany.mutate("Other")}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
-          Add Company
+          + Add Company
         </button>
       </div>
 
@@ -124,16 +123,16 @@ function CompaniesIndex() {
                 <button
                   type="button"
                   onClick={() => toggleType(type)}
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-gray-50"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
                 >
                   <div className="flex items-center gap-2">
                     {isExpanded ? (
-                      <ChevronDown className="h-4 w-4 text-muted" />
+                      <span className="text-muted">▾</span>
                     ) : (
-                      <ChevronRight className="h-4 w-4 text-muted" />
+                      <span className="text-muted">→</span>
                     )}
                     <span className="text-sm font-semibold text-foreground">{type}</span>
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-muted">
+                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-muted">
                       {typeCompanies.length}
                     </span>
                   </div>
@@ -143,9 +142,9 @@ function CompaniesIndex() {
                       e.stopPropagation();
                       addCompany.mutate(type);
                     }}
-                    className="rounded p-1 text-muted transition-colors hover:bg-gray-100 hover:text-foreground"
+                    className="rounded p-1 text-muted transition-colors hover:bg-accent hover:text-foreground"
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    +
                   </button>
                 </button>
 
@@ -157,9 +156,8 @@ function CompaniesIndex() {
                         key={company.id}
                         type="button"
                         onClick={() => navigate({ to: `/contacts/${company.id}` as string })}
-                        className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-gray-50"
+                        className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-card-hover"
                       >
-                        <Building2 className="h-4 w-4 shrink-0 text-muted" />
                         <div className="min-w-0 flex-1">
                           <span className="text-sm font-medium text-foreground">{company.name}</span>
                           {(company.city || company.state) && (
@@ -170,7 +168,7 @@ function CompaniesIndex() {
                         </div>
                         {company.phone && <span className="text-xs text-muted">{company.phone}</span>}
                         {company.contact_count != null && company.contact_count > 0 && (
-                          <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-muted">
+                          <span className="rounded-full bg-accent px-1.5 py-0.5 text-[10px] text-muted">
                             {company.contact_count} contact{company.contact_count === 1 ? "" : "s"}
                           </span>
                         )}
@@ -187,7 +185,7 @@ function CompaniesIndex() {
             <div className="rounded-lg border border-border bg-card">
               <div className="px-4 py-3">
                 <span className="text-sm font-semibold text-muted">Uncategorized</span>
-                <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-muted">
+                <span className="ml-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-muted">
                   {uncategorized.length}
                 </span>
               </div>
@@ -197,9 +195,8 @@ function CompaniesIndex() {
                     key={company.id}
                     type="button"
                     onClick={() => navigate({ to: `/contacts/${company.id}` as string })}
-                    className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-gray-50"
+                    className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-card-hover"
                   >
-                    <Building2 className="h-4 w-4 shrink-0 text-muted" />
                     <span className="text-sm font-medium text-foreground">{company.name}</span>
                   </button>
                 ))}

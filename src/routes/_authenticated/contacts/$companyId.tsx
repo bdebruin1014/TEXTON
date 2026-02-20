@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, Plus } from "lucide-react";
+
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -165,8 +165,7 @@ function CompanyDetail() {
       {/* Header */}
       <div className="mb-6">
         <Link to="/contacts" className="mb-3 flex items-center gap-1 text-sm text-primary hover:underline">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Companies
+          ← Back to Companies
         </Link>
         <h1 className="text-xl font-semibold text-foreground">{company.name}</h1>
         <p className="mt-0.5 text-sm text-muted">{company.company_type ?? "Company"}</p>
@@ -256,8 +255,7 @@ function CompanyDetail() {
             onClick={() => addContact.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-3.5 w-3.5" />
-            Add Contact
+            + Add Contact
           </button>
         </div>
         {contacts.length === 0 ? (

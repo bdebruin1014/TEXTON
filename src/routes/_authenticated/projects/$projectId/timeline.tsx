@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle, Circle, Clock, Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -99,9 +98,9 @@ function Timeline() {
       id: "status-icon",
       cell: ({ row }) => {
         const status = row.original.status;
-        if (status === "Complete") return <CheckCircle className="h-4 w-4 text-success" />;
-        if (status === "In Progress") return <Clock className="h-4 w-4 text-warning" />;
-        return <Circle className="h-4 w-4 text-muted" />;
+        if (status === "Complete") return <span className="text-success font-bold">{"\u2022"}</span>;
+        if (status === "In Progress") return <span className="text-warning text-xs">Pending</span>;
+        return <span className="text-muted">{"\u25CB"}</span>;
       },
       size: 40,
     },
@@ -168,7 +167,7 @@ function Timeline() {
             onClick={() => addMilestone.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             Add Milestone
           </button>
         </div>
@@ -177,7 +176,7 @@ function Timeline() {
       {/* Progress bar */}
       {milestones.length > 0 && (
         <div className="mb-4">
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div
               className="h-2 rounded-full bg-success transition-all"
               style={{ width: `${(completedCount / milestones.length) * 100}%` }}
@@ -193,12 +192,12 @@ function Timeline() {
             <div key={m.id} className="flex items-center">
               <div className="flex flex-col items-center">
                 <div
-                  className={`h-3 w-3 rounded-full ${m.status === "Complete" ? "bg-success" : m.status === "In Progress" ? "bg-warning" : "bg-gray-200"}`}
+                  className={`h-3 w-3 rounded-full ${m.status === "Complete" ? "bg-success" : m.status === "In Progress" ? "bg-warning" : "bg-border"}`}
                 />
                 <span className="mt-1 max-w-[80px] truncate text-center text-[10px] text-muted">{m.name}</span>
               </div>
               {i < milestones.length - 1 && (
-                <div className={`h-0.5 w-8 ${m.status === "Complete" ? "bg-success" : "bg-gray-200"}`} />
+                <div className={`h-0.5 w-8 ${m.status === "Complete" ? "bg-success" : "bg-border"}`} />
               )}
             </div>
           ))}

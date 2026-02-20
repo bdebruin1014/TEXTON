@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus, Trash2 } from "lucide-react";
+
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -132,7 +132,7 @@ function OfferContract() {
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
         >
-          <Trash2 className="h-4 w-4" />
+          Delete
         </button>
       ),
     },
@@ -194,8 +194,7 @@ function OfferContract() {
             onClick={() => addCounterOffer.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-3.5 w-3.5" />
-            Add Counter Offer
+            + Add Counter Offer
           </button>
         </div>
         <DataTable columns={counterColumns} data={counterOffers} />

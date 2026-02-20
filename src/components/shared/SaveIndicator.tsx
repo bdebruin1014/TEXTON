@@ -8,9 +8,9 @@ interface SaveIndicatorProps {
 
 const statusConfig: Record<SaveStatus, { dot: string; label: string }> = {
   idle: { dot: "bg-transparent", label: "" },
-  saving: { dot: "bg-amber-400 animate-pulse", label: "Saving..." },
-  saved: { dot: "bg-green-500", label: "Saved" },
-  error: { dot: "bg-red-500", label: "Error" },
+  saving: { dot: "bg-warning animate-pulse", label: "Saving..." },
+  saved: { dot: "bg-success", label: "Saved" },
+  error: { dot: "bg-destructive", label: "Error" },
 };
 
 export function SaveIndicator({ status, className }: SaveIndicatorProps) {

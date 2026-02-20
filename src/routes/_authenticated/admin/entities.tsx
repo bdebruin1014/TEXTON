@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -102,7 +101,7 @@ function EntitiesAdmin() {
           onClick={() => addEntity.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           Add Entity
         </button>
       </div>

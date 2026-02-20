@@ -76,7 +76,7 @@ function Loans() {
               <p className="text-sm font-semibold text-foreground">{drawn.toFixed(1)}%</p>
             </div>
           </div>
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div className="h-2 rounded-full bg-primary transition-all" style={{ width: `${Math.min(drawn, 100)}%` }} />
           </div>
         </div>

@@ -1,33 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Calculator,
-  CalendarDays,
-  FolderKanban,
-  GitBranch,
-  HardHat,
-  Home,
-  Search,
-  Settings,
-  Target,
-  Users,
-  Wrench,
-} from "lucide-react";
+import { TektonLogo } from "@/components/layout/Logo";
 import { NAV_MODULES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Target,
-  FolderKanban,
-  HardHat,
-  Home,
-  Calculator,
-  Users,
-  GitBranch,
-  CalendarDays,
-  Wrench,
-  Settings,
-};
 
 export function TopNav() {
   const location = useRouterState({ select: (s) => s.location });
@@ -36,17 +11,20 @@ export function TopNav() {
   return (
     <header
       className="flex h-[var(--topnav-height)] items-center justify-between px-4"
-      style={{ backgroundColor: "var(--color-nav-bg)" }}
+      style={{
+        backgroundColor: "var(--color-nav-bg)",
+        borderBottom: "1px solid transparent",
+        borderImage: "linear-gradient(90deg, transparent, rgba(107, 158, 122, 0.2), transparent) 1",
+      }}
     >
       {/* Logo */}
-      <Link to="/dashboard" className="flex items-center gap-2 text-white">
-        <span className="text-lg font-bold tracking-tight">TEKTON</span>
+      <Link to="/dashboard" className="flex items-center">
+        <TektonLogo />
       </Link>
 
-      {/* Module Links */}
+      {/* Module Links — text only, no icons */}
       <nav className="flex items-center gap-0.5">
         {NAV_MODULES.map((mod) => {
-          const Icon = iconMap[mod.icon];
           const isActive = location.pathname.startsWith(mod.path);
           const isDisabled = "disabled" in mod && mod.disabled;
 
@@ -55,11 +33,10 @@ export function TopNav() {
               <Link
                 key={mod.label}
                 to={mod.path}
-                className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium opacity-40"
+                className="relative rounded-md px-3 py-3.5 text-[13px] font-medium opacity-40"
                 style={{ color: "var(--color-nav-muted)" }}
               >
-                {Icon && <Icon className="h-3.5 w-3.5" />}
-                <span>{mod.label}</span>
+                {mod.label}
               </Link>
             );
           }
@@ -69,13 +46,23 @@ export function TopNav() {
               key={mod.label}
               to={mod.path}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-                isActive ? "bg-white/10" : "hover:bg-white/5",
+                "relative rounded-md px-3 py-3.5 text-[13px] font-medium transition-colors",
+                isActive ? "text-white" : "hover:bg-white/[0.04]",
               )}
-              style={{ color: isActive ? "var(--color-nav-active)" : "var(--color-nav-muted)" }}
+              style={{
+                color: isActive ? "#FFFFFF" : "var(--color-nav-muted)",
+              }}
             >
-              {Icon && <Icon className="h-3.5 w-3.5" />}
-              <span>{mod.label}</span>
+              {mod.label}
+              {isActive && (
+                <span
+                  className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t-sm"
+                  style={{
+                    background: "var(--color-nav-active)",
+                    boxShadow: "0 0 8px rgba(107, 158, 122, 0.4)",
+                  }}
+                />
+              )}
             </Link>
           );
         })}
@@ -83,21 +70,33 @@ export function TopNav() {
 
       {/* Right Side */}
       <div className="flex items-center gap-2">
+        {/* Search trigger */}
         <button
           type="button"
           onClick={() => setCommandPaletteOpen(true)}
-          className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs transition-colors hover:bg-white/5"
-          style={{ color: "var(--color-nav-muted)" }}
+          className="flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] transition-all focus:w-[260px]"
+          style={{
+            color: "var(--color-nav-muted)",
+            backgroundColor: "rgba(255, 255, 255, 0.06)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            width: 200,
+          }}
         >
-          <Search className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Search</span>
-          <kbd className="ml-1 hidden rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium sm:inline">
-            &#x2318;K
+          <span>Search...</span>
+          <kbd className="ml-auto rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium">
+            {"\u2318"}K
           </kbd>
         </button>
 
-        <div className="ml-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-medium text-white">
-          B
+        {/* User avatar — initials on gradient green */}
+        <div
+          className="ml-2 flex h-8 w-8 items-center justify-center rounded-lg text-[11px] font-bold"
+          style={{
+            background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-700))",
+            color: "var(--color-primary-accent)",
+          }}
+        >
+          BD
         </div>
       </div>
     </header>

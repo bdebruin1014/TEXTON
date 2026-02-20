@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText, Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -130,9 +129,9 @@ function CapitalCalls() {
               e.stopPropagation();
               issueNotice.mutate(row.original.id);
             }}
-            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-blue-50"
+            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
           >
-            <FileText className="h-3 w-3" />
+            
             Issue Notice
           </button>
         ) : null,
@@ -153,7 +152,7 @@ function CapitalCalls() {
           onClick={() => addCall.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New Capital Call
         </button>
       </div>

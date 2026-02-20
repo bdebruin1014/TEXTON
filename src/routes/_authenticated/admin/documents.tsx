@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { FileText, Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -58,7 +57,7 @@ function DocumentsAdmin() {
           onClick={() => addTemplate.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           Create Document
         </button>
       </div>
@@ -72,14 +71,11 @@ function DocumentsAdmin() {
               key={template.id}
               className="rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/30"
             >
-              <div className="flex items-start gap-3">
-                <div className="rounded-lg bg-primary/10 p-2">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
+              <div>
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-semibold text-foreground">{template.name}</h3>
                   {template.category && (
-                    <span className="mt-1 inline-block rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium">
+                    <span className="mt-1 inline-block rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium">
                       {template.category}
                     </span>
                   )}

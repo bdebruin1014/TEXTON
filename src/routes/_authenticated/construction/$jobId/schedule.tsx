@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, CheckCircle, Circle, Clock, Play, Plus, Square } from "lucide-react";
+
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -109,16 +109,16 @@ function Schedule() {
 
   const completedCount = milestones.filter((m) => m.status === "Complete").length;
 
-  const statusIcon = (status: string) => {
+  const statusLabel = (status: string) => {
     switch (status) {
       case "Complete":
-        return <CheckCircle className="h-5 w-5 text-success" />;
+        return <span className="text-success font-bold">Done</span>;
       case "In Progress":
-        return <Clock className="h-5 w-5 text-warning" />;
+        return <span className="text-warning">Pending</span>;
       case "Blocked":
-        return <AlertTriangle className="h-5 w-5 text-destructive" />;
+        return <span className="text-destructive font-bold">!</span>;
       default:
-        return <Circle className="h-5 w-5 text-muted" />;
+        return <span className="text-muted">○</span>;
     }
   };
 
@@ -152,8 +152,7 @@ function Schedule() {
             onClick={() => addMilestone.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
-            Add Milestone
+            + Add Milestone
           </button>
         </div>
       </div>
@@ -161,7 +160,7 @@ function Schedule() {
       {/* Progress bar */}
       {milestones.length > 0 && (
         <div className="mb-6">
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div
               className="h-2 rounded-full bg-success transition-all"
               style={{ width: `${(completedCount / milestones.length) * 100}%` }}
@@ -179,7 +178,7 @@ function Schedule() {
               key={milestone.id}
               className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3"
             >
-              {statusIcon(milestone.status)}
+              {statusLabel(milestone.status)}
 
               <div className="min-w-0 flex-1">
                 <p
@@ -204,7 +203,6 @@ function Schedule() {
                     onClick={() => handleStart(milestone.id)}
                     className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary-50"
                   >
-                    <Play className="h-3 w-3" />
                     Start
                   </button>
                 )}
@@ -212,9 +210,8 @@ function Schedule() {
                   <button
                     type="button"
                     onClick={() => handleComplete(milestone.id)}
-                    className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-green-50"
+                    className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
                   >
-                    <CheckCircle className="h-3 w-3" />
                     Complete
                   </button>
                 )}
@@ -222,9 +219,8 @@ function Schedule() {
                   <button
                     type="button"
                     onClick={() => handleBlock(milestone.id)}
-                    className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-red-50"
+                    className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive-bg"
                   >
-                    <Square className="h-3 w-3" />
                     Block
                   </button>
                 )}

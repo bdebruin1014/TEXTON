@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -167,14 +166,14 @@ function AccountsPayable() {
               <button
                 type="button"
                 onClick={() => bulkAction.mutate("Approved")}
-                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-blue-50"
+                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
               >
                 Approve Selected ({selectedIds.size})
               </button>
               <button
                 type="button"
                 onClick={() => bulkAction.mutate("Paid")}
-                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-success transition-colors hover:bg-green-50"
+                className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-success transition-colors hover:bg-success-bg"
               >
                 Pay Selected ({selectedIds.size})
               </button>
@@ -185,7 +184,7 @@ function AccountsPayable() {
             onClick={() => addBill.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Bill
           </button>
         </div>

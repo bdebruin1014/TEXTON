@@ -1,5 +1,4 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface SidebarSection {
@@ -30,7 +29,7 @@ export function DetailSidebar({ backLabel, backPath, title, subtitle, sections }
         to={backPath}
         className="flex items-center gap-1 border-b border-border px-4 py-3 text-xs font-medium text-muted transition-colors hover:text-foreground"
       >
-        <ChevronLeft className="h-3.5 w-3.5" />
+        <span className="text-xs">{"\u2190"}</span>
         {backLabel}
       </Link>
 

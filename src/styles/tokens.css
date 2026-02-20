@@ -1,48 +1,95 @@
+/* TEK·TON Design System v3.2 */
 :root {
-  /* Primary - Deep forest green */
-  --color-primary: #1b3022;
+  /* ——— CORE TRIAD ——— */
+  --color-primary: #1B3022;
+  --color-primary-foreground: #FFFFFF;
   --color-primary-hover: #264733;
-  --color-primary-accent: #6b9e7a;
-  --color-primary-100: #dde6df;
-  --color-primary-50: #f1f5f4;
+  --color-primary-700: #2D5A3E;
+  --color-primary-accent: #6B9E7A;
+  --color-primary-100: #DDE6DF;
+  --color-primary-50: #F1F5F4;
 
-  /* Navigation */
-  --color-nav-bg: #112233;
-  --color-nav-muted: #94a3b8;
-  --color-nav-active: #48bb78;
+  /* ——— NAVIGATION ——— */
+  --color-nav-bg: #0D1B24;
+  --color-nav-foreground: #F1F5F9;
+  --color-nav-muted: #7B8FA3;
+  --color-nav-active: #6B9E7A;
 
-  /* Surfaces */
-  --color-background: #f1f5f9;
-  --color-card: #ffffff;
-  --color-sidebar: #ffffff;
+  /* ——— SURFACES ——— */
+  --color-background: #F0F3F7;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #112233;
+  --color-card-hover: #FAFBFC;
+  --color-sidebar: #FAFBFD;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #112233;
 
-  /* Text */
+  /* ——— TEXT HIERARCHY ——— */
   --color-foreground: #112233;
-  --color-muted: #64748b;
+  --color-text-secondary: #4A5568;
+  --color-muted: #8896A6;
+  --color-muted-foreground: #8896A6;
+  --color-text-hint: #A0AEC0;
 
-  /* Borders */
-  --color-border: #e2e8f0;
+  /* ——— BORDERS ——— */
+  --color-border: #E2E8F0;
+  --color-border-light: #EDF2F7;
+  --color-input: #E2E8F0;
+  --color-ring: #1B3022;
 
-  /* Status */
-  --color-success: #4a7a5b;
-  --color-success-bg: #dde6df;
-  --color-warning: #c4841d;
-  --color-warning-bg: #f3e8d0;
-  --color-info: #3b6fa0;
-  --color-info-bg: #dbeafe;
-  --color-destructive: #b84040;
-  --color-destructive-bg: #f0d4d4;
+  /* ——— STATUS — MUTED & DESATURATED ——— */
+  --color-success: #4A7A5B;
+  --color-success-bg: #E8EFEA;
+  --color-success-text: #2E5440;
+  --color-success-foreground: #FFFFFF;
 
-  /* Sidebar */
+  --color-warning: #9A7B4A;
+  --color-warning-bg: #F0EBE0;
+  --color-warning-text: #6B5530;
+
+  --color-info: #4A6B8A;
+  --color-info-bg: #E4ECF2;
+  --color-info-text: #34506B;
+
+  --color-destructive: #946060;
+  --color-destructive-bg: #F0E6E6;
+  --color-destructive-text: #6B3E3E;
+  --color-destructive-foreground: #FFFFFF;
+
+  /* ——— ACCENT ——— */
+  --color-accent: #F1F5F4;
+  --color-accent-foreground: #1B3022;
+
+  --color-secondary: #DDE6DF;
+  --color-secondary-foreground: #1B3022;
+
+  /* ——— CHART COLORS ——— */
+  --color-chart-1: #1B3022;
+  --color-chart-2: #4A6B8A;
+  --color-chart-3: #9A7B4A;
+  --color-chart-4: #6B5B80;
+  --color-chart-5: #946060;
+
+  /* ——— SHADOWS ——— */
+  --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);
+  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.06), 0 1px 2px rgba(17, 34, 51, 0.04);
+  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.08), 0 2px 4px rgba(17, 34, 51, 0.04);
+  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.10), 0 4px 8px rgba(17, 34, 51, 0.06);
+
+  /* ——— RADIUS ——— */
+  --radius: 0.625rem;
+  --radius-sm: 0.375rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+
+  /* ——— SIDEBAR ——— */
   --sidebar-width: 240px;
-  --sidebar-active-border: #1b3022;
-  --sidebar-active-bg: #f1f5f4;
-  --sidebar-active-text: #1b3022;
-  --sidebar-hover-bg: #f0fdf4;
+  --sidebar-active-border: #1B3022;
+  --sidebar-active-bg: #F1F5F4;
+  --sidebar-active-text: #1B3022;
+  --sidebar-hover-bg: #F1F5F4;
 
-  /* Right Panel */
+  /* ——— LAYOUT ——— */
   --right-panel-width: 260px;
-
-  /* Layout */
   --topnav-height: 52px;
 }

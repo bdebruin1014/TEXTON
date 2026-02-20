@@ -65,7 +65,7 @@ const columns: ColumnDef<Reconciliation, unknown>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const color = status === "Reconciled" ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800";
+      const color = status === "Reconciled" ? "bg-success-bg text-success-text" : "bg-warning-bg text-warning-text";
       return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
     },
   },

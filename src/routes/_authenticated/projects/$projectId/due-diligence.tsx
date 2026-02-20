@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle, Circle, Clock, Plus } from "lucide-react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { supabase } from "@/lib/supabase";
@@ -110,9 +109,9 @@ function DueDiligence() {
       id: "status-icon",
       cell: ({ row }) => {
         const status = row.original.status;
-        if (status === "Complete") return <CheckCircle className="h-4 w-4 text-success" />;
-        if (status === "In Progress") return <Clock className="h-4 w-4 text-warning" />;
-        return <Circle className="h-4 w-4 text-muted" />;
+        if (status === "Complete") return <span className="text-success font-bold">{"\u2022"}</span>;
+        if (status === "In Progress") return <span className="text-warning text-xs">Pending</span>;
+        return <span className="text-muted">{"\u25CB"}</span>;
       },
       size: 40,
     },
@@ -187,7 +186,7 @@ function DueDiligence() {
             onClick={() => addItem.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             Add Item
           </button>
         </div>
@@ -195,7 +194,7 @@ function DueDiligence() {
 
       {totalCount > 0 && (
         <div className="mb-4">
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div
               className="h-2 rounded-full bg-success transition-all"
               style={{ width: `${(completedCount / totalCount) * 100}%` }}

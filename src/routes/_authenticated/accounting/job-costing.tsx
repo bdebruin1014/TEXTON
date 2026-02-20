@@ -114,7 +114,7 @@ function JobCosting() {
         if (val == null) return "—";
         return (
           <div className="flex items-center gap-2">
-            <div className="h-1.5 w-16 rounded-full bg-gray-100">
+            <div className="h-1.5 w-16 rounded-full bg-accent">
               <div
                 className="h-1.5 rounded-full bg-primary transition-all"
                 style={{ width: `${Math.min(val * 100, 100)}%` }}

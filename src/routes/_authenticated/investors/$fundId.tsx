@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, Plus } from "lucide-react";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
@@ -148,7 +147,7 @@ function FundDetail() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const color = status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600";
+        const color = status === "Active" ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
       },
     },
@@ -159,7 +158,7 @@ function FundDetail() {
       {/* Header */}
       <div className="mb-6">
         <Link to="/investors" className="mb-3 flex items-center gap-1 text-sm text-primary hover:underline">
-          <ArrowLeft className="h-3.5 w-3.5" />
+          {"\u2190"}
           Back to Funds
         </Link>
         <h1 className="text-xl font-semibold text-foreground">{fund.name}</h1>
@@ -235,7 +234,7 @@ function FundDetail() {
             onClick={() => addInvestor.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-3.5 w-3.5" />
+            +
             Add Investor
           </button>
         </div>

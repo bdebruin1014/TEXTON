@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { ImageIcon, Trash2, Upload } from "lucide-react";
+
 import { useRef } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -86,7 +86,6 @@ function Photos() {
           onClick={() => fileInputRef.current?.click()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Upload className="h-4 w-4" />
           Upload Photos
         </button>
         <input
@@ -105,14 +104,13 @@ function Photos() {
         <EmptyState
           title="No photos"
           description="Upload construction progress photos"
-          icon={<ImageIcon className="h-12 w-12" />}
+         
           action={
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
             >
-              <Upload className="h-4 w-4" />
               Upload Photos
             </button>
           }
@@ -121,8 +119,7 @@ function Photos() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {photos.map((photo) => (
             <div key={photo.id} className="group relative rounded-lg border border-border bg-card overflow-hidden">
-              <div className="flex aspect-square items-center justify-center bg-gray-50">
-                <ImageIcon className="h-8 w-8 text-muted" />
+              <div className="flex aspect-square items-center justify-center bg-card-hover">
               </div>
               <div className="p-2">
                 <p className="truncate text-xs font-medium text-foreground">{photo.file_name}</p>
@@ -134,7 +131,7 @@ function Photos() {
                 onClick={() => deletePhoto.mutate(photo)}
                 className="absolute right-1 top-1 rounded bg-white/80 p-1 text-muted opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                Delete
               </button>
             </div>
           ))}

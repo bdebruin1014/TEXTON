@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
+
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -72,7 +72,7 @@ function Employees() {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
       cell: ({ row }) => {
         const val = row.getValue("department") as string | null;
-        return val ? <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
+        return val ? <span className="rounded bg-accent px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
       },
     },
     {
@@ -98,7 +98,7 @@ function Employees() {
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const color = status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600";
+        const color = status === "Active" ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
       },
     },
@@ -118,8 +118,7 @@ function Employees() {
           onClick={() => addEmployee.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
-          Add Employee
+          + Add Employee
         </button>
       </div>
 

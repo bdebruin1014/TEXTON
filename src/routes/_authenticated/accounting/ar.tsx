@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -94,7 +93,7 @@ function AccountsReceivable() {
       cell: ({ row }) => {
         const type = row.getValue("receivable_type") as string;
         return (
-          <span className={`text-xs font-medium ${type === "Draw Request" ? "text-primary" : "text-amber-700"}`}>
+          <span className={`text-xs font-medium ${type === "Draw Request" ? "text-primary" : "text-warning-text"}`}>
             {type}
           </span>
         );
@@ -162,9 +161,9 @@ function AccountsReceivable() {
           <button
             type="button"
             onClick={() => addDrawRequest.mutate()}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Draw Request
           </button>
           <button
@@ -172,7 +171,7 @@ function AccountsReceivable() {
             onClick={() => addInvoice.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Invoice
           </button>
         </div>

@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle, Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -100,7 +99,7 @@ function PurchaseOrders() {
       header: "Cost Code",
       cell: ({ row }) => {
         const val = row.getValue("cost_code") as string | null;
-        return val ? <span className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">{val}</span> : "—";
+        return val ? <span className="rounded bg-accent px-1.5 py-0.5 font-mono text-xs">{val}</span> : "—";
       },
     },
     {
@@ -135,9 +134,9 @@ function PurchaseOrders() {
               e.stopPropagation();
               approvePO.mutate(row.original.id);
             }}
-            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-green-50"
+            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
           >
-            <CheckCircle className="h-3 w-3" />
+            <span className="text-success font-bold">{"\u2022"}</span>
             Approve
           </button>
         ) : null,
@@ -159,7 +158,7 @@ function PurchaseOrders() {
           onClick={() => addPO.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New PO
         </button>
       </div>

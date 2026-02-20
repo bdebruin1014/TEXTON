@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle, Circle, Plus, Trash2 } from "lucide-react";
+
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -90,9 +90,9 @@ function PunchList() {
             }}
           >
             {item.status === "Completed" ? (
-              <CheckCircle className="h-4 w-4 text-success" />
+              <span className="text-success font-bold">Done</span>
             ) : (
-              <Circle className="h-4 w-4 text-muted" />
+              <span className="text-muted">○</span>
             )}
           </button>
         );
@@ -144,7 +144,7 @@ function PunchList() {
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
         >
-          <Trash2 className="h-4 w-4" />
+          Delete
         </button>
       ),
     },
@@ -166,15 +166,14 @@ function PunchList() {
           onClick={() => addItem.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
-          Add Punch Item
+          + Add Punch Item
         </button>
       </div>
 
       {/* Progress */}
       {items.length > 0 && (
         <div className="mb-4">
-          <div className="h-2 w-full rounded-full bg-gray-100">
+          <div className="h-2 w-full rounded-full bg-accent">
             <div
               className="h-2 rounded-full bg-success transition-all"
               style={{ width: `${(completedCount / items.length) * 100}%` }}

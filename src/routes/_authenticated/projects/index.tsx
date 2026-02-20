@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FolderKanban, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
@@ -106,7 +105,7 @@ function ProjectsIndex() {
             onClick={handleCreate}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             New Project
           </button>
         </div>
@@ -118,14 +117,14 @@ function ProjectsIndex() {
           <EmptyState
             title="No projects yet"
             description="Create your first project to get started"
-            icon={<FolderKanban className="h-12 w-12" />}
+           
             action={
               <button
                 type="button"
                 onClick={handleCreate}
                 className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               >
-                <Plus className="h-4 w-4" />
+                +
                 New Project
               </button>
             }

@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -59,7 +58,7 @@ function Permissions() {
           onClick={() => addGroup.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           Add Permission Group
         </button>
       </div>
@@ -96,14 +95,14 @@ function Permissions() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 text-xs text-muted">
-                    <Users className="h-3.5 w-3.5" />
+                    
                     {activeGroup.member_count ?? 0} members
                   </span>
                   <button
                     type="button"
-                    className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-blue-50"
+                    className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
                   >
-                    <Plus className="h-3 w-3" />
+                    +
                     Add User
                   </button>
                 </div>
@@ -115,7 +114,7 @@ function Permissions() {
                 {activeGroup.permissions && activeGroup.permissions.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {activeGroup.permissions.map((perm) => (
-                      <span key={perm} className="rounded bg-gray-100 px-2 py-1 text-xs font-medium">
+                      <span key={perm} className="rounded bg-accent px-2 py-1 text-xs font-medium">
                         {perm}
                       </span>
                     ))}

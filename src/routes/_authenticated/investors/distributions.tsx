@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText, Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -91,7 +90,7 @@ function Distributions() {
       header: "Type",
       cell: ({ row }) => {
         const val = row.getValue("distribution_type") as string | null;
-        return val ? <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
+        return val ? <span className="rounded bg-accent px-1.5 py-0.5 text-xs font-medium">{val}</span> : "—";
       },
     },
     {
@@ -126,9 +125,9 @@ function Distributions() {
               e.stopPropagation();
               issueNotice.mutate(row.original.id);
             }}
-            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-blue-50"
+            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
           >
-            <FileText className="h-3 w-3" />
+            
             Issue Notice
           </button>
         ) : null,
@@ -149,7 +148,7 @@ function Distributions() {
           onClick={() => addDistribution.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New Distribution
         </button>
       </div>

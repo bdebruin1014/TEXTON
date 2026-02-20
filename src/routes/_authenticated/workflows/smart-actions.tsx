@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus, Zap } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -52,7 +51,7 @@ function SmartActions() {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Action Name" />,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Zap className="h-3.5 w-3.5 text-warning" />
+          
           <span className="font-medium">{row.getValue("name")}</span>
         </div>
       ),
@@ -63,7 +62,7 @@ function SmartActions() {
       cell: ({ row }) => {
         const val = row.getValue("trigger_event") as string | null;
         return val ? (
-          <span className="rounded bg-amber-50 px-1.5 py-0.5 text-xs font-medium text-amber-800">{val}</span>
+          <span className="rounded bg-warning-bg px-1.5 py-0.5 text-xs font-medium text-warning-text">{val}</span>
         ) : (
           "—"
         );
@@ -80,7 +79,7 @@ function SmartActions() {
       cell: ({ row }) => {
         const val = row.getValue("action_type") as string | null;
         return val ? (
-          <span className="rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-800">{val}</span>
+          <span className="rounded bg-info-bg px-1.5 py-0.5 text-xs font-medium text-info-text">{val}</span>
         ) : (
           "—"
         );
@@ -110,7 +109,7 @@ function SmartActions() {
           onClick={() => addAction.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New Smart Action
         </button>
       </div>

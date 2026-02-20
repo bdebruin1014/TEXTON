@@ -155,7 +155,7 @@ export function CommandPalette() {
                   className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-foreground aria-selected:bg-primary-50"
                 >
                   <span>{record.label}</span>
-                  <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-muted">
+                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium text-muted">
                     {record.type}
                   </span>
                 </Command.Item>

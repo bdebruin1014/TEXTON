@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { BarChart3, FolderKanban, HardHat, Home } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KpiCard } from "@/components/shared/KpiCard";
 import { DashboardSkeleton } from "@/components/shared/Skeleton";
@@ -20,6 +19,15 @@ interface Opportunity {
   estimated_value: number | null;
   updated_at: string;
 }
+
+const QUICK_ACTIONS = [
+  { label: "Daily Log", borderColor: "var(--color-success)" },
+  { label: "New PO", borderColor: "var(--color-info)" },
+  { label: "Inspection", borderColor: "var(--color-warning)" },
+  { label: "Create RFI", borderColor: "var(--color-destructive)" },
+  { label: "Punch List", borderColor: "#6B5B80" },
+  { label: "Reports", borderColor: "var(--color-muted-foreground)" },
+] as const;
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -51,9 +59,40 @@ function DashboardPage() {
   return (
     <div>
       {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
-        <p className="mt-0.5 text-sm text-muted">Overview of your operations</p>
+      <div className="mb-6 flex items-end justify-between">
+        <div>
+          <h1 className="text-[22px] font-bold text-foreground">Dashboard</h1>
+          <p className="mt-0.5 text-sm text-muted">Overview of your operations</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="rounded-[var(--radius)] border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-card-hover"
+          >
+            Refresh
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/pipeline" })}
+            className="rounded-[var(--radius)] bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover"
+          >
+            + New Opportunity
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Actions — text-only cards with colored top borders */}
+      <div className="mb-6 grid grid-cols-3 gap-2.5 sm:grid-cols-6">
+        {QUICK_ACTIONS.map((action) => (
+          <button
+            key={action.label}
+            type="button"
+            className="bg-card border border-border rounded-[var(--radius-lg)] px-3 py-4 text-center shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+            style={{ borderTopWidth: 3, borderTopColor: action.borderColor }}
+          >
+            <span className="text-xs font-semibold text-text-secondary">{action.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* KPI Cards */}
@@ -69,32 +108,20 @@ function DashboardPage() {
         <KpiCard label="Pending Closings" value="0" sub="Under contract" accentColor="var(--color-success)" />
       </div>
 
-      {/* Data Tables */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      {/* Content Grid — text-only headers, no icons */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Active Projects */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <FolderKanban className="h-4 w-4 text-muted" />
-            <h2 className="text-sm font-semibold text-foreground">Active Projects</h2>
-          </div>
+        <DashboardCard title="Active Projects" viewAllPath="/projects">
           <EmptyState title="No projects yet" description="Create your first project to get started" />
-        </div>
+        </DashboardCard>
 
         {/* Active Jobs */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <HardHat className="h-4 w-4 text-muted" />
-            <h2 className="text-sm font-semibold text-foreground">Active Jobs</h2>
-          </div>
+        <DashboardCard title="Active Jobs" viewAllPath="/construction">
           <EmptyState title="No jobs yet" description="Jobs are created from project lot inventory" />
-        </div>
+        </DashboardCard>
 
         {/* Pipeline */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <BarChart3 className="h-4 w-4 text-muted" />
-            <h2 className="text-sm font-semibold text-foreground">Pipeline</h2>
-          </div>
+        <DashboardCard title="Pipeline" viewAllPath="/pipeline">
           {opportunities.length === 0 ? (
             <EmptyState title="No opportunities yet" description="Add deals to your pipeline" />
           ) : (
@@ -103,14 +130,14 @@ function DashboardPage() {
                 <button
                   key={opp.id}
                   type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-primary-50"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
                   onClick={() =>
                     navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: opp.id } })
                   }
                 >
                   <div>
-                    <p className="text-sm font-medium text-foreground">{opp.opportunity_name}</p>
-                    <p className="text-xs text-muted">
+                    <p className="text-[13px] font-semibold text-foreground">{opp.opportunity_name}</p>
+                    <p className="text-[11px] text-muted">
                       {opp.estimated_value ? formatCurrency(opp.estimated_value) : "No value set"}
                     </p>
                   </div>
@@ -119,20 +146,43 @@ function DashboardPage() {
               ))}
             </div>
           )}
-        </div>
+        </DashboardCard>
 
         {/* Upcoming Closings */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <Home className="h-4 w-4 text-muted" />
-            <h2 className="text-sm font-semibold text-foreground">Upcoming Closings</h2>
-          </div>
+        <DashboardCard title="Upcoming Closings" viewAllPath="/disposition">
           <EmptyState
             title="No closings scheduled"
             description="Closings appear when dispositions are under contract"
           />
-        </div>
+        </DashboardCard>
       </div>
+    </div>
+  );
+}
+
+function DashboardCard({
+  title,
+  viewAllPath,
+  children,
+}: {
+  title: string;
+  viewAllPath: string;
+  children: React.ReactNode;
+}) {
+  const navigate = useNavigate();
+  return (
+    <div className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-px">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        <button
+          type="button"
+          onClick={() => navigate({ to: viewAllPath })}
+          className="text-xs font-medium text-muted transition-colors hover:text-foreground"
+        >
+          {"View All \u2192"}
+        </button>
+      </div>
+      {children}
     </div>
   );
 }

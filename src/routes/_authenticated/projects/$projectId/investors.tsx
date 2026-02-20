@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
@@ -188,7 +187,7 @@ function Investors() {
           onClick={() => addInvestor.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           Link Investor
         </button>
       </div>

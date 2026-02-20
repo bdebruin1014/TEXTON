@@ -1,5 +1,4 @@
 import type { Table } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DataTablePaginationProps<TData> {
@@ -20,22 +19,22 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             disabled={!table.getCanPreviousPage()}
             onClick={() => table.previousPage()}
             className={cn(
-              "rounded-md border border-border p-1 transition-colors",
+              "rounded-md border border-border px-2 py-1 text-xs font-medium transition-colors",
               table.getCanPreviousPage() ? "hover:bg-primary-50 text-foreground" : "text-muted opacity-50",
             )}
           >
-            <ChevronLeft className="h-4 w-4" />
+            Prev
           </button>
           <button
             type="button"
             disabled={!table.getCanNextPage()}
             onClick={() => table.nextPage()}
             className={cn(
-              "rounded-md border border-border p-1 transition-colors",
+              "rounded-md border border-border px-2 py-1 text-xs font-medium transition-colors",
               table.getCanNextPage() ? "hover:bg-primary-50 text-foreground" : "text-muted opacity-50",
             )}
           >
-            <ChevronRight className="h-4 w-4" />
+            Next
           </button>
         </div>
       </div>

@@ -56,11 +56,11 @@ function ReconciliationDashboard() {
   const statusColor = (status: string) => {
     switch (status) {
       case "Reconciled":
-        return "bg-green-100 text-green-800";
+        return "bg-success-bg text-success-text";
       case "In Progress":
-        return "bg-amber-100 text-amber-800";
+        return "bg-warning-bg text-warning-text";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-accent text-muted-foreground";
     }
   };
 

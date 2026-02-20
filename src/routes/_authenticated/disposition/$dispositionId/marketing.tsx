@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { ImageIcon, Trash2, Upload } from "lucide-react";
+
 import { useRef } from "react";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -181,7 +181,6 @@ function Marketing() {
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            <Upload className="h-3.5 w-3.5" />
             Upload Photos
           </button>
           <input
@@ -196,15 +195,13 @@ function Marketing() {
 
         {photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border py-12">
-            <ImageIcon className="mb-2 h-8 w-8 text-muted" />
             <p className="text-sm text-muted">No listing photos</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {photos.map((photo) => (
-              <div key={photo.id} className="group relative overflow-hidden rounded-lg border border-border bg-gray-50">
+              <div key={photo.id} className="group relative overflow-hidden rounded-lg border border-border bg-card-hover">
                 <div className="flex aspect-square items-center justify-center">
-                  <ImageIcon className="h-8 w-8 text-muted" />
                 </div>
                 <div className="p-2">
                   <p className="truncate text-xs font-medium text-foreground">{photo.file_name}</p>
@@ -215,7 +212,7 @@ function Marketing() {
                   onClick={() => deletePhoto.mutate(photo)}
                   className="absolute right-1 top-1 rounded bg-white/80 p-1 text-muted opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete
                 </button>
               </div>
             ))}

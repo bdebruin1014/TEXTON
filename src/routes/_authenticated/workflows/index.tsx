@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -110,10 +109,10 @@ function WorkflowsList() {
         const status = row.getValue("status") as string;
         const color =
           status === "Active"
-            ? "bg-green-100 text-green-800"
+            ? "bg-success-bg text-success-text"
             : status === "Draft"
-              ? "bg-amber-100 text-amber-800"
-              : "bg-gray-100 text-gray-600";
+              ? "bg-warning-bg text-warning-text"
+              : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
       },
     },
@@ -131,7 +130,7 @@ function WorkflowsList() {
           onClick={() => addWorkflow.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
-          <Plus className="h-4 w-4" />
+          +
           New Workflow
         </button>
       </div>

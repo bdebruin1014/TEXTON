@@ -59,15 +59,15 @@ function AuditLog() {
       cell: ({ row }) => {
         const action = row.getValue("action") as string;
         const colors: Record<string, string> = {
-          Create: "bg-green-100 text-green-800",
-          Update: "bg-blue-100 text-blue-800",
-          Delete: "bg-red-100 text-red-800",
-          Login: "bg-purple-100 text-purple-800",
-          Export: "bg-amber-100 text-amber-800",
+          Create: "bg-success-bg text-success-text",
+          Update: "bg-info-bg text-info-text",
+          Delete: "bg-destructive-bg text-destructive-text",
+          Login: "bg-accent text-foreground",
+          Export: "bg-warning-bg text-warning-text",
         };
         return (
           <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${colors[action] ?? "bg-gray-100 text-gray-600"}`}
+            className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${colors[action] ?? "bg-accent text-muted-foreground"}`}
           >
             {action}
           </span>
@@ -118,7 +118,7 @@ function AuditLog() {
               type="button"
               onClick={() => setActionFilter(filter)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                actionFilter === filter ? "bg-primary text-white" : "bg-gray-100 text-muted hover:bg-gray-200"
+                actionFilter === filter ? "bg-primary text-white" : "bg-accent text-muted hover:bg-border"
               }`}
             >
               {filter}

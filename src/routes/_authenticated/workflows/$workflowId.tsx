@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, GripVertical, Plus, Save, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -172,7 +171,7 @@ function WorkflowDetail() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <Link to="/workflows" className="mb-3 flex items-center gap-1 text-sm text-primary hover:underline">
-            <ArrowLeft className="h-3.5 w-3.5" />
+            {"\u2190"}
             Back to Workflows
           </Link>
           <h1 className="text-xl font-semibold text-foreground">{workflow.name}</h1>
@@ -182,9 +181,9 @@ function WorkflowDetail() {
           <button
             type="button"
             onClick={() => addMilestone.mutate()}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            <Plus className="h-4 w-4" />
+            +
             Add Milestone
           </button>
           <button
@@ -193,7 +192,7 @@ function WorkflowDetail() {
             disabled={!hasChanges || saveChanges.isPending}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Save className="h-4 w-4" />
+            
             {saveChanges.isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
@@ -243,9 +242,9 @@ function WorkflowDetail() {
                 <button
                   type="button"
                   onClick={() => addTask.mutate(milestone.id)}
-                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-blue-50"
+                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
                 >
-                  <Plus className="h-3 w-3" />
+                  +
                   Add Task
                 </button>
               </div>
@@ -257,7 +256,7 @@ function WorkflowDetail() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-border bg-gray-50 text-xs text-muted">
+                      <tr className="border-b border-border bg-card-hover text-xs text-muted">
                         <th className="w-8 px-2 py-2" />
                         <th className="px-3 py-2 text-left font-medium">Task Name</th>
                         <th className="px-3 py-2 text-left font-medium">Assigned When</th>
@@ -270,9 +269,9 @@ function WorkflowDetail() {
                     </thead>
                     <tbody>
                       {milestone.tasks.map((task) => (
-                        <tr key={task.id} className="border-b border-border last:border-b-0 hover:bg-gray-50">
+                        <tr key={task.id} className="border-b border-border last:border-b-0 hover:bg-card-hover">
                           <td className="px-2 py-1.5 text-center">
-                            <GripVertical className="mx-auto h-3.5 w-3.5 text-muted" />
+                            
                           </td>
                           <td className="px-3 py-1.5">
                             <input
@@ -332,9 +331,9 @@ function WorkflowDetail() {
                             <button
                               type="button"
                               onClick={() => deleteTask.mutate(task.id)}
-                              className="rounded p-1 text-muted transition-colors hover:bg-red-50 hover:text-destructive"
+                              className="rounded p-1 text-muted transition-colors hover:bg-destructive-bg hover:text-destructive"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              
                             </button>
                           </td>
                         </tr>
