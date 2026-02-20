@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
 import { TableSkeleton } from "@/components/shared/Skeleton";
@@ -106,16 +107,18 @@ function PipelineIndex() {
   const totalValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
 
   const handleCreate = async () => {
-    const { data, error } = await supabase
-      .from("opportunities")
-      .insert({ opportunity_name: "New Opportunity", status: "New Lead" })
-      .select()
-      .single();
-    if (error) {
-      console.error("Failed to create opportunity:", error);
-      return;
+    try {
+      const { data, error } = await supabase
+        .from("opportunities")
+        .insert({ opportunity_name: "New Opportunity", status: "New Lead" })
+        .select()
+        .single();
+      if (error) throw error;
+      toast.success("Opportunity created");
+      navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: data.id } });
+    } catch {
+      toast.error("Failed to create opportunity");
     }
-    navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: data.id } });
   };
 
   const sidebar = (

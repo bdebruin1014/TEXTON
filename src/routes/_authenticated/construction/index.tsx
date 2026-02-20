@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -118,16 +119,18 @@ function ConstructionIndex() {
   const totalSpent = jobs.reduce((sum, j) => sum + (j.spent_total ?? 0), 0);
 
   const handleCreate = async () => {
-    const { data, error } = await supabase
-      .from("jobs")
-      .insert({ lot_number: "New", status: "Pre-Construction" })
-      .select()
-      .single();
-    if (error) {
-      console.error("Failed to create job:", error);
-      return;
+    try {
+      const { data, error } = await supabase
+        .from("jobs")
+        .insert({ lot_number: "New", status: "Pre-Construction" })
+        .select()
+        .single();
+      if (error) throw error;
+      toast.success("Job created");
+      navigate({ to: "/construction/$jobId/job-info", params: { jobId: data.id } });
+    } catch {
+      toast.error("Failed to create job");
     }
-    navigate({ to: "/construction/$jobId/job-info", params: { jobId: data.id } });
   };
 
   const sidebar = (

@@ -20,8 +20,8 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "useKeyWithClickEvents": "off",
-        "noLabelWithoutControl": "off"
+        "useKeyWithClickEvents": "warn",
+        "noLabelWithoutControl": "warn"
       }
     }
   },

@@ -18,6 +18,8 @@ export function RightPanel() {
 
   return (
     <aside
+      role="complementary"
+      aria-label="Tasks, notes, and activity panel"
       className="flex h-full flex-col border-l border-border bg-card"
       style={{ width: "var(--right-panel-width)" }}
     >
@@ -41,6 +43,7 @@ export function RightPanel() {
         <button
           type="button"
           onClick={() => setRightPanelOpen(false)}
+          aria-label="Close panel"
           className="rounded-md px-1.5 py-0.5 text-xs text-muted transition-colors hover:text-foreground"
         >
           {"\u00D7"}

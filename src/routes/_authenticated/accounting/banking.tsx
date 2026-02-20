@@ -61,7 +61,6 @@ function Banking() {
     const file = e.target.files?.[0];
     if (file) {
       // Placeholder: in production, parse CSV/OFX and insert bank_transactions
-      console.log("Import file:", file.name);
     }
     e.target.value = "";
   };

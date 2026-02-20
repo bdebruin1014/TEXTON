@@ -77,8 +77,7 @@ function CreateJobs() {
       // Update contract status
       await updateContract.mutateAsync({ status: "Jobs Created" });
     } catch (err) {
-      console.error("Failed to create jobs:", err);
-      alert("Failed to create jobs. See console for details.");
+      alert("Failed to create jobs. Please try again.");
     } finally {
       setCreating(false);
     }

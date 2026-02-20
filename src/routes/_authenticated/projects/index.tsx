@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -66,16 +67,18 @@ function ProjectsIndex() {
   const totalBudget = projects.reduce((sum, p) => sum + (p.total_budget ?? 0), 0);
 
   const handleCreate = async () => {
-    const { data, error } = await supabase
-      .from("projects")
-      .insert({ project_name: "New Project", status: "Pre-Development" })
-      .select()
-      .single();
-    if (error) {
-      console.error("Failed to create project:", error);
-      return;
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .insert({ project_name: "New Project", status: "Pre-Development" })
+        .select()
+        .single();
+      if (error) throw error;
+      toast.success("Project created");
+      navigate({ to: "/projects/$projectId/basic-info", params: { projectId: data.id } });
+    } catch {
+      toast.error("Failed to create project");
     }
-    navigate({ to: "/projects/$projectId/basic-info", params: { projectId: data.id } });
   };
 
   const sidebar = (

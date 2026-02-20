@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -112,14 +113,16 @@ function DispositionIndex() {
     .reduce((sum, d) => sum + (d.contract_price ?? 0), 0);
 
   const handleCreate = async () => {
-    const { data, error } = await supabase.from("dispositions").insert({ status: "Lead" }).select().single();
-    if (error) {
-      console.error("Failed to create disposition:", error);
-      return;
+    try {
+      const { data, error } = await supabase.from("dispositions").insert({ status: "Lead" }).select().single();
+      if (error) throw error;
+      toast.success("Disposition created");
+      navigate({
+        to: `/disposition/${data.id}/overview` as string,
+      });
+    } catch {
+      toast.error("Failed to create disposition");
     }
-    navigate({
-      to: `/disposition/${data.id}/overview` as string,
-    });
   };
 
   const sidebar = (

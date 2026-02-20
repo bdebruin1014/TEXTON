@@ -16,6 +16,10 @@ const CARDS = [
   { label: "Integrations", description: "Microsoft 365, DocuSeal, Bank Feeds", path: "/admin/integrations" },
   { label: "Municipalities", description: "Jurisdiction fee schedules", path: "/admin/municipalities" },
   { label: "E-Sign Templates", description: "DocuSeal template management", path: "/admin/esign-templates" },
+  { label: "Site Work Items", description: "Standard site work line items", path: "/admin/site-work-items" },
+  { label: "Upgrade Packages", description: "Exterior, interior & custom upgrades", path: "/admin/upgrade-packages" },
+  { label: "Pricing Defaults", description: "Default pricing configuration values", path: "/admin/pricing-defaults" },
+  { label: "Pricing Exclusions", description: "Items excluded from pricing", path: "/admin/pricing-exclusions" },
   { label: "Audit Log", description: "System-wide audit trail", path: "/admin/audit-log" },
 ] as const;
 

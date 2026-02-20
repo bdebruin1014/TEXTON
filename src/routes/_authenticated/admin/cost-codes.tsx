@@ -51,7 +51,6 @@ function CostCodes() {
     const file = e.target.files?.[0];
     if (file) {
       // Placeholder: parse CSV and bulk insert
-      console.log("Import cost codes from:", file.name);
     }
     e.target.value = "";
   };

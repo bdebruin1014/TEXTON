@@ -127,7 +127,6 @@ function RchContractsIndex() {
       .select()
       .single();
     if (error) {
-      console.error("Failed to create contract:", error);
       return;
     }
     navigate({ to: "/operations/rch-contracts/$contractId/overview", params: { contractId: data.id } });

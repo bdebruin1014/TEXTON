@@ -1,17 +1,16 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
+export const Route = createFileRoute("/forgot-password")({
+  component: ForgotPasswordPage,
 });
 
-function LoginPage() {
-  const { signIn } = useAuth();
-  const navigate = useNavigate();
+function ForgotPasswordPage() {
+  const { resetPasswordForEmail } = useAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -20,29 +19,54 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      await signIn(email, password);
-      navigate({ to: "/dashboard" });
+      await resetPasswordForEmail(email);
+      setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication failed");
+      setError(err instanceof Error ? err.message : "Failed to send reset email");
     } finally {
       setLoading(false);
     }
   }
 
+  if (sent) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-sm text-center">
+          <h1 className="text-3xl font-bold tracking-[0.15em] text-primary">TEK{"\u00B7"}TON</h1>
+          <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="mb-2 text-lg font-semibold text-foreground">Check your email</div>
+            <p className="text-sm text-muted">
+              If an account exists for <strong>{email}</strong>, we sent a password reset link. Check your inbox and
+              spam folder.
+            </p>
+            <Link
+              to="/login"
+              className="mt-6 inline-block rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+            >
+              Back to Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-sm">
-        {/* Logo */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-[0.15em] text-primary">TEK{"\u00B7"}TON</h1>
-          <p className="mt-1 text-sm text-muted">Sign in to your account</p>
+          <p className="mt-1 text-sm text-muted">Reset your password</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 shadow-sm">
           {error && <div className="mb-4 rounded-lg bg-destructive-bg px-3 py-2 text-sm text-destructive">{error}</div>}
 
-          <div className="mb-4">
+          <p className="mb-4 text-sm text-muted">
+            Enter your email address and we'll send you a link to reset your password.
+          </p>
+
+          <div className="mb-6">
             <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
               Email
             </label>
@@ -57,39 +81,19 @@ function LoginPage() {
             />
           </div>
 
-          <div className="mb-4">
-            <div className="mb-1.5 flex items-center justify-between">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </label>
-              <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline">
-                Forgot password?
-              </Link>
-            </div>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-              placeholder="Enter your password"
-            />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
             className="w-full rounded-lg bg-button px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
 
         <p className="mt-4 text-center text-sm text-muted">
-          Don't have an account?{" "}
-          <Link to="/signup" className="font-medium text-primary hover:underline">
-            Create Account
+          Remember your password?{" "}
+          <Link to="/login" className="font-medium text-primary hover:underline">
+            Sign In
           </Link>
         </p>
       </div>

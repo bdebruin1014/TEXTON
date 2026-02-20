@@ -9,11 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UploadTokenRouteImport } from './routes/upload/$token'
 import { Route as ShareTokenRouteImport } from './routes/share/$token'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedWorkflowsRouteRouteImport } from './routes/_authenticated/workflows/route'
 import { Route as AuthenticatedPurchasingRouteRouteImport } from './routes/_authenticated/purchasing/route'
@@ -53,6 +57,10 @@ import { Route as AuthenticatedContactsEmployeesRouteImport } from './routes/_au
 import { Route as AuthenticatedContactsCustomersRouteImport } from './routes/_authenticated/contacts/customers'
 import { Route as AuthenticatedContactsCompanyIdRouteImport } from './routes/_authenticated/contacts/$companyId'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminUpgradePackagesRouteImport } from './routes/_authenticated/admin/upgrade-packages'
+import { Route as AuthenticatedAdminSiteWorkItemsRouteImport } from './routes/_authenticated/admin/site-work-items'
+import { Route as AuthenticatedAdminPricingExclusionsRouteImport } from './routes/_authenticated/admin/pricing-exclusions'
+import { Route as AuthenticatedAdminPricingDefaultsRouteImport } from './routes/_authenticated/admin/pricing-defaults'
 import { Route as AuthenticatedAdminPermissionsRouteImport } from './routes/_authenticated/admin/permissions'
 import { Route as AuthenticatedAdminMunicipalitiesRouteImport } from './routes/_authenticated/admin/municipalities'
 import { Route as AuthenticatedAdminIntegrationsRouteImport } from './routes/_authenticated/admin/integrations'
@@ -175,9 +183,24 @@ import { Route as AuthenticatedOperationsRchContractsContractIdContractPreviewRo
 import { Route as AuthenticatedOperationsRchContractsContractIdBudgetRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/budget'
 import { Route as AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/documents/folder-templates/$templateId'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -198,6 +221,11 @@ const ShareTokenRoute = ShareTokenRouteImport.update({
   id: '/share/$token',
   path: '/share/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -428,6 +456,30 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminUpgradePackagesRoute =
+  AuthenticatedAdminUpgradePackagesRouteImport.update({
+    id: '/upgrade-packages',
+    path: '/upgrade-packages',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSiteWorkItemsRoute =
+  AuthenticatedAdminSiteWorkItemsRouteImport.update({
+    id: '/site-work-items',
+    path: '/site-work-items',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPricingExclusionsRoute =
+  AuthenticatedAdminPricingExclusionsRouteImport.update({
+    id: '/pricing-exclusions',
+    path: '/pricing-exclusions',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPricingDefaultsRoute =
+  AuthenticatedAdminPricingDefaultsRouteImport.update({
+    id: '/pricing-defaults',
+    path: '/pricing-defaults',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminPermissionsRoute =
   AuthenticatedAdminPermissionsRouteImport.update({
     id: '/permissions',
@@ -1169,7 +1221,10 @@ const AuthenticatedAdminDocumentsFolderTemplatesTemplateIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/accounting': typeof AuthenticatedAccountingRouteRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/construction': typeof AuthenticatedConstructionRouteRouteWithChildren
@@ -1181,6 +1236,7 @@ export interface FileRoutesByFullPath {
   '/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
   '/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
@@ -1210,6 +1266,10 @@ export interface FileRoutesByFullPath {
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
+  '/admin/pricing-defaults': typeof AuthenticatedAdminPricingDefaultsRoute
+  '/admin/pricing-exclusions': typeof AuthenticatedAdminPricingExclusionsRoute
+  '/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
+  '/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/contacts/customers': typeof AuthenticatedContactsCustomersRoute
@@ -1335,8 +1395,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
   '/accounting/aggregate-payments': typeof AuthenticatedAccountingAggregatePaymentsRoute
@@ -1361,6 +1425,10 @@ export interface FileRoutesByTo {
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
+  '/admin/pricing-defaults': typeof AuthenticatedAdminPricingDefaultsRoute
+  '/admin/pricing-exclusions': typeof AuthenticatedAdminPricingExclusionsRoute
+  '/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
+  '/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/contacts/customers': typeof AuthenticatedContactsCustomersRoute
@@ -1488,7 +1556,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/_authenticated/accounting': typeof AuthenticatedAccountingRouteRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/construction': typeof AuthenticatedConstructionRouteRouteWithChildren
@@ -1500,6 +1571,7 @@ export interface FileRoutesById {
   '/_authenticated/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
   '/_authenticated/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
@@ -1529,6 +1601,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/_authenticated/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/_authenticated/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
+  '/_authenticated/admin/pricing-defaults': typeof AuthenticatedAdminPricingDefaultsRoute
+  '/_authenticated/admin/pricing-exclusions': typeof AuthenticatedAdminPricingExclusionsRoute
+  '/_authenticated/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
+  '/_authenticated/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/_authenticated/contacts/customers': typeof AuthenticatedContactsCustomersRoute
@@ -1656,7 +1732,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/accounting'
     | '/admin'
     | '/construction'
@@ -1668,6 +1747,7 @@ export interface FileRouteTypes {
     | '/purchasing'
     | '/workflows'
     | '/dashboard'
+    | '/settings'
     | '/share/$token'
     | '/upload/$token'
     | '/accounting/reconciliations'
@@ -1697,6 +1777,10 @@ export interface FileRouteTypes {
     | '/admin/integrations'
     | '/admin/municipalities'
     | '/admin/permissions'
+    | '/admin/pricing-defaults'
+    | '/admin/pricing-exclusions'
+    | '/admin/site-work-items'
+    | '/admin/upgrade-packages'
     | '/admin/users'
     | '/contacts/$companyId'
     | '/contacts/customers'
@@ -1822,8 +1906,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/dashboard'
+    | '/settings'
     | '/share/$token'
     | '/upload/$token'
     | '/accounting/aggregate-payments'
@@ -1848,6 +1936,10 @@ export interface FileRouteTypes {
     | '/admin/integrations'
     | '/admin/municipalities'
     | '/admin/permissions'
+    | '/admin/pricing-defaults'
+    | '/admin/pricing-exclusions'
+    | '/admin/site-work-items'
+    | '/admin/upgrade-packages'
     | '/admin/users'
     | '/contacts/$companyId'
     | '/contacts/customers'
@@ -1974,7 +2066,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/_authenticated/accounting'
     | '/_authenticated/admin'
     | '/_authenticated/construction'
@@ -1986,6 +2081,7 @@ export interface FileRouteTypes {
     | '/_authenticated/purchasing'
     | '/_authenticated/workflows'
     | '/_authenticated/dashboard'
+    | '/_authenticated/settings'
     | '/share/$token'
     | '/upload/$token'
     | '/_authenticated/accounting/reconciliations'
@@ -2015,6 +2111,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/integrations'
     | '/_authenticated/admin/municipalities'
     | '/_authenticated/admin/permissions'
+    | '/_authenticated/admin/pricing-defaults'
+    | '/_authenticated/admin/pricing-exclusions'
+    | '/_authenticated/admin/site-work-items'
+    | '/_authenticated/admin/upgrade-packages'
     | '/_authenticated/admin/users'
     | '/_authenticated/contacts/$companyId'
     | '/_authenticated/contacts/customers'
@@ -2142,18 +2242,42 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
   ShareTokenRoute: typeof ShareTokenRoute
   UploadTokenRoute: typeof UploadTokenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -2183,6 +2307,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/share/$token'
       preLoaderRoute: typeof ShareTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -2455,6 +2586,34 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/upgrade-packages': {
+      id: '/_authenticated/admin/upgrade-packages'
+      path: '/upgrade-packages'
+      fullPath: '/admin/upgrade-packages'
+      preLoaderRoute: typeof AuthenticatedAdminUpgradePackagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/site-work-items': {
+      id: '/_authenticated/admin/site-work-items'
+      path: '/site-work-items'
+      fullPath: '/admin/site-work-items'
+      preLoaderRoute: typeof AuthenticatedAdminSiteWorkItemsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/pricing-exclusions': {
+      id: '/_authenticated/admin/pricing-exclusions'
+      path: '/pricing-exclusions'
+      fullPath: '/admin/pricing-exclusions'
+      preLoaderRoute: typeof AuthenticatedAdminPricingExclusionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/pricing-defaults': {
+      id: '/_authenticated/admin/pricing-defaults'
+      path: '/pricing-defaults'
+      fullPath: '/admin/pricing-defaults'
+      preLoaderRoute: typeof AuthenticatedAdminPricingDefaultsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/permissions': {
@@ -3407,6 +3566,10 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminIntegrationsRoute: typeof AuthenticatedAdminIntegrationsRoute
   AuthenticatedAdminMunicipalitiesRoute: typeof AuthenticatedAdminMunicipalitiesRoute
   AuthenticatedAdminPermissionsRoute: typeof AuthenticatedAdminPermissionsRoute
+  AuthenticatedAdminPricingDefaultsRoute: typeof AuthenticatedAdminPricingDefaultsRoute
+  AuthenticatedAdminPricingExclusionsRoute: typeof AuthenticatedAdminPricingExclusionsRoute
+  AuthenticatedAdminSiteWorkItemsRoute: typeof AuthenticatedAdminSiteWorkItemsRoute
+  AuthenticatedAdminUpgradePackagesRoute: typeof AuthenticatedAdminUpgradePackagesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -3427,6 +3590,13 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminMunicipalitiesRoute:
       AuthenticatedAdminMunicipalitiesRoute,
     AuthenticatedAdminPermissionsRoute: AuthenticatedAdminPermissionsRoute,
+    AuthenticatedAdminPricingDefaultsRoute:
+      AuthenticatedAdminPricingDefaultsRoute,
+    AuthenticatedAdminPricingExclusionsRoute:
+      AuthenticatedAdminPricingExclusionsRoute,
+    AuthenticatedAdminSiteWorkItemsRoute: AuthenticatedAdminSiteWorkItemsRoute,
+    AuthenticatedAdminUpgradePackagesRoute:
+      AuthenticatedAdminUpgradePackagesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   }
@@ -3914,6 +4084,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPurchasingRouteRoute: typeof AuthenticatedPurchasingRouteRouteWithChildren
   AuthenticatedWorkflowsRouteRoute: typeof AuthenticatedWorkflowsRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedCalendarIndexRoute: typeof AuthenticatedCalendarIndexRoute
   AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
   AuthenticatedOperationsRchContractsContractIdRouteRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
@@ -3942,6 +4113,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedWorkflowsRouteRoute:
     AuthenticatedWorkflowsRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedCalendarIndexRoute: AuthenticatedCalendarIndexRoute,
   AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
   AuthenticatedOperationsRchContractsContractIdRouteRoute:
@@ -3965,7 +4137,10 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
   ShareTokenRoute: ShareTokenRoute,
   UploadTokenRoute: UploadTokenRoute,
 }

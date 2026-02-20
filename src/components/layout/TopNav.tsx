@@ -1,7 +1,8 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { ChevronDown, LogOut, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { TektonLogo } from "@/components/layout/Logo";
+import { useAuth } from "@/hooks/useAuth";
 import { NAV_MODULES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
@@ -15,15 +16,33 @@ const OPERATIONS_ITEMS = [
 export function TopNav() {
   const location = useRouterState({ select: (s) => s.location });
   const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [opsOpen, setOpsOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const opsRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const isOpsActive = location.pathname.startsWith("/operations");
+
+  const fullName = (user?.user_metadata?.full_name as string) ?? "";
+  const userEmail = user?.email ?? "";
+  const initials = fullName
+    ? fullName
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : userEmail[0]?.toUpperCase() ?? "?";
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (opsRef.current && !opsRef.current.contains(e.target as Node)) {
         setOpsOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -94,6 +113,9 @@ export function TopNav() {
           <button
             type="button"
             onClick={() => setOpsOpen((o) => !o)}
+            aria-expanded={opsOpen}
+            aria-haspopup="true"
+            aria-label="Operations menu"
             className={cn(
               "relative flex items-center gap-1 rounded-md px-3 py-3.5 text-[13px] font-medium transition-colors",
               isOpsActive ? "text-white" : "hover:bg-white/[0.04]",
@@ -141,6 +163,7 @@ export function TopNav() {
         <button
           type="button"
           onClick={() => setCommandPaletteOpen(true)}
+          aria-label="Search — press Command K"
           className="flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] transition-all focus:w-[260px]"
           style={{
             color: "var(--color-nav-muted)",
@@ -155,15 +178,48 @@ export function TopNav() {
           </kbd>
         </button>
 
-        {/* User avatar — initials on gradient green */}
-        <div
-          className="ml-2 flex h-8 w-8 items-center justify-center rounded-lg text-[11px] font-bold"
-          style={{
-            background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-700))",
-            color: "var(--color-primary-accent)",
-          }}
-        >
-          BD
+        {/* User menu */}
+        <div ref={userMenuRef} className="relative ml-2">
+          <button
+            type="button"
+            onClick={() => setUserMenuOpen((o) => !o)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-[11px] font-bold transition-opacity hover:opacity-80"
+            style={{
+              background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-700))",
+              color: "var(--color-primary-accent)",
+            }}
+            aria-label="User menu"
+          >
+            {initials}
+          </button>
+          {userMenuOpen && (
+            <div className="absolute right-0 top-full z-50 mt-1 w-56 rounded-lg border border-white/10 bg-[#112233] py-1 shadow-lg">
+              <div className="border-b border-white/10 px-3 py-2">
+                <div className="text-xs font-medium text-white">{fullName || "No name set"}</div>
+                <div className="text-[11px] text-white/50">{userEmail}</div>
+              </div>
+              <Link
+                to="/settings"
+                onClick={() => setUserMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+              >
+                <Settings className="h-3.5 w-3.5" />
+                Account Settings
+              </Link>
+              <button
+                type="button"
+                onClick={async () => {
+                  setUserMenuOpen(false);
+                  await signOut();
+                  navigate({ to: "/login" });
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
