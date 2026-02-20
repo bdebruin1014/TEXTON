@@ -57,17 +57,6 @@ export const DISPOSITION_STATUSES = [
   "Cancelled",
 ] as const;
 
-export const PO_STATUSES = [
-  "Draft",
-  "Submitted",
-  "Approved",
-  "In Progress",
-  "Complete",
-  "Invoiced",
-  "Paid",
-  "Void",
-] as const;
-
 export const ESIGN_STATUSES = [
   "Draft",
   "Sent",
@@ -80,15 +69,6 @@ export const ESIGN_STATUSES = [
 ] as const;
 
 export const PROJECT_TYPES = ["Scattered Lot", "Community Development", "Lot Development", "Lot Purchase"] as const;
-
-export const ENTITY_TYPES = [
-  "holding",
-  "builder",
-  "operating",
-  "spe",
-  "fund",
-  "investor",
-] as const;
 
 export const FIXED_PER_HOUSE_FEES = {
   builder_fee: 15_000,
@@ -190,5 +170,6 @@ export const NAV_MODULES = [
   { label: "Calendar", path: "/calendar" },
   { label: "Workflows", path: "/workflows" },
   { label: "Operations", path: "/operations" },
+  { label: "Tools", path: "/tools" },
   { label: "Admin", path: "/admin" },
 ] as const;

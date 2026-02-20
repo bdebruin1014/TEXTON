@@ -47,6 +47,10 @@ import { Route as AuthenticatedWorkflowsTemplatesRouteImport } from './routes/_a
 import { Route as AuthenticatedWorkflowsSmartActionsRouteImport } from './routes/_authenticated/workflows/smart-actions'
 import { Route as AuthenticatedWorkflowsAssignmentGroupsRouteImport } from './routes/_authenticated/workflows/assignment-groups'
 import { Route as AuthenticatedWorkflowsWorkflowIdRouteImport } from './routes/_authenticated/workflows/$workflowId'
+import { Route as AuthenticatedToolsLotPurchaseProformaRouteImport } from './routes/_authenticated/tools/lot-purchase-proforma'
+import { Route as AuthenticatedToolsLotDevProformaRouteImport } from './routes/_authenticated/tools/lot-dev-proforma'
+import { Route as AuthenticatedToolsDealAnalyzerRouteImport } from './routes/_authenticated/tools/deal-analyzer'
+import { Route as AuthenticatedToolsCommunityProformaRouteImport } from './routes/_authenticated/tools/community-proforma'
 import { Route as AuthenticatedPurchasingVendorsRouteImport } from './routes/_authenticated/purchasing/vendors'
 import { Route as AuthenticatedPurchasingSubcontractsRouteImport } from './routes/_authenticated/purchasing/subcontracts'
 import { Route as AuthenticatedPurchasingPurchaseOrdersRouteImport } from './routes/_authenticated/purchasing/purchase-orders'
@@ -397,6 +401,30 @@ const AuthenticatedWorkflowsWorkflowIdRoute =
     id: '/$workflowId',
     path: '/$workflowId',
     getParentRoute: () => AuthenticatedWorkflowsRouteRoute,
+  } as any)
+const AuthenticatedToolsLotPurchaseProformaRoute =
+  AuthenticatedToolsLotPurchaseProformaRouteImport.update({
+    id: '/tools/lot-purchase-proforma',
+    path: '/tools/lot-purchase-proforma',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedToolsLotDevProformaRoute =
+  AuthenticatedToolsLotDevProformaRouteImport.update({
+    id: '/tools/lot-dev-proforma',
+    path: '/tools/lot-dev-proforma',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedToolsDealAnalyzerRoute =
+  AuthenticatedToolsDealAnalyzerRouteImport.update({
+    id: '/tools/deal-analyzer',
+    path: '/tools/deal-analyzer',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedToolsCommunityProformaRoute =
+  AuthenticatedToolsCommunityProformaRouteImport.update({
+    id: '/tools/community-proforma',
+    path: '/tools/community-proforma',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedPurchasingVendorsRoute =
   AuthenticatedPurchasingVendorsRouteImport.update({
@@ -1288,6 +1316,10 @@ export interface FileRoutesByFullPath {
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
+  '/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
+  '/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
+  '/tools/lot-purchase-proforma': typeof AuthenticatedToolsLotPurchaseProformaRoute
   '/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
@@ -1448,6 +1480,10 @@ export interface FileRoutesByTo {
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
+  '/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
+  '/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
+  '/tools/lot-purchase-proforma': typeof AuthenticatedToolsLotPurchaseProformaRoute
   '/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
@@ -1625,6 +1661,10 @@ export interface FileRoutesById {
   '/_authenticated/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/_authenticated/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/_authenticated/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/_authenticated/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
+  '/_authenticated/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
+  '/_authenticated/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
+  '/_authenticated/tools/lot-purchase-proforma': typeof AuthenticatedToolsLotPurchaseProformaRoute
   '/_authenticated/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/_authenticated/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/_authenticated/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
@@ -1802,6 +1842,10 @@ export interface FileRouteTypes {
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
     | '/purchasing/vendors'
+    | '/tools/community-proforma'
+    | '/tools/deal-analyzer'
+    | '/tools/lot-dev-proforma'
+    | '/tools/lot-purchase-proforma'
     | '/workflows/$workflowId'
     | '/workflows/assignment-groups'
     | '/workflows/smart-actions'
@@ -1962,6 +2006,10 @@ export interface FileRouteTypes {
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
     | '/purchasing/vendors'
+    | '/tools/community-proforma'
+    | '/tools/deal-analyzer'
+    | '/tools/lot-dev-proforma'
+    | '/tools/lot-purchase-proforma'
     | '/workflows/$workflowId'
     | '/workflows/assignment-groups'
     | '/workflows/smart-actions'
@@ -2138,6 +2186,10 @@ export interface FileRouteTypes {
     | '/_authenticated/purchasing/purchase-orders'
     | '/_authenticated/purchasing/subcontracts'
     | '/_authenticated/purchasing/vendors'
+    | '/_authenticated/tools/community-proforma'
+    | '/_authenticated/tools/deal-analyzer'
+    | '/_authenticated/tools/lot-dev-proforma'
+    | '/_authenticated/tools/lot-purchase-proforma'
     | '/_authenticated/workflows/$workflowId'
     | '/_authenticated/workflows/assignment-groups'
     | '/_authenticated/workflows/smart-actions'
@@ -2530,6 +2582,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/workflows/$workflowId'
       preLoaderRoute: typeof AuthenticatedWorkflowsWorkflowIdRouteImport
       parentRoute: typeof AuthenticatedWorkflowsRouteRoute
+    }
+    '/_authenticated/tools/lot-purchase-proforma': {
+      id: '/_authenticated/tools/lot-purchase-proforma'
+      path: '/tools/lot-purchase-proforma'
+      fullPath: '/tools/lot-purchase-proforma'
+      preLoaderRoute: typeof AuthenticatedToolsLotPurchaseProformaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tools/lot-dev-proforma': {
+      id: '/_authenticated/tools/lot-dev-proforma'
+      path: '/tools/lot-dev-proforma'
+      fullPath: '/tools/lot-dev-proforma'
+      preLoaderRoute: typeof AuthenticatedToolsLotDevProformaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tools/deal-analyzer': {
+      id: '/_authenticated/tools/deal-analyzer'
+      path: '/tools/deal-analyzer'
+      fullPath: '/tools/deal-analyzer'
+      preLoaderRoute: typeof AuthenticatedToolsDealAnalyzerRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tools/community-proforma': {
+      id: '/_authenticated/tools/community-proforma'
+      path: '/tools/community-proforma'
+      fullPath: '/tools/community-proforma'
+      preLoaderRoute: typeof AuthenticatedToolsCommunityProformaRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/purchasing/vendors': {
       id: '/_authenticated/purchasing/vendors'
@@ -4105,6 +4185,10 @@ interface AuthenticatedRouteChildren {
   AuthenticatedWorkflowsRouteRoute: typeof AuthenticatedWorkflowsRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedToolsCommunityProformaRoute: typeof AuthenticatedToolsCommunityProformaRoute
+  AuthenticatedToolsDealAnalyzerRoute: typeof AuthenticatedToolsDealAnalyzerRoute
+  AuthenticatedToolsLotDevProformaRoute: typeof AuthenticatedToolsLotDevProformaRoute
+  AuthenticatedToolsLotPurchaseProformaRoute: typeof AuthenticatedToolsLotPurchaseProformaRoute
   AuthenticatedCalendarIndexRoute: typeof AuthenticatedCalendarIndexRoute
   AuthenticatedOperationsIndexRoute: typeof AuthenticatedOperationsIndexRoute
   AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
@@ -4135,6 +4219,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedWorkflowsRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedToolsCommunityProformaRoute:
+    AuthenticatedToolsCommunityProformaRoute,
+  AuthenticatedToolsDealAnalyzerRoute: AuthenticatedToolsDealAnalyzerRoute,
+  AuthenticatedToolsLotDevProformaRoute: AuthenticatedToolsLotDevProformaRoute,
+  AuthenticatedToolsLotPurchaseProformaRoute:
+    AuthenticatedToolsLotPurchaseProformaRoute,
   AuthenticatedCalendarIndexRoute: AuthenticatedCalendarIndexRoute,
   AuthenticatedOperationsIndexRoute: AuthenticatedOperationsIndexRoute,
   AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
