@@ -19,6 +19,7 @@ interface FileListProps {
   onEditInPlace: (doc: DocumentRecord) => void;
   onPreview?: (doc: DocumentRecord) => void;
   onVersionHistory?: (doc: DocumentRecord) => void;
+  onShare?: (doc: DocumentRecord) => void;
 }
 
 export function FileList({
@@ -34,6 +35,7 @@ export function FileList({
   onEditInPlace,
   onPreview,
   onVersionHistory,
+  onShare,
 }: FileListProps) {
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -137,6 +139,7 @@ export function FileList({
             onEditInPlace={onEditInPlace}
             onPreview={onPreview}
             onVersionHistory={onVersionHistory}
+            onShare={onShare}
           />
         ))}
       </tbody>

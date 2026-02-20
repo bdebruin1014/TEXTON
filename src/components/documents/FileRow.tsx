@@ -14,6 +14,7 @@ import {
   Tag,
   File as FileIcon,
   Trash2,
+  Share2,
 } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
@@ -45,6 +46,7 @@ interface FileRowProps {
   onEditInPlace: (doc: DocumentRecord) => void;
   onPreview?: (doc: DocumentRecord) => void;
   onVersionHistory?: (doc: DocumentRecord) => void;
+  onShare?: (doc: DocumentRecord) => void;
 }
 
 export function FileRow({
@@ -59,6 +61,7 @@ export function FileRow({
   onEditInPlace,
   onPreview,
   onVersionHistory,
+  onShare,
 }: FileRowProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -174,6 +177,16 @@ export function FileRow({
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
                 >
                   <Pencil className="h-3.5 w-3.5" /> Edit in {officeApp}
+                </button>
+              )}
+              {/* Share */}
+              {onShare && (
+                <button
+                  type="button"
+                  onClick={() => { onShare(doc); setMenuOpen(false); }}
+                  className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+                >
+                  <Share2 className="h-3.5 w-3.5" /> Share
                 </button>
               )}
               <div className="my-1 border-t border-border" />

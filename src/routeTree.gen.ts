@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UploadTokenRouteImport } from './routes/upload/$token'
+import { Route as ShareTokenRouteImport } from './routes/share/$token'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedWorkflowsRouteRouteImport } from './routes/_authenticated/workflows/route'
 import { Route as AuthenticatedPurchasingRouteRouteImport } from './routes/_authenticated/purchasing/route'
@@ -86,7 +88,9 @@ import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './ro
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
 import { Route as AuthenticatedAccountingReconciliationsIndexRouteImport } from './routes/_authenticated/accounting/reconciliations/index'
+import { Route as AuthenticatedProjectsProjectIdUploadRequestsRouteImport } from './routes/_authenticated/projects/$projectId/upload-requests'
 import { Route as AuthenticatedProjectsProjectIdTimelineRouteImport } from './routes/_authenticated/projects/$projectId/timeline'
+import { Route as AuthenticatedProjectsProjectIdSharedLinksRouteImport } from './routes/_authenticated/projects/$projectId/shared-links'
 import { Route as AuthenticatedProjectsProjectIdPropertyDetailsRouteImport } from './routes/_authenticated/projects/$projectId/property-details'
 import { Route as AuthenticatedProjectsProjectIdPlansPricingRouteImport } from './routes/_authenticated/projects/$projectId/plans-pricing'
 import { Route as AuthenticatedProjectsProjectIdPlanCatalogRouteImport } from './routes/_authenticated/projects/$projectId/plan-catalog'
@@ -107,7 +111,9 @@ import { Route as AuthenticatedProjectsProjectIdContactsRouteImport } from './ro
 import { Route as AuthenticatedProjectsProjectIdCloseoutRouteImport } from './routes/_authenticated/projects/$projectId/closeout'
 import { Route as AuthenticatedProjectsProjectIdBudgetRouteImport } from './routes/_authenticated/projects/$projectId/budget'
 import { Route as AuthenticatedProjectsProjectIdBasicInfoRouteImport } from './routes/_authenticated/projects/$projectId/basic-info'
+import { Route as AuthenticatedPipelineOpportunityIdUploadRequestsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/upload-requests'
 import { Route as AuthenticatedPipelineOpportunityIdUnderwritingRouteImport } from './routes/_authenticated/pipeline/$opportunityId/underwriting'
+import { Route as AuthenticatedPipelineOpportunityIdSharedLinksRouteImport } from './routes/_authenticated/pipeline/$opportunityId/shared-links'
 import { Route as AuthenticatedPipelineOpportunityIdPropertyDetailsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/property-details'
 import { Route as AuthenticatedPipelineOpportunityIdParcelsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/parcels'
 import { Route as AuthenticatedPipelineOpportunityIdOfferContractRouteImport } from './routes/_authenticated/pipeline/$opportunityId/offer-contract'
@@ -120,7 +126,9 @@ import { Route as AuthenticatedPipelineOpportunityIdBasicInfoRouteImport } from 
 import { Route as AuthenticatedOperationsEsignEsignIdRouteImport } from './routes/_authenticated/operations/esign/$esignId'
 import { Route as AuthenticatedOperationsDealSheetsDealSheetIdRouteImport } from './routes/_authenticated/operations/deal-sheets/$dealSheetId'
 import { Route as AuthenticatedDispositionDispositionIdWarrantyRouteImport } from './routes/_authenticated/disposition/$dispositionId/warranty'
+import { Route as AuthenticatedDispositionDispositionIdUploadRequestsRouteImport } from './routes/_authenticated/disposition/$dispositionId/upload-requests'
 import { Route as AuthenticatedDispositionDispositionIdShowingsRouteImport } from './routes/_authenticated/disposition/$dispositionId/showings'
+import { Route as AuthenticatedDispositionDispositionIdSharedLinksRouteImport } from './routes/_authenticated/disposition/$dispositionId/shared-links'
 import { Route as AuthenticatedDispositionDispositionIdSettlementRouteImport } from './routes/_authenticated/disposition/$dispositionId/settlement'
 import { Route as AuthenticatedDispositionDispositionIdPricingContractRouteImport } from './routes/_authenticated/disposition/$dispositionId/pricing-contract'
 import { Route as AuthenticatedDispositionDispositionIdPostClosingRouteImport } from './routes/_authenticated/disposition/$dispositionId/post-closing'
@@ -133,7 +141,9 @@ import { Route as AuthenticatedDispositionDispositionIdFilesRouteImport } from '
 import { Route as AuthenticatedDispositionDispositionIdClosingCoordinationRouteImport } from './routes/_authenticated/disposition/$dispositionId/closing-coordination'
 import { Route as AuthenticatedDispositionDispositionIdBuyerInfoRouteImport } from './routes/_authenticated/disposition/$dispositionId/buyer-info'
 import { Route as AuthenticatedConstructionJobIdWarrantyRouteImport } from './routes/_authenticated/construction/$jobId/warranty'
+import { Route as AuthenticatedConstructionJobIdUploadRequestsRouteImport } from './routes/_authenticated/construction/$jobId/upload-requests'
 import { Route as AuthenticatedConstructionJobIdSubcontractsRouteImport } from './routes/_authenticated/construction/$jobId/subcontracts'
+import { Route as AuthenticatedConstructionJobIdSharedLinksRouteImport } from './routes/_authenticated/construction/$jobId/shared-links'
 import { Route as AuthenticatedConstructionJobIdSelectionsRouteImport } from './routes/_authenticated/construction/$jobId/selections'
 import { Route as AuthenticatedConstructionJobIdScheduleRouteImport } from './routes/_authenticated/construction/$jobId/schedule'
 import { Route as AuthenticatedConstructionJobIdPurchaseOrdersRouteImport } from './routes/_authenticated/construction/$jobId/purchase-orders'
@@ -177,6 +187,16 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UploadTokenRoute = UploadTokenRouteImport.update({
+  id: '/upload/$token',
+  path: '/upload/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -618,10 +638,22 @@ const AuthenticatedAccountingReconciliationsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
   } as any)
+const AuthenticatedProjectsProjectIdUploadRequestsRoute =
+  AuthenticatedProjectsProjectIdUploadRequestsRouteImport.update({
+    id: '/upload-requests',
+    path: '/upload-requests',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdTimelineRoute =
   AuthenticatedProjectsProjectIdTimelineRouteImport.update({
     id: '/timeline',
     path: '/timeline',
+    getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
+  } as any)
+const AuthenticatedProjectsProjectIdSharedLinksRoute =
+  AuthenticatedProjectsProjectIdSharedLinksRouteImport.update({
+    id: '/shared-links',
+    path: '/shared-links',
     getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
   } as any)
 const AuthenticatedProjectsProjectIdPropertyDetailsRoute =
@@ -744,10 +776,22 @@ const AuthenticatedProjectsProjectIdBasicInfoRoute =
     path: '/basic-info',
     getParentRoute: () => AuthenticatedProjectsProjectIdRouteRoute,
   } as any)
+const AuthenticatedPipelineOpportunityIdUploadRequestsRoute =
+  AuthenticatedPipelineOpportunityIdUploadRequestsRouteImport.update({
+    id: '/upload-requests',
+    path: '/upload-requests',
+    getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
+  } as any)
 const AuthenticatedPipelineOpportunityIdUnderwritingRoute =
   AuthenticatedPipelineOpportunityIdUnderwritingRouteImport.update({
     id: '/underwriting',
     path: '/underwriting',
+    getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
+  } as any)
+const AuthenticatedPipelineOpportunityIdSharedLinksRoute =
+  AuthenticatedPipelineOpportunityIdSharedLinksRouteImport.update({
+    id: '/shared-links',
+    path: '/shared-links',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
   } as any)
 const AuthenticatedPipelineOpportunityIdPropertyDetailsRoute =
@@ -822,10 +866,22 @@ const AuthenticatedDispositionDispositionIdWarrantyRoute =
     path: '/warranty',
     getParentRoute: () => AuthenticatedDispositionDispositionIdRouteRoute,
   } as any)
+const AuthenticatedDispositionDispositionIdUploadRequestsRoute =
+  AuthenticatedDispositionDispositionIdUploadRequestsRouteImport.update({
+    id: '/upload-requests',
+    path: '/upload-requests',
+    getParentRoute: () => AuthenticatedDispositionDispositionIdRouteRoute,
+  } as any)
 const AuthenticatedDispositionDispositionIdShowingsRoute =
   AuthenticatedDispositionDispositionIdShowingsRouteImport.update({
     id: '/showings',
     path: '/showings',
+    getParentRoute: () => AuthenticatedDispositionDispositionIdRouteRoute,
+  } as any)
+const AuthenticatedDispositionDispositionIdSharedLinksRoute =
+  AuthenticatedDispositionDispositionIdSharedLinksRouteImport.update({
+    id: '/shared-links',
+    path: '/shared-links',
     getParentRoute: () => AuthenticatedDispositionDispositionIdRouteRoute,
   } as any)
 const AuthenticatedDispositionDispositionIdSettlementRoute =
@@ -900,10 +956,22 @@ const AuthenticatedConstructionJobIdWarrantyRoute =
     path: '/warranty',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedConstructionJobIdUploadRequestsRoute =
+  AuthenticatedConstructionJobIdUploadRequestsRouteImport.update({
+    id: '/upload-requests',
+    path: '/upload-requests',
+    getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
+  } as any)
 const AuthenticatedConstructionJobIdSubcontractsRoute =
   AuthenticatedConstructionJobIdSubcontractsRouteImport.update({
     id: '/subcontracts',
     path: '/subcontracts',
+    getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
+  } as any)
+const AuthenticatedConstructionJobIdSharedLinksRoute =
+  AuthenticatedConstructionJobIdSharedLinksRouteImport.update({
+    id: '/shared-links',
+    path: '/shared-links',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
 const AuthenticatedConstructionJobIdSelectionsRoute =
@@ -1113,6 +1181,8 @@ export interface FileRoutesByFullPath {
   '/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
   '/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/upload/$token': typeof UploadTokenRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
@@ -1186,7 +1256,9 @@ export interface FileRoutesByFullPath {
   '/construction/$jobId/purchase-orders': typeof AuthenticatedConstructionJobIdPurchaseOrdersRoute
   '/construction/$jobId/schedule': typeof AuthenticatedConstructionJobIdScheduleRoute
   '/construction/$jobId/selections': typeof AuthenticatedConstructionJobIdSelectionsRoute
+  '/construction/$jobId/shared-links': typeof AuthenticatedConstructionJobIdSharedLinksRoute
   '/construction/$jobId/subcontracts': typeof AuthenticatedConstructionJobIdSubcontractsRoute
+  '/construction/$jobId/upload-requests': typeof AuthenticatedConstructionJobIdUploadRequestsRoute
   '/construction/$jobId/warranty': typeof AuthenticatedConstructionJobIdWarrantyRoute
   '/disposition/$dispositionId/buyer-info': typeof AuthenticatedDispositionDispositionIdBuyerInfoRoute
   '/disposition/$dispositionId/closing-coordination': typeof AuthenticatedDispositionDispositionIdClosingCoordinationRoute
@@ -1199,7 +1271,9 @@ export interface FileRoutesByFullPath {
   '/disposition/$dispositionId/post-closing': typeof AuthenticatedDispositionDispositionIdPostClosingRoute
   '/disposition/$dispositionId/pricing-contract': typeof AuthenticatedDispositionDispositionIdPricingContractRoute
   '/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
+  '/disposition/$dispositionId/shared-links': typeof AuthenticatedDispositionDispositionIdSharedLinksRoute
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
+  '/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
@@ -1212,7 +1286,9 @@ export interface FileRoutesByFullPath {
   '/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
   '/pipeline/$opportunityId/parcels': typeof AuthenticatedPipelineOpportunityIdParcelsRoute
   '/pipeline/$opportunityId/property-details': typeof AuthenticatedPipelineOpportunityIdPropertyDetailsRoute
+  '/pipeline/$opportunityId/shared-links': typeof AuthenticatedPipelineOpportunityIdSharedLinksRoute
   '/pipeline/$opportunityId/underwriting': typeof AuthenticatedPipelineOpportunityIdUnderwritingRoute
+  '/pipeline/$opportunityId/upload-requests': typeof AuthenticatedPipelineOpportunityIdUploadRequestsRoute
   '/projects/$projectId/basic-info': typeof AuthenticatedProjectsProjectIdBasicInfoRoute
   '/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
@@ -1233,7 +1309,9 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
+  '/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
+  '/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
   '/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -1259,6 +1337,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/upload/$token': typeof UploadTokenRoute
   '/accounting/aggregate-payments': typeof AuthenticatedAccountingAggregatePaymentsRoute
   '/accounting/ap': typeof AuthenticatedAccountingApRoute
   '/accounting/ar': typeof AuthenticatedAccountingArRoute
@@ -1327,7 +1407,9 @@ export interface FileRoutesByTo {
   '/construction/$jobId/purchase-orders': typeof AuthenticatedConstructionJobIdPurchaseOrdersRoute
   '/construction/$jobId/schedule': typeof AuthenticatedConstructionJobIdScheduleRoute
   '/construction/$jobId/selections': typeof AuthenticatedConstructionJobIdSelectionsRoute
+  '/construction/$jobId/shared-links': typeof AuthenticatedConstructionJobIdSharedLinksRoute
   '/construction/$jobId/subcontracts': typeof AuthenticatedConstructionJobIdSubcontractsRoute
+  '/construction/$jobId/upload-requests': typeof AuthenticatedConstructionJobIdUploadRequestsRoute
   '/construction/$jobId/warranty': typeof AuthenticatedConstructionJobIdWarrantyRoute
   '/disposition/$dispositionId/buyer-info': typeof AuthenticatedDispositionDispositionIdBuyerInfoRoute
   '/disposition/$dispositionId/closing-coordination': typeof AuthenticatedDispositionDispositionIdClosingCoordinationRoute
@@ -1340,7 +1422,9 @@ export interface FileRoutesByTo {
   '/disposition/$dispositionId/post-closing': typeof AuthenticatedDispositionDispositionIdPostClosingRoute
   '/disposition/$dispositionId/pricing-contract': typeof AuthenticatedDispositionDispositionIdPricingContractRoute
   '/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
+  '/disposition/$dispositionId/shared-links': typeof AuthenticatedDispositionDispositionIdSharedLinksRoute
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
+  '/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
@@ -1353,7 +1437,9 @@ export interface FileRoutesByTo {
   '/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
   '/pipeline/$opportunityId/parcels': typeof AuthenticatedPipelineOpportunityIdParcelsRoute
   '/pipeline/$opportunityId/property-details': typeof AuthenticatedPipelineOpportunityIdPropertyDetailsRoute
+  '/pipeline/$opportunityId/shared-links': typeof AuthenticatedPipelineOpportunityIdSharedLinksRoute
   '/pipeline/$opportunityId/underwriting': typeof AuthenticatedPipelineOpportunityIdUnderwritingRoute
+  '/pipeline/$opportunityId/upload-requests': typeof AuthenticatedPipelineOpportunityIdUploadRequestsRoute
   '/projects/$projectId/basic-info': typeof AuthenticatedProjectsProjectIdBasicInfoRoute
   '/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
@@ -1374,7 +1460,9 @@ export interface FileRoutesByTo {
   '/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
+  '/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
+  '/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -1412,6 +1500,8 @@ export interface FileRoutesById {
   '/_authenticated/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/share/$token': typeof ShareTokenRoute
+  '/upload/$token': typeof UploadTokenRoute
   '/_authenticated/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
   '/_authenticated/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/_authenticated/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
@@ -1485,7 +1575,9 @@ export interface FileRoutesById {
   '/_authenticated/construction/$jobId/purchase-orders': typeof AuthenticatedConstructionJobIdPurchaseOrdersRoute
   '/_authenticated/construction/$jobId/schedule': typeof AuthenticatedConstructionJobIdScheduleRoute
   '/_authenticated/construction/$jobId/selections': typeof AuthenticatedConstructionJobIdSelectionsRoute
+  '/_authenticated/construction/$jobId/shared-links': typeof AuthenticatedConstructionJobIdSharedLinksRoute
   '/_authenticated/construction/$jobId/subcontracts': typeof AuthenticatedConstructionJobIdSubcontractsRoute
+  '/_authenticated/construction/$jobId/upload-requests': typeof AuthenticatedConstructionJobIdUploadRequestsRoute
   '/_authenticated/construction/$jobId/warranty': typeof AuthenticatedConstructionJobIdWarrantyRoute
   '/_authenticated/disposition/$dispositionId/buyer-info': typeof AuthenticatedDispositionDispositionIdBuyerInfoRoute
   '/_authenticated/disposition/$dispositionId/closing-coordination': typeof AuthenticatedDispositionDispositionIdClosingCoordinationRoute
@@ -1498,7 +1590,9 @@ export interface FileRoutesById {
   '/_authenticated/disposition/$dispositionId/post-closing': typeof AuthenticatedDispositionDispositionIdPostClosingRoute
   '/_authenticated/disposition/$dispositionId/pricing-contract': typeof AuthenticatedDispositionDispositionIdPricingContractRoute
   '/_authenticated/disposition/$dispositionId/settlement': typeof AuthenticatedDispositionDispositionIdSettlementRoute
+  '/_authenticated/disposition/$dispositionId/shared-links': typeof AuthenticatedDispositionDispositionIdSharedLinksRoute
   '/_authenticated/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
+  '/_authenticated/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/_authenticated/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/_authenticated/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/_authenticated/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
@@ -1511,7 +1605,9 @@ export interface FileRoutesById {
   '/_authenticated/pipeline/$opportunityId/offer-contract': typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
   '/_authenticated/pipeline/$opportunityId/parcels': typeof AuthenticatedPipelineOpportunityIdParcelsRoute
   '/_authenticated/pipeline/$opportunityId/property-details': typeof AuthenticatedPipelineOpportunityIdPropertyDetailsRoute
+  '/_authenticated/pipeline/$opportunityId/shared-links': typeof AuthenticatedPipelineOpportunityIdSharedLinksRoute
   '/_authenticated/pipeline/$opportunityId/underwriting': typeof AuthenticatedPipelineOpportunityIdUnderwritingRoute
+  '/_authenticated/pipeline/$opportunityId/upload-requests': typeof AuthenticatedPipelineOpportunityIdUploadRequestsRoute
   '/_authenticated/projects/$projectId/basic-info': typeof AuthenticatedProjectsProjectIdBasicInfoRoute
   '/_authenticated/projects/$projectId/budget': typeof AuthenticatedProjectsProjectIdBudgetRoute
   '/_authenticated/projects/$projectId/closeout': typeof AuthenticatedProjectsProjectIdCloseoutRoute
@@ -1532,7 +1628,9 @@ export interface FileRoutesById {
   '/_authenticated/projects/$projectId/plan-catalog': typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   '/_authenticated/projects/$projectId/plans-pricing': typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   '/_authenticated/projects/$projectId/property-details': typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
+  '/_authenticated/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/_authenticated/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
+  '/_authenticated/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
   '/_authenticated/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -1570,6 +1668,8 @@ export interface FileRouteTypes {
     | '/purchasing'
     | '/workflows'
     | '/dashboard'
+    | '/share/$token'
+    | '/upload/$token'
     | '/accounting/reconciliations'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
@@ -1643,7 +1743,9 @@ export interface FileRouteTypes {
     | '/construction/$jobId/purchase-orders'
     | '/construction/$jobId/schedule'
     | '/construction/$jobId/selections'
+    | '/construction/$jobId/shared-links'
     | '/construction/$jobId/subcontracts'
+    | '/construction/$jobId/upload-requests'
     | '/construction/$jobId/warranty'
     | '/disposition/$dispositionId/buyer-info'
     | '/disposition/$dispositionId/closing-coordination'
@@ -1656,7 +1758,9 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/post-closing'
     | '/disposition/$dispositionId/pricing-contract'
     | '/disposition/$dispositionId/settlement'
+    | '/disposition/$dispositionId/shared-links'
     | '/disposition/$dispositionId/showings'
+    | '/disposition/$dispositionId/upload-requests'
     | '/disposition/$dispositionId/warranty'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
@@ -1669,7 +1773,9 @@ export interface FileRouteTypes {
     | '/pipeline/$opportunityId/offer-contract'
     | '/pipeline/$opportunityId/parcels'
     | '/pipeline/$opportunityId/property-details'
+    | '/pipeline/$opportunityId/shared-links'
     | '/pipeline/$opportunityId/underwriting'
+    | '/pipeline/$opportunityId/upload-requests'
     | '/projects/$projectId/basic-info'
     | '/projects/$projectId/budget'
     | '/projects/$projectId/closeout'
@@ -1690,7 +1796,9 @@ export interface FileRouteTypes {
     | '/projects/$projectId/plan-catalog'
     | '/projects/$projectId/plans-pricing'
     | '/projects/$projectId/property-details'
+    | '/projects/$projectId/shared-links'
     | '/projects/$projectId/timeline'
+    | '/projects/$projectId/upload-requests'
     | '/accounting/reconciliations/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
@@ -1716,6 +1824,8 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/dashboard'
+    | '/share/$token'
+    | '/upload/$token'
     | '/accounting/aggregate-payments'
     | '/accounting/ap'
     | '/accounting/ar'
@@ -1784,7 +1894,9 @@ export interface FileRouteTypes {
     | '/construction/$jobId/purchase-orders'
     | '/construction/$jobId/schedule'
     | '/construction/$jobId/selections'
+    | '/construction/$jobId/shared-links'
     | '/construction/$jobId/subcontracts'
+    | '/construction/$jobId/upload-requests'
     | '/construction/$jobId/warranty'
     | '/disposition/$dispositionId/buyer-info'
     | '/disposition/$dispositionId/closing-coordination'
@@ -1797,7 +1909,9 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/post-closing'
     | '/disposition/$dispositionId/pricing-contract'
     | '/disposition/$dispositionId/settlement'
+    | '/disposition/$dispositionId/shared-links'
     | '/disposition/$dispositionId/showings'
+    | '/disposition/$dispositionId/upload-requests'
     | '/disposition/$dispositionId/warranty'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
@@ -1810,7 +1924,9 @@ export interface FileRouteTypes {
     | '/pipeline/$opportunityId/offer-contract'
     | '/pipeline/$opportunityId/parcels'
     | '/pipeline/$opportunityId/property-details'
+    | '/pipeline/$opportunityId/shared-links'
     | '/pipeline/$opportunityId/underwriting'
+    | '/pipeline/$opportunityId/upload-requests'
     | '/projects/$projectId/basic-info'
     | '/projects/$projectId/budget'
     | '/projects/$projectId/closeout'
@@ -1831,7 +1947,9 @@ export interface FileRouteTypes {
     | '/projects/$projectId/plan-catalog'
     | '/projects/$projectId/plans-pricing'
     | '/projects/$projectId/property-details'
+    | '/projects/$projectId/shared-links'
     | '/projects/$projectId/timeline'
+    | '/projects/$projectId/upload-requests'
     | '/accounting/reconciliations'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
@@ -1868,6 +1986,8 @@ export interface FileRouteTypes {
     | '/_authenticated/purchasing'
     | '/_authenticated/workflows'
     | '/_authenticated/dashboard'
+    | '/share/$token'
+    | '/upload/$token'
     | '/_authenticated/accounting/reconciliations'
     | '/_authenticated/construction/$jobId'
     | '/_authenticated/disposition/$dispositionId'
@@ -1941,7 +2061,9 @@ export interface FileRouteTypes {
     | '/_authenticated/construction/$jobId/purchase-orders'
     | '/_authenticated/construction/$jobId/schedule'
     | '/_authenticated/construction/$jobId/selections'
+    | '/_authenticated/construction/$jobId/shared-links'
     | '/_authenticated/construction/$jobId/subcontracts'
+    | '/_authenticated/construction/$jobId/upload-requests'
     | '/_authenticated/construction/$jobId/warranty'
     | '/_authenticated/disposition/$dispositionId/buyer-info'
     | '/_authenticated/disposition/$dispositionId/closing-coordination'
@@ -1954,7 +2076,9 @@ export interface FileRouteTypes {
     | '/_authenticated/disposition/$dispositionId/post-closing'
     | '/_authenticated/disposition/$dispositionId/pricing-contract'
     | '/_authenticated/disposition/$dispositionId/settlement'
+    | '/_authenticated/disposition/$dispositionId/shared-links'
     | '/_authenticated/disposition/$dispositionId/showings'
+    | '/_authenticated/disposition/$dispositionId/upload-requests'
     | '/_authenticated/disposition/$dispositionId/warranty'
     | '/_authenticated/operations/deal-sheets/$dealSheetId'
     | '/_authenticated/operations/esign/$esignId'
@@ -1967,7 +2091,9 @@ export interface FileRouteTypes {
     | '/_authenticated/pipeline/$opportunityId/offer-contract'
     | '/_authenticated/pipeline/$opportunityId/parcels'
     | '/_authenticated/pipeline/$opportunityId/property-details'
+    | '/_authenticated/pipeline/$opportunityId/shared-links'
     | '/_authenticated/pipeline/$opportunityId/underwriting'
+    | '/_authenticated/pipeline/$opportunityId/upload-requests'
     | '/_authenticated/projects/$projectId/basic-info'
     | '/_authenticated/projects/$projectId/budget'
     | '/_authenticated/projects/$projectId/closeout'
@@ -1988,7 +2114,9 @@ export interface FileRouteTypes {
     | '/_authenticated/projects/$projectId/plan-catalog'
     | '/_authenticated/projects/$projectId/plans-pricing'
     | '/_authenticated/projects/$projectId/property-details'
+    | '/_authenticated/projects/$projectId/shared-links'
     | '/_authenticated/projects/$projectId/timeline'
+    | '/_authenticated/projects/$projectId/upload-requests'
     | '/_authenticated/accounting/reconciliations/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
@@ -2015,6 +2143,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ShareTokenRoute: typeof ShareTokenRoute
+  UploadTokenRoute: typeof UploadTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -2038,6 +2168,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upload/$token': {
+      id: '/upload/$token'
+      path: '/upload/$token'
+      fullPath: '/upload/$token'
+      preLoaderRoute: typeof UploadTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -2558,11 +2702,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsIndexRouteImport
       parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
     }
+    '/_authenticated/projects/$projectId/upload-requests': {
+      id: '/_authenticated/projects/$projectId/upload-requests'
+      path: '/upload-requests'
+      fullPath: '/projects/$projectId/upload-requests'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdUploadRequestsRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
+    }
     '/_authenticated/projects/$projectId/timeline': {
       id: '/_authenticated/projects/$projectId/timeline'
       path: '/timeline'
       fullPath: '/projects/$projectId/timeline'
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdTimelineRouteImport
+      parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
+    }
+    '/_authenticated/projects/$projectId/shared-links': {
+      id: '/_authenticated/projects/$projectId/shared-links'
+      path: '/shared-links'
+      fullPath: '/projects/$projectId/shared-links'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdSharedLinksRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
     }
     '/_authenticated/projects/$projectId/property-details': {
@@ -2705,11 +2863,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdBasicInfoRouteImport
       parentRoute: typeof AuthenticatedProjectsProjectIdRouteRoute
     }
+    '/_authenticated/pipeline/$opportunityId/upload-requests': {
+      id: '/_authenticated/pipeline/$opportunityId/upload-requests'
+      path: '/upload-requests'
+      fullPath: '/pipeline/$opportunityId/upload-requests'
+      preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdUploadRequestsRouteImport
+      parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
+    }
     '/_authenticated/pipeline/$opportunityId/underwriting': {
       id: '/_authenticated/pipeline/$opportunityId/underwriting'
       path: '/underwriting'
       fullPath: '/pipeline/$opportunityId/underwriting'
       preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdUnderwritingRouteImport
+      parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
+    }
+    '/_authenticated/pipeline/$opportunityId/shared-links': {
+      id: '/_authenticated/pipeline/$opportunityId/shared-links'
+      path: '/shared-links'
+      fullPath: '/pipeline/$opportunityId/shared-links'
+      preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdSharedLinksRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
     }
     '/_authenticated/pipeline/$opportunityId/property-details': {
@@ -2796,11 +2968,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDispositionDispositionIdWarrantyRouteImport
       parentRoute: typeof AuthenticatedDispositionDispositionIdRouteRoute
     }
+    '/_authenticated/disposition/$dispositionId/upload-requests': {
+      id: '/_authenticated/disposition/$dispositionId/upload-requests'
+      path: '/upload-requests'
+      fullPath: '/disposition/$dispositionId/upload-requests'
+      preLoaderRoute: typeof AuthenticatedDispositionDispositionIdUploadRequestsRouteImport
+      parentRoute: typeof AuthenticatedDispositionDispositionIdRouteRoute
+    }
     '/_authenticated/disposition/$dispositionId/showings': {
       id: '/_authenticated/disposition/$dispositionId/showings'
       path: '/showings'
       fullPath: '/disposition/$dispositionId/showings'
       preLoaderRoute: typeof AuthenticatedDispositionDispositionIdShowingsRouteImport
+      parentRoute: typeof AuthenticatedDispositionDispositionIdRouteRoute
+    }
+    '/_authenticated/disposition/$dispositionId/shared-links': {
+      id: '/_authenticated/disposition/$dispositionId/shared-links'
+      path: '/shared-links'
+      fullPath: '/disposition/$dispositionId/shared-links'
+      preLoaderRoute: typeof AuthenticatedDispositionDispositionIdSharedLinksRouteImport
       parentRoute: typeof AuthenticatedDispositionDispositionIdRouteRoute
     }
     '/_authenticated/disposition/$dispositionId/settlement': {
@@ -2887,11 +3073,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdWarrantyRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/construction/$jobId/upload-requests': {
+      id: '/_authenticated/construction/$jobId/upload-requests'
+      path: '/upload-requests'
+      fullPath: '/construction/$jobId/upload-requests'
+      preLoaderRoute: typeof AuthenticatedConstructionJobIdUploadRequestsRouteImport
+      parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
+    }
     '/_authenticated/construction/$jobId/subcontracts': {
       id: '/_authenticated/construction/$jobId/subcontracts'
       path: '/subcontracts'
       fullPath: '/construction/$jobId/subcontracts'
       preLoaderRoute: typeof AuthenticatedConstructionJobIdSubcontractsRouteImport
+      parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
+    }
+    '/_authenticated/construction/$jobId/shared-links': {
+      id: '/_authenticated/construction/$jobId/shared-links'
+      path: '/shared-links'
+      fullPath: '/construction/$jobId/shared-links'
+      preLoaderRoute: typeof AuthenticatedConstructionJobIdSharedLinksRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
     '/_authenticated/construction/$jobId/selections': {
@@ -3250,7 +3450,9 @@ interface AuthenticatedConstructionJobIdRouteRouteChildren {
   AuthenticatedConstructionJobIdPurchaseOrdersRoute: typeof AuthenticatedConstructionJobIdPurchaseOrdersRoute
   AuthenticatedConstructionJobIdScheduleRoute: typeof AuthenticatedConstructionJobIdScheduleRoute
   AuthenticatedConstructionJobIdSelectionsRoute: typeof AuthenticatedConstructionJobIdSelectionsRoute
+  AuthenticatedConstructionJobIdSharedLinksRoute: typeof AuthenticatedConstructionJobIdSharedLinksRoute
   AuthenticatedConstructionJobIdSubcontractsRoute: typeof AuthenticatedConstructionJobIdSubcontractsRoute
+  AuthenticatedConstructionJobIdUploadRequestsRoute: typeof AuthenticatedConstructionJobIdUploadRequestsRoute
   AuthenticatedConstructionJobIdWarrantyRoute: typeof AuthenticatedConstructionJobIdWarrantyRoute
   AuthenticatedConstructionJobIdIndexRoute: typeof AuthenticatedConstructionJobIdIndexRoute
 }
@@ -3283,8 +3485,12 @@ const AuthenticatedConstructionJobIdRouteRouteChildren: AuthenticatedConstructio
       AuthenticatedConstructionJobIdScheduleRoute,
     AuthenticatedConstructionJobIdSelectionsRoute:
       AuthenticatedConstructionJobIdSelectionsRoute,
+    AuthenticatedConstructionJobIdSharedLinksRoute:
+      AuthenticatedConstructionJobIdSharedLinksRoute,
     AuthenticatedConstructionJobIdSubcontractsRoute:
       AuthenticatedConstructionJobIdSubcontractsRoute,
+    AuthenticatedConstructionJobIdUploadRequestsRoute:
+      AuthenticatedConstructionJobIdUploadRequestsRoute,
     AuthenticatedConstructionJobIdWarrantyRoute:
       AuthenticatedConstructionJobIdWarrantyRoute,
     AuthenticatedConstructionJobIdIndexRoute:
@@ -3345,7 +3551,9 @@ interface AuthenticatedDispositionDispositionIdRouteRouteChildren {
   AuthenticatedDispositionDispositionIdPostClosingRoute: typeof AuthenticatedDispositionDispositionIdPostClosingRoute
   AuthenticatedDispositionDispositionIdPricingContractRoute: typeof AuthenticatedDispositionDispositionIdPricingContractRoute
   AuthenticatedDispositionDispositionIdSettlementRoute: typeof AuthenticatedDispositionDispositionIdSettlementRoute
+  AuthenticatedDispositionDispositionIdSharedLinksRoute: typeof AuthenticatedDispositionDispositionIdSharedLinksRoute
   AuthenticatedDispositionDispositionIdShowingsRoute: typeof AuthenticatedDispositionDispositionIdShowingsRoute
+  AuthenticatedDispositionDispositionIdUploadRequestsRoute: typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   AuthenticatedDispositionDispositionIdWarrantyRoute: typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   AuthenticatedDispositionDispositionIdIndexRoute: typeof AuthenticatedDispositionDispositionIdIndexRoute
 }
@@ -3374,8 +3582,12 @@ const AuthenticatedDispositionDispositionIdRouteRouteChildren: AuthenticatedDisp
       AuthenticatedDispositionDispositionIdPricingContractRoute,
     AuthenticatedDispositionDispositionIdSettlementRoute:
       AuthenticatedDispositionDispositionIdSettlementRoute,
+    AuthenticatedDispositionDispositionIdSharedLinksRoute:
+      AuthenticatedDispositionDispositionIdSharedLinksRoute,
     AuthenticatedDispositionDispositionIdShowingsRoute:
       AuthenticatedDispositionDispositionIdShowingsRoute,
+    AuthenticatedDispositionDispositionIdUploadRequestsRoute:
+      AuthenticatedDispositionDispositionIdUploadRequestsRoute,
     AuthenticatedDispositionDispositionIdWarrantyRoute:
       AuthenticatedDispositionDispositionIdWarrantyRoute,
     AuthenticatedDispositionDispositionIdIndexRoute:
@@ -3436,7 +3648,9 @@ interface AuthenticatedPipelineOpportunityIdRouteRouteChildren {
   AuthenticatedPipelineOpportunityIdOfferContractRoute: typeof AuthenticatedPipelineOpportunityIdOfferContractRoute
   AuthenticatedPipelineOpportunityIdParcelsRoute: typeof AuthenticatedPipelineOpportunityIdParcelsRoute
   AuthenticatedPipelineOpportunityIdPropertyDetailsRoute: typeof AuthenticatedPipelineOpportunityIdPropertyDetailsRoute
+  AuthenticatedPipelineOpportunityIdSharedLinksRoute: typeof AuthenticatedPipelineOpportunityIdSharedLinksRoute
   AuthenticatedPipelineOpportunityIdUnderwritingRoute: typeof AuthenticatedPipelineOpportunityIdUnderwritingRoute
+  AuthenticatedPipelineOpportunityIdUploadRequestsRoute: typeof AuthenticatedPipelineOpportunityIdUploadRequestsRoute
   AuthenticatedPipelineOpportunityIdIndexRoute: typeof AuthenticatedPipelineOpportunityIdIndexRoute
 }
 
@@ -3460,8 +3674,12 @@ const AuthenticatedPipelineOpportunityIdRouteRouteChildren: AuthenticatedPipelin
       AuthenticatedPipelineOpportunityIdParcelsRoute,
     AuthenticatedPipelineOpportunityIdPropertyDetailsRoute:
       AuthenticatedPipelineOpportunityIdPropertyDetailsRoute,
+    AuthenticatedPipelineOpportunityIdSharedLinksRoute:
+      AuthenticatedPipelineOpportunityIdSharedLinksRoute,
     AuthenticatedPipelineOpportunityIdUnderwritingRoute:
       AuthenticatedPipelineOpportunityIdUnderwritingRoute,
+    AuthenticatedPipelineOpportunityIdUploadRequestsRoute:
+      AuthenticatedPipelineOpportunityIdUploadRequestsRoute,
     AuthenticatedPipelineOpportunityIdIndexRoute:
       AuthenticatedPipelineOpportunityIdIndexRoute,
   }
@@ -3509,7 +3727,9 @@ interface AuthenticatedProjectsProjectIdRouteRouteChildren {
   AuthenticatedProjectsProjectIdPlanCatalogRoute: typeof AuthenticatedProjectsProjectIdPlanCatalogRoute
   AuthenticatedProjectsProjectIdPlansPricingRoute: typeof AuthenticatedProjectsProjectIdPlansPricingRoute
   AuthenticatedProjectsProjectIdPropertyDetailsRoute: typeof AuthenticatedProjectsProjectIdPropertyDetailsRoute
+  AuthenticatedProjectsProjectIdSharedLinksRoute: typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   AuthenticatedProjectsProjectIdTimelineRoute: typeof AuthenticatedProjectsProjectIdTimelineRoute
+  AuthenticatedProjectsProjectIdUploadRequestsRoute: typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
   AuthenticatedProjectsProjectIdIndexRoute: typeof AuthenticatedProjectsProjectIdIndexRoute
 }
 
@@ -3555,8 +3775,12 @@ const AuthenticatedProjectsProjectIdRouteRouteChildren: AuthenticatedProjectsPro
       AuthenticatedProjectsProjectIdPlansPricingRoute,
     AuthenticatedProjectsProjectIdPropertyDetailsRoute:
       AuthenticatedProjectsProjectIdPropertyDetailsRoute,
+    AuthenticatedProjectsProjectIdSharedLinksRoute:
+      AuthenticatedProjectsProjectIdSharedLinksRoute,
     AuthenticatedProjectsProjectIdTimelineRoute:
       AuthenticatedProjectsProjectIdTimelineRoute,
+    AuthenticatedProjectsProjectIdUploadRequestsRoute:
+      AuthenticatedProjectsProjectIdUploadRequestsRoute,
     AuthenticatedProjectsProjectIdIndexRoute:
       AuthenticatedProjectsProjectIdIndexRoute,
   }
@@ -3742,6 +3966,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
+  ShareTokenRoute: ShareTokenRoute,
+  UploadTokenRoute: UploadTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Folder, FolderOpen } from "lucide-react";
+import { ChevronDown, ChevronRight, Folder, FolderOpen, Share2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
@@ -12,6 +12,7 @@ interface FolderTreeItemProps {
   onRename: (id: string, name: string) => void;
   onDelete: (id: string) => void;
   onAddSubfolder: (parentId: string) => void;
+  onShareFolder?: (folderId: string, folderName: string) => void;
 }
 
 export function FolderTreeItem({
@@ -23,6 +24,7 @@ export function FolderTreeItem({
   onRename,
   onDelete,
   onAddSubfolder,
+  onShareFolder,
 }: FolderTreeItemProps) {
   const [expanded, setExpanded] = useState(true);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -89,6 +91,15 @@ export function FolderTreeItem({
             >
               Add Subfolder
             </button>
+            {onShareFolder && (
+              <button
+                type="button"
+                onClick={() => { onShareFolder(folder.id, folder.name); closeMenu(); }}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
+              >
+                <Share2 className="h-3.5 w-3.5" /> Share Folder
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -130,6 +141,7 @@ export function FolderTreeItem({
               onRename={onRename}
               onDelete={onDelete}
               onAddSubfolder={onAddSubfolder}
+              onShareFolder={onShareFolder}
             />
           ))}
         </div>

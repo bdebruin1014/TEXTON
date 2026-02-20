@@ -55,6 +55,8 @@ function OpportunityLayout() {
       items: [
         { label: "Offer & Contract", path: `${basePath}/offer-contract` },
         { label: "Documents", path: `${basePath}/documents` },
+        { label: "Shared Links", path: `${basePath}/shared-links` },
+        { label: "Upload Requests", path: `${basePath}/upload-requests` },
       ],
     },
   ];

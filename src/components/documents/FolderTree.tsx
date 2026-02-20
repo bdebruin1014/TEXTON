@@ -10,6 +10,7 @@ interface FolderTreeProps {
   onRename: (id: string, name: string) => void;
   onDelete: (id: string) => void;
   onAddFolder: (parentId: string | null) => void;
+  onShareFolder?: (folderId: string, folderName: string) => void;
 }
 
 export function FolderTree({
@@ -19,6 +20,7 @@ export function FolderTree({
   onRename,
   onDelete,
   onAddFolder,
+  onShareFolder,
 }: FolderTreeProps) {
   const rootFolders = folders.filter((f) => !f.parent_id).sort((a, b) => a.sort_order - b.sort_order);
 
@@ -56,6 +58,7 @@ export function FolderTree({
             onRename={onRename}
             onDelete={onDelete}
             onAddSubfolder={onAddFolder}
+            onShareFolder={onShareFolder}
           />
         ))}
       </div>

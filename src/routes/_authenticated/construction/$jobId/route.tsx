@@ -59,6 +59,8 @@ function JobLayout() {
         { label: "Punch List", path: `${basePath}/punch-list` },
         { label: "Warranty", path: `${basePath}/warranty` },
         { label: "Files", path: `${basePath}/files` },
+        { label: "Shared Links", path: `${basePath}/shared-links` },
+        { label: "Upload Requests", path: `${basePath}/upload-requests` },
         { label: "Permits", path: `${basePath}/permits` },
       ],
     },

@@ -1,4 +1,4 @@
-import { FileText, FolderPlus, Search, Upload } from "lucide-react";
+import { FileText, FolderPlus, Search, Send, Upload } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCreateFolder, useDeleteFolder, useDocumentFolders, useRenameFolder } from "@/hooks/useDocumentFolders";
@@ -23,6 +23,8 @@ import { FolderTree } from "./FolderTree";
 import { GenerateDocumentModal } from "./GenerateDocumentModal";
 import { MoveToFolderDialog } from "./MoveToFolderDialog";
 import { NewFolderDialog } from "./NewFolderDialog";
+import { ShareDialog } from "./sharing/ShareDialog";
+import { UploadRequestDialog } from "./sharing/UploadRequestDialog";
 import { VersionHistoryPanel } from "./VersionHistoryPanel";
 
 interface DocumentBrowserProps {
@@ -40,6 +42,13 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
   const [versionDoc, setVersionDoc] = useState<DocumentRecord | null>(null);
   const [showGenerate, setShowGenerate] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState<{
+    type: "folder" | "selection";
+    folderId?: string | null;
+    folderName?: string;
+    documents?: DocumentRecord[];
+  } | null>(null);
+  const [showUploadRequest, setShowUploadRequest] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: folders = [], isLoading: foldersLoading } = useDocumentFolders(recordType, recordId);
@@ -135,6 +144,9 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
           onRename={(id, name) => renameFolder.mutate({ id, name })}
           onDelete={(id) => deleteFolder.mutate(id)}
           onAddFolder={(parentId) => setShowNewFolder(parentId)}
+          onShareFolder={(folderId, folderName) =>
+            setShowShareDialog({ type: "folder", folderId, folderName })
+          }
         />
         {showNewFolder !== false && (
           <div className="px-2 pb-2">
@@ -201,6 +213,16 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             Generate
           </button>
 
+          {/* Request Upload */}
+          <button
+            type="button"
+            onClick={() => setShowUploadRequest(true)}
+            className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent/50"
+          >
+            <Send className="h-3.5 w-3.5" />
+            Request Upload
+          </button>
+
           {/* Upload */}
           <button
             type="button"
@@ -217,6 +239,10 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
         {selectedFileIds.size > 0 && (
           <BulkActionBar
             selectedCount={selectedFileIds.size}
+            onShare={() => {
+              const selectedDocs = documents.filter((d) => selectedFileIds.has(d.id));
+              setShowShareDialog({ type: "selection", documents: selectedDocs });
+            }}
             onMove={() => {
               const firstId = Array.from(selectedFileIds)[0];
               if (firstId) setMoveDocId(firstId);
@@ -265,6 +291,7 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
             onEditInPlace={handleEditInPlace}
             onPreview={(doc) => setPreviewDoc(doc)}
             onVersionHistory={(doc) => setVersionDoc(doc)}
+            onShare={(doc) => setShowShareDialog({ type: "selection", documents: [doc] })}
           />
         </FileUploadZone>
 
@@ -339,6 +366,29 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
           onGenerated={() => setShowGenerate(false)}
         />
       )}
+
+      {/* Share dialog */}
+      {showShareDialog && (
+        <ShareDialog
+          open
+          onClose={() => setShowShareDialog(null)}
+          recordType={recordType}
+          recordId={recordId}
+          shareType={showShareDialog.type}
+          folderId={showShareDialog.folderId}
+          folderName={showShareDialog.folderName}
+          documents={showShareDialog.documents}
+        />
+      )}
+
+      {/* Upload request dialog */}
+      <UploadRequestDialog
+        open={showUploadRequest}
+        onClose={() => setShowUploadRequest(false)}
+        recordType={recordType}
+        recordId={recordId}
+        folders={folders}
+      />
     </div>
   );
 }

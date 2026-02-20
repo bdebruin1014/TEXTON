@@ -58,6 +58,8 @@ function DispositionLayout() {
       items: [
         { label: "Warranty", path: `${basePath}/warranty` },
         { label: "Files", path: `${basePath}/files` },
+        { label: "Shared Links", path: `${basePath}/shared-links` },
+        { label: "Upload Requests", path: `${basePath}/upload-requests` },
       ],
     },
   ];

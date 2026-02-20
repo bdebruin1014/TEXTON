@@ -65,6 +65,8 @@ function ProjectLayout() {
         { label: "Dispo Summary", path: `${basePath}/dispo-summary` },
         { label: "Closeout", path: `${basePath}/closeout` },
         { label: "Files", path: `${basePath}/files` },
+        { label: "Shared Links", path: `${basePath}/shared-links` },
+        { label: "Upload Requests", path: `${basePath}/upload-requests` },
         { label: "Insurance", path: `${basePath}/insurance` },
       ],
     },
