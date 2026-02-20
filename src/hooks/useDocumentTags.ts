@@ -42,95 +42,16 @@ export function useDocumentTags() {
 // useUniqueTagNames — convenience: just the tag strings
 // ---------------------------------------------------------------------------
 
-export function useUniqueTagNames() {
-  return useQuery<string[]>({
-    queryKey: ["document-tags", "names"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("documents")
-        .select("tags")
-        .not("tags", "eq", "{}");
-      if (error) throw error;
-
-      const tagSet = new Set<string>();
-      for (const doc of data ?? []) {
-        for (const tag of (doc.tags as string[]) ?? []) {
-          tagSet.add(tag);
-        }
-      }
-      return Array.from(tagSet).sort();
-    },
-  });
-}
 
 // ---------------------------------------------------------------------------
 // useUpdateDocumentTags — set tags on a single document
 // ---------------------------------------------------------------------------
 
-export function useUpdateDocumentTags() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ documentId, tags }: { documentId: string; tags: string[] }) => {
-      const { error } = await supabase
-        .from("documents")
-        .update({ tags })
-        .eq("id", documentId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["documents"] });
-      queryClient.invalidateQueries({ queryKey: ["document-tags"] });
-    },
-  });
-}
 
 // ---------------------------------------------------------------------------
 // useBulkTagDocuments — add / remove tags on multiple documents
 // ---------------------------------------------------------------------------
 
-export function useBulkTagDocuments() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      documentIds,
-      addTags = [],
-      removeTags = [],
-    }: {
-      documentIds: string[];
-      addTags?: string[];
-      removeTags?: string[];
-    }) => {
-      // Fetch current tags for each document
-      const { data: docs, error: fetchError } = await supabase
-        .from("documents")
-        .select("id, tags")
-        .in("id", documentIds);
-      if (fetchError) throw fetchError;
-
-      // Update each document's tags
-      const updates = (docs ?? []).map((doc: { id: string; tags: string[] | null }) => {
-        const current = new Set<string>((doc.tags as string[]) ?? []);
-        for (const tag of addTags) current.add(tag);
-        for (const tag of removeTags) current.delete(tag);
-        return supabase
-          .from("documents")
-          .update({ tags: Array.from(current) })
-          .eq("id", doc.id);
-      });
-
-      const results = await Promise.all(updates);
-      for (const result of results) {
-        if (result.error) throw result.error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["documents"] });
-      queryClient.invalidateQueries({ queryKey: ["document-tags"] });
-    },
-  });
-}
 
 // ---------------------------------------------------------------------------
 // useRenameTag — rename a tag across ALL documents

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export interface UploadRequestAccessItem {
+interface UploadRequestAccessItem {
   id: string;
   name: string;
   description: string | null;

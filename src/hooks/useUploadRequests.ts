@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
-export interface UploadRequestItem {
+interface UploadRequestItem {
   id: string;
   request_id: string;
   name: string;
@@ -20,7 +20,7 @@ export interface UploadRequestItem {
   updated_at: string;
 }
 
-export interface UploadRequest {
+interface UploadRequest {
   id: string;
   request_token: string;
   record_type: string;
@@ -65,21 +65,6 @@ export function useUploadRequests(recordType: string, recordId: string) {
   });
 }
 
-export function usePendingUploadRequestCount(recordType: string, recordId: string) {
-  return useQuery({
-    queryKey: ["upload-requests-count", recordType, recordId],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("upload_requests")
-        .select("id", { count: "exact", head: true })
-        .eq("record_type", recordType)
-        .eq("record_id", recordId)
-        .in("status", ["pending", "partial"]);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
-}
 
 interface CreateUploadRequestInput {
   record_type: string;

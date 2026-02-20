@@ -1,4 +1,4 @@
-import { computeBuilderFee, computeContingency, FIXED_PER_HOUSE_FEES, totalFixedPerHouse } from "./constants";
+import { computeBuilderFee, computeContingency, totalFixedPerHouse } from "./constants";
 
 export interface DealSheetInputs {
   // Lot acquisition
@@ -34,7 +34,7 @@ export interface DealSheetInputs {
   project_duration_days: number; // default 120
 }
 
-export interface DealSheetResults {
+interface DealSheetResults {
   // Lot basis
   total_lot_basis: number;
 
@@ -158,7 +158,7 @@ export function calculateDealSheet(inputs: DealSheetInputs): DealSheetResults {
 // Sensitivity analysis
 // ---------------------------------------------------------------------------
 
-export interface SensitivityScenario {
+interface SensitivityScenario {
   label: string;
   net_profit: number;
   net_profit_margin: number;
@@ -183,7 +183,7 @@ function runScenario(
   return { label, net_profit: r.net_profit, net_profit_margin: r.net_profit_margin, profit_verdict: r.profit_verdict };
 }
 
-export interface SensitivityResults {
+interface SensitivityResults {
   base: SensitivityScenario;
   bestCase: SensitivityScenario;
   worstCase: SensitivityScenario;
@@ -211,6 +211,3 @@ export function runSensitivityAnalysis(inputs: DealSheetInputs): SensitivityResu
 
   return { base, bestCase, worstCase, costOverrun10, aspDecline10, delay30Days, breakevenASP, minimumASP5pct };
 }
-
-// Re-export for convenience
-export { FIXED_PER_HOUSE_FEES, totalFixedPerHouse, computeBuilderFee, computeContingency };

@@ -1,9 +1,9 @@
-export interface FileIconConfig {
+interface FileIconConfig {
   label: string;
   color: string;
 }
 
-export const FILE_ICONS: Record<string, FileIconConfig> = {
+const FILE_ICONS: Record<string, FileIconConfig> = {
   ".pdf": { color: "#946060", label: "PDF" },
   ".docx": { color: "#4A6B8A", label: "DOCX" },
   ".doc": { color: "#4A6B8A", label: "DOC" },

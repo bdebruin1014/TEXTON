@@ -22,11 +22,6 @@ export function getEditInPlaceUrl(document: {
   return `${protocol}:ofe|u|${webdavUrl}`;
 }
 
-export function canEditInPlace(extension: string | null | undefined): boolean {
-  if (!extension) return false;
-  const ext = extension.toLowerCase().startsWith(".") ? extension.toLowerCase() : `.${extension.toLowerCase()}`;
-  return ext in OFFICE_PROTOCOLS;
-}
 
 export function getOfficeAppName(extension: string | null | undefined): string | null {
   if (!extension) return null;

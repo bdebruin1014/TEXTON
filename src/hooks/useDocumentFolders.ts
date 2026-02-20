@@ -92,17 +92,3 @@ export function useDeleteFolder() {
   });
 }
 
-export function useReorderFolders() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (updates: { id: string; sort_order: number }[]) => {
-      for (const u of updates) {
-        const { error } = await supabase.from("document_folders").update({ sort_order: u.sort_order }).eq("id", u.id);
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["document-folders"] });
-    },
-  });
-}

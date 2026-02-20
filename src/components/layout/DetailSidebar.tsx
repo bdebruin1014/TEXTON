@@ -6,7 +6,7 @@ export interface SidebarSection {
   items: SidebarLink[];
 }
 
-export interface SidebarLink {
+interface SidebarLink {
   label: string;
   path: string;
 }

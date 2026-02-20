@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 // Types
 // ---------------------------------------------------------------------------
 
-export interface ActivityLogProps {
+interface ActivityLogProps {
   recordType: string;
   recordId: string;
   documentId?: string;

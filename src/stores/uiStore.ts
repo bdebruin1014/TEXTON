@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export interface RecordTab {
+interface RecordTab {
   id: string;
   label: string;
   path: string;

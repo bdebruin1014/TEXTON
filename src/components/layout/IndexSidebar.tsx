@@ -6,7 +6,7 @@ export interface SidebarFilterItem {
   value: string;
 }
 
-export interface SidebarMetric {
+interface SidebarMetric {
   label: string;
   value: string | number;
 }

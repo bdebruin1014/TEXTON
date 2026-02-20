@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
-export interface DocumentShare {
+interface DocumentShare {
   id: string;
   share_token: string;
   share_type: "folder" | "selection";
@@ -47,21 +47,6 @@ export function useDocumentShares(recordType: string, recordId: string) {
   });
 }
 
-export function useActiveShareCount(recordType: string, recordId: string) {
-  return useQuery({
-    queryKey: ["document-shares-count", recordType, recordId],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("document_shares")
-        .select("id", { count: "exact", head: true })
-        .eq("record_type", recordType)
-        .eq("record_id", recordId)
-        .eq("status", "active");
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
-}
 
 interface CreateShareInput {
   share_type: "folder" | "selection";
