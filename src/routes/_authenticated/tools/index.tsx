@@ -4,28 +4,34 @@ export const Route = createFileRoute("/_authenticated/tools/")({
   component: ToolsIndex,
 });
 
-const TOOLS = [
+const ACTIVE_TOOLS = [
   {
     name: "Deal Analyzer",
-    description:
-      "Scattered lot underwriting — select floor plan, municipality, and financing to generate a full deal sheet",
+    description: "Quick scattered lot underwriting. Select a floor plan, enter costs, get an instant go/no-go.",
     path: "/tools/deal-analyzer",
   },
   {
-    name: "Community Proforma",
-    description: "Two-phase community development proforma with horizontal + vertical economics and LP waterfall",
+    name: "Community Development Proforma",
+    description: "Two-phase proforma for land assembly through home sales with LP waterfall.",
     path: "/tools/community-proforma",
   },
   {
     name: "Lot Development Proforma",
-    description: "Horizontal-only lot development model with absorption schedule and investor returns",
+    description: "Horizontal-only proforma for developing and selling finished lots.",
     path: "/tools/lot-dev-proforma",
   },
   {
     name: "Lot Purchase Proforma",
-    description: "Lot purchase agreement model with takedown schedule and per-home economics",
+    description: "Takedown schedule proforma for buying finished lots and building homes.",
     path: "/tools/lot-purchase-proforma",
   },
+];
+
+const COMING_SOON = [
+  { name: "Market Analysis", description: "Comparable sales research and market trend analysis." },
+  { name: "Cost Estimator", description: "Quick construction cost estimates by plan type and location." },
+  { name: "Document Search", description: "AI-powered search across project documents and contracts." },
+  { name: "Bulk Communications", description: "Template-based email and notification campaigns." },
 ];
 
 function ToolsIndex() {
@@ -41,7 +47,7 @@ function ToolsIndex() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {TOOLS.map((tool) => (
+        {ACTIVE_TOOLS.map((tool) => (
           <a
             key={tool.name}
             href={tool.path}
@@ -54,6 +60,16 @@ function ToolsIndex() {
             <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">{tool.name}</h3>
             <p className="mt-1 text-xs text-muted">{tool.description}</p>
           </a>
+        ))}
+      </div>
+
+      <h2 className="mb-4 mt-10 text-sm font-semibold text-muted">Coming Soon</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {COMING_SOON.map((tool) => (
+          <div key={tool.name} className="rounded-lg border border-dashed border-border bg-card p-6 opacity-50">
+            <h3 className="text-sm font-semibold text-muted">{tool.name}</h3>
+            <p className="mt-1 text-xs text-muted">{tool.description}</p>
+          </div>
         ))}
       </div>
     </div>
