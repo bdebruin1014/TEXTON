@@ -74,6 +74,55 @@ export const COST_BOOK_STATUSES = ["Draft", "Active", "Archived"] as const;
 
 export const ENTITY_TYPES = ["LLC", "LP", "Corp", "Trust", "Individual"] as const;
 
+export const COMPANY_TYPE_CATEGORIES = [
+  {
+    label: "Closing",
+    types: ["Lender", "Mortgage Brokerage", "Law Firm", "Title Company"],
+  },
+  {
+    label: "Soft Costs",
+    types: [
+      "Architect",
+      "Engineer",
+      "Surveyor",
+      "Appraiser",
+      "Interior Designer",
+      "Land Planner",
+      "Environmental Consultant",
+    ],
+  },
+  {
+    label: "Hard Costs",
+    types: [
+      "General Contractor",
+      "Subcontractor",
+      "Material Supplier",
+      "Equipment Rental",
+      "Concrete / Flatwork",
+      "Framing",
+      "Electrical",
+      "Plumbing",
+      "HVAC",
+      "Roofing",
+      "Grading / Sitework",
+    ],
+  },
+  {
+    label: "Investors",
+    types: ["Family Office", "REIT", "Private Equity", "Fund / LP", "HNW Individual", "Institutional", "JV Partner"],
+  },
+  {
+    label: "Government",
+    types: ["Municipality", "County", "State Agency", "Tax Authority", "Utility Provider"],
+  },
+  {
+    label: "Other",
+    types: ["Insurance", "Real Estate Brokerage", "HOA", "Property Manager", "Other"],
+  },
+] as const;
+
+export const COMPANY_TYPES = COMPANY_TYPE_CATEGORIES.flatMap((c) => c.types);
+
 export const PO_STATUSES = [
   "Draft",
   "Submitted",

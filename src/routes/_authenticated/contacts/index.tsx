@@ -1,10 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-
-import { useState } from "react";
+import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { FormSkeleton } from "@/components/shared/Skeleton";
+import { TableSkeleton } from "@/components/shared/Skeleton";
+import { DataTable } from "@/components/tables/DataTable";
+import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { COMPANY_TYPE_CATEGORIES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/contacts/")({
   component: CompaniesIndex,
@@ -16,50 +21,114 @@ interface Company {
   company_type: string | null;
   phone: string | null;
   email: string | null;
+  address: string | null;
   city: string | null;
   state: string | null;
   contact_count: number | null;
 }
 
-const COMPANY_TYPES = [
-  "Subcontractor",
-  "Lender",
-  "Law Firm",
-  "Title Company",
-  "Surveyor",
-  "Appraiser",
-  "Real Estate Brokerage",
-  "Insurance",
-  "Utility Provider",
-  "Material Supplier",
-  "Government",
-  "Other",
-] as const;
+const columns: ColumnDef<Company, unknown>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+    cell: ({ row }) => <span className="font-medium text-foreground">{row.getValue("name")}</span>,
+  },
+  {
+    accessorKey: "company_type",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+    cell: ({ row }) => {
+      const val = row.getValue("company_type") as string | null;
+      return <span className="text-muted">{val ?? "Not set"}</span>;
+    },
+  },
+  {
+    id: "address",
+    header: "Address",
+    cell: ({ row }) => {
+      const city = row.original.city;
+      const state = row.original.state;
+      const addr = [city, state].filter(Boolean).join(", ");
+      return <span className="text-muted">{addr || "Not set"}</span>;
+    },
+  },
+  {
+    accessorKey: "phone",
+    header: "Phone",
+    cell: ({ row }) => {
+      const val = row.getValue("phone") as string | null;
+      return <span className="text-muted">{val ?? "Not set"}</span>;
+    },
+  },
+];
 
 function CompaniesIndex() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set(COMPANY_TYPES));
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const location = useRouterState({ select: (s) => s.location });
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Read filter from search params
+  const activeType = (location.search as Record<string, string>)?.type ?? "all";
 
   const { data: companies = [], isLoading } = useQuery<Company[]>({
     queryKey: ["companies"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("companies")
-        .select("id, name, company_type, phone, email, city, state, contact_count")
+        .select("id, name, company_type, phone, email, address, city, state, contact_count")
         .order("name");
       if (error) throw error;
       return data ?? [];
     },
   });
 
+  // Resolve which types to filter by
+  const filterTypes = useMemo(() => {
+    if (activeType === "all") return null; // show all
+    // Check if it's a category label
+    const category = COMPANY_TYPE_CATEGORIES.find((c) => c.label === activeType);
+    if (category) return [...category.types];
+    // It's a specific type
+    return [activeType];
+  }, [activeType]);
+
+  const filtered = useMemo(() => {
+    let result = companies;
+    if (filterTypes) {
+      result = result.filter((c) => c.company_type && filterTypes.includes(c.company_type));
+    }
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      result = result.filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          c.company_type?.toLowerCase().includes(q) ||
+          c.phone?.toLowerCase().includes(q) ||
+          c.city?.toLowerCase().includes(q),
+      );
+    }
+    return result;
+  }, [companies, filterTypes, searchTerm]);
+
+  // Derive header title from active filter
+  const headerTitle = useMemo(() => {
+    if (activeType === "all") return "All Companies";
+    const category = COMPANY_TYPE_CATEGORIES.find((c) => c.label === activeType);
+    if (category) return `${category.label} Companies`;
+    return activeType;
+  }, [activeType]);
+
   const addCompany = useMutation({
-    mutationFn: async (companyType: string) => {
+    mutationFn: async () => {
+      const companyType =
+        activeType !== "all" && !COMPANY_TYPE_CATEGORIES.find((c) => c.label === activeType) ? activeType : "Other";
       const { data, error } = await supabase
         .from("companies")
         .insert({
-          name: `New ${companyType}`,
+          name: "New Company",
           company_type: companyType,
+          entity_id: activeEntityId,
         })
         .select("id")
         .single();
@@ -68,143 +137,108 @@ function CompaniesIndex() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
+      toast.success("Company created");
       if (data?.id) {
         navigate({ to: `/contacts/${data.id}` as string });
       }
     },
+    onError: () => toast.error("Failed to create company"),
   });
 
-  const toggleType = (type: string) => {
-    setExpandedTypes((prev) => {
-      const next = new Set(prev);
-      if (next.has(type)) next.delete(type);
-      else next.add(type);
-      return next;
-    });
-  };
-
-  const companiesByType = COMPANY_TYPES.map((type) => ({
-    type,
-    companies: companies.filter((c) => c.company_type === type),
-  }));
-
-  const uncategorized = companies.filter(
-    (c) => !c.company_type || !COMPANY_TYPES.includes(c.company_type as (typeof COMPANY_TYPES)[number]),
-  );
-
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Companies</h1>
-          <p className="mt-0.5 text-sm text-muted">{companies.length} companies organized by type</p>
+    <div className="flex gap-6">
+      {/* Main content */}
+      <div className="min-w-0 flex-1">
+        {/* Header */}
+        <div className="mb-5 flex items-start justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">{headerTitle}</h1>
+            <p className="mt-0.5 text-sm text-muted">
+              {filtered.length} {filtered.length === 1 ? "company" : "companies"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => addCompany.mutate()}
+            className="flex shrink-0 items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+          >
+            + New Company
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => addCompany.mutate("Other")}
-          className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-        >
-          + Add Company
-        </button>
+
+        {/* Table */}
+        {isLoading ? (
+          <TableSkeleton rows={8} cols={4} />
+        ) : filtered.length === 0 ? (
+          <EmptyState title="No companies found" description="Try adjusting your filters or add a new company" />
+        ) : (
+          <DataTable
+            columns={columns}
+            data={filtered}
+            searchKey="name"
+            searchPlaceholder="Search companies..."
+            onRowClick={(row) => navigate({ to: `/contacts/${row.id}` as string })}
+          />
+        )}
       </div>
 
-      {isLoading ? (
-        <FormSkeleton />
-      ) : companies.length === 0 ? (
-        <EmptyState title="No companies" description="Add companies to build your contacts directory" />
-      ) : (
-        <div className="space-y-2">
-          {companiesByType.map(({ type, companies: typeCompanies }) => {
-            if (typeCompanies.length === 0) return null;
-            const isExpanded = expandedTypes.has(type);
-            return (
-              <div key={type} className="rounded-lg border border-border bg-card">
-                {/* Category Header */}
-                <button
-                  type="button"
-                  onClick={() => toggleType(type)}
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                >
-                  <div className="flex items-center gap-2">
-                    {isExpanded ? (
-                      <span className="text-muted">▾</span>
-                    ) : (
-                      <span className="text-muted">→</span>
-                    )}
-                    <span className="text-sm font-semibold text-foreground">{type}</span>
-                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-muted">
-                      {typeCompanies.length}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addCompany.mutate(type);
-                    }}
-                    className="rounded p-1 text-muted transition-colors hover:bg-accent hover:text-foreground"
-                  >
-                    +
-                  </button>
-                </button>
+      {/* Right filter panel */}
+      <div className="hidden w-56 shrink-0 lg:block" style={{ borderLeft: "1px solid var(--color-border)" }}>
+        <div className="pl-5 pt-1">
+          <h2 className="mb-4 text-sm font-semibold text-foreground">Filter Companies</h2>
 
-                {/* Expanded Company List */}
-                {isExpanded && (
-                  <div className="border-t border-border">
-                    {typeCompanies.map((company) => (
-                      <button
-                        key={company.id}
-                        type="button"
-                        onClick={() => navigate({ to: `/contacts/${company.id}` as string })}
-                        className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-card-hover"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <span className="text-sm font-medium text-foreground">{company.name}</span>
-                          {(company.city || company.state) && (
-                            <span className="ml-2 text-xs text-muted">
-                              {[company.city, company.state].filter(Boolean).join(", ")}
-                            </span>
-                          )}
-                        </div>
-                        {company.phone && <span className="text-xs text-muted">{company.phone}</span>}
-                        {company.contact_count != null && company.contact_count > 0 && (
-                          <span className="rounded-full bg-accent px-1.5 py-0.5 text-[10px] text-muted">
-                            {company.contact_count} contact{company.contact_count === 1 ? "" : "s"}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {/* SEARCH TERM */}
+          <div className="mb-4">
+            <label
+              htmlFor="contacts-search"
+              className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              Search Term
+            </label>
+            <input
+              id="contacts-search"
+              type="text"
+              placeholder="Search Companies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded border border-border bg-card px-2.5 py-1.5 text-xs text-foreground outline-none placeholder:text-muted transition-colors focus:border-primary"
+            />
+          </div>
 
-          {/* Uncategorized */}
-          {uncategorized.length > 0 && (
-            <div className="rounded-lg border border-border bg-card">
-              <div className="px-4 py-3">
-                <span className="text-sm font-semibold text-muted">Uncategorized</span>
-                <span className="ml-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-muted">
-                  {uncategorized.length}
-                </span>
-              </div>
-              <div className="border-t border-border">
-                {uncategorized.map((company) => (
-                  <button
-                    key={company.id}
-                    type="button"
-                    onClick={() => navigate({ to: `/contacts/${company.id}` as string })}
-                    className="flex w-full items-center gap-3 border-b border-border px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-card-hover"
-                  >
-                    <span className="text-sm font-medium text-foreground">{company.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* COMPANY section */}
+          <div className="mb-4">
+            <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Company
+            </span>
+
+            {/* Phone filter */}
+            <label htmlFor="filter-phone" className="mb-1 block text-[11px] text-muted-foreground">
+              Phone
+            </label>
+            <select
+              id="filter-phone"
+              className="mb-3 w-full rounded border border-border bg-card px-2 py-1.5 text-xs text-foreground outline-none"
+            >
+              <option>Any</option>
+              <option>Has Phone</option>
+              <option>No Phone</option>
+            </select>
+
+            {/* Tax ID filter */}
+            <label htmlFor="filter-taxid" className="mb-1 block text-[11px] text-muted-foreground">
+              Tax ID Number
+            </label>
+            <select
+              id="filter-taxid"
+              className="w-full rounded border border-border bg-card px-2 py-1.5 text-xs text-foreground outline-none"
+            >
+              <option>Any</option>
+              <option>Has Tax ID</option>
+              <option>No Tax ID</option>
+            </select>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

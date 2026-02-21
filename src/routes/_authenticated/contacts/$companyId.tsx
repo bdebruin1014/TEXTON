@@ -6,6 +6,7 @@ import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField"
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
+import { COMPANY_TYPES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/contacts/$companyId")({
@@ -43,21 +44,6 @@ interface Contact {
   phone: string | null;
   is_primary: boolean;
 }
-
-const COMPANY_TYPES = [
-  "Subcontractor",
-  "Lender",
-  "Law Firm",
-  "Title Company",
-  "Surveyor",
-  "Appraiser",
-  "Real Estate Brokerage",
-  "Insurance",
-  "Utility Provider",
-  "Material Supplier",
-  "Government",
-  "Other",
-];
 
 function CompanyDetail() {
   const { companyId } = Route.useParams();
