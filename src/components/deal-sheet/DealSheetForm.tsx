@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DealSheetComps } from "@/components/deal-sheet/DealSheetComps";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { type FloorPlanData, FloorPlanSelect } from "@/components/forms/FloorPlanSelect";
@@ -362,6 +363,9 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
             <PercentageInput label="Cost of Capital" value={sheet.cost_of_capital} onSave={save("cost_of_capital")} />
           </div>
         </div>
+
+        {/* Comparable Sales */}
+        <DealSheetComps dealSheetId={sheet.id} />
       </div>
 
       {/* RIGHT: Results Column (sticky) */}
