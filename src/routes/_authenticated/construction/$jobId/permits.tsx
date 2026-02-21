@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -42,6 +45,7 @@ const PERMIT_TYPES = [
 function Permits() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: permits = [], isLoading } = useQuery<Permit[]>({
     queryKey: ["permits", jobId],
@@ -57,15 +61,22 @@ function Permits() {
   });
 
   const addPermit = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("permits").insert({
         job_id: jobId,
-        permit_type: "Building Permit",
+        permit_type: values.permit_type || "Building Permit",
         status: "Not Applied",
+        permit_number: values.permit_number || null,
+        applied_date: values.applied_date || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["permits", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["permits", jobId] });
+      toast.success("Permit added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add permit"),
   });
 
   const updatePermit = useMutation({
@@ -200,12 +211,33 @@ function Permits() {
         </div>
         <button
           type="button"
-          onClick={() => addPermit.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Permit
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Permit"
+        fields={[
+          {
+            name: "permit_type",
+            label: "Permit type",
+            type: "select",
+            required: true,
+            options: ["Building", "Electrical", "Plumbing", "Mechanical", "Grading", "Other"],
+          },
+          { name: "permit_number", label: "Permit number", type: "text" },
+          { name: "applied_date", label: "Applied date", type: "date" },
+        ]}
+        onSubmit={async (values) => {
+          addPermit.mutate(values);
+        }}
+        loading={addPermit.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

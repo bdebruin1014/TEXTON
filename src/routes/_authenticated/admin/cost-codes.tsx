@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -24,6 +26,7 @@ interface CostCode {
 function CostCodes() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: codes = [], isLoading } = useQuery<CostCode[]>({
     queryKey: ["cost-codes"],
@@ -35,16 +38,22 @@ function CostCodes() {
   });
 
   const addCode = useMutation({
-    mutationFn: async () => {
-      const nextNum = codes.length + 1;
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("cost_codes").insert({
-        code: String(nextNum).padStart(4, "0"),
-        description: "New Cost Code",
+        code: values.code,
+        description: values.description,
+        category: values.category || null,
         status: "Active",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cost-codes"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cost-codes"] });
+      toast.success("Cost code added");
+    },
+    onError: () => {
+      toast.error("Failed to add cost code");
+    },
   });
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,16 +112,14 @@ function CostCodes() {
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            
             Import Cost Codes
           </button>
           <button
             type="button"
-            onClick={() => addCode.mutate()}
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            Add Cost Code
+            + Add Cost Code
           </button>
           <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleImport} />
         </div>
@@ -125,6 +132,27 @@ function CostCodes() {
       ) : (
         <DataTable columns={columns} data={codes} searchKey="description" searchPlaceholder="Search cost codes..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Cost Code"
+        fields={[
+          { name: "code", label: "Cost code", type: "text", required: true },
+          { name: "description", label: "Description", type: "text", required: true },
+          {
+            name: "category",
+            label: "Category",
+            type: "select",
+            options: ["Hard Costs", "Soft Costs", "Land", "Fees", "Overhead", "Other"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addCode.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addCode.isPending}
+      />
     </div>
   );
 }

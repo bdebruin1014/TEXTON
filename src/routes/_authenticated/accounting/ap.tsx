@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -33,6 +35,7 @@ function AccountsPayable() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showModal, setShowModal] = useState(false);
 
   const { data: bills = [], isLoading } = useQuery<Bill[]>({
     queryKey: ["ap-bills", activeEntityId],
@@ -48,7 +51,7 @@ function AccountsPayable() {
   });
 
   const addBill = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = bills.length + 1;
       const today = new Date().toISOString().split("T")[0];
       const { error } = await supabase.from("bills").insert({
@@ -56,10 +59,19 @@ function AccountsPayable() {
         bill_date: today,
         status: "Pending",
         entity_id: activeEntityId,
+        vendor_name: values.vendor_name || null,
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
+        due_date: values.due_date || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ap-bills", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ap-bills", activeEntityId] });
+      toast.success("Bill created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create bill"),
   });
 
   const bulkAction = useMutation({
@@ -181,11 +193,10 @@ function AccountsPayable() {
           )}
           <button
             type="button"
-            onClick={() => addBill.mutate()}
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            New Bill
+            + New Bill
           </button>
         </div>
       </div>
@@ -197,6 +208,22 @@ function AccountsPayable() {
       ) : (
         <DataTable columns={columns} data={bills} searchKey="vendor_name" searchPlaceholder="Search bills..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Bill"
+        fields={[
+          { name: "vendor_name", label: "Vendor name", type: "text", required: true, placeholder: "Vendor name" },
+          { name: "description", label: "Description", type: "text", placeholder: "Description" },
+          { name: "amount", label: "Amount", type: "number", placeholder: "Amount" },
+          { name: "due_date", label: "Due date", type: "date", placeholder: "Due date" },
+        ]}
+        onSubmit={async (values) => {
+          await addBill.mutateAsync(values);
+        }}
+        loading={addBill.isPending}
+      />
     </div>
   );
 }

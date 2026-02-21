@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -27,6 +30,7 @@ interface Showing {
 function Showings() {
   const { dispositionId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: showings = [], isLoading } = useQuery<Showing[]>({
     queryKey: ["showings", dispositionId],
@@ -42,15 +46,22 @@ function Showings() {
   });
 
   const addShowing = useMutation({
-    mutationFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("showings").insert({
         disposition_id: dispositionId,
-        showing_date: today,
+        showing_date: values.showing_date || new Date().toISOString().split("T")[0],
+        showing_time: values.showing_time || null,
+        agent_name: values.agent_name || null,
+        feedback: values.notes || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["showings", dispositionId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["showings", dispositionId] });
+      toast.success("Showing added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add showing"),
   });
 
   const deleteShowing = useMutation({
@@ -126,12 +137,28 @@ function Showings() {
         </div>
         <button
           type="button"
-          onClick={() => addShowing.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Showing
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Showing"
+        fields={[
+          { name: "showing_date", label: "Showing date", type: "date", required: true },
+          { name: "showing_time", label: "Time", type: "text", placeholder: "2:00 PM" },
+          { name: "agent_name", label: "Agent name", type: "text" },
+          { name: "notes", label: "Notes", type: "textarea" },
+        ]}
+        onSubmit={async (values) => {
+          addShowing.mutate(values);
+        }}
+        loading={addShowing.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

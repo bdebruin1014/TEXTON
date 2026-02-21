@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
@@ -60,6 +61,7 @@ function AccountingIndex() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: entities = [], isLoading: entitiesLoading } = useQuery<Entity[]>({
     queryKey: ["entities"],
@@ -91,9 +93,7 @@ function AccountingIndex() {
   const { data: receivables = [] } = useQuery<Receivable[]>({
     queryKey: ["receivables_summary"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("receivables")
-        .select("entity_id, amount, received_amount, status");
+      const { data, error } = await supabase.from("receivables").select("entity_id, amount, received_amount, status");
       if (error) throw error;
       return data ?? [];
     },
@@ -102,9 +102,7 @@ function AccountingIndex() {
   const { data: reconciliations = [] } = useQuery<Reconciliation[]>({
     queryKey: ["reconciliations_summary_full"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("reconciliations")
-        .select("entity_id, status, reconciled_at");
+      const { data, error } = await supabase.from("reconciliations").select("entity_id, status, reconciled_at");
       if (error) throw error;
       return data ?? [];
     },
@@ -125,8 +123,7 @@ function AccountingIndex() {
 
       const arOutstanding = receivables
         .filter(
-          (r) =>
-            r.entity_id === entity.id && (r.status === "Open" || r.status === "Partial" || r.status === "Overdue"),
+          (r) => r.entity_id === entity.id && (r.status === "Open" || r.status === "Partial" || r.status === "Overdue"),
         )
         .reduce((sum, r) => sum + ((r.amount ?? 0) - (r.received_amount ?? 0)), 0);
 
@@ -157,10 +154,15 @@ function AccountingIndex() {
   const activeEntities = entities.filter((e) => e.status === "Active").length;
 
   const createEntity = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { data, error } = await supabase
         .from("entities")
-        .insert({ name: "New Entity", status: "Active", entity_id: activeEntityId })
+        .insert({
+          name: values.name,
+          entity_type: values.entity_type || null,
+          status: "Active",
+          entity_id: activeEntityId,
+        })
         .select("id")
         .single();
       if (error) throw error;
@@ -169,6 +171,7 @@ function AccountingIndex() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["entities"] });
       toast.success("Entity created");
+      setShowModal(false);
       if (data?.id) {
         navigate({ to: `/accounting/${data.id}/register` as string });
       }
@@ -182,9 +185,7 @@ function AccountingIndex() {
       <div className="mb-5 flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Accounting</h1>
-          <p className="mt-0.5 text-sm text-muted">
-            Financial overview across {activeEntities} active entities
-          </p>
+          <p className="mt-0.5 text-sm text-muted">Financial overview across {activeEntities} active entities</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -196,7 +197,7 @@ function AccountingIndex() {
           </button>
           <button
             type="button"
-            onClick={() => createEntity.mutate()}
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
             + New Entity
@@ -208,25 +209,37 @@ function AccountingIndex() {
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #48BB78" }}>
           <span className="text-lg font-bold text-foreground">{formatCurrency(totalCash)}</span>
-          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+          <p
+            className="text-[10px] font-semibold uppercase tracking-wider"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
             Cash Balance
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #B84040" }}>
           <span className="text-lg font-bold text-foreground">{formatCurrency(totalAP)}</span>
-          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+          <p
+            className="text-[10px] font-semibold uppercase tracking-wider"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
             AP Outstanding
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #3B6FA0" }}>
           <span className="text-lg font-bold text-foreground">{formatCurrency(totalAR)}</span>
-          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+          <p
+            className="text-[10px] font-semibold uppercase tracking-wider"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
             AR Outstanding
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #C4841D" }}>
           <span className="text-lg font-bold text-foreground">{activeEntities}</span>
-          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+          <p
+            className="text-[10px] font-semibold uppercase tracking-wider"
+            style={{ color: "var(--color-text-secondary)" }}
+          >
             Active Entities
           </p>
         </div>
@@ -294,6 +307,26 @@ function AccountingIndex() {
           ))}
         </div>
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Entity"
+        fields={[
+          { name: "name", label: "Entity name", type: "text", required: true, placeholder: "Entity name" },
+          {
+            name: "entity_type",
+            label: "Entity type",
+            type: "select",
+            placeholder: "Entity type",
+            options: ["LLC", "LP", "Corporation", "Trust", "S-Corp", "Partnership"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await createEntity.mutateAsync(values);
+        }}
+        loading={createEntity.isPending}
+      />
     </div>
   );
 }

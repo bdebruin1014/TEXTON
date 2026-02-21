@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -29,6 +32,7 @@ interface BatchPayment {
 function AggregatePayments() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: batches = [], isLoading } = useQuery<BatchPayment[]>({
     queryKey: ["batch-payments", activeEntityId],
@@ -44,7 +48,7 @@ function AggregatePayments() {
   });
 
   const addBatch = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = batches.length + 1;
       const today = new Date().toISOString().split("T")[0];
       const { error } = await supabase.from("batch_payments").insert({
@@ -52,10 +56,18 @@ function AggregatePayments() {
         payment_date: today,
         status: "Draft",
         entity_id: activeEntityId,
+        payment_method: values.payment_method || null,
+        bank_account_name: values.bank_account_name || null,
+        notes: values.notes || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["batch-payments", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["batch-payments", activeEntityId] });
+      toast.success("Batch payment created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create batch payment"),
   });
 
   const deleteBatch = useMutation({
@@ -118,9 +130,7 @@ function AggregatePayments() {
             deleteBatch.mutate(row.original.id);
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
-        >
-          
-        </button>
+        ></button>
       ),
     },
   ];
@@ -134,11 +144,10 @@ function AggregatePayments() {
         </div>
         <button
           type="button"
-          onClick={() => addBatch.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Batch Payment
+          + New Batch Payment
         </button>
       </div>
 
@@ -149,6 +158,27 @@ function AggregatePayments() {
       ) : (
         <DataTable columns={columns} data={batches} searchKey="batch_number" searchPlaceholder="Search batches..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Batch Payment"
+        fields={[
+          {
+            name: "payment_method",
+            label: "Payment method",
+            type: "select",
+            placeholder: "Payment method",
+            options: ["Check", "Wire", "ACH", "EFT"],
+          },
+          { name: "bank_account_name", label: "Bank account", type: "text", placeholder: "Bank account" },
+          { name: "notes", label: "Notes", type: "textarea", placeholder: "Notes" },
+        ]}
+        onSubmit={async (values) => {
+          await addBatch.mutateAsync(values);
+        }}
+        loading={addBatch.isPending}
+      />
     </div>
   );
 }

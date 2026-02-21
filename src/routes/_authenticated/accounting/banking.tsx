@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -31,6 +33,7 @@ function Banking() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: accounts = [], isLoading } = useQuery<BankAccount[]>({
     queryKey: ["bank-accounts", activeEntityId],
@@ -46,15 +49,24 @@ function Banking() {
   });
 
   const addAccount = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("bank_accounts").insert({
-        account_name: "New Bank Account",
+        account_name: values.account_name,
+        bank_name: values.bank_name || null,
+        account_number: values.account_number || null,
+        routing_number: values.routing_number || null,
+        account_type: values.account_type || null,
         status: "Active",
         entity_id: activeEntityId,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bank-accounts", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bank-accounts", activeEntityId] });
+      toast.success("Bank account added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add bank account"),
   });
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,16 +133,14 @@ function Banking() {
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            
             Import Transactions
           </button>
           <button
             type="button"
-            onClick={() => addAccount.mutate()}
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            Add Bank Account
+            + Add Bank Account
           </button>
           <input ref={fileInputRef} type="file" accept=".csv,.ofx,.qfx" className="hidden" onChange={handleImport} />
         </div>
@@ -143,6 +153,29 @@ function Banking() {
       ) : (
         <DataTable columns={columns} data={accounts} searchKey="account_name" searchPlaceholder="Search accounts..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Bank Account"
+        fields={[
+          { name: "account_name", label: "Account name", type: "text", required: true, placeholder: "Account name" },
+          { name: "bank_name", label: "Bank name", type: "text", placeholder: "Bank name" },
+          { name: "account_number", label: "Account number", type: "text", placeholder: "Account number" },
+          { name: "routing_number", label: "Routing number", type: "text", placeholder: "Routing number" },
+          {
+            name: "account_type",
+            label: "Account type",
+            type: "select",
+            placeholder: "Account type",
+            options: ["Checking", "Savings", "Money Market", "Trust"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addAccount.mutateAsync(values);
+        }}
+        loading={addAccount.isPending}
+      />
     </div>
   );
 }

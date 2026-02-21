@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -23,6 +26,7 @@ interface SiteWorkItem {
 
 function SiteWorkItems() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: items = [], isLoading } = useQuery<SiteWorkItem[]>({
     queryKey: ["site-work-items"],
@@ -34,18 +38,24 @@ function SiteWorkItems() {
   });
 
   const addItem = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const nextOrder = items.length > 0 ? Math.max(...items.map((i) => i.sort_order)) + 1 : 1;
       const code = `SW-${String(nextOrder).padStart(2, "0")}`;
       const { error } = await supabase.from("site_work_items").insert({
         code,
-        description: "New Item",
-        default_amount: 0,
+        description: values.name,
+        default_amount: values.default_amount ? Number(values.default_amount) : 0,
         sort_order: nextOrder,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["site-work-items"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["site-work-items"] });
+      toast.success("Site work item added");
+    },
+    onError: () => {
+      toast.error("Failed to add site work item");
+    },
   });
 
   const deleteItem = useMutation({
@@ -104,7 +114,7 @@ function SiteWorkItems() {
         </div>
         <button
           type="button"
-          onClick={() => addItem.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Item
@@ -121,6 +131,22 @@ function SiteWorkItems() {
       ) : (
         <DataTable columns={columns} data={items} searchKey="description" searchPlaceholder="Search items..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Site Work Item"
+        fields={[
+          { name: "name", label: "Item name", type: "text", required: true },
+          { name: "default_amount", label: "Default amount", type: "number" },
+          { name: "unit", label: "Unit", type: "text", placeholder: "per lot" },
+        ]}
+        onSubmit={async (values) => {
+          await addItem.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addItem.isPending}
+      />
     </div>
   );
 }

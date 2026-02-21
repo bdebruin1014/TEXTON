@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -29,6 +32,7 @@ interface Invoice {
 function Invoices() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: invoices = [], isLoading } = useQuery<Invoice[]>({
     queryKey: ["invoices", activeEntityId],
@@ -44,7 +48,7 @@ function Invoices() {
   });
 
   const addInvoice = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = invoices.length + 1;
       const today = new Date().toISOString().split("T")[0];
       const { error } = await supabase.from("invoices").insert({
@@ -52,10 +56,19 @@ function Invoices() {
         invoice_date: today,
         status: "Draft",
         entity_id: activeEntityId,
+        vendor_name: values.vendor_name || null,
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
+        due_date: values.due_date || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["invoices", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invoices", activeEntityId] });
+      toast.success("Invoice created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create invoice"),
   });
 
   const updateStatus = useMutation({
@@ -177,9 +190,7 @@ function Invoices() {
                 deleteInvoice.mutate(inv.id);
               }}
               className="rounded p-1 text-muted transition-colors hover:text-destructive"
-            >
-              
-            </button>
+            ></button>
           </div>
         );
       },
@@ -197,11 +208,10 @@ function Invoices() {
         </div>
         <button
           type="button"
-          onClick={() => addInvoice.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Invoice
+          + New Invoice
         </button>
       </div>
 
@@ -212,6 +222,22 @@ function Invoices() {
       ) : (
         <DataTable columns={columns} data={invoices} searchKey="vendor_name" searchPlaceholder="Search invoices..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Invoice"
+        fields={[
+          { name: "vendor_name", label: "Vendor", type: "text", required: true, placeholder: "Vendor" },
+          { name: "description", label: "Description", type: "text", placeholder: "Description" },
+          { name: "amount", label: "Amount", type: "number", placeholder: "Amount" },
+          { name: "due_date", label: "Due date", type: "date", placeholder: "Due date" },
+        ]}
+        onSubmit={async (values) => {
+          await addInvoice.mutateAsync(values);
+        }}
+        loading={addInvoice.isPending}
+      />
     </div>
   );
 }

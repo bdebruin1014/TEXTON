@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -38,6 +41,7 @@ interface FloorPlan {
 function FloorPlansAdmin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: plans = [], isLoading } = useQuery<FloorPlan[]>({
     queryKey: ["admin-floor-plans"],
@@ -49,14 +53,23 @@ function FloorPlansAdmin() {
   });
 
   const addPlan = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("floor_plans").insert({
-        name: "New Floor Plan",
+        name: values.plan_name,
+        bed_count: values.bedrooms ? Number(values.bedrooms) : null,
+        bath_count: values.bathrooms ? Number(values.bathrooms) : null,
+        heated_sqft: values.sqft ? Number(values.sqft) : null,
         status: "Active",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-floor-plans"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-floor-plans"] });
+      toast.success("Floor plan added");
+    },
+    onError: () => {
+      toast.error("Failed to add floor plan");
+    },
   });
 
   const columns: ColumnDef<FloorPlan, unknown>[] = [
@@ -182,7 +195,7 @@ function FloorPlansAdmin() {
         </div>
         <button
           type="button"
-          onClick={() => addPlan.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Floor Plan
@@ -202,6 +215,23 @@ function FloorPlansAdmin() {
           onRowClick={(plan) => navigate({ to: "/admin/floor-plans/$planId", params: { planId: plan.id } })}
         />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Floor Plan"
+        fields={[
+          { name: "plan_name", label: "Plan name", type: "text", required: true },
+          { name: "bedrooms", label: "Bedrooms", type: "number" },
+          { name: "bathrooms", label: "Bathrooms", type: "number" },
+          { name: "sqft", label: "Square feet", type: "number" },
+        ]}
+        onSubmit={async (values) => {
+          await addPlan.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addPlan.isPending}
+      />
     </div>
   );
 }

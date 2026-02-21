@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -25,6 +28,7 @@ interface ESignTemplate {
 
 function ESignTemplates() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: templates = [], isLoading } = useQuery<ESignTemplate[]>({
     queryKey: ["esign-templates"],
@@ -36,14 +40,21 @@ function ESignTemplates() {
   });
 
   const addTemplate = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("esign_templates").insert({
-        name: "New Template",
+        name: values.name,
+        category: values.category || null,
         is_active: true,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["esign-templates"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["esign-templates"] });
+      toast.success("E-sign template added");
+    },
+    onError: () => {
+      toast.error("Failed to add e-sign template");
+    },
   });
 
   const deleteTemplate = useMutation({
@@ -124,7 +135,7 @@ function ESignTemplates() {
         </div>
         <button
           type="button"
-          onClick={() => addTemplate.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Template
@@ -138,6 +149,26 @@ function ESignTemplates() {
       ) : (
         <DataTable columns={columns} data={templates} searchKey="name" searchPlaceholder="Search templates..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add E-Sign Template"
+        fields={[
+          { name: "name", label: "Template name", type: "text", required: true },
+          {
+            name: "category",
+            label: "Category",
+            type: "select",
+            options: ["Purchase Agreement", "Amendment", "Disclosure", "Addendum", "Other"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addTemplate.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addTemplate.isPending}
+      />
     </div>
   );
 }

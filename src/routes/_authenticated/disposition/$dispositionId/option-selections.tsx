@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -27,6 +30,7 @@ interface OptionSelection {
 function OptionSelections() {
   const { dispositionId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: options = [], isLoading } = useQuery<OptionSelection[]>({
     queryKey: ["disposition-options", dispositionId],
@@ -42,15 +46,22 @@ function OptionSelections() {
   });
 
   const addOption = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("disposition_options").insert({
         disposition_id: dispositionId,
-        option_name: "New Option",
+        option_name: values.option_name || "New Option",
         is_standard: true,
+        category: values.category || null,
+        price: values.price ? Number(values.price) : null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["disposition-options", dispositionId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["disposition-options", dispositionId] });
+      toast.success("Option added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add option"),
   });
 
   const deleteOption = useMutation({
@@ -135,12 +146,27 @@ function OptionSelections() {
         </div>
         <button
           type="button"
-          onClick={() => addOption.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Option
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Option"
+        fields={[
+          { name: "option_name", label: "Option name", type: "text", required: true },
+          { name: "category", label: "Category", type: "text" },
+          { name: "price", label: "Price", type: "number" },
+        ]}
+        onSubmit={async (values) => {
+          addOption.mutate(values);
+        }}
+        loading={addOption.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

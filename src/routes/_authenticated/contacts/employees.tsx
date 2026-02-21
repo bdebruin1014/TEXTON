@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -27,6 +29,7 @@ interface Employee {
 
 function Employees() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: employees = [], isLoading } = useQuery<Employee[]>({
     queryKey: ["employees"],
@@ -38,15 +41,24 @@ function Employees() {
   });
 
   const addEmployee = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("employees").insert({
-        first_name: "New",
-        last_name: "Employee",
+        first_name: values.first_name,
+        last_name: values.last_name,
+        title: values.title || null,
+        department: values.department || null,
+        email: values.email || null,
+        phone: values.phone || null,
         status: "Active",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["employees"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      toast.success("Employee added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add employee"),
   });
 
   const activeCount = employees.filter((e) => e.status === "Active").length;
@@ -115,7 +127,7 @@ function Employees() {
         </div>
         <button
           type="button"
-          onClick={() => addEmployee.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Employee
@@ -129,6 +141,30 @@ function Employees() {
       ) : (
         <DataTable columns={columns} data={employees} searchKey="last_name" searchPlaceholder="Search employees..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Employee"
+        fields={[
+          { name: "first_name", label: "First name", type: "text", required: true, placeholder: "First name" },
+          { name: "last_name", label: "Last name", type: "text", required: true, placeholder: "Last name" },
+          { name: "title", label: "Job title", type: "text", placeholder: "Job title" },
+          {
+            name: "department",
+            label: "Department",
+            type: "select",
+            options: ["Executive", "Operations", "Construction", "Sales", "Finance", "Admin"],
+            placeholder: "Department",
+          },
+          { name: "email", label: "Email", type: "email", placeholder: "Email" },
+          { name: "phone", label: "Phone", type: "tel", placeholder: "Phone" },
+        ]}
+        onSubmit={async (values) => {
+          addEmployee.mutate(values);
+        }}
+        loading={addEmployee.isPending}
+      />
     </div>
   );
 }

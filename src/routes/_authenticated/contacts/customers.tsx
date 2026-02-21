@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -30,6 +32,7 @@ interface Customer {
 
 function Customers() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: customers = [], isLoading } = useQuery<Customer[]>({
     queryKey: ["customers"],
@@ -41,15 +44,22 @@ function Customers() {
   });
 
   const addCustomer = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("customers").insert({
-        first_name: "New",
-        last_name: "Customer",
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email || null,
+        phone: values.phone || null,
         status: "Active",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["customers"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      toast.success("Customer added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add customer"),
   });
 
   const columns: ColumnDef<Customer, unknown>[] = [
@@ -120,7 +130,7 @@ function Customers() {
         </div>
         <button
           type="button"
-          onClick={() => addCustomer.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Customer
@@ -134,6 +144,22 @@ function Customers() {
       ) : (
         <DataTable columns={columns} data={customers} searchKey="last_name" searchPlaceholder="Search customers..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Customer"
+        fields={[
+          { name: "first_name", label: "First name", type: "text", required: true, placeholder: "First name" },
+          { name: "last_name", label: "Last name", type: "text", required: true, placeholder: "Last name" },
+          { name: "email", label: "Email", type: "email", placeholder: "Email" },
+          { name: "phone", label: "Phone", type: "tel", placeholder: "Phone" },
+        ]}
+        onSubmit={async (values) => {
+          addCustomer.mutate(values);
+        }}
+        loading={addCustomer.isPending}
+      />
     </div>
   );
 }

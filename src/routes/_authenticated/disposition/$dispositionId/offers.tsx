@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -30,6 +33,7 @@ interface Offer {
 function Offers() {
   const { dispositionId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: offers = [], isLoading } = useQuery<Offer[]>({
     queryKey: ["offers", dispositionId],
@@ -45,16 +49,22 @@ function Offers() {
   });
 
   const addOffer = useMutation({
-    mutationFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("offers").insert({
         disposition_id: dispositionId,
-        offer_date: today,
+        offer_date: values.offer_date || new Date().toISOString().split("T")[0],
         status: "Pending",
+        buyer_name: values.buyer_name || null,
+        offer_amount: values.offer_amount ? Number(values.offer_amount) : null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["offers", dispositionId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["offers", dispositionId] });
+      toast.success("Offer added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add offer"),
   });
 
   const updateStatus = useMutation({
@@ -191,12 +201,32 @@ function Offers() {
         </div>
         <button
           type="button"
-          onClick={() => addOffer.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Offer
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Offer"
+        fields={[
+          { name: "buyer_name", label: "Buyer name", type: "text", required: true },
+          { name: "offer_amount", label: "Offer amount", type: "number", required: true },
+          {
+            name: "offer_date",
+            label: "Offer date",
+            type: "date",
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+        ]}
+        onSubmit={async (values) => {
+          addOffer.mutate(values);
+        }}
+        loading={addOffer.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

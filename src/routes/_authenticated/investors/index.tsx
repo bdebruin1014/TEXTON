@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -31,6 +34,7 @@ interface Fund {
 function FundsList() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: funds = [], isLoading } = useQuery<Fund[]>({
     queryKey: ["funds"],
@@ -42,10 +46,15 @@ function FundsList() {
   });
 
   const addFund = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { data, error } = await supabase
         .from("funds")
-        .insert({ name: "New Fund", status: "Active" })
+        .insert({
+          name: values.name,
+          fund_type: values.fund_type || null,
+          vintage_year: values.vintage_year ? Number(values.vintage_year) : null,
+          status: "Active",
+        })
         .select("id")
         .single();
       if (error) throw error;
@@ -53,10 +62,13 @@ function FundsList() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["funds"] });
+      toast.success("Fund created");
+      setShowModal(false);
       if (data?.id) {
         navigate({ to: `/investors/${data.id}` as string });
       }
     },
+    onError: () => toast.error("Failed to create fund"),
   });
 
   const totalCommitted = funds.reduce((sum, f) => sum + (f.total_committed ?? 0), 0);
@@ -135,11 +147,10 @@ function FundsList() {
         </div>
         <button
           type="button"
-          onClick={() => addFund.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Fund
+          + New Fund
         </button>
       </div>
 
@@ -159,6 +170,27 @@ function FundsList() {
           onRowClick={(row) => navigate({ to: `/investors/${row.id}` as string })}
         />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Fund"
+        fields={[
+          { name: "name", label: "Fund name", type: "text", required: true, placeholder: "Fund name" },
+          {
+            name: "fund_type",
+            label: "Fund type",
+            type: "select",
+            options: ["Equity Fund", "Debt Fund", "Opportunity Fund", "Development Fund", "Joint Venture"],
+            placeholder: "Fund type",
+          },
+          { name: "vintage_year", label: "Vintage year", type: "number", placeholder: "2025" },
+        ]}
+        onSubmit={async (values) => {
+          addFund.mutate(values);
+        }}
+        loading={addFund.isPending}
+      />
     </div>
   );
 }

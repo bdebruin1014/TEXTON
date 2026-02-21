@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -28,6 +31,7 @@ interface CapitalCall {
 
 function CapitalCalls() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: calls = [], isLoading } = useQuery<CapitalCall[]>({
     queryKey: ["capital-calls"],
@@ -39,17 +43,24 @@ function CapitalCalls() {
   });
 
   const addCall = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = calls.length + 1;
-      const today = new Date().toISOString().split("T")[0];
       const { error } = await supabase.from("capital_calls").insert({
         call_number: `CC-${String(count).padStart(4, "0")}`,
-        call_date: today,
+        call_date: values.call_date,
+        due_date: values.due_date || null,
+        total_amount: values.total_amount ? Number(values.total_amount) : null,
+        purpose: values.purpose || null,
         status: "Draft",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["capital-calls"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["capital-calls"] });
+      toast.success("Capital call created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create capital call"),
   });
 
   const issueNotice = useMutation({
@@ -131,7 +142,6 @@ function CapitalCalls() {
             }}
             className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
           >
-            
             Issue Notice
           </button>
         ) : null,
@@ -149,11 +159,10 @@ function CapitalCalls() {
         </div>
         <button
           type="button"
-          onClick={() => addCall.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Capital Call
+          + New Capital Call
         </button>
       </div>
 
@@ -167,6 +176,28 @@ function CapitalCalls() {
       ) : (
         <DataTable columns={columns} data={calls} searchKey="fund_name" searchPlaceholder="Search capital calls..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Capital Call"
+        fields={[
+          {
+            name: "call_date",
+            label: "Call date",
+            type: "date",
+            required: true,
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+          { name: "due_date", label: "Due date", type: "date" },
+          { name: "total_amount", label: "Amount", type: "number", placeholder: "Amount" },
+          { name: "purpose", label: "Purpose", type: "text", placeholder: "Purpose" },
+        ]}
+        onSubmit={async (values) => {
+          addCall.mutate(values);
+        }}
+        loading={addCall.isPending}
+      />
     </div>
   );
 }

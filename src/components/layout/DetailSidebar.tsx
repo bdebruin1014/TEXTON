@@ -171,7 +171,7 @@ export function DetailSidebar({
                   <button
                     type="button"
                     onClick={() => toggleSection(section.label)}
-                    className="shrink-0 px-0.5 text-[10px] leading-none transition-colors hover:text-white"
+                    className="shrink-0 px-1 text-sm leading-none transition-colors hover:text-white"
                     style={{ color: "var(--sidebar-heading)" }}
                     aria-label={isCollapsed ? `Expand ${section.label}` : `Collapse ${section.label}`}
                   >

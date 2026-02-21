@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +22,7 @@ interface PermissionGroup {
 function Permissions() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: groups = [], isLoading } = useQuery<PermissionGroup[]>({
     queryKey: ["permission-groups"],
@@ -31,13 +34,20 @@ function Permissions() {
   });
 
   const addGroup = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("permission_groups").insert({
-        name: `Group ${groups.length + 1}`,
+        name: values.name,
+        description: values.description || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["permission-groups"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["permission-groups"] });
+      toast.success("Permission group added");
+    },
+    onError: () => {
+      toast.error("Failed to add permission group");
+    },
   });
 
   const activeGroup = groups.find((g) => g.id === activeTab) ?? groups[0];
@@ -55,11 +65,10 @@ function Permissions() {
         </div>
         <button
           type="button"
-          onClick={() => addGroup.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add Permission Group
+          + Add Permission Group
         </button>
       </div>
 
@@ -95,15 +104,13 @@ function Permissions() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 text-xs text-muted">
-                    
                     {activeGroup.member_count ?? 0} members
                   </span>
                   <button
                     type="button"
                     className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
                   >
-                    +
-                    Add User
+                    + Add User
                   </button>
                 </div>
               </div>
@@ -127,6 +134,21 @@ function Permissions() {
           )}
         </div>
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Permission Group"
+        fields={[
+          { name: "name", label: "Group name", type: "text", required: true },
+          { name: "description", label: "Description", type: "text" },
+        ]}
+        onSubmit={async (values) => {
+          await addGroup.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addGroup.isPending}
+      />
     </div>
   );
 }

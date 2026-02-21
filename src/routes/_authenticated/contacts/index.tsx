@@ -3,11 +3,12 @@ import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-ro
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
-import { COMPANY_TYPE_CATEGORIES } from "@/lib/constants";
+import { COMPANY_TYPE_CATEGORIES, COMPANY_TYPES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { useEntityStore } from "@/stores/entityStore";
 
@@ -67,6 +68,7 @@ function CompaniesIndex() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
   const location = useRouterState({ select: (s) => s.location });
   const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   // Read filter from search params
   const activeType = (location.search as Record<string, string>)?.type ?? "all";
@@ -120,14 +122,14 @@ function CompaniesIndex() {
   }, [activeType]);
 
   const addCompany = useMutation({
-    mutationFn: async () => {
-      const companyType =
-        activeType !== "all" && !COMPANY_TYPE_CATEGORIES.find((c) => c.label === activeType) ? activeType : "Other";
+    mutationFn: async (values: Record<string, string>) => {
       const { data, error } = await supabase
         .from("companies")
         .insert({
-          name: "New Company",
-          company_type: companyType,
+          name: values.name,
+          company_type: values.company_type || null,
+          phone: values.phone || null,
+          email: values.email || null,
           entity_id: activeEntityId,
         })
         .select("id")
@@ -138,6 +140,7 @@ function CompaniesIndex() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
       toast.success("Company created");
+      setShowModal(false);
       if (data?.id) {
         navigate({ to: `/contacts/${data.id}` as string });
       }
@@ -159,7 +162,7 @@ function CompaniesIndex() {
           </div>
           <button
             type="button"
-            onClick={() => addCompany.mutate()}
+            onClick={() => setShowModal(true)}
             className="flex shrink-0 items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
             + New Company
@@ -239,6 +242,28 @@ function CompaniesIndex() {
           </div>
         </div>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Company"
+        fields={[
+          { name: "name", label: "Company name", type: "text", required: true, placeholder: "Company name" },
+          {
+            name: "company_type",
+            label: "Company type",
+            type: "select",
+            options: COMPANY_TYPES.map((t) => ({ label: t, value: t })),
+            placeholder: "Company type",
+          },
+          { name: "phone", label: "Phone", type: "tel", placeholder: "Phone" },
+          { name: "email", label: "Email", type: "email", placeholder: "Email" },
+        ]}
+        onSubmit={async (values) => {
+          addCompany.mutate(values);
+        }}
+        loading={addCompany.isPending}
+      />
     </div>
   );
 }

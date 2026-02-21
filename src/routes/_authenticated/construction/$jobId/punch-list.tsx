@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -27,6 +30,7 @@ interface PunchItem {
 function PunchList() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: items = [], isLoading } = useQuery<PunchItem[]>({
     queryKey: ["punch-list", jobId],
@@ -42,15 +46,23 @@ function PunchList() {
   });
 
   const addItem = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("punch_list_items").insert({
         job_id: jobId,
-        description: "New Punch Item",
+        description: values.description || "New Punch Item",
         status: "Open",
+        location: values.location || null,
+        assigned_to: values.assigned_to || null,
+        priority: values.priority || "Medium",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["punch-list", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punch-list", jobId] });
+      toast.success("Punch item added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add punch item"),
   });
 
   const toggleItem = useMutation({
@@ -163,12 +175,34 @@ function PunchList() {
         </div>
         <button
           type="button"
-          onClick={() => addItem.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Add Punch Item
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Punch Item"
+        fields={[
+          { name: "description", label: "Description", type: "text", required: true },
+          { name: "location", label: "Location", type: "text" },
+          { name: "assigned_to", label: "Assigned to", type: "text" },
+          {
+            name: "priority",
+            label: "Priority",
+            type: "select",
+            options: ["Low", "Medium", "High", "Critical"],
+            defaultValue: "Medium",
+          },
+        ]}
+        onSubmit={async (values) => {
+          addItem.mutate(values);
+        }}
+        loading={addItem.isPending}
+      />
 
       {/* Progress */}
       {items.length > 0 && (

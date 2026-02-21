@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -32,6 +35,7 @@ interface Municipality {
 
 function Municipalities() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: municipalities = [], isLoading } = useQuery<Municipality[]>({
     queryKey: ["municipalities"],
@@ -43,13 +47,21 @@ function Municipalities() {
   });
 
   const addMunicipality = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("municipalities").insert({
-        name: "New Municipality",
+        name: values.name,
+        state: values.state || null,
+        county: values.county || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["municipalities"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["municipalities"] });
+      toast.success("Municipality added");
+    },
+    onError: () => {
+      toast.error("Failed to add municipality");
+    },
   });
 
   const deleteMunicipality = useMutation({
@@ -170,7 +182,7 @@ function Municipalities() {
         </div>
         <button
           type="button"
-          onClick={() => addMunicipality.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Municipality
@@ -192,6 +204,22 @@ function Municipalities() {
           searchPlaceholder="Search municipalities..."
         />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Municipality"
+        fields={[
+          { name: "name", label: "Municipality name", type: "text", required: true },
+          { name: "state", label: "State", type: "text" },
+          { name: "county", label: "County", type: "text" },
+        ]}
+        onSubmit={async (values) => {
+          await addMunicipality.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addMunicipality.isPending}
+      />
     </div>
   );
 }

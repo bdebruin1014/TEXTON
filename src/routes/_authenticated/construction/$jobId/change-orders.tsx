@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -29,6 +32,7 @@ interface ChangeOrder {
 function ChangeOrders() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: cos = [], isLoading } = useQuery<ChangeOrder[]>({
     queryKey: ["change-orders", jobId],
@@ -44,16 +48,24 @@ function ChangeOrders() {
   });
 
   const addCO = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const nextNum = cos.length > 0 ? Math.max(...cos.map((c) => c.co_number)) + 1 : 1;
       const { error } = await supabase.from("change_orders").insert({
         job_id: jobId,
         co_number: nextNum,
         status: "Pending",
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
+        cost_code: values.change_type || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["change-orders", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["change-orders", jobId] });
+      toast.success("Change order created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create change order"),
   });
 
   const totalAmount = cos.reduce((sum, c) => sum + (c.amount ?? 0), 0);
@@ -119,12 +131,32 @@ function ChangeOrders() {
         </div>
         <button
           type="button"
-          onClick={() => addCO.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + New Change Order
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Change Order"
+        fields={[
+          { name: "description", label: "Description", type: "text", required: true },
+          { name: "amount", label: "Amount", type: "number" },
+          {
+            name: "change_type",
+            label: "Change type",
+            type: "select",
+            options: ["Addition", "Deduction", "Substitution"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          addCO.mutate(values);
+        }}
+        loading={addCO.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

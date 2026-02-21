@@ -170,7 +170,7 @@ function ContactsLayout() {
                   className="flex items-center justify-center py-[7px] pl-4 pr-1"
                   style={{ color: "var(--sidebar-heading)" }}
                 >
-                  <span className="text-[10px] leading-none">{isExpanded ? "\u25BE" : "\u25B8"}</span>
+                  <span className="text-sm leading-none">{isExpanded ? "\u25BE" : "\u25B8"}</span>
                 </button>
 
                 {/* Category label — clicks to filter */}

@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -24,6 +27,7 @@ interface Entity {
 
 function EntitiesAdmin() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: entities = [], isLoading } = useQuery<Entity[]>({
     queryKey: ["admin-entities"],
@@ -35,15 +39,21 @@ function EntitiesAdmin() {
   });
 
   const addEntity = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("entities").insert({
-        name: "New Entity",
-        entity_type: "spe",
+        name: values.name,
+        entity_type: values.entity_type || null,
         status: "Active",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-entities"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
+      toast.success("Entity added");
+    },
+    onError: () => {
+      toast.error("Failed to add entity");
+    },
   });
 
   const columns: ColumnDef<Entity, unknown>[] = [
@@ -98,11 +108,10 @@ function EntitiesAdmin() {
         </div>
         <button
           type="button"
-          onClick={() => addEntity.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add Entity
+          + Add Entity
         </button>
       </div>
 
@@ -113,6 +122,26 @@ function EntitiesAdmin() {
       ) : (
         <DataTable columns={columns} data={entities} searchKey="name" searchPlaceholder="Search entities..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Entity"
+        fields={[
+          { name: "name", label: "Entity name", type: "text", required: true },
+          {
+            name: "entity_type",
+            label: "Entity type",
+            type: "select",
+            options: ["LLC", "LP", "Corporation", "Trust", "S-Corp", "Partnership"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addEntity.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addEntity.isPending}
+      />
     </div>
   );
 }

@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -40,6 +42,7 @@ function JournalEntries() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
   const [expandedJE, setExpandedJE] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: entries = [], isLoading } = useQuery<JournalEntry[]>({
     queryKey: ["journal-entries", activeEntityId],
@@ -69,19 +72,24 @@ function JournalEntries() {
   });
 
   const addEntry = useMutation({
-    mutationFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
+    mutationFn: async (values: Record<string, string>) => {
       const count = entries.length + 1;
       const { error } = await supabase.from("journal_entries").insert({
         entry_number: `JE-${String(count).padStart(4, "0")}`,
-        entry_date: today,
+        entry_date: values.entry_date || new Date().toISOString().split("T")[0],
+        description: values.description || null,
         status: "Draft",
         is_balanced: true,
         entity_id: activeEntityId,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["journal-entries", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["journal-entries", activeEntityId] });
+      toast.success("Journal entry created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create journal entry"),
   });
 
   const updateStatus = useMutation({
@@ -158,7 +166,6 @@ function JournalEntries() {
           <span className="text-xs font-medium text-success">Balanced</span>
         ) : (
           <span className="flex items-center gap-1 text-xs font-medium text-destructive">
-            
             Off by {formatCurrency(Math.abs(debits - credits))}
           </span>
         );
@@ -207,9 +214,7 @@ function JournalEntries() {
                 deleteEntry.mutate(je.id);
               }}
               className="rounded p-1 text-muted transition-colors hover:text-destructive"
-            >
-              
-            </button>
+            ></button>
           </div>
         );
       },
@@ -225,11 +230,10 @@ function JournalEntries() {
         </div>
         <button
           type="button"
-          onClick={() => addEntry.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Journal Entry
+          + New Journal Entry
         </button>
       </div>
 
@@ -259,8 +263,7 @@ function JournalEntries() {
                   onClick={() => addLine.mutate(expandedJE)}
                   className="flex items-center gap-1 rounded bg-button px-2 py-1 text-xs font-medium text-white hover:bg-button-hover"
                 >
-                  +
-                  Add Line
+                  + Add Line
                 </button>
               </div>
               {lines.length === 0 ? (
@@ -305,6 +308,26 @@ function JournalEntries() {
           )}
         </>
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Journal Entry"
+        fields={[
+          { name: "description", label: "Description", type: "text", required: true, placeholder: "Description" },
+          {
+            name: "entry_date",
+            label: "Entry date",
+            type: "date",
+            required: true,
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addEntry.mutateAsync(values);
+        }}
+        loading={addEntry.isPending}
+      />
     </div>
   );
 }

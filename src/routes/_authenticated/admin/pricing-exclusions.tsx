@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -22,6 +25,7 @@ interface PricingExclusion {
 
 function PricingExclusions() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: exclusions = [], isLoading } = useQuery<PricingExclusion[]>({
     queryKey: ["pricing-exclusions"],
@@ -33,14 +37,21 @@ function PricingExclusions() {
   });
 
   const addExclusion = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("pricing_exclusions").insert({
-        description: "New exclusion",
+        description: values.name,
+        notes: values.description || null,
         sort_order: exclusions.length + 1,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pricing-exclusions"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pricing-exclusions"] });
+      toast.success("Pricing exclusion added");
+    },
+    onError: () => {
+      toast.error("Failed to add pricing exclusion");
+    },
   });
 
   const deleteExclusion = useMutation({
@@ -99,7 +110,7 @@ function PricingExclusions() {
         </div>
         <button
           type="button"
-          onClick={() => addExclusion.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Exclusion
@@ -121,6 +132,21 @@ function PricingExclusions() {
           searchPlaceholder="Search exclusions..."
         />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Pricing Exclusion"
+        fields={[
+          { name: "name", label: "Exclusion name", type: "text", required: true },
+          { name: "description", label: "Description", type: "textarea" },
+        ]}
+        onSubmit={async (values) => {
+          await addExclusion.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addExclusion.isPending}
+      />
     </div>
   );
 }

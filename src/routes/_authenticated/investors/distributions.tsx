@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -27,6 +30,7 @@ interface Distribution {
 
 function Distributions() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: distributions = [], isLoading } = useQuery<Distribution[]>({
     queryKey: ["distributions"],
@@ -41,17 +45,23 @@ function Distributions() {
   });
 
   const addDistribution = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = distributions.length + 1;
-      const today = new Date().toISOString().split("T")[0];
       const { error } = await supabase.from("distributions").insert({
         distribution_number: `DIST-${String(count).padStart(4, "0")}`,
-        distribution_date: today,
+        distribution_date: values.distribution_date,
+        total_amount: values.total_amount ? Number(values.total_amount) : null,
+        distribution_type: values.distribution_type || null,
         status: "Draft",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["distributions"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["distributions"] });
+      toast.success("Distribution created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create distribution"),
   });
 
   const issueNotice = useMutation({
@@ -127,7 +137,6 @@ function Distributions() {
             }}
             className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
           >
-            
             Issue Notice
           </button>
         ) : null,
@@ -145,11 +154,10 @@ function Distributions() {
         </div>
         <button
           type="button"
-          onClick={() => addDistribution.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Distribution
+          + New Distribution
         </button>
       </div>
 
@@ -168,6 +176,33 @@ function Distributions() {
           searchPlaceholder="Search distributions..."
         />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Distribution"
+        fields={[
+          {
+            name: "distribution_date",
+            label: "Distribution date",
+            type: "date",
+            required: true,
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+          { name: "total_amount", label: "Amount", type: "number", placeholder: "Amount" },
+          {
+            name: "distribution_type",
+            label: "Distribution type",
+            type: "select",
+            options: ["Return of Capital", "Preferred Return", "Promote", "Residual"],
+            placeholder: "Distribution type",
+          },
+        ]}
+        onSubmit={async (values) => {
+          addDistribution.mutate(values);
+        }}
+        loading={addDistribution.isPending}
+      />
     </div>
   );
 }

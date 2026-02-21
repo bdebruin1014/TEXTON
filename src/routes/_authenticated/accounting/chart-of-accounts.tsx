@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -29,6 +32,7 @@ const ACCOUNT_TYPES = ["Asset", "Liability", "Equity", "Revenue", "Expense"] as 
 function ChartOfAccounts() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showModal, setShowModal] = useState(false);
 
   const { data: accounts = [], isLoading } = useQuery<Account[]>({
     queryKey: ["chart-of-accounts", activeEntityId],
@@ -44,20 +48,24 @@ function ChartOfAccounts() {
   });
 
   const addAccount = useMutation({
-    mutationFn: async () => {
-      const nextNumber =
-        accounts.length > 0 ? String(Math.max(...accounts.map((a) => Number(a.account_number) || 0)) + 10) : "1000";
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("chart_of_accounts").insert({
-        account_number: nextNumber,
-        account_name: "New Account",
-        account_type: "Expense",
-        normal_balance: "Debit",
+        account_number: values.account_number,
+        account_name: values.account_name,
+        account_type: values.account_type || "Expense",
+        sub_type: values.sub_type || null,
+        normal_balance: values.normal_balance || "Debit",
         is_active: true,
         entity_id: activeEntityId,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["chart-of-accounts", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chart-of-accounts", activeEntityId] });
+      toast.success("Account added");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to add account"),
   });
 
   const deleteAccount = useMutation({
@@ -138,9 +146,7 @@ function ChartOfAccounts() {
             deleteAccount.mutate(row.original.id);
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
-        >
-          
-        </button>
+        ></button>
       ),
     },
   ];
@@ -158,11 +164,10 @@ function ChartOfAccounts() {
         </div>
         <button
           type="button"
-          onClick={() => addAccount.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add Account
+          + Add Account
         </button>
       </div>
 
@@ -173,6 +178,41 @@ function ChartOfAccounts() {
       ) : (
         <DataTable columns={columns} data={accounts} searchKey="account_name" searchPlaceholder="Search accounts..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Account"
+        fields={[
+          {
+            name: "account_number",
+            label: "Account number",
+            type: "text",
+            required: true,
+            placeholder: "Account number",
+          },
+          { name: "account_name", label: "Account name", type: "text", required: true, placeholder: "Account name" },
+          {
+            name: "account_type",
+            label: "Account type",
+            type: "select",
+            required: true,
+            options: ["Asset", "Liability", "Equity", "Revenue", "Expense"],
+          },
+          { name: "sub_type", label: "Sub-type", type: "text", placeholder: "Sub-type" },
+          {
+            name: "normal_balance",
+            label: "Normal balance",
+            type: "select",
+            options: ["Debit", "Credit"],
+            defaultValue: "Debit",
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addAccount.mutateAsync(values);
+        }}
+        loading={addAccount.isPending}
+      />
     </div>
   );
 }

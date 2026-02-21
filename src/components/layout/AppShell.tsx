@@ -100,8 +100,10 @@ export function AppShell({ sidebar, children }: AppShellProps) {
  */
 export function PageWithSidebar({ sidebar, children }: AppShellProps) {
   return (
-    <div className="flex h-full -m-4 md:-m-6">
-      {sidebar}
+    <div className="flex h-full -m-4 md:-m-6 overflow-hidden">
+      <div className="shrink-0 overflow-y-auto" style={{ width: "var(--sidebar-width)" }}>
+        {sidebar}
+      </div>
       <div className="flex-1 overflow-y-auto p-4 md:p-6">{children}</div>
     </div>
   );

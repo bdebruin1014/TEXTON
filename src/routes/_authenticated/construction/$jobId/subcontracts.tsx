@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -29,6 +32,7 @@ interface Subcontract {
 function Subcontracts() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: subs = [], isLoading } = useQuery<Subcontract[]>({
     queryKey: ["subcontracts", jobId],
@@ -44,14 +48,22 @@ function Subcontracts() {
   });
 
   const addSub = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("subcontracts").insert({
         job_id: jobId,
         status: "Draft",
+        subcontractor_name: values.subcontractor_name || null,
+        scope: values.scope || null,
+        amount: values.contract_amount ? Number(values.contract_amount) : null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subcontracts", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subcontracts", jobId] });
+      toast.success("Subcontract created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create subcontract"),
   });
 
   const totalAmount = subs.reduce((sum, s) => sum + (s.amount ?? 0), 0);
@@ -114,12 +126,27 @@ function Subcontracts() {
         </div>
         <button
           type="button"
-          onClick={() => addSub.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + New Subcontract
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Subcontract"
+        fields={[
+          { name: "subcontractor_name", label: "Subcontractor", type: "text", required: true },
+          { name: "scope", label: "Scope of work", type: "text" },
+          { name: "contract_amount", label: "Contract amount", type: "number" },
+        ]}
+        onSubmit={async (values) => {
+          addSub.mutate(values);
+        }}
+        loading={addSub.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -25,6 +28,7 @@ interface UserRecord {
 
 function UsersAdmin() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: users = [], isLoading } = useQuery<UserRecord[]>({
     queryKey: ["admin-users"],
@@ -36,16 +40,22 @@ function UsersAdmin() {
   });
 
   const addUser = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("user_profiles").insert({
-        email: `user${Date.now()}@placeholder.com`,
-        full_name: "New User",
-        role: "Viewer",
+        email: values.email,
+        full_name: values.full_name,
+        role: values.role || "User",
         status: "Invited",
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      toast.success("User added");
+    },
+    onError: () => {
+      toast.error("Failed to add user");
+    },
   });
 
   const columns: ColumnDef<UserRecord, unknown>[] = [
@@ -100,11 +110,10 @@ function UsersAdmin() {
         </div>
         <button
           type="button"
-          onClick={() => addUser.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add User
+          + Add User
         </button>
       </div>
 
@@ -115,6 +124,28 @@ function UsersAdmin() {
       ) : (
         <DataTable columns={columns} data={users} searchKey="full_name" searchPlaceholder="Search users..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add User"
+        fields={[
+          { name: "email", label: "Email", type: "email", required: true },
+          { name: "full_name", label: "Full name", type: "text", required: true },
+          {
+            name: "role",
+            label: "Role",
+            type: "select",
+            options: ["Admin", "Manager", "User", "Viewer"],
+            defaultValue: "User",
+          },
+        ]}
+        onSubmit={async (values) => {
+          await addUser.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addUser.isPending}
+      />
     </div>
   );
 }

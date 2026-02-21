@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -31,6 +34,7 @@ interface WarrantyClaim {
 function Warranty() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: claims = [], isLoading } = useQuery<WarrantyClaim[]>({
     queryKey: ["warranty-claims", jobId],
@@ -46,18 +50,24 @@ function Warranty() {
   });
 
   const addClaim = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = claims.length + 1;
       const { error } = await supabase.from("warranty_claims").insert({
         job_id: jobId,
         claim_number: `WC-${String(count).padStart(3, "0")}`,
-        description: "New Warranty Claim",
-        reported_date: new Date().toISOString().split("T")[0],
+        description: values.description || "New Warranty Claim",
+        reported_date: values.reported_date || new Date().toISOString().split("T")[0],
         status: "Open",
+        category: values.category || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["warranty-claims", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["warranty-claims", jobId] });
+      toast.success("Warranty claim created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create warranty claim"),
   });
 
   const deleteClaim = useMutation({
@@ -138,12 +148,38 @@ function Warranty() {
         </div>
         <button
           type="button"
-          onClick={() => addClaim.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + New Claim
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Warranty Claim"
+        fields={[
+          { name: "description", label: "Description", type: "text", required: true },
+          {
+            name: "reported_date",
+            label: "Reported date",
+            type: "date",
+            required: true,
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+          {
+            name: "category",
+            label: "Category",
+            type: "select",
+            options: ["Structural", "Mechanical", "Electrical", "Plumbing", "Cosmetic", "Other"],
+          },
+        ]}
+        onSubmit={async (values) => {
+          addClaim.mutate(values);
+        }}
+        loading={addClaim.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

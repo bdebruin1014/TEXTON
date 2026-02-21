@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -21,6 +24,7 @@ interface PricingDefault {
 
 function PricingDefaults() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: defaults = [], isLoading } = useQuery<PricingDefault[]>({
     queryKey: ["pricing-defaults"],
@@ -32,15 +36,21 @@ function PricingDefaults() {
   });
 
   const addDefault = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("pricing_defaults").insert({
-        key: "new_default",
-        value: 0,
-        description: "New pricing default",
+        key: values.name,
+        value: values.amount ? Number(values.amount) : 0,
+        description: values.category || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pricing-defaults"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pricing-defaults"] });
+      toast.success("Pricing default added");
+    },
+    onError: () => {
+      toast.error("Failed to add pricing default");
+    },
   });
 
   const deleteDefault = useMutation({
@@ -94,7 +104,7 @@ function PricingDefaults() {
         </div>
         <button
           type="button"
-          onClick={() => addDefault.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Default
@@ -111,6 +121,22 @@ function PricingDefaults() {
       ) : (
         <DataTable columns={columns} data={defaults} searchKey="key" searchPlaceholder="Search by key..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Pricing Default"
+        fields={[
+          { name: "name", label: "Item name", type: "text", required: true },
+          { name: "amount", label: "Default amount", type: "number" },
+          { name: "category", label: "Category", type: "text" },
+        ]}
+        onSubmit={async (values) => {
+          await addDefault.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addDefault.isPending}
+      />
     </div>
   );
 }

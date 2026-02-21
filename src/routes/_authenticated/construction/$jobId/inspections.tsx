@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -28,6 +31,7 @@ interface Inspection {
 function Inspections() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: inspections = [], isLoading } = useQuery<Inspection[]>({
     queryKey: ["inspections", jobId],
@@ -43,15 +47,22 @@ function Inspections() {
   });
 
   const addInspection = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("inspections").insert({
         job_id: jobId,
-        inspection_type: "Foundation",
+        inspection_type: values.inspection_type || "Foundation",
         status: "Scheduled",
+        scheduled_date: values.scheduled_date || null,
+        inspector: values.inspector_name || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["inspections", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["inspections", jobId] });
+      toast.success("Inspection scheduled");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to schedule inspection"),
   });
 
   const updateInspection = useMutation({
@@ -132,12 +143,33 @@ function Inspections() {
         </div>
         <button
           type="button"
-          onClick={() => addInspection.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + Schedule Inspection
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Schedule Inspection"
+        fields={[
+          {
+            name: "inspection_type",
+            label: "Inspection type",
+            type: "select",
+            required: true,
+            options: ["Foundation", "Framing", "Electrical", "Plumbing", "Mechanical", "Final", "Other"],
+          },
+          { name: "scheduled_date", label: "Scheduled date", type: "date", required: true },
+          { name: "inspector_name", label: "Inspector", type: "text" },
+        ]}
+        onSubmit={async (values) => {
+          addInspection.mutate(values);
+        }}
+        loading={addInspection.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

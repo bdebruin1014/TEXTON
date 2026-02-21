@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -31,6 +34,8 @@ interface Receivable {
 function AccountsReceivable() {
   const queryClient = useQueryClient();
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showDrawModal, setShowDrawModal] = useState(false);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const { data: receivables = [], isLoading } = useQuery<Receivable[]>({
     queryKey: ["ar-receivables", activeEntityId],
@@ -46,7 +51,7 @@ function AccountsReceivable() {
   });
 
   const addDrawRequest = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = receivables.filter((r) => r.receivable_type === "Draw Request").length + 1;
       const { error } = await supabase.from("receivables").insert({
         receivable_number: `DR-${String(count).padStart(3, "0")}`,
@@ -54,14 +59,23 @@ function AccountsReceivable() {
         invoice_date: new Date().toISOString().split("T")[0],
         status: "Draft",
         entity_id: activeEntityId,
+        customer_name: values.customer_name || null,
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
+        due_date: values.due_date || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ar-receivables", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ar-receivables", activeEntityId] });
+      toast.success("Draw request created");
+      setShowDrawModal(false);
+    },
+    onError: () => toast.error("Failed to create draw request"),
   });
 
   const addInvoice = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const count = receivables.filter((r) => r.receivable_type === "Invoice").length + 1;
       const { error } = await supabase.from("receivables").insert({
         receivable_number: `AR-${String(count).padStart(4, "0")}`,
@@ -69,10 +83,19 @@ function AccountsReceivable() {
         invoice_date: new Date().toISOString().split("T")[0],
         status: "Draft",
         entity_id: activeEntityId,
+        customer_name: values.customer_name || null,
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
+        due_date: values.due_date || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ar-receivables", activeEntityId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ar-receivables", activeEntityId] });
+      toast.success("Invoice created");
+      setShowInvoiceModal(false);
+    },
+    onError: () => toast.error("Failed to create invoice"),
   });
 
   const totalReceivable = receivables
@@ -160,19 +183,17 @@ function AccountsReceivable() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => addDrawRequest.mutate()}
+            onClick={() => setShowDrawModal(true)}
             className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            +
-            New Draw Request
+            + New Draw Request
           </button>
           <button
             type="button"
-            onClick={() => addInvoice.mutate()}
+            onClick={() => setShowInvoiceModal(true)}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            New Invoice
+            + New Invoice
           </button>
         </div>
       </div>
@@ -189,6 +210,38 @@ function AccountsReceivable() {
           searchPlaceholder="Search receivables..."
         />
       )}
+
+      <CreateRecordModal
+        open={showDrawModal}
+        onClose={() => setShowDrawModal(false)}
+        title="New Draw Request"
+        fields={[
+          { name: "customer_name", label: "Customer", type: "text", placeholder: "Customer" },
+          { name: "description", label: "Description", type: "text", placeholder: "Description" },
+          { name: "amount", label: "Amount", type: "number", placeholder: "Amount" },
+          { name: "due_date", label: "Due date", type: "date", placeholder: "Due date" },
+        ]}
+        onSubmit={async (values) => {
+          await addDrawRequest.mutateAsync(values);
+        }}
+        loading={addDrawRequest.isPending}
+      />
+
+      <CreateRecordModal
+        open={showInvoiceModal}
+        onClose={() => setShowInvoiceModal(false)}
+        title="New Invoice"
+        fields={[
+          { name: "customer_name", label: "Customer", type: "text", required: true, placeholder: "Customer" },
+          { name: "description", label: "Description", type: "text", placeholder: "Description" },
+          { name: "amount", label: "Amount", type: "number", placeholder: "Amount" },
+          { name: "due_date", label: "Due date", type: "date", placeholder: "Due date" },
+        ]}
+        onSubmit={async (values) => {
+          await addInvoice.mutateAsync(values);
+        }}
+        loading={addInvoice.isPending}
+      />
     </div>
   );
 }

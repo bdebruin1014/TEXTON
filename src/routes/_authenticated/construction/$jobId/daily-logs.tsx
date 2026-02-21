@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -28,6 +31,7 @@ interface DailyLog {
 function DailyLogs() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: logs = [], isLoading } = useQuery<DailyLog[]>({
     queryKey: ["daily-logs", jobId],
@@ -43,15 +47,21 @@ function DailyLogs() {
   });
 
   const addLog = useMutation({
-    mutationFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("daily_logs").insert({
         job_id: jobId,
-        log_date: today,
+        log_date: values.log_date || new Date().toISOString().split("T")[0],
+        weather: values.weather || null,
+        work_performed: values.notes || null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["daily-logs", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["daily-logs", jobId] });
+      toast.success("Daily log created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create daily log"),
   });
 
   const columns: ColumnDef<DailyLog, unknown>[] = [
@@ -117,12 +127,33 @@ function DailyLogs() {
         </div>
         <button
           type="button"
-          onClick={() => addLog.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + New Daily Log
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Daily Log"
+        fields={[
+          {
+            name: "log_date",
+            label: "Date",
+            type: "date",
+            required: true,
+            defaultValue: new Date().toISOString().split("T")[0],
+          },
+          { name: "weather", label: "Weather", type: "select", options: ["Clear", "Cloudy", "Rain", "Snow", "Wind"] },
+          { name: "notes", label: "Notes", type: "textarea" },
+        ]}
+        onSubmit={async (values) => {
+          addLog.mutate(values);
+        }}
+        loading={addLog.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

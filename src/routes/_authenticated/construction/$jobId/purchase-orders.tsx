@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -28,6 +31,7 @@ interface PO {
 function PurchaseOrders() {
   const { jobId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: pos = [], isLoading } = useQuery<PO[]>({
     queryKey: ["purchase-orders", jobId],
@@ -43,16 +47,24 @@ function PurchaseOrders() {
   });
 
   const addPO = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const nextNum = pos.length + 1;
       const { error } = await supabase.from("purchase_orders").insert({
         job_id: jobId,
         po_number: `PO-${String(nextNum).padStart(3, "0")}`,
         status: "Draft",
+        vendor_name: values.vendor_name || null,
+        description: values.description || null,
+        amount: values.amount ? Number(values.amount) : null,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["purchase-orders", jobId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["purchase-orders", jobId] });
+      toast.success("Purchase order created");
+      setShowModal(false);
+    },
+    onError: () => toast.error("Failed to create purchase order"),
   });
 
   const totalAmount = pos.reduce((sum, p) => sum + (p.amount ?? 0), 0);
@@ -111,12 +123,27 @@ function PurchaseOrders() {
         </div>
         <button
           type="button"
-          onClick={() => addPO.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
           + New PO
         </button>
       </div>
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="New Purchase Order"
+        fields={[
+          { name: "vendor_name", label: "Vendor", type: "text", required: true },
+          { name: "description", label: "Description", type: "text" },
+          { name: "amount", label: "Amount", type: "number" },
+        ]}
+        onSubmit={async (values) => {
+          addPO.mutate(values);
+        }}
+        loading={addPO.isPending}
+      />
 
       {isLoading ? (
         <FormSkeleton />

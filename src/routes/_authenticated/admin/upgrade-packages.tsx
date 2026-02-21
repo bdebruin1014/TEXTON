@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -26,6 +29,7 @@ const CATEGORIES = ["Exterior", "Interior", "Custom"] as const;
 
 function UpgradePackages() {
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
 
   const { data: packages = [], isLoading } = useQuery<UpgradePackage[]>({
     queryKey: ["upgrade-packages"],
@@ -37,16 +41,23 @@ function UpgradePackages() {
   });
 
   const addPackage = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (values: Record<string, string>) => {
       const { error } = await supabase.from("upgrade_packages").insert({
-        name: "New Package",
-        category: "Custom",
-        default_amount: 0,
+        name: values.name,
+        category: values.description ? "Custom" : "Custom",
+        description: values.description || null,
+        default_amount: values.default_amount ? Number(values.default_amount) : 0,
         sort_order: packages.length + 1,
       });
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["upgrade-packages"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["upgrade-packages"] });
+      toast.success("Upgrade package added");
+    },
+    onError: () => {
+      toast.error("Failed to add upgrade package");
+    },
   });
 
   const deletePackage = useMutation({
@@ -121,7 +132,7 @@ function UpgradePackages() {
         </div>
         <button
           type="button"
-          onClick={() => addPackage.mutate()}
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           Add Package
@@ -138,6 +149,22 @@ function UpgradePackages() {
       ) : (
         <DataTable columns={columns} data={packages} searchKey="name" searchPlaceholder="Search packages..." />
       )}
+
+      <CreateRecordModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Add Upgrade Package"
+        fields={[
+          { name: "name", label: "Package name", type: "text", required: true },
+          { name: "description", label: "Description", type: "text" },
+          { name: "default_amount", label: "Default price", type: "number" },
+        ]}
+        onSubmit={async (values) => {
+          await addPackage.mutateAsync(values);
+          setShowModal(false);
+        }}
+        loading={addPackage.isPending}
+      />
     </div>
   );
 }
