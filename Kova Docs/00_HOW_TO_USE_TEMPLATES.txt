@@ -1,0 +1,579 @@
+================================================================================
+CHART OF ACCOUNTS TEMPLATE SYSTEM
+Complete How-To Guide for Admin Configuration
+================================================================================
+
+📁 YOU HAVE 5 READY-TO-USE TEMPLATES:
+------------------------------------
+1. TEMPLATE_Operating_Company.csv - For Red Cedar Homes (main business)
+2. TEMPLATE_SPE_Lot_Development.csv - Buy land, develop, sell lots
+3. TEMPLATE_SPE_Community_Development.csv - Develop lots + build/sell homes
+4. TEMPLATE_SPE_Scattered_Lot.csv - Buy individual lots, build, sell
+5. TEMPLATE_SPE_Lot_Purchase.csv - Buy bulk lots from developer, build, sell
+
+================================================================================
+STEP-BY-STEP: HOW TO USE THESE TEMPLATES
+================================================================================
+
+🎯 STEP 1: SELECT THE RIGHT TEMPLATE
+------------------------------------
+
+DECISION TREE:
+
+Q1: Is this your main homebuilding company?
+    ├─ YES → Use: TEMPLATE_Operating_Company.csv
+    │         (Example: Red Cedar Homes, LLC)
+    └─ NO → Go to Q2
+
+Q2: Is this a single-purpose project entity (SPE)?
+    └─ YES → Go to Q3
+
+Q3: What does this entity do?
+    
+    ├─ Buy RAW land → Entitle → Develop infrastructure → Sell LOTS
+    │  (You're NOT building homes, just creating finished lots)
+    │  → Use: TEMPLATE_SPE_Lot_Development.csv
+    │     Example: 1943 Pelham, LLC
+    │
+    ├─ Buy RAW land → Develop infrastructure → Build HOMES → Sell HOMES
+    │  (Two phases: horizontal development + vertical construction)
+    │  → Use: TEMPLATE_SPE_Community_Development.csv
+    │     Example: Warpath Community, LLC
+    │
+    ├─ Buy INDIVIDUAL finished lots → Build homes → Sell
+    │  (Opportunistic 1-5 lot purchases, quick turn)
+    │  → Use: TEMPLATE_SPE_Scattered_Lot.csv
+    │     Example: Scattered Infill 2025, LLC
+    │
+    └─ Buy BULK finished lots from developer → Build homes → Sell
+       (Purchase 5-50 lots upfront, build over 12-24 months)
+       → Use: TEMPLATE_SPE_Lot_Purchase.csv
+          Example: Keowee Estates Takedown, LLC
+
+================================================================================
+🎯 STEP 2: OPEN TEMPLATE IN EXCEL/GOOGLE SHEETS
+-----------------------------------------------
+
+METHOD A: EXCEL
+1. Download the appropriate TEMPLATE_XXX.csv file
+2. Right-click → Open With → Microsoft Excel
+3. OR open Excel → File → Open → Select CSV
+
+METHOD B: GOOGLE SHEETS
+1. Go to sheets.google.com
+2. File → Import
+3. Upload the CSV file
+4. Import settings:
+   - Import location: Replace current sheet
+   - Separator type: Comma
+   - Convert text to numbers: No (important!)
+
+RESULT: You should see columns:
+- A: Account Number
+- B: Account Name
+- C: Parent Account
+- D: Account Type
+- E: Is Group
+- F: Root Type
+- G: Required
+- H: Description
+
+================================================================================
+🎯 STEP 3: CUSTOMIZE THE TEMPLATE
+---------------------------------
+
+You'll use FIND & REPLACE to customize these variables:
+
+VARIABLE LIST (What to replace):
+┌─────────────────────────────────────────────────────────────────┐
+│ VARIABLE              REPLACE WITH           EXAMPLE             │
+├─────────────────────────────────────────────────────────────────┤
+│ {{ABBR}}              Entity abbreviation    PELH                │
+│ {{MEMBER_1_NAME}}     First partner name     Ron Maugeri         │
+│ {{MEMBER_2_NAME}}     Second partner name    Bryan De Bruin      │
+│ {{BUILDER_NAME}}      Builder if different   RCH (or keep RCH)  │
+└─────────────────────────────────────────────────────────────────┘
+
+DETAILED FIND/REPLACE INSTRUCTIONS:
+
+✅ STEP 3A: Entity Abbreviation (ALL TEMPLATES)
+----------------------------------------------
+Find:    {{ABBR}}
+Replace: Your entity abbreviation (3-5 letters)
+
+Examples:
+- 1943 Pelham, LLC → PELH
+- Warpath Community, LLC → WRPTH
+- Red Cedar Homes, LLC → RCH
+- Keowee Estates, LLC → KEES
+
+In Excel: Ctrl+H (Windows) or Cmd+H (Mac)
+In Google Sheets: Edit → Find and Replace
+
+Result: "Cash - Operating Account - {{ABBR}}" 
+    → "Cash - Operating Account - PELH"
+
+✅ STEP 3B: Member Names (SPE TEMPLATES ONLY - Skip for Operating Company)
+-------------------------------------------------------------------------
+Find:    {{MEMBER_1_NAME}}
+Replace: First partner's actual name
+
+Example: Ron Maugeri
+
+Find:    {{MEMBER_2_NAME}}
+Replace: Second partner's actual name
+
+Example: Bryan De Bruin
+
+Result: "Member Capital - {{MEMBER_1_NAME}} - Contributed"
+    → "Member Capital - Ron Maugeri - Contributed"
+
+⚠️ IF YOU HAVE 3+ MEMBERS: See Section "Adding Additional Members" below
+
+✅ STEP 3C: Builder Name (SPE TEMPLATES ONLY - Skip for Operating Company)
+--------------------------------------------------------------------------
+Only necessary if you're using a builder OTHER than RCH
+
+Find:    {{BUILDER_NAME}}
+Replace: Your builder name (or keep "RCH")
+
+Examples:
+- Red Cedar Homes → RCH (default, no change needed)
+- ABC Builders → ABC
+
+Note: Only appears in:
+- TEMPLATE_SPE_Community_Development.csv
+- TEMPLATE_SPE_Scattered_Lot.csv
+- TEMPLATE_SPE_Lot_Purchase.csv
+
+Result: "Accounts Payable - {{BUILDER_NAME}} (Builder)"
+    → "Accounts Payable - RCH (Builder)"
+
+✅ STEP 3D: Verify All Variables Replaced
+-----------------------------------------
+Search for "{{" - you should find ZERO results
+If you find any, you missed a variable - go back and replace it
+
+================================================================================
+🎯 STEP 4: OPTIONAL CUSTOMIZATIONS
+----------------------------------
+
+ADD CUSTOM ACCOUNTS (Optional):
+-------------------------------
+You can add more accounts following the numbering system.
+
+Example: Want to add another cash account?
+1. Find row: 1100-03, Cash - Escrow Account
+2. Insert new row after it
+3. Add: 1100-04, Cash - Special Account - PELH, 1100, Bank, 0, Asset, No, Your description
+
+Rules:
+- Parent account must exist (1100 in this example)
+- Use next sequential number (1100-04)
+- Keep same structure as other rows
+
+REMOVE UNNECESSARY ACCOUNTS (Optional):
+---------------------------------------
+You can delete rows for accounts you won't use.
+
+⚠️ WARNING: DO NOT delete accounts marked "Yes" in Required column!
+
+Example: Don't need model home accounting?
+- Delete rows containing "Model Home"
+
+Safe to remove:
+- Accounts with Required = "No"
+- Detail accounts (Is Group = 0)
+- Optional categories
+
+NOT safe to remove:
+- Accounts with Required = "Yes"
+- Main category accounts (1000, 2000, 3000, etc.)
+- Group accounts with children
+
+RENAME ACCOUNTS (Optional):
+---------------------------
+You can change account names in Column B.
+
+Example: 
+From: "Cash - Operating Account - PELH"
+To:   "Cash - Main Checking Account - PELH"
+
+⚠️ DON'T change Column A (Account Number)!
+
+ADDING 3RD, 4TH, 5TH MEMBERS (SPEs only):
+-----------------------------------------
+Default template has 2 members. To add more:
+
+1. Find the member equity section (rows with 3100-XX and 3200-XX)
+2. Current structure:
+   3100-01, Member Capital - Member 1 - Contributed
+   3100-02, Member Capital - Member 1 - Allocated Profit/Loss
+   3100-03, Member Capital - Member 2 - Contributed
+   3100-04, Member Capital - Member 2 - Allocated Profit/Loss
+   3200-01, Distributions - Member 1
+   3200-02, Distributions - Member 2
+
+3. Add new rows for Member 3:
+   3100-05, Member Capital - {{MEMBER_3_NAME}} - Contributed, 3100,,0,Equity,No,
+   3100-06, Member Capital - {{MEMBER_3_NAME}} - Allocated Profit/Loss, 3100,,0,Equity,No,
+   3200-03, Distributions - {{MEMBER_3_NAME}}, 3200,,0,Equity,No,
+
+4. Then do find/replace for {{MEMBER_3_NAME}}
+
+5. Repeat for 4th, 5th members (3100-07, 3100-08, 3200-04, etc.)
+
+================================================================================
+🎯 STEP 5: SAVE YOUR CUSTOMIZED FILE
+------------------------------------
+
+File Naming Convention:
+Format: COA_[EntityName]_[Abbreviation]_Import.csv
+
+Examples:
+- COA_1943Pelham_PELH_Import.csv
+- COA_RedCedarHomes_RCH_Import.csv
+- COA_Warpath_WRPTH_Import.csv
+
+In Excel:
+1. File → Save As
+2. File type: CSV (Comma delimited) (*.csv)
+3. Save
+
+In Google Sheets:
+1. File → Download → Comma-separated values (.csv)
+
+⚠️ IMPORTANT: Save as CSV, not Excel (.xlsx)!
+
+================================================================================
+🎯 STEP 6: VALIDATE BEFORE IMPORTING
+------------------------------------
+
+Run through this checklist:
+
+STRUCTURAL CHECKS:
+□ All {{VARIABLES}} replaced (search for "{{" = zero results)
+□ Entity abbreviation looks good
+□ Member names are correct (not placeholder text)
+□ No blank rows
+□ No extra columns
+□ Saved as .csv file
+
+REQUIRED ACCOUNTS:
+□ 1100-01 (Cash account) exists
+□ 1200-01 (Accounts Receivable) exists
+□ 2100-01 (Accounts Payable) exists
+□ 3XXX equity accounts exist
+□ At least one 4XXX revenue account
+□ At least one 5XXX COGS account
+
+MEMBER ACCOUNTS (SPEs only):
+□ Each member has capital contributed account (3100-01, 3100-03)
+□ Each member has allocated P/L account (3100-02, 3100-04)
+□ Each member has distribution account (3200-01, 3200-02)
+□ Member count matches (2, 3, 4, or 5 members)
+
+FILE FORMAT:
+□ File is CSV format (.csv extension)
+□ Opened in Excel/Sheets without errors
+□ Proper column structure (8 columns)
+
+================================================================================
+🎯 STEP 7: IMPORT INTO YOUR SYSTEM
+----------------------------------
+
+🔧 TEK-TON IMPORT:
+-----------------
+1. Log into Tek-Ton
+2. Navigate to: Setup → Chart of Accounts → Import
+3. Click: Import Chart of Accounts
+4. Upload your CSV file
+5. Map columns (usually auto-detects):
+   - Account Number → Account Code
+   - Account Name → Account Name
+   - Parent Account → Parent Account Code
+   - Account Type → Account Type
+   - Is Group → Is Header Account (1=Yes, 0=No)
+   - Root Type → Account Class
+6. Preview import
+7. Click: Complete Import
+8. Verify: Navigate to Chart of Accounts, verify all imported
+
+🔧 ERPNEXT IMPORT:
+-----------------
+1. Log into ERPNext
+2. Settings → Data Import
+3. Select DocType: Account
+4. Select Company: [Your entity name]
+5. Upload CSV
+6. Map fields:
+   - Account Number → account_number
+   - Account Name → account_name
+   - Parent Account → parent_account
+   - Account Type → account_type
+   - Is Group → is_group (1 or 0)
+   - Root Type → root_type
+7. Start Import
+8. Check for errors, fix if needed
+9. Verify in Chart of Accounts
+
+🔧 QUICKBOOKS ONLINE:
+--------------------
+1. Gear icon → Import Data
+2. Chart of Accounts
+3. Browse → Select your CSV
+4. Map columns
+5. Import
+6. Review accounts
+
+🔧 CUSTOM SYSTEM:
+----------------
+Your developer will need:
+- CSV parsing
+- Parent-child relationship validation
+- Account type mapping
+- Hierarchy creation (parents before children)
+
+================================================================================
+🎯 TROUBLESHOOTING COMMON ISSUES
+--------------------------------
+
+❌ ERROR: "Parent account not found"
+✅ FIX: Accounts must be imported in order (parents before children)
+     The CSV is already in correct order, but some systems require
+     you to import group accounts first, then detail accounts.
+
+❌ ERROR: "Duplicate account number"
+✅ FIX: Check for duplicate rows in your CSV
+     Each account number must be unique
+
+❌ ERROR: "Invalid account type"
+✅ FIX: Your system may use different account type names
+     Map to system-specific types:
+     - Bank → Cash, Checking, etc.
+     - Receivable → Accounts Receivable
+     - Payable → Accounts Payable
+     - Fixed Asset → Property, Plant, Equipment
+     - Expense → Expense, Cost of Goods Sold
+     - Income → Revenue, Income
+
+❌ ERROR: "Account name too long"
+✅ FIX: Some systems limit account name length
+     Shorten names in Column B before importing
+     Keep account numbers the same
+
+❌ ERROR: "{{VARIABLE}} found in account name"
+✅ FIX: You forgot to do find/replace
+     Go back to Step 3, complete all find/replace
+
+❌ ERROR: "Invalid characters"
+✅ FIX: Some systems don't allow certain characters
+     Common issues: é, ñ, special symbols
+     Replace with standard letters
+
+❌ ERROR: "Circular reference"
+✅ FIX: Account cannot be its own parent
+     Check Parent Account column (Column C)
+
+================================================================================
+📋 QUICK REFERENCE: VARIABLE REPLACEMENT CHECKLIST
+--------------------------------------------------
+
+FOR ALL TEMPLATES:
+□ Replace {{ABBR}} with entity abbreviation (e.g., PELH, RCH, WRPTH)
+□ Verify all {{ABBR}} replaced (search should return zero results)
+
+FOR SPE TEMPLATES ONLY:
+□ Replace {{MEMBER_1_NAME}} with first partner name
+□ Replace {{MEMBER_2_NAME}} with second partner name
+□ Replace {{BUILDER_NAME}} if using different builder (or keep RCH)
+□ Add additional members if needed (Member 3, 4, 5)
+□ Verify all {{MEMBER_X_NAME}} replaced
+
+FOR OPERATING COMPANY ONLY:
+□ Replace {{ABBR}} with company abbreviation
+□ No member name replacement needed (uses different equity structure)
+
+FINAL CHECK FOR ALL:
+□ Search for "{{" → Should find ZERO results
+□ Save as CSV file
+□ Ready to import!
+
+================================================================================
+📊 TEMPLATE COMPARISON CHART
+----------------------------
+
+Feature             | Operating | Lot Dev | Community | Scattered | Lot Purch
+--------------------|-----------|---------|-----------|-----------|----------
+Business Type       | Ongoing   | Project | Project   | Project   | Project
+Land Costs          | Minimal   | High    | High      | Low       | Medium
+Home Construction   | Yes       | No      | Yes       | Yes       | Yes
+Exit Strategy       | None      | Sell lots| Sell homes| Sell homes| Sell homes
+Timeline            | Ongoing   | 12-36mo | 18-48mo   | 6-12mo    | 12-24mo
+# of Lots/Homes     | Variable  | 5-100   | 10-200    | 1-5       | 5-50
+Partners/Members    | Corporate | 2-5     | 2-5       | 2-5       | 2-5
+Builder (RCH)       | Self      | N/A     | Hired     | Hired     | Hired
+Complexity          | High      | Medium  | High      | Low       | Medium
+
+================================================================================
+💡 BEST PRACTICES
+----------------
+
+1. ✅ NAMING CONSISTENCY
+   Use same abbreviation style across all entities:
+   - PELH (1943 Pelham)
+   - WRPTH (Warpath)
+   - KEES (Keowee Estates)
+   All caps, 3-5 letters
+
+2. ✅ KEEP MASTER TEMPLATE
+   Save original TEMPLATE_XXX.csv files untouched
+   Always work on a copy
+   You can create new entities from master later
+
+3. ✅ VERSION CONTROL
+   Save each customized COA with version/date:
+   - COA_1943Pelham_PELH_v1_2025-02-20.csv
+   - COA_1943Pelham_PELH_v2_2025-03-15.csv
+
+4. ✅ DOCUMENT CUSTOMIZATIONS
+   Keep notes on what you added/removed/changed
+   Helpful when setting up similar entities later
+
+5. ✅ TEST FIRST
+   Import into test/sandbox environment first
+   Verify everything works
+   Then import to production
+
+6. ✅ BACKUP
+   Export your Chart of Accounts after importing
+   Keep backup in case you need to restore
+
+================================================================================
+🎯 NEXT STEPS AFTER IMPORT
+--------------------------
+
+After successful import:
+
+WEEK 1: CONFIGURATION
+□ Set up bank account connections
+□ Create vendor/supplier list
+□ Set up customer list (if applicable)
+□ Configure default accounts for transactions
+
+WEEK 2: TESTING
+□ Create test transactions
+□ Verify accounts work correctly
+□ Run sample reports
+□ Check account balances
+
+WEEK 3: GO LIVE
+□ Import opening balances
+□ Import historical transactions (if needed)
+□ Start entering current transactions
+□ Begin using system
+
+ONGOING:
+□ Regular reconciliation
+□ Monthly financial statements
+□ Partner/member reporting
+□ Project performance tracking
+
+================================================================================
+❓ FREQUENTLY ASKED QUESTIONS
+----------------------------
+
+Q: Can I use the same template for multiple projects?
+A: YES! That's the whole point. Use TEMPLATE_SPE_Lot_Development.csv
+   for every lot development project. Just customize the {{ABBR}} and
+   member names differently for each.
+
+Q: What if I have 3 partners instead of 2?
+A: Add additional member accounts (see "Adding 3rd, 4th, 5th Members" above)
+
+Q: Can I add accounts later after importing?
+A: YES! You can add accounts in the system or re-import an updated CSV
+
+Q: Should I use entity suffix ({{ABBR}}) or not?
+A: RECOMMENDED: Use it. Makes consolidated reporting much easier.
+   You can clearly see which entity each account belongs to.
+
+Q: What if my builder isn't RCH?
+A: Do find/replace: {{BUILDER_NAME}} → Your builder abbreviation
+
+Q: Can I remove accounts I don't need?
+A: YES, but ONLY accounts marked Required = "No"
+   DO NOT remove accounts marked Required = "Yes"
+
+Q: Do I need all 8 columns in the CSV?
+A: No - the last 2 columns (Required, Description) are for reference.
+   Most systems only need the first 6 columns.
+
+Q: Can I change account numbers?
+A: NOT RECOMMENDED. The numbering is industry standard.
+   You can rename accounts, but keep numbers consistent.
+
+Q: What if import fails?
+A: Check error message, refer to "Troubleshooting" section above
+   Most issues: parent accounts missing, duplicates, or formatting
+
+Q: How do I know which template to use?
+A: Refer to "STEP 1: SELECT THE RIGHT TEMPLATE" decision tree above
+
+================================================================================
+📞 SUPPORT RESOURCES
+-------------------
+
+TEMPLATE ISSUES:
+- Review this guide thoroughly
+- Check examples in "Troubleshooting" section
+- Verify all variables replaced
+
+SYSTEM-SPECIFIC IMPORT HELP:
+- Tek-Ton: support.tekton.com
+- ERPNext: discuss.erpnext.com or docs.erpnext.com
+- QuickBooks: quickbooks.intuit.com/support
+
+CUSTOMIZATION QUESTIONS:
+- Refer to detailed examples in this guide
+- Test in sandbox/demo environment first
+- Start with minimal customization, add more later
+
+================================================================================
+✅ FINAL CHECKLIST BEFORE IMPORT
+--------------------------------
+
+PREPARATION:
+□ Selected correct template for entity type
+□ Opened in Excel or Google Sheets
+□ Made working copy (kept original template)
+
+CUSTOMIZATION:
+□ Replaced {{ABBR}} with entity abbreviation
+□ Replaced {{MEMBER_1_NAME}} (SPEs only)
+□ Replaced {{MEMBER_2_NAME}} (SPEs only)
+□ Replaced {{BUILDER_NAME}} if needed (SPEs only)
+□ Added additional members if needed (SPEs only)
+□ Removed {{VARIABLES}} - search finds zero results
+
+VALIDATION:
+□ No blank rows
+□ No extra columns
+□ All required accounts present
+□ Member count matches structure (SPEs)
+□ File saved as .csv format
+
+READY TO IMPORT:
+□ Have CSV file ready
+□ Know which system importing to
+□ Have login credentials
+□ Ready to map columns
+□ Can verify after import
+
+================================================================================
+
+🎉 YOU'RE READY TO GO!
+
+Select your template → Customize → Import → Start using!
+
+================================================================================
