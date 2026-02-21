@@ -23,7 +23,7 @@ function ContactsLayout() {
     >
       {/* Header */}
       <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
-        <span className="text-sm font-semibold" style={{ color: "var(--sidebar-active-text)" }}>
+        <span className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>
           Contacts
         </span>
         <p className="text-[10px]" style={{ color: "var(--sidebar-heading)" }}>

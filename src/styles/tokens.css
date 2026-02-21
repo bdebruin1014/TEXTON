@@ -1,6 +1,6 @@
-/* KOVA Design System v3.1 */
+/* KOVA Design System v4.0 — Qualia-accurate (dark sidebar) */
 :root {
-  /* ——— PRIMARY — deeper forest green ——— */
+  /* ——— PRIMARY — deep forest green ——— */
   --color-primary: #143A23;
   --color-primary-foreground: #FFFFFF;
   --color-primary-hover: #1C4D30;
@@ -14,11 +14,22 @@
   --color-button-hover: #3D7A4E;
   --color-button-foreground: #FFFFFF;
 
-  /* ——— NAVIGATION ——— */
+  /* ——— NAVIGATION (top bar — darkest element) ——— */
   --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
   --color-nav-muted: #94A3B8;
-  --color-nav-active: #4A8C5E;
+  --color-nav-active: #48BB78;
+
+  /* ——— SIDEBAR — DARK SLATE (lighter than nav, like Qualia) ——— */
+  --color-sidebar: #2D3748;
+  --sidebar-width: 240px;
+  --sidebar-active-border: #48BB78;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-active-text: #48BB78;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+  --sidebar-text: #A0AEC0;
+  --sidebar-heading: #718096;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
 
   /* ——— SURFACES ——— */
   --color-background: #F1F5F9;
@@ -27,17 +38,6 @@
   --color-card-hover: #FAFBFC;
   --color-popover: #FFFFFF;
   --color-popover-foreground: #112233;
-
-  /* ——— SIDEBAR — DARK (matches nav) ——— */
-  --color-sidebar: #112233;
-  --sidebar-width: 240px;
-  --sidebar-active-border: #4A8C5E;
-  --sidebar-active-bg: rgba(255, 255, 255, 0.06);
-  --sidebar-active-text: #FFFFFF;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
-  --sidebar-text: #94A3B8;
-  --sidebar-heading: #5A6F82;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
 
   /* ——— TEXT HIERARCHY ——— */
   --color-foreground: #112233;
@@ -122,5 +122,5 @@
 
   /* ——— LAYOUT ——— */
   --right-panel-width: 260px;
-  --topnav-height: 52px;
+  --topnav-height: 48px;
 }

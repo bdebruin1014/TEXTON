@@ -63,7 +63,7 @@ function PurchasingLayout() {
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.06)",
             border: "1px solid var(--sidebar-border)",
-            color: "var(--sidebar-active-text)",
+            color: "#FFFFFF",
           }}
         >
           <option value="">All Entities</option>

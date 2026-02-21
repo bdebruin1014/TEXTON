@@ -11,8 +11,12 @@ interface AppShellProps {
 }
 
 /**
- * Full application shell with TopNav, record tabs, optional sidebar, main content, and right panel.
- * Used by _authenticated layout to wrap all authenticated pages.
+ * Full application shell — Qualia pattern.
+ *
+ * Layout: dark TopNav on top, then 3 columns:
+ *   LEFT: Dark slate sidebar (context-sensitive per module)
+ *   CENTER: Content area with RecordTabBar above main (#F1F5F9 bg)
+ *   RIGHT: Collapsible white panel (Chat / Tasks / Notes)
  */
 export function AppShell({ sidebar, children }: AppShellProps) {
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
@@ -41,6 +45,7 @@ export function AppShell({ sidebar, children }: AppShellProps) {
               "lg:relative lg:z-auto lg:w-[240px] lg:pt-0 lg:translate-x-0",
               sidebarOpen ? "translate-x-0" : "-translate-x-full",
             )}
+            style={{ backgroundColor: "var(--color-sidebar)" }}
           >
             {sidebar}
           </div>
@@ -50,7 +55,9 @@ export function AppShell({ sidebar, children }: AppShellProps) {
         <div className="flex min-w-0 flex-1 flex-col">
           <RecordTabBar />
           <div className="flex flex-1 overflow-hidden">
-            <main className="flex-1 overflow-y-auto bg-background p-4 md:p-6">{children}</main>
+            <main className="flex-1 overflow-y-auto p-4 md:p-6" style={{ backgroundColor: "var(--color-background)" }}>
+              {children}
+            </main>
             <div className="hidden xl:block">
               <RightPanel />
             </div>
@@ -63,8 +70,9 @@ export function AppShell({ sidebar, children }: AppShellProps) {
 }
 
 /**
- * Content wrapper for pages that provide their own sidebar within the authenticated layout.
- * Does NOT render TopNav/RightPanel — those come from the parent AppShell.
+ * Content wrapper for pages that provide their own sidebar within
+ * the authenticated layout. Does NOT render TopNav/RightPanel —
+ * those come from the parent AppShell.
  */
 export function PageWithSidebar({ sidebar, children }: AppShellProps) {
   return (
