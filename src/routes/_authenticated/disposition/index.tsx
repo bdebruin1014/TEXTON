@@ -154,20 +154,6 @@ function DispositionIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Disposition"
-      fabLabel="New Disposition"
-      actions={[
-        {
-          label: "Blank Disposition",
-          description: "Create a new empty disposition record",
-          onClick: handleCreate,
-        },
-        {
-          label: "Create with AI",
-          description: "Describe a sale and let AI populate the fields",
-          onClick: () => toast.info("AI creation coming soon"),
-          ai: true,
-        },
-      ]}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={7} />

@@ -159,20 +159,6 @@ function ConstructionIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Job"
-      fabLabel="New Job"
-      actions={[
-        {
-          label: "Blank Job",
-          description: "Create a new empty job record",
-          onClick: handleCreate,
-        },
-        {
-          label: "Create with AI",
-          description: "Describe a build and let AI populate the fields",
-          onClick: () => toast.info("AI creation coming soon"),
-          ai: true,
-        },
-      ]}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={8} />

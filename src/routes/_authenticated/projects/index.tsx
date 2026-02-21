@@ -108,20 +108,6 @@ function ProjectsIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Project"
-      fabLabel="New Project"
-      actions={[
-        {
-          label: "Blank Project",
-          description: "Create a new empty project record",
-          onClick: handleCreate,
-        },
-        {
-          label: "Create with AI",
-          description: "Describe a project and let AI populate the fields",
-          onClick: () => toast.info("AI creation coming soon"),
-          ai: true,
-        },
-      ]}
     >
       {isLoading ? (
         <CardGridSkeleton cards={6} />

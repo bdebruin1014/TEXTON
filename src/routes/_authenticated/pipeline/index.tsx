@@ -151,20 +151,6 @@ function PipelineIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Opportunity"
-      fabLabel="New Opportunity"
-      actions={[
-        {
-          label: "Blank Opportunity",
-          description: "Create a new empty opportunity record",
-          onClick: handleCreate,
-        },
-        {
-          label: "Create with AI",
-          description: "Describe a deal and let AI populate the fields",
-          onClick: () => toast.info("AI creation coming soon"),
-          ai: true,
-        },
-      ]}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={6} />

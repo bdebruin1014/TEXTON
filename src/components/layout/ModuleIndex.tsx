@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ModuleKpi {
@@ -14,13 +13,6 @@ export interface StatusTab {
   count?: number;
 }
 
-interface QuickAction {
-  label: string;
-  description: string;
-  onClick: () => void;
-  ai?: boolean;
-}
-
 interface ModuleIndexProps {
   title: string;
   subtitle?: string;
@@ -31,72 +23,7 @@ interface ModuleIndexProps {
   /** Inline create button rendered top-right under the header */
   onCreate?: () => void;
   createLabel?: string;
-  /** FAB actions — shown in the floating action button at bottom-right */
-  actions?: QuickAction[];
-  fabLabel?: string;
   children: React.ReactNode;
-}
-
-function FloatingActionButton({ label, actions }: { label: string; actions: QuickAction[] }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  return (
-    <div ref={ref} className="fixed bottom-6 right-6 z-30">
-      {/* Action menu — expands upward */}
-      {open && (
-        <div className="absolute bottom-full right-0 mb-2 w-72 rounded-xl border border-border bg-card p-2 shadow-xl">
-          {actions.map((action) => (
-            <button
-              key={action.label}
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                action.onClick();
-              }}
-              className={cn(
-                "flex w-full flex-col rounded-lg px-3 py-2.5 text-left transition-colors",
-                action.ai ? "bg-success-bg/50 hover:bg-success-bg" : "hover:bg-card-hover",
-              )}
-            >
-              <span className="flex items-center gap-2">
-                <span className="text-sm font-medium text-foreground">{action.label}</span>
-                {action.ai && (
-                  <span className="rounded bg-success px-1.5 py-0.5 text-[10px] font-bold text-white">AI</span>
-                )}
-              </span>
-              <span className="mt-0.5 text-xs text-muted">{action.description}</span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* FAB pill button */}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-full bg-button px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-button-hover hover:shadow-xl"
-      >
-        <span
-          className="text-lg leading-none transition-transform duration-200"
-          style={{ transform: open ? "rotate(45deg)" : undefined }}
-        >
-          +
-        </span>
-        {label}
-      </button>
-    </div>
-  );
 }
 
 export function ModuleIndex({
@@ -108,8 +35,6 @@ export function ModuleIndex({
   onStatusChange,
   onCreate,
   createLabel = "New",
-  actions,
-  fabLabel = "New",
   children,
 }: ModuleIndexProps) {
   return (
@@ -182,11 +107,8 @@ export function ModuleIndex({
         </div>
       )}
 
-      {/* Content — extra bottom padding for FAB clearance */}
-      <div className={actions && actions.length > 0 ? "pb-20" : ""}>{children}</div>
-
-      {/* Floating Action Button — only if actions provided */}
-      {actions && actions.length > 0 && <FloatingActionButton label={fabLabel} actions={actions} />}
+      {/* Content */}
+      <div>{children}</div>
     </div>
   );
 }
