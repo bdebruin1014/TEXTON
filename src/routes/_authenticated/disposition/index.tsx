@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { PageWithSidebar } from "@/components/layout/AppShell";
-import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
+import { ModuleIndex, type ModuleKpi, type StatusTab } from "@/components/layout/ModuleIndex";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -72,7 +71,7 @@ const columns: ColumnDef<Disposition, unknown>[] = [
 
 function DispositionIndex() {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeStatus, setActiveStatus] = useState("all");
 
   const { data: dispositions = [], isLoading } = useQuery<Disposition[]>({
     queryKey: ["dispositions"],
@@ -84,9 +83,9 @@ function DispositionIndex() {
   });
 
   const filtered = useMemo(() => {
-    if (activeFilter === "all") return dispositions;
-    return dispositions.filter((d) => d.status === activeFilter);
-  }, [dispositions, activeFilter]);
+    if (activeStatus === "all") return dispositions;
+    return dispositions.filter((d) => d.status === activeStatus);
+  }, [dispositions, activeStatus]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -96,21 +95,32 @@ function DispositionIndex() {
     return counts;
   }, [dispositions]);
 
-  const sidebarFilters: SidebarFilterItem[] = [
-    { label: "All Dispositions", value: "all", count: dispositions.length },
-    ...DISPOSITION_STATUSES.map((s) => ({
-      label: s,
-      value: s,
-      count: statusCounts[s] ?? 0,
-    })),
-  ];
-
   const totalRevenue = dispositions
     .filter((d) => d.status === "Closed")
     .reduce((sum, d) => sum + (d.contract_price ?? 0), 0);
   const pipeline = dispositions
     .filter((d) => d.status !== "Closed" && d.status !== "Cancelled")
     .reduce((sum, d) => sum + (d.contract_price ?? 0), 0);
+
+  const kpis: ModuleKpi[] = [
+    { label: "Total Dispositions", value: dispositions.length },
+    { label: "Revenue (Closed)", value: formatCurrency(totalRevenue), accentColor: "#48BB78" },
+    { label: "Pipeline Value", value: formatCurrency(pipeline), accentColor: "#3B6FA0" },
+    {
+      label: "Pending Close",
+      value: statusCounts["Under Contract"] ?? 0,
+      accentColor: "#C4841D",
+    },
+  ];
+
+  const statusTabs: StatusTab[] = [
+    { label: "All", value: "all", count: dispositions.length },
+    ...DISPOSITION_STATUSES.map((s) => ({
+      label: s,
+      value: s,
+      count: statusCounts[s] ?? 0,
+    })),
+  ];
 
   const handleCreate = async () => {
     try {
@@ -125,70 +135,46 @@ function DispositionIndex() {
     }
   };
 
-  const sidebar = (
-    <IndexSidebar
-      title="Disposition"
-      filters={sidebarFilters}
-      activeFilter={activeFilter}
-      onFilterChange={setActiveFilter}
-      metrics={[
-        { label: "Total", value: dispositions.length },
-        { label: "Revenue", value: formatCurrency(totalRevenue) },
-        { label: "Pipeline", value: formatCurrency(pipeline) },
-      ]}
-    />
-  );
-
   return (
-    <PageWithSidebar sidebar={sidebar}>
-      <div>
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Disposition</h1>
-            <p className="mt-0.5 text-sm text-muted">{activeFilter === "all" ? "All dispositions" : activeFilter}</p>
-          </div>
-          <button
-            type="button"
-            onClick={handleCreate}
-            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-          >
-            +
-            New Disposition
-          </button>
-        </div>
-
-        {isLoading ? (
-          <TableSkeleton rows={8} cols={7} />
-        ) : filtered.length === 0 ? (
-          <EmptyState
-            title="No dispositions yet"
-            description="Create a new disposition to start tracking sales"
-           
-            action={
-              <button
-                type="button"
-                onClick={handleCreate}
-                className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-              >
-                +
-                New Disposition
-              </button>
-            }
-          />
-        ) : (
-          <DataTable
-            columns={columns}
-            data={filtered}
-            searchKey="buyer_name"
-            searchPlaceholder="Search dispositions..."
-            onRowClick={(row) =>
-              navigate({
-                to: `/disposition/${row.id}/overview` as string,
-              })
-            }
-          />
-        )}
-      </div>
-    </PageWithSidebar>
+    <ModuleIndex
+      title="Disposition"
+      subtitle={activeStatus === "all" ? "All dispositions" : activeStatus}
+      kpis={kpis}
+      statusTabs={statusTabs}
+      activeStatus={activeStatus}
+      onStatusChange={setActiveStatus}
+      fabLabel="New Disposition"
+      actions={[
+        {
+          label: "Blank Disposition",
+          description: "Create a new empty disposition record",
+          onClick: handleCreate,
+        },
+        {
+          label: "Create with AI",
+          description: "Describe a sale and let AI populate the fields",
+          onClick: () => toast.info("AI creation coming soon"),
+          ai: true,
+        },
+      ]}
+    >
+      {isLoading ? (
+        <TableSkeleton rows={8} cols={7} />
+      ) : filtered.length === 0 ? (
+        <EmptyState title="No dispositions yet" description="Create a new disposition to start tracking sales" />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered}
+          searchKey="buyer_name"
+          searchPlaceholder="Search dispositions..."
+          onRowClick={(row) =>
+            navigate({
+              to: `/disposition/${row.id}/overview` as string,
+            })
+          }
+        />
+      )}
+    </ModuleIndex>
   );
 }

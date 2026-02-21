@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { PageWithSidebar } from "@/components/layout/AppShell";
-import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
+import { ModuleIndex, type ModuleKpi, type StatusTab } from "@/components/layout/ModuleIndex";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -82,7 +81,7 @@ const columns: ColumnDef<Job, unknown>[] = [
 
 function ConstructionIndex() {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeStatus, setActiveStatus] = useState("all");
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
     queryKey: ["jobs"],
@@ -94,9 +93,9 @@ function ConstructionIndex() {
   });
 
   const filteredJobs = useMemo(() => {
-    if (activeFilter === "all") return jobs;
-    return jobs.filter((j) => j.status === activeFilter);
-  }, [jobs, activeFilter]);
+    if (activeStatus === "all") return jobs;
+    return jobs.filter((j) => j.status === activeStatus);
+  }, [jobs, activeStatus]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -106,17 +105,28 @@ function ConstructionIndex() {
     return counts;
   }, [jobs]);
 
-  const sidebarFilters: SidebarFilterItem[] = [
-    { label: "All Jobs", value: "all", count: jobs.length },
+  const totalBudget = jobs.reduce((sum, j) => sum + (j.budget_total ?? 0), 0);
+  const totalSpent = jobs.reduce((sum, j) => sum + (j.spent_total ?? 0), 0);
+
+  const kpis: ModuleKpi[] = [
+    { label: "Total Jobs", value: jobs.length },
+    { label: "Total Budget", value: formatCurrency(totalBudget) },
+    { label: "Total Spent", value: formatCurrency(totalSpent), accentColor: "#C4841D" },
+    {
+      label: "In Progress",
+      value: statusCounts["In Progress"] ?? 0,
+      accentColor: "#48BB78",
+    },
+  ];
+
+  const statusTabs: StatusTab[] = [
+    { label: "All", value: "all", count: jobs.length },
     ...JOB_STATUSES.map((s) => ({
       label: s,
       value: s,
       count: statusCounts[s] ?? 0,
     })),
   ];
-
-  const totalBudget = jobs.reduce((sum, j) => sum + (j.budget_total ?? 0), 0);
-  const totalSpent = jobs.reduce((sum, j) => sum + (j.spent_total ?? 0), 0);
 
   const handleCreate = async () => {
     try {
@@ -133,66 +143,42 @@ function ConstructionIndex() {
     }
   };
 
-  const sidebar = (
-    <IndexSidebar
-      title="Construction"
-      filters={sidebarFilters}
-      activeFilter={activeFilter}
-      onFilterChange={setActiveFilter}
-      metrics={[
-        { label: "Total", value: jobs.length },
-        { label: "Budget", value: formatCurrency(totalBudget) },
-        { label: "Spent", value: formatCurrency(totalSpent) },
-      ]}
-    />
-  );
-
   return (
-    <PageWithSidebar sidebar={sidebar}>
-      <div>
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Construction Management</h1>
-            <p className="mt-0.5 text-sm text-muted">{activeFilter === "all" ? "All jobs" : activeFilter}</p>
-          </div>
-          <button
-            type="button"
-            onClick={handleCreate}
-            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-          >
-            +
-            New Job
-          </button>
-        </div>
-
-        {isLoading ? (
-          <TableSkeleton rows={8} cols={8} />
-        ) : filteredJobs.length === 0 ? (
-          <EmptyState
-            title="No jobs yet"
-            description="Create a new job to start tracking construction"
-           
-            action={
-              <button
-                type="button"
-                onClick={handleCreate}
-                className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-              >
-                +
-                New Job
-              </button>
-            }
-          />
-        ) : (
-          <DataTable
-            columns={columns}
-            data={filteredJobs}
-            searchKey="lot_number"
-            searchPlaceholder="Search jobs..."
-            onRowClick={(row) => navigate({ to: "/construction/$jobId/job-info", params: { jobId: row.id } })}
-          />
-        )}
-      </div>
-    </PageWithSidebar>
+    <ModuleIndex
+      title="Construction Management"
+      subtitle={activeStatus === "all" ? "All jobs" : activeStatus}
+      kpis={kpis}
+      statusTabs={statusTabs}
+      activeStatus={activeStatus}
+      onStatusChange={setActiveStatus}
+      fabLabel="New Job"
+      actions={[
+        {
+          label: "Blank Job",
+          description: "Create a new empty job record",
+          onClick: handleCreate,
+        },
+        {
+          label: "Create with AI",
+          description: "Describe a build and let AI populate the fields",
+          onClick: () => toast.info("AI creation coming soon"),
+          ai: true,
+        },
+      ]}
+    >
+      {isLoading ? (
+        <TableSkeleton rows={8} cols={8} />
+      ) : filteredJobs.length === 0 ? (
+        <EmptyState title="No jobs yet" description="Create a new job to start tracking construction" />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredJobs}
+          searchKey="lot_number"
+          searchPlaceholder="Search jobs..."
+          onRowClick={(row) => navigate({ to: "/construction/$jobId/job-info", params: { jobId: row.id } })}
+        />
+      )}
+    </ModuleIndex>
   );
 }

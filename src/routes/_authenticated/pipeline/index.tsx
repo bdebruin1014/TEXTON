@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { PageWithSidebar } from "@/components/layout/AppShell";
-import { IndexSidebar, type SidebarFilterItem } from "@/components/layout/IndexSidebar";
+import { ModuleIndex, type ModuleKpi, type StatusTab } from "@/components/layout/ModuleIndex";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -68,7 +67,7 @@ const columns: ColumnDef<Opportunity, unknown>[] = [
 
 function PipelineIndex() {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeStatus, setActiveStatus] = useState("all");
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["opportunities"],
@@ -83,9 +82,9 @@ function PipelineIndex() {
   });
 
   const filteredOpportunities = useMemo(() => {
-    if (activeFilter === "all") return opportunities;
-    return opportunities.filter((o) => o.status === activeFilter);
-  }, [opportunities, activeFilter]);
+    if (activeStatus === "all") return opportunities;
+    return opportunities.filter((o) => o.status === activeStatus);
+  }, [opportunities, activeStatus]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -95,16 +94,31 @@ function PipelineIndex() {
     return counts;
   }, [opportunities]);
 
-  const sidebarFilters: SidebarFilterItem[] = [
-    { label: "All Opportunities", value: "all", count: opportunities.length },
+  const totalValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
+
+  const kpis: ModuleKpi[] = [
+    { label: "Total Opportunities", value: opportunities.length },
+    { label: "Pipeline Value", value: formatCurrency(totalValue) },
+    {
+      label: "New Leads",
+      value: statusCounts["New Lead"] ?? 0,
+      accentColor: "#48BB78",
+    },
+    {
+      label: "Under Review",
+      value: statusCounts["Under Review"] ?? 0,
+      accentColor: "#3B6FA0",
+    },
+  ];
+
+  const statusTabs: StatusTab[] = [
+    { label: "All", value: "all", count: opportunities.length },
     ...OPPORTUNITY_STATUSES.map((s) => ({
       label: s,
       value: s,
       count: statusCounts[s] ?? 0,
     })),
   ];
-
-  const totalValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
 
   const handleCreate = async () => {
     try {
@@ -121,53 +135,42 @@ function PipelineIndex() {
     }
   };
 
-  const sidebar = (
-    <IndexSidebar
-      title="Pipeline"
-      filters={sidebarFilters}
-      activeFilter={activeFilter}
-      onFilterChange={setActiveFilter}
-      metrics={[
-        { label: "Total", value: opportunities.length },
-        { label: "Pipeline Value", value: formatCurrency(totalValue) },
-      ]}
-    />
-  );
-
   return (
-    <PageWithSidebar sidebar={sidebar}>
-      <div>
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Pipeline</h1>
-            <p className="mt-0.5 text-sm text-muted">{activeFilter === "all" ? "All opportunities" : activeFilter}</p>
-          </div>
-          <button
-            type="button"
-            onClick={handleCreate}
-            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-          >
-            +
-            New Opportunity
-          </button>
-        </div>
-
-        {/* Table */}
-        {isLoading ? (
-          <TableSkeleton rows={8} cols={6} />
-        ) : (
-          <DataTable
-            columns={columns}
-            data={filteredOpportunities}
-            searchKey="opportunity_name"
-            searchPlaceholder="Search opportunities..."
-            onRowClick={(row) =>
-              navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: row.id } })
-            }
-          />
-        )}
-      </div>
-    </PageWithSidebar>
+    <ModuleIndex
+      title="Pipeline"
+      subtitle={activeStatus === "all" ? "All opportunities" : activeStatus}
+      kpis={kpis}
+      statusTabs={statusTabs}
+      activeStatus={activeStatus}
+      onStatusChange={setActiveStatus}
+      fabLabel="New Opportunity"
+      actions={[
+        {
+          label: "Blank Opportunity",
+          description: "Create a new empty opportunity record",
+          onClick: handleCreate,
+        },
+        {
+          label: "Create with AI",
+          description: "Describe a deal and let AI populate the fields",
+          onClick: () => toast.info("AI creation coming soon"),
+          ai: true,
+        },
+      ]}
+    >
+      {isLoading ? (
+        <TableSkeleton rows={8} cols={6} />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredOpportunities}
+          searchKey="opportunity_name"
+          searchPlaceholder="Search opportunities..."
+          onRowClick={(row) =>
+            navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: row.id } })
+          }
+        />
+      )}
+    </ModuleIndex>
   );
 }
