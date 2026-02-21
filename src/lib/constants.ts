@@ -72,6 +72,19 @@ export const PROJECT_TYPES = ["Scattered Lot", "Community Development", "Lot Dev
 
 export const COST_BOOK_STATUSES = ["Draft", "Active", "Archived"] as const;
 
+export const ENTITY_TYPES = ["LLC", "LP", "Corp", "Trust", "Individual"] as const;
+
+export const PO_STATUSES = [
+  "Draft",
+  "Submitted",
+  "Approved",
+  "In Progress",
+  "Complete",
+  "Invoiced",
+  "Paid",
+  "Void",
+] as const;
+
 export const FIXED_PER_HOUSE_FEES = {
   builder_fee: 15_000,
   am_fee: 5_000, // RCH-related entities only

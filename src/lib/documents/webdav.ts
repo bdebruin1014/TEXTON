@@ -1,5 +1,11 @@
 const WEBDAV_BASE = import.meta.env.VITE_WEBDAV_URL ?? "";
 
+export function canEditInPlace(extension: string | null | undefined): boolean {
+  if (!extension) return false;
+  const ext = extension.toLowerCase().startsWith(".") ? extension.toLowerCase() : `.${extension.toLowerCase()}`;
+  return ext in OFFICE_PROTOCOLS;
+}
+
 const OFFICE_PROTOCOLS: Record<string, string> = {
   ".docx": "ms-word",
   ".doc": "ms-word",

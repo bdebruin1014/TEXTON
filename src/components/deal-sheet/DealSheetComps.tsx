@@ -64,8 +64,8 @@ export function DealSheetComps({ dealSheetId }: DealSheetCompsProps) {
     const sorted = [...prices].sort((a, b) => a - b);
     const median =
       sorted.length % 2 === 0
-        ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
-        : sorted[Math.floor(sorted.length / 2)];
+        ? ((sorted[sorted.length / 2 - 1] ?? 0) + (sorted[sorted.length / 2] ?? 0)) / 2
+        : (sorted[Math.floor(sorted.length / 2)] ?? 0);
     const withPSF = comps.filter((c) => c.price_per_sqft && c.price_per_sqft > 0);
     const avgPSF =
       withPSF.length > 0
