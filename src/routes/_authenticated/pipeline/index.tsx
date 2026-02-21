@@ -11,6 +11,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 import { OPPORTUNITY_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/pipeline/")({
   component: PipelineIndex,
@@ -68,6 +69,7 @@ const columns: ColumnDef<Opportunity, unknown>[] = [
 function PipelineIndex() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState("all");
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["opportunities"],
@@ -124,7 +126,11 @@ function PipelineIndex() {
     try {
       const { data, error } = await supabase
         .from("opportunities")
-        .insert({ opportunity_name: "New Opportunity", status: "New Lead" })
+        .insert({
+          opportunity_name: "New Opportunity",
+          status: "New Lead",
+          entity_id: activeEntityId,
+        })
         .select()
         .single();
       if (error) throw error;
@@ -143,6 +149,8 @@ function PipelineIndex() {
       statusTabs={statusTabs}
       activeStatus={activeStatus}
       onStatusChange={setActiveStatus}
+      onCreate={handleCreate}
+      createLabel="New Opportunity"
       fabLabel="New Opportunity"
       actions={[
         {

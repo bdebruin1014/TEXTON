@@ -12,6 +12,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 import { JOB_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/construction/")({
   component: ConstructionIndex,
@@ -82,6 +83,7 @@ const columns: ColumnDef<Job, unknown>[] = [
 function ConstructionIndex() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState("all");
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
     queryKey: ["jobs"],
@@ -132,7 +134,11 @@ function ConstructionIndex() {
     try {
       const { data, error } = await supabase
         .from("jobs")
-        .insert({ lot_number: "New", status: "Pre-Construction" })
+        .insert({
+          lot_number: "New",
+          status: "Pre-Construction",
+          entity_id: activeEntityId,
+        })
         .select()
         .single();
       if (error) throw error;
@@ -151,6 +157,8 @@ function ConstructionIndex() {
       statusTabs={statusTabs}
       activeStatus={activeStatus}
       onStatusChange={setActiveStatus}
+      onCreate={handleCreate}
+      createLabel="New Job"
       fabLabel="New Job"
       actions={[
         {

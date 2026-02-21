@@ -12,6 +12,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 import { DISPOSITION_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/disposition/")({
   component: DispositionIndex,
@@ -72,6 +73,7 @@ const columns: ColumnDef<Disposition, unknown>[] = [
 function DispositionIndex() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState("all");
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: dispositions = [], isLoading } = useQuery<Disposition[]>({
     queryKey: ["dispositions"],
@@ -124,7 +126,14 @@ function DispositionIndex() {
 
   const handleCreate = async () => {
     try {
-      const { data, error } = await supabase.from("dispositions").insert({ status: "Lead" }).select().single();
+      const { data, error } = await supabase
+        .from("dispositions")
+        .insert({
+          status: "Lead",
+          entity_id: activeEntityId,
+        })
+        .select()
+        .single();
       if (error) throw error;
       toast.success("Disposition created");
       navigate({
@@ -143,6 +152,8 @@ function DispositionIndex() {
       statusTabs={statusTabs}
       activeStatus={activeStatus}
       onStatusChange={setActiveStatus}
+      onCreate={handleCreate}
+      createLabel="New Disposition"
       fabLabel="New Disposition"
       actions={[
         {

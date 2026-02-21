@@ -28,7 +28,11 @@ interface ModuleIndexProps {
   statusTabs?: StatusTab[];
   activeStatus?: string;
   onStatusChange?: (value: string) => void;
-  actions: QuickAction[];
+  /** Inline create button rendered top-right under the header */
+  onCreate?: () => void;
+  createLabel?: string;
+  /** FAB actions — shown in the floating action button at bottom-right */
+  actions?: QuickAction[];
   fabLabel?: string;
   children: React.ReactNode;
 }
@@ -102,16 +106,29 @@ export function ModuleIndex({
   statusTabs,
   activeStatus,
   onStatusChange,
+  onCreate,
+  createLabel = "New",
   actions,
   fabLabel = "New",
   children,
 }: ModuleIndexProps) {
   return (
     <div>
-      {/* Header */}
-      <div className="mb-5">
-        <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-        {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
+      {/* Header + inline create button */}
+      <div className="mb-5 flex items-start justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+          {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
+        </div>
+        {onCreate && (
+          <button
+            type="button"
+            onClick={onCreate}
+            className="flex shrink-0 items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+          >
+            + {createLabel}
+          </button>
+        )}
       </div>
 
       {/* KPI Cards */}
@@ -166,10 +183,10 @@ export function ModuleIndex({
       )}
 
       {/* Content — extra bottom padding for FAB clearance */}
-      <div className="pb-20">{children}</div>
+      <div className={actions && actions.length > 0 ? "pb-20" : ""}>{children}</div>
 
-      {/* Floating Action Button */}
-      <FloatingActionButton label={fabLabel} actions={actions} />
+      {/* Floating Action Button — only if actions provided */}
+      {actions && actions.length > 0 && <FloatingActionButton label={fabLabel} actions={actions} />}
     </div>
   );
 }

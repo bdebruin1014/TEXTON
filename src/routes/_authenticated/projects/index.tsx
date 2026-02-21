@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { PROJECT_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/projects/")({
   component: ProjectsIndex,
@@ -31,6 +32,7 @@ interface Project {
 function ProjectsIndex() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState("all");
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["projects"],
@@ -81,7 +83,11 @@ function ProjectsIndex() {
     try {
       const { data, error } = await supabase
         .from("projects")
-        .insert({ project_name: "New Project", status: "Pre-Development" })
+        .insert({
+          project_name: "New Project",
+          status: "Pre-Development",
+          entity_id: activeEntityId,
+        })
         .select()
         .single();
       if (error) throw error;
@@ -100,6 +106,8 @@ function ProjectsIndex() {
       statusTabs={statusTabs}
       activeStatus={activeStatus}
       onStatusChange={setActiveStatus}
+      onCreate={handleCreate}
+      createLabel="New Project"
       fabLabel="New Project"
       actions={[
         {
