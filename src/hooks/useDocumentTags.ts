@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 // ---------------------------------------------------------------------------
@@ -18,10 +18,7 @@ export function useDocumentTags() {
   return useQuery<TagInfo[]>({
     queryKey: ["document-tags"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("documents")
-        .select("tags")
-        .not("tags", "eq", "{}");
+      const { data, error } = await supabase.from("documents").select("tags").not("tags", "eq", "{}");
       if (error) throw error;
 
       const tagCounts = new Map<string, number>();
@@ -42,16 +39,13 @@ export function useDocumentTags() {
 // useUniqueTagNames — convenience: just the tag strings
 // ---------------------------------------------------------------------------
 
-
 // ---------------------------------------------------------------------------
 // useUpdateDocumentTags — set tags on a single document
 // ---------------------------------------------------------------------------
 
-
 // ---------------------------------------------------------------------------
 // useBulkTagDocuments — add / remove tags on multiple documents
 // ---------------------------------------------------------------------------
-
 
 // ---------------------------------------------------------------------------
 // useRenameTag — rename a tag across ALL documents

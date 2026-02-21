@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { computeBuilderFee, computeContingency, FIXED_PER_HOUSE_FEES, totalFixedPerHouse } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
-import { computeBuilderFee, computeContingency, FIXED_PER_HOUSE_FEES, totalFixedPerHouse } from "@/lib/constants";
 
 export const Route = createFileRoute("/_authenticated/operations/rch-contracts/$contractId/budget")({
   component: ContractBudget,
@@ -21,11 +21,7 @@ function ContractBudget() {
   const { data: contract, isLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contracts")
-        .select("*")
-        .eq("id", contractId)
-        .single();
+      const { data, error } = await supabase.from("rch_contracts").select("*").eq("id", contractId).single();
       if (error) throw error;
       return data;
     },
@@ -34,10 +30,7 @@ function ContractBudget() {
   const { data: units = [] } = useQuery({
     queryKey: ["rch-contract-units", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contract_units")
-        .select("*")
-        .eq("contract_id", contractId);
+      const { data, error } = await supabase.from("rch_contract_units").select("*").eq("contract_id", contractId);
       if (error) throw error;
       return data ?? [];
     },
@@ -46,10 +39,7 @@ function ContractBudget() {
   const { data: upgrades = [] } = useQuery({
     queryKey: ["rch-contract-upgrades", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contract_upgrades")
-        .select("*")
-        .eq("contract_id", contractId);
+      const { data, error } = await supabase.from("rch_contract_upgrades").select("*").eq("contract_id", contractId);
       if (error) throw error;
       return data ?? [];
     },

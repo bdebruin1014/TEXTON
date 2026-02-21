@@ -17,10 +17,7 @@ serve(async (req) => {
     });
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   // Look up share
   const { data: share, error } = await supabase
@@ -68,9 +65,7 @@ serve(async (req) => {
   let folders: unknown[] = [];
 
   if (share.share_type === "selection") {
-    documents = (share.items ?? [])
-      .map((item: Record<string, unknown>) => item.document)
-      .filter(Boolean);
+    documents = (share.items ?? []).map((item: Record<string, unknown>) => item.document).filter(Boolean);
   } else if (share.share_type === "folder") {
     let folderIds = [share.folder_id];
 
@@ -100,9 +95,7 @@ serve(async (req) => {
 
     const { data: docs } = await supabase
       .from("documents")
-      .select(
-        "id, name, original_filename, file_extension, mime_type, file_size, updated_at, folder_id",
-      )
+      .select("id, name, original_filename, file_extension, mime_type, file_size, updated_at, folder_id")
       .in("folder_id", folderIds)
       .eq("status", "active")
       .order("name");
@@ -128,6 +121,7 @@ serve(async (req) => {
   });
 
   // Increment access count
+  // Note: minor race condition on concurrent access - acceptable for analytics counter
   await supabase
     .from("document_shares")
     .update({

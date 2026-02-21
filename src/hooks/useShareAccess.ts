@@ -31,9 +31,7 @@ export function useShareAccess(token: string | undefined) {
     queryKey: ["share-access", token],
     queryFn: async () => {
       // Use fetch directly since functions.invoke doesn't support query params well
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-access?token=${token}`,
-      );
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-access?token=${token}`);
       if (!response.ok) {
         const err = await response.json().catch(() => ({ error: "Share not found" }));
         throw new Error(err.error || "Failed to load share");
@@ -48,14 +46,11 @@ export function useShareAccess(token: string | undefined) {
 export function useShareDownload() {
   return useMutation({
     mutationFn: async ({ token, documentId }: { token: string; documentId: string }) => {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-download`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, documentId }),
-        },
-      );
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-download`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, documentId }),
+      });
       if (!response.ok) throw new Error("Download failed");
       const data = await response.json();
       return data.url as string;

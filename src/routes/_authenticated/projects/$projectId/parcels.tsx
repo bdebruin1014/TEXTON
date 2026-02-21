@@ -133,9 +133,7 @@ function Parcels() {
             deleteParcel.mutate(row.original.id);
           }}
           className="rounded p-1 text-muted transition-colors hover:text-destructive"
-        >
-          
-        </button>
+        ></button>
       ),
     },
   ];
@@ -188,8 +186,7 @@ function Parcels() {
             onClick={() => addParcel.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            Add Parcel
+            + Add Parcel
           </button>
         </div>
 
@@ -219,8 +216,7 @@ function Parcels() {
             onClick={() => addTakedown.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            Add Takedown Tranche
+            + Add Takedown Tranche
           </button>
         </div>
 

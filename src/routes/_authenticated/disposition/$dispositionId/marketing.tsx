@@ -200,9 +200,11 @@ function Marketing() {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {photos.map((photo) => (
-              <div key={photo.id} className="group relative overflow-hidden rounded-lg border border-border bg-card-hover">
-                <div className="flex aspect-square items-center justify-center">
-                </div>
+              <div
+                key={photo.id}
+                className="group relative overflow-hidden rounded-lg border border-border bg-card-hover"
+              >
+                <div className="flex aspect-square items-center justify-center"></div>
                 <div className="p-2">
                   <p className="truncate text-xs font-medium text-foreground">{photo.file_name}</p>
                   <p className="text-[10px] text-muted">{formatDate(photo.created_at)}</p>

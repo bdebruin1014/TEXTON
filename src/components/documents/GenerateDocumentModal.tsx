@@ -1,5 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -75,22 +75,44 @@ export function GenerateDocumentModal({
       const template = templates.find((t) => t.id === templateId);
       if (!template) throw new Error("Template not found");
 
+      // 1. Insert document record with processing status
       const { data, error } = await supabase
         .from("documents")
         .insert({
           name: template.name,
-          file_type: template.file_type,
+          file_type: template.file_type ?? "html",
           record_type: recordType,
           record_id: recordId,
           folder_id: folderId,
           source: "generated",
           generated_from_template_id: templateId,
           status: "processing",
+          generation_status: "pending",
         })
         .select()
         .single();
 
       if (error) throw error;
+
+      // 2. Call edge function to generate the document
+      const { error: fnError } = await supabase.functions.invoke("generate-document", {
+        body: {
+          documentId: data.id,
+          templateId,
+          recordType,
+          recordId,
+        },
+      });
+
+      if (fnError) {
+        // Update document status to failed
+        await supabase
+          .from("documents")
+          .update({ generation_status: "failed", generation_error: fnError.message })
+          .eq("id", data.id);
+        throw fnError;
+      }
+
       return data;
     },
     onSuccess: () => {
@@ -159,9 +181,7 @@ export function GenerateDocumentModal({
           ) : filteredTemplates.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400">
               <span className="block h-8 w-8 mb-3 text-2xl leading-8 text-center">--</span>
-              <p className="text-sm">
-                {searchQuery ? "No templates match your search." : "No templates available."}
-              </p>
+              <p className="text-sm">{searchQuery ? "No templates match your search." : "No templates available."}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
@@ -176,7 +196,7 @@ export function GenerateDocumentModal({
                       "relative flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-all hover:shadow-md",
                       isSelected
                         ? "border-[#143A23] bg-[#143A23]/5 shadow-sm"
-                        : "border-border bg-white hover:border-gray-300"
+                        : "border-border bg-white hover:border-gray-300",
                     )}
                   >
                     {isSelected && (
@@ -186,9 +206,7 @@ export function GenerateDocumentModal({
                       {getFileLabel(template.file_type)}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{template.name}</p>
-                        {template.category && (
-                          <p className="text-xs text-gray-500 mt-0.5">{template.category}</p>
-                        )}
+                        {template.category && <p className="text-xs text-gray-500 mt-0.5">{template.category}</p>}
                       </div>
                     </div>
                     {template.description && (
@@ -197,7 +215,7 @@ export function GenerateDocumentModal({
                     <span
                       className={cn(
                         "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium uppercase",
-                        getFileTypeBadgeColor(template.file_type)
+                        getFileTypeBadgeColor(template.file_type),
                       )}
                     >
                       {template.file_type}
@@ -240,10 +258,12 @@ export function GenerateDocumentModal({
                 "rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors flex items-center gap-2",
                 selectedTemplateId && !generateMutation.isPending
                   ? "bg-[#143A23] hover:bg-[#143A23]/90 cursor-pointer"
-                  : "bg-gray-300 cursor-not-allowed"
+                  : "bg-gray-300 cursor-not-allowed",
               )}
             >
-              {generateMutation.isPending && <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
+              {generateMutation.isPending && (
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              )}
               Generate Document
             </button>
           </div>
@@ -252,9 +272,7 @@ export function GenerateDocumentModal({
         {/* Error message */}
         {generateMutation.isError && (
           <div className="px-6 pb-4 bg-gray-50 rounded-b-xl">
-            <p className="text-sm text-red-600">
-              Failed to generate document. Please try again.
-            </p>
+            <p className="text-sm text-red-600">Failed to generate document. Please try again.</p>
           </div>
         )}
       </div>

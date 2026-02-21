@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef, type DragEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cn, formatDate } from "@/lib/utils";
+import { type DragEvent, useCallback, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { cn, formatDate } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -295,12 +295,8 @@ export function DragDropFileList({
               />
             </th>
             <th className="w-8 px-3 py-3" />
-            <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Size
-            </th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Size</th>
             <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Modified
             </th>

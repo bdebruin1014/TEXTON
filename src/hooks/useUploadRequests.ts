@@ -65,7 +65,6 @@ export function useUploadRequests(recordType: string, recordId: string) {
   });
 }
 
-
 interface CreateUploadRequestInput {
   record_type: string;
   record_id: string;
@@ -123,15 +122,13 @@ export function useCreateUploadRequest() {
           destination_folder_id: item.destination_folder_id ?? null,
           auto_tag: item.auto_tag ?? null,
         }));
-        const { error: itemsError } = await supabase
-          .from("upload_request_items")
-          .insert(itemRows);
+        const { error: itemsError } = await supabase.from("upload_request_items").insert(itemRows);
         if (itemsError) throw itemsError;
       }
 
-      // Send email notification
+      // Send email notification (non-blocking — request is already created)
       if (input.recipient_email) {
-        await supabase.functions.invoke("send-document-email", {
+        const { error: emailError } = await supabase.functions.invoke("send-document-email", {
           body: {
             template: "upload_request",
             request_id: request.id,
@@ -139,6 +136,7 @@ export function useCreateUploadRequest() {
             recipient_name: input.recipient_name,
           },
         });
+        if (emailError) console.warn("Email notification failed:", emailError.message);
       }
 
       return request as UploadRequest;
@@ -159,10 +157,7 @@ export function useCancelUploadRequest() {
 
   return useMutation({
     mutationFn: async ({ requestId }: { requestId: string }) => {
-      const { error } = await supabase
-        .from("upload_requests")
-        .update({ status: "cancelled" })
-        .eq("id", requestId);
+      const { error } = await supabase.from("upload_requests").update({ status: "cancelled" }).eq("id", requestId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -183,7 +178,7 @@ export function useSendReminder() {
         .single();
       if (fetchError) throw fetchError;
 
-      await supabase.functions.invoke("send-document-email", {
+      const { error: emailError } = await supabase.functions.invoke("send-document-email", {
         body: {
           template: "reminder",
           request_id: requestId,
@@ -191,6 +186,7 @@ export function useSendReminder() {
           recipient_name: request.recipient_name,
         },
       });
+      if (emailError) throw new Error("Failed to send reminder email");
 
       const { error } = await supabase
         .from("upload_requests")

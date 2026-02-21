@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
+import { cn } from "@/lib/utils";
 
 interface MoveToFolderDialogProps {
   folders: DocumentFolder[];

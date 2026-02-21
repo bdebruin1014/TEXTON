@@ -12,19 +12,19 @@
   --color-primary-50: #EBF2ED;
 
   /* ——— BUTTONS ——— */
-  --color-button: #2E6B42;
-  --color-button-hover: #245536;
+  --color-button: #143A23;
+  --color-button-hover: #1C4D30;
   --color-button-foreground: #FFFFFF;
 
   /* ——— NAVIGATION (top bar) ——— */
   --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
   --color-nav-muted: #94A3B8;
-  --color-nav-active: #48BB78;
+  --color-nav-active: #4A8C5E;
 
   /* ——— SIDEBAR (dark slate — Qualia-accurate) ——— */
   --color-sidebar: #2D3748;
-  --color-sidebar-active: #48BB78;
+  --color-sidebar-active: #4A8C5E;
   --color-sidebar-text: #A0AEC0;
   --color-sidebar-heading: #718096;
 

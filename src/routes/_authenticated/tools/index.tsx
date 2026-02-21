@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/tools/")({
   component: ToolsIndex,
@@ -35,8 +35,6 @@ const COMING_SOON = [
 ];
 
 function ToolsIndex() {
-  const navigate = useNavigate();
-
   return (
     <div>
       <div className="mb-8">
@@ -48,18 +46,14 @@ function ToolsIndex() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {ACTIVE_TOOLS.map((tool) => (
-          <a
+          <Link
             key={tool.name}
-            href={tool.path}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate({ to: tool.path as string });
-            }}
+            to={tool.path}
             className="group rounded-lg border border-border bg-card p-6 transition-all hover:border-primary hover:shadow-sm"
           >
             <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">{tool.name}</h3>
             <p className="mt-1 text-xs text-muted">{tool.description}</p>
-          </a>
+          </Link>
         ))}
       </div>
 

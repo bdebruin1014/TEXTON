@@ -49,7 +49,6 @@ function AssignmentGroups() {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Group Name" />,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          
           <span className="font-medium">{row.getValue("name")}</span>
         </div>
       ),
@@ -104,8 +103,7 @@ function AssignmentGroups() {
           onClick={() => addGroup.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Assignment Group
+          + New Assignment Group
         </button>
       </div>
 

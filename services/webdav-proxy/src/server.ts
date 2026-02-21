@@ -1,7 +1,7 @@
-import express, { type Request, type Response, type NextFunction } from "express";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import express, { type NextFunction, type Request, type Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 
 // ---------------------------------------------------------------------------
@@ -70,10 +70,7 @@ app.use(
 app.use(cookieParser(SESSION_SECRET));
 
 // Parse raw body for PUT (file uploads from Office)
-app.use(
-  "/files",
-  express.raw({ type: () => true, limit: "100mb" }),
-);
+app.use("/files", express.raw({ type: () => true, limit: "100mb" }));
 
 // JSON parsing for auth endpoints
 app.use("/auth", express.json());
@@ -156,11 +153,7 @@ app.get("/files/:documentId/:filename", async (req: Request, res: Response): Pro
     const { documentId } = req.params;
 
     // Look up document metadata
-    const { data: doc, error: docError } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("id", documentId)
-      .single();
+    const { data: doc, error: docError } = await supabase.from("documents").select("*").eq("id", documentId).single();
 
     if (docError || !doc) {
       res.status(404).json({ error: "Document not found" });
@@ -209,11 +202,7 @@ app.put("/files/:documentId/:filename", async (req: Request, res: Response): Pro
     const { documentId } = req.params;
 
     // Look up document metadata
-    const { data: doc, error: docError } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("id", documentId)
-      .single();
+    const { data: doc, error: docError } = await supabase.from("documents").select("*").eq("id", documentId).single();
 
     if (docError || !doc) {
       res.status(404).json({ error: "Document not found" });
@@ -400,11 +389,7 @@ app.propfind("/files/:documentId/:filename", async (req: Request, res: Response)
     const { documentId, filename } = req.params;
 
     // Look up document metadata
-    const { data: doc, error: docError } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("id", documentId)
-      .single();
+    const { data: doc, error: docError } = await supabase.from("documents").select("*").eq("id", documentId).single();
 
     if (docError || !doc) {
       res.status(404).json({ error: "Document not found" });
@@ -476,19 +461,22 @@ app.listen(PORT, () => {
 // Periodic session cleanup (every 15 minutes)
 // ---------------------------------------------------------------------------
 
-setInterval(() => {
-  const now = Date.now();
-  let cleaned = 0;
-  for (const [id, session] of sessions) {
-    if (session.expiry < now) {
-      sessions.delete(id);
-      cleaned++;
+setInterval(
+  () => {
+    const now = Date.now();
+    let cleaned = 0;
+    for (const [id, session] of sessions) {
+      if (session.expiry < now) {
+        sessions.delete(id);
+        cleaned++;
+      }
     }
-  }
-  if (cleaned > 0) {
-    console.log(`Cleaned ${cleaned} expired sessions. Active: ${sessions.size}`);
-  }
-}, 15 * 60 * 1000);
+    if (cleaned > 0) {
+      console.log(`Cleaned ${cleaned} expired sessions. Active: ${sessions.size}`);
+    }
+  },
+  15 * 60 * 1000,
+);
 
 // ---------------------------------------------------------------------------
 // Extend Express Router to support WebDAV methods

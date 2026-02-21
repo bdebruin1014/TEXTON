@@ -214,7 +214,10 @@ function JournalEntries() {
                 deleteEntry.mutate(je.id);
               }}
               className="rounded p-1 text-muted transition-colors hover:text-destructive"
-            ></button>
+              aria-label="Delete"
+            >
+              &times;
+            </button>
           </div>
         );
       },

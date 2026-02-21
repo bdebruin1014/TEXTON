@@ -73,7 +73,7 @@ function SettingsPage() {
         .join("")
         .toUpperCase()
         .slice(0, 2)
-    : user?.email?.[0]?.toUpperCase() ?? "?";
+    : (user?.email?.[0]?.toUpperCase() ?? "?");
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-8">

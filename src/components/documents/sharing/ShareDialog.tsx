@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { DocumentRecord } from "@/hooks/useDocuments";
 import { getShareUrl, useCreateShare } from "@/hooks/useDocumentShares";
+import type { DocumentRecord } from "@/hooks/useDocuments";
 import { ContactSearchInput } from "./ContactSearchInput";
 
 interface ShareDialogProps {
@@ -54,9 +54,7 @@ export function ShareDialog({
 
   if (!open) return null;
 
-  const expiresAt = expiryDays
-    ? new Date(Date.now() + expiryDays * 86400000).toISOString()
-    : null;
+  const expiresAt = expiryDays ? new Date(Date.now() + expiryDays * 86400000).toISOString() : null;
 
   const handleSubmit = async () => {
     const result = await createShare.mutateAsync({

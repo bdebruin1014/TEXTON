@@ -42,11 +42,12 @@ export function useDocumentShares(recordType: string, recordId: string) {
         .eq("record_id", recordId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as (DocumentShare & { items: { id: string; document_id: string; sort_order: number; download_count: number }[] })[];
+      return data as (DocumentShare & {
+        items: { id: string; document_id: string; sort_order: number; download_count: number }[];
+      })[];
     },
   });
 }
-
 
 interface CreateShareInput {
   share_type: "folder" | "selection";
@@ -105,15 +106,13 @@ export function useCreateShare() {
           document_id: doc_id,
           sort_order: i,
         }));
-        const { error: itemsError } = await supabase
-          .from("document_share_items")
-          .insert(items);
+        const { error: itemsError } = await supabase.from("document_share_items").insert(items);
         if (itemsError) throw itemsError;
       }
 
-      // Send email notification if requested
+      // Send email notification if requested (non-blocking — share is already created)
       if (send_email && input.recipient_email) {
-        await supabase.functions.invoke("send-document-email", {
+        const { error: emailError } = await supabase.functions.invoke("send-document-email", {
           body: {
             template: "share_notification",
             share_id: share.id,
@@ -121,6 +120,7 @@ export function useCreateShare() {
             recipient_name: input.recipient_name,
           },
         });
+        if (emailError) console.warn("Email notification failed:", emailError.message);
       }
 
       return share as DocumentShare;

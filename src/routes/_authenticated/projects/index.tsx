@@ -18,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/projects/")({
 interface Project {
   id: string;
   project_name: string;
+  record_number: string | null;
   project_type: string | null;
   status: string;
   entity_id: string | null;
@@ -66,7 +67,7 @@ function ProjectsIndex() {
     {
       label: "Active",
       value: statusCounts.Active ?? 0,
-      accentColor: "#48BB78",
+      accentColor: "#4A8C5E",
     },
   ];
 
@@ -108,6 +109,7 @@ function ProjectsIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Project"
+      onCreateWithAI={() => navigate({ to: "/projects/new" })}
     >
       {isLoading ? (
         <CardGridSkeleton cards={6} />
@@ -124,6 +126,9 @@ function ProjectsIndex() {
             >
               <div className="mb-3 flex items-start justify-between">
                 <div className="min-w-0 flex-1">
+                  {project.record_number && (
+                    <p className="mb-0.5 font-mono text-[10px] text-muted">{project.record_number}</p>
+                  )}
                   <h3 className="truncate text-sm font-semibold text-foreground">{project.project_name}</h3>
                   {(project.address_city || project.address_state) && (
                     <p className="mt-0.5 truncate text-xs text-muted">

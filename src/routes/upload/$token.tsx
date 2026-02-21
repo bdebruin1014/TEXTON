@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUploadRequestAccess } from "@/hooks/useUploadRequestAccess";
 import { UploadRequestPage } from "@/components/documents/public/UploadRequestPage";
+import { useUploadRequestAccess } from "@/hooks/useUploadRequestAccess";
 
 export const Route = createFileRoute("/upload/$token")({
   component: UploadRoute,

@@ -174,8 +174,7 @@ function Vendors() {
           onClick={() => addVendor.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          Add Vendor
+          + Add Vendor
         </button>
       </div>
 
@@ -183,7 +182,6 @@ function Vendors() {
       {complianceIssues > 0 && (
         <div className="mb-6 rounded-lg border border-warning/30 bg-warning/5 p-4">
           <div className="flex items-center gap-2">
-            
             <span className="text-sm font-medium text-warning">
               {complianceIssues} vendor{complianceIssues === 1 ? "" : "s"} with compliance issues
             </span>

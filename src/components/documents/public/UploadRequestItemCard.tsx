@@ -84,9 +84,7 @@ export function UploadRequestItemCard({
       <div className="flex items-start gap-3">
         <div
           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded ${
-            isFulfilled || justUploaded
-              ? "bg-green-100 text-green-600"
-              : "border-2 border-slate-300"
+            isFulfilled || justUploaded ? "bg-green-100 text-green-600" : "border-2 border-slate-300"
           }`}
         >
           {(isFulfilled || justUploaded) && <span className="text-xs">{"\u2713"}</span>}
@@ -133,9 +131,7 @@ export function UploadRequestItemCard({
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
             className={`cursor-pointer rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
-              dragOver
-                ? "border-[#143A23] bg-[#143A23]/5"
-                : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
+              dragOver ? "border-[#143A23] bg-[#143A23]/5" : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
             }`}
           >
             {uploading ? (

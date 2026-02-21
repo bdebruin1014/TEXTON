@@ -5,6 +5,7 @@ import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
 import { StatusSelect } from "@/components/forms/StatusSelect";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { RecordTeamAssignment } from "@/components/teams/RecordTeamAssignment";
 import { OPPORTUNITY_STATUSES, PROJECT_TYPES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
@@ -55,8 +56,8 @@ function BasicInfo() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Opportunity Identity</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <AutoSaveField label="Opportunity Name" value={opp.opportunity_name} onSave={save("opportunity_name")} />
-          <StatusSelect label="Status" value={opp.status} onSave={save("status")} statuses={OPPORTUNITY_STATUSES} />
+          <AutoSaveField label="Opportunity Name" value={opp.opportunity_name} onSave={save("opportunity_name")} required />
+          <StatusSelect label="Status" value={opp.status} onSave={save("status")} statuses={OPPORTUNITY_STATUSES} required />
           <AutoSaveSelect
             label="Project Type"
             value={opp.project_type}
@@ -93,6 +94,11 @@ function BasicInfo() {
           <PercentageInput label="Probability" value={opp.probability} onSave={save("probability")} />
           <CurrencyInput label="Estimated Value" value={opp.estimated_value} onSave={save("estimated_value")} />
         </div>
+      </div>
+
+      {/* Team & Assignments */}
+      <div className="mb-8">
+        <RecordTeamAssignment recordType="opportunity" recordId={opportunityId} />
       </div>
 
       {/* Notes */}

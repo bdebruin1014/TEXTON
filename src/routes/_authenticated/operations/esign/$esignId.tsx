@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
 
+import { SendForSigningModal } from "@/components/esign/SendForSigningModal";
+import { SigningProgressTracker } from "@/components/esign/SigningProgressTracker";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -25,6 +28,8 @@ interface EsignDocument {
   sent_at: string | null;
   completed_at: string | null;
   created_at: string;
+  docuseal_submission_id: number | null;
+  completed_document_url: string | null;
 }
 
 interface EsignSigner {
@@ -36,11 +41,13 @@ interface EsignSigner {
   status: string;
   order_number: number;
   signed_at: string | null;
+  embed_url: string | null;
 }
 
 function EsignDetail() {
   const { esignId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [showSendModal, setShowSendModal] = useState(false);
 
   const { data: document, isLoading } = useQuery<EsignDocument>({
     queryKey: ["esign-document", esignId],
@@ -141,9 +148,31 @@ function EsignDetail() {
         return val ? formatDate(val) : "—";
       },
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const signer = row.original;
+        if (signer.embed_url && signer.status !== "Signed") {
+          return (
+            <a
+              href={signer.embed_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Sign Link
+            </a>
+          );
+        }
+        return null;
+      },
+    },
   ];
 
   const isTerminal = document.status === "Completed" || document.status === "Voided" || document.status === "Expired";
+  const isDraft = document.status === "Draft";
+  const hasSent = !!document.docuseal_submission_id;
 
   return (
     <div>
@@ -163,28 +192,57 @@ function EsignDetail() {
               )}
             </div>
           </div>
-          {!isTerminal && (
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            {isDraft && (
               <button
                 type="button"
-                onClick={() => voidDocument.mutate()}
-                disabled={voidDocument.isPending}
-                className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => setShowSendModal(true)}
+                className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
               >
-                {voidDocument.isPending ? "Voiding..." : "Void Document"}
+                Send for Signing
               </button>
-              <button
-                type="button"
-                onClick={() => resendDocument.mutate()}
-                disabled={resendDocument.isPending}
-                className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            )}
+            {!isTerminal && !isDraft && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => voidDocument.mutate()}
+                  disabled={voidDocument.isPending}
+                  className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {voidDocument.isPending ? "Voiding..." : "Void Document"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => resendDocument.mutate()}
+                  disabled={resendDocument.isPending}
+                  className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {resendDocument.isPending ? "Resending..." : "Resend"}
+                </button>
+              </>
+            )}
+            {document.completed_document_url && (
+              <a
+                href={document.completed_document_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary hover:bg-primary/5"
               >
-                {resendDocument.isPending ? "Resending..." : "Resend"}
-              </button>
-            </div>
-          )}
+                Download Completed
+              </a>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Signing Progress (if sent via DocuSeal) */}
+      {hasSent && (
+        <div className="mb-8 rounded-lg border border-border bg-card p-6">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Signing Progress</h2>
+          <SigningProgressTracker documentId={esignId} />
+        </div>
+      )}
 
       {/* Document Information */}
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
@@ -228,6 +286,8 @@ function EsignDetail() {
           <DataTable columns={signerColumns} data={signers} searchKey="name" searchPlaceholder="Search signers..." />
         )}
       </div>
+
+      {showSendModal && <SendForSigningModal documentId={esignId} onClose={() => setShowSendModal(false)} />}
     </div>
   );
 }

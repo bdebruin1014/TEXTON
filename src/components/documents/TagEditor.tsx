@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { supabase } from '@/lib/supabase';
-import { cn } from '@/lib/utils';
+import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 
 interface TagEditorProps {
   documentId: string;
@@ -11,14 +11,9 @@ interface TagEditorProps {
   onClose: () => void;
 }
 
-export function TagEditor({
-  documentId,
-  currentTags,
-  onTagsChange,
-  onClose,
-}: TagEditorProps) {
+export function TagEditor({ documentId, currentTags, onTagsChange, onClose }: TagEditorProps) {
   const [tags, setTags] = useState<string[]>(currentTags);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -32,11 +27,11 @@ export function TagEditor({
     };
     // Use a timeout so the initial click that opened the popover doesn't immediately close it
     const timer = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }, 0);
     return () => {
       clearTimeout(timer);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
@@ -47,11 +42,9 @@ export function TagEditor({
 
   // Query suggested tags from documents in the same context
   const { data: suggestedTags = [] } = useQuery({
-    queryKey: ['document-suggested-tags', documentId],
+    queryKey: ["document-suggested-tags", documentId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('documents')
-        .select('tags');
+      const { data, error } = await supabase.from("documents").select("tags");
 
       if (error) throw error;
 
@@ -60,7 +53,7 @@ export function TagEditor({
       for (const doc of data ?? []) {
         if (Array.isArray(doc.tags)) {
           for (const tag of doc.tags) {
-            if (typeof tag === 'string' && tag.trim()) {
+            if (typeof tag === "string" && tag.trim()) {
               const normalized = tag.trim().toLowerCase();
               tagCounts.set(normalized, (tagCounts.get(normalized) || 0) + 1);
             }
@@ -79,17 +72,14 @@ export function TagEditor({
   // Mutation to update tags
   const updateTagsMutation = useMutation({
     mutationFn: async (newTags: string[]) => {
-      const { error } = await supabase
-        .from('documents')
-        .update({ tags: newTags })
-        .eq('id', documentId);
+      const { error } = await supabase.from("documents").update({ tags: newTags }).eq("id", documentId);
 
       if (error) throw error;
       return newTags;
     },
     onSuccess: (newTags) => {
       onTagsChange(newTags);
-      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
     },
   });
 
@@ -102,7 +92,7 @@ export function TagEditor({
       setTags(newTags);
       updateTagsMutation.mutate(newTags);
     },
-    [tags, updateTagsMutation]
+    [tags, updateTagsMutation],
   );
 
   const removeTag = useCallback(
@@ -111,23 +101,23 @@ export function TagEditor({
       setTags(newTags);
       updateTagsMutation.mutate(newTags);
     },
-    [tags, updateTagsMutation]
+    [tags, updateTagsMutation],
   );
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       if (inputValue.trim()) {
         // Support comma-separated input
-        const parts = inputValue.split(',');
+        const parts = inputValue.split(",");
         for (const part of parts) {
           addTag(part);
         }
-        setInputValue('');
+        setInputValue("");
       }
-    } else if (e.key === 'Backspace' && !inputValue && tags.length > 0) {
-      removeTag(tags[tags.length - 1] ?? '');
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Backspace" && !inputValue && tags.length > 0) {
+      removeTag(tags[tags.length - 1] ?? "");
+    } else if (e.key === "Escape") {
       onClose();
     }
   };
@@ -135,12 +125,12 @@ export function TagEditor({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // If user types a comma, add the tag immediately
-    if (value.includes(',')) {
-      const parts = value.split(',');
+    if (value.includes(",")) {
+      const parts = value.split(",");
       for (const part of parts.slice(0, -1)) {
         addTag(part);
       }
-      setInputValue(parts[parts.length - 1] ?? '');
+      setInputValue(parts[parts.length - 1] ?? "");
     } else {
       setInputValue(value);
     }
@@ -148,16 +138,11 @@ export function TagEditor({
 
   // Filter suggested tags to exclude already-applied tags
   const filteredSuggestions = suggestedTags.filter(
-    (tag) =>
-      !tags.includes(tag) &&
-      (!inputValue || tag.includes(inputValue.toLowerCase()))
+    (tag) => !tags.includes(tag) && (!inputValue || tag.includes(inputValue.toLowerCase())),
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute z-50 w-72 rounded-lg border border-border bg-white shadow-lg p-3"
-    >
+    <div ref={containerRef} className="absolute z-50 w-72 rounded-lg border border-border bg-white shadow-lg p-3">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-900">Edit Tags</span>
@@ -165,9 +150,7 @@ export function TagEditor({
 
       {/* Current tags */}
       <div className="flex flex-wrap gap-1.5 mb-2 min-h-[28px]">
-        {tags.length === 0 && (
-          <span className="text-xs text-gray-400 py-1">No tags yet</span>
-        )}
+        {tags.length === 0 && <span className="text-xs text-gray-400 py-1">No tags yet</span>}
         {tags.map((tag) => (
           <span
             key={tag}
@@ -206,12 +189,12 @@ export function TagEditor({
                 key={tag}
                 onClick={() => {
                   addTag(tag);
-                  setInputValue('');
+                  setInputValue("");
                 }}
                 className={cn(
-                  'px-2 py-0.5 rounded-full text-xs border transition-colors',
-                  'bg-gray-50 text-gray-600 border-gray-200',
-                  'hover:bg-green-50 hover:text-[#143A23] hover:border-green-200'
+                  "px-2 py-0.5 rounded-full text-xs border transition-colors",
+                  "bg-gray-50 text-gray-600 border-gray-200",
+                  "hover:bg-green-50 hover:text-[#143A23] hover:border-green-200",
                 )}
               >
                 + {tag}

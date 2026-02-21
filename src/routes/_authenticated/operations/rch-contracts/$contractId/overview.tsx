@@ -1,30 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { StatusSelect } from "@/components/forms/StatusSelect";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { RCH_CONTRACT_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/operations/rch-contracts/$contractId/overview")({
   component: ContractOverview,
 });
 
-const CONTRACT_STATUSES = [
-  "Draft",
-  "In Progress",
-  "Pending Signature",
-  "Executed",
-  "Jobs Created",
-  "Cancelled",
-] as const;
+const CONTRACT_STATUSES = RCH_CONTRACT_STATUSES;
 
-const CONTRACT_TYPES = [
-  "New Construction",
-  "Renovation",
-  "Lot Purchase",
-  "Community Development",
-] as const;
+const CONTRACT_TYPES = ["New Construction", "Renovation", "Lot Purchase", "Community Development"] as const;
 
 function ContractOverview() {
   const { contractId } = Route.useParams();
@@ -33,11 +22,7 @@ function ContractOverview() {
   const { data: contract, isLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contracts")
-        .select("*")
-        .eq("id", contractId)
-        .single();
+      const { data, error } = await supabase.from("rch_contracts").select("*").eq("id", contractId).single();
       if (error) throw error;
       return data;
     },
@@ -67,6 +52,13 @@ function ContractOverview() {
 
   return (
     <div>
+      <div className="mb-4 flex items-center gap-2">
+        <Link to="/operations/rch-contracts" className="text-sm text-muted hover:text-foreground transition-colors">
+          &larr; All Contracts
+        </Link>
+        <span className="text-sm text-muted">/</span>
+        <span className="text-sm text-foreground font-medium">{contract.contract_number || "Overview"}</span>
+      </div>
       <h2 className="mb-6 text-lg font-semibold text-foreground">Contract Overview</h2>
 
       {/* Contract Identity */}
@@ -78,6 +70,7 @@ function ContractOverview() {
             value={contract.contract_number}
             onSave={save("contract_number")}
             placeholder="e.g. RCH-2026-001"
+            required
           />
           <AutoSaveSelect
             label="Contract Type"
@@ -86,12 +79,7 @@ function ContractOverview() {
             options={[...CONTRACT_TYPES]}
             placeholder="Select type..."
           />
-          <StatusSelect
-            label="Status"
-            value={contract.status}
-            onSave={save("status")}
-            statuses={CONTRACT_STATUSES}
-          />
+          <StatusSelect label="Status" value={contract.status} onSave={save("status")} statuses={CONTRACT_STATUSES} required />
           <AutoSaveField
             label="Owner Name"
             value={contract.owner_name}
@@ -111,11 +99,7 @@ function ContractOverview() {
             onSave={save("project_id")}
             placeholder="Linked project (optional)"
           />
-          <CurrencyInput
-            label="Contract Amount"
-            value={contract.contract_amount}
-            onSave={save("contract_amount")}
-          />
+          <CurrencyInput label="Contract Amount" value={contract.contract_amount} onSave={save("contract_amount")} />
           <AutoSaveField
             label="Unit Count"
             value={contract.unit_count}

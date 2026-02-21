@@ -104,7 +104,6 @@ function Photos() {
         <EmptyState
           title="No photos"
           description="Upload construction progress photos"
-         
           action={
             <button
               type="button"
@@ -119,8 +118,7 @@ function Photos() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {photos.map((photo) => (
             <div key={photo.id} className="group relative rounded-lg border border-border bg-card overflow-hidden">
-              <div className="flex aspect-square items-center justify-center bg-card-hover">
-              </div>
+              <div className="flex aspect-square items-center justify-center bg-card-hover"></div>
               <div className="p-2">
                 <p className="truncate text-xs font-medium text-foreground">{photo.file_name}</p>
                 <p className="text-[10px] text-muted">{formatDate(photo.created_at)}</p>

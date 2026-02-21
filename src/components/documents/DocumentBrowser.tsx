@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCreateFolder, useDeleteFolder, useDocumentFolders, useRenameFolder } from "@/hooks/useDocumentFolders";
+import type { DocumentRecord } from "@/hooks/useDocuments";
 import {
   useArchiveDocument,
   useDeleteDocument,
@@ -10,7 +11,6 @@ import {
   useRenameDocument,
   useUploadDocument,
 } from "@/hooks/useDocuments";
-import type { DocumentRecord } from "@/hooks/useDocuments";
 import { formatFileSize } from "@/lib/documents/storage";
 import { getEditInPlaceUrl } from "@/lib/documents/webdav";
 import { ActivityLog } from "./ActivityLog";
@@ -97,9 +97,7 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
   const filteredDocs = useMemo(() => {
     if (!searchQuery) return documents;
     const q = searchQuery.toLowerCase();
-    return documents.filter(
-      (d) => d.name.toLowerCase().includes(q) || d.original_filename.toLowerCase().includes(q),
-    );
+    return documents.filter((d) => d.name.toLowerCase().includes(q) || d.original_filename.toLowerCase().includes(q));
   }, [documents, searchQuery]);
 
   // Total size
@@ -143,9 +141,7 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
           onRename={(id, name) => renameFolder.mutate({ id, name })}
           onDelete={(id) => deleteFolder.mutate(id)}
           onAddFolder={(parentId) => setShowNewFolder(parentId)}
-          onShareFolder={(folderId, folderName) =>
-            setShowShareDialog({ type: "folder", folderId, folderName })
-          }
+          onShareFolder={(folderId, folderName) => setShowShareDialog({ type: "folder", folderId, folderName })}
         />
         {showNewFolder !== false && (
           <div className="px-2 pb-2">

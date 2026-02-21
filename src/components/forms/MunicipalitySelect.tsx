@@ -60,7 +60,9 @@ export function MunicipalitySelect({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("municipalities")
-        .select("id, name, county, state, water_tap, sewer_tap, gas_tap, permitting, impact, architect, engineering, survey")
+        .select(
+          "id, name, county, state, water_tap, sewer_tap, gas_tap, permitting, impact, architect, engineering, survey",
+        )
         .order("name");
       if (error) throw error;
       return data ?? [];

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -138,9 +138,7 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
         return (
           <div key={activity.id} className="flex items-start gap-3 relative">
             {/* Timeline line */}
-            {!isLast && (
-              <div className="absolute left-4 top-8 w-px h-[calc(100%+4px)] bg-slate-200" />
-            )}
+            {!isLast && <div className="absolute left-4 top-8 w-px h-[calc(100%+4px)] bg-slate-200" />}
 
             {/* Icon */}
             <div
@@ -155,9 +153,7 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
             {/* Content */}
             <div className="flex-1 min-w-0 py-1">
               <p className="text-sm text-slate-700">
-                {activity.performed_by && (
-                  <span className="font-medium text-slate-900">{activity.performed_by}</span>
-                )}
+                {activity.performed_by && <span className="font-medium text-slate-900">{activity.performed_by}</span>}
                 {activity.performed_by ? " " : ""}
                 <span>{config.label}</span>{" "}
                 {activity.document && (

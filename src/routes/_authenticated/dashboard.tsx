@@ -5,8 +5,10 @@ import { KpiCard } from "@/components/shared/KpiCard";
 import { DashboardSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useRealtime } from "@/hooks/useRealtime";
+import { MATTER_STATUS_LABELS } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
+import type { Matter } from "@/types/matters";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -38,7 +40,7 @@ function DashboardPage() {
       const { data, error } = await supabase
         .from("opportunities")
         .select("id, opportunity_name, status, estimated_value, updated_at")
-        .not("status", "in", '("Closed - Won","Closed - Lost")')
+        .not("status", "in", '("Closed Won","Closed Lost")')
         .order("updated_at", { ascending: false })
         .limit(5);
       if (error) throw error;
@@ -46,13 +48,31 @@ function DashboardPage() {
     },
   });
 
+  const { data: openMatters = [] } = useQuery<Matter[]>({
+    queryKey: ["dashboard-matters"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("matters")
+        .select("id, matter_number, title, status, priority, category, created_at")
+        .in("status", ["open", "in_progress", "on_hold"])
+        .order("created_at", { ascending: false })
+        .limit(5);
+      if (error) throw error;
+      return (data ?? []) as Matter[];
+    },
+  });
+
   useRealtime({ table: "opportunities", invalidateKeys: [["dashboard-pipeline"]] });
   useRealtime({ table: "projects", invalidateKeys: [["dashboard-pipeline"]] });
   useRealtime({ table: "jobs", invalidateKeys: [["dashboard-pipeline"]] });
   useRealtime({ table: "dispositions", invalidateKeys: [["dashboard-pipeline"]] });
+  useRealtime({ table: "matters", invalidateKeys: [["dashboard-matters"]] });
 
   const pipelineValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
   const pipelineCount = opportunities.length;
+
+  const criticalMatters = openMatters.filter((m) => m.priority === "critical").length;
+  const highMatters = openMatters.filter((m) => m.priority === "high").length;
 
   if (isLoading) return <DashboardSkeleton />;
 
@@ -154,6 +174,54 @@ function DashboardPage() {
             title="No closings scheduled"
             description="Closings appear when dispositions are under contract"
           />
+        </DashboardCard>
+
+        {/* Open Matters */}
+        <DashboardCard title="Open Matters" viewAllPath="/operations/matters">
+          {openMatters.length === 0 ? (
+            <EmptyState title="No open matters" description="Matters track workflows outside the standard pipeline" />
+          ) : (
+            <div>
+              {/* Priority breakdown */}
+              <div className="flex items-center gap-4 border-b border-border px-4 py-2.5">
+                {criticalMatters > 0 && (
+                  <span className="text-[11px] font-semibold text-destructive-text">{criticalMatters} Critical</span>
+                )}
+                {highMatters > 0 && (
+                  <span className="text-[11px] font-semibold text-warning-text">{highMatters} High</span>
+                )}
+                <span className="text-[11px] text-muted">{openMatters.length} total open</span>
+              </div>
+              <div className="divide-y divide-border">
+                {openMatters.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
+                    onClick={() => navigate({ to: "/operations/matters/$matterId", params: { matterId: m.id } })}
+                  >
+                    <div>
+                      <p className="text-[13px] font-semibold text-foreground">{m.title}</p>
+                      <p className="text-[11px] text-muted">
+                        {m.matter_number} · {MATTER_STATUS_LABELS[m.status] ?? m.status}
+                      </p>
+                    </div>
+                    <StatusBadge status={m.priority} />
+                  </button>
+                ))}
+              </div>
+              {/* New Matter action */}
+              <div className="border-t border-border px-4 py-2.5">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/operations/matters/new" })}
+                  className="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
+                >
+                  + New Matter
+                </button>
+              </div>
+            </div>
+          )}
         </DashboardCard>
       </div>
     </div>

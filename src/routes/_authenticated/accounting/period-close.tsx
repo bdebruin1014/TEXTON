@@ -102,7 +102,6 @@ function PeriodClose() {
               onClick={reopenPeriod}
               className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
-              
               Reopen Period
             </button>
           ) : (
@@ -112,7 +111,6 @@ function PeriodClose() {
               disabled={!allComplete}
               className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              
               Close Period
             </button>
           )}

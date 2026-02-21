@@ -69,6 +69,8 @@ function CompaniesIndex() {
   const location = useRouterState({ select: (s) => s.location });
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [phoneFilter, setPhoneFilter] = useState("Any");
+  const [taxIdFilter, setTaxIdFilter] = useState("Any");
 
   // Read filter from search params
   const activeType = (location.search as Record<string, string>)?.type ?? "all";
@@ -100,6 +102,8 @@ function CompaniesIndex() {
     if (filterTypes) {
       result = result.filter((c) => c.company_type && filterTypes.includes(c.company_type));
     }
+    if (phoneFilter === "Has Phone") result = result.filter((c) => !!c.phone);
+    else if (phoneFilter === "No Phone") result = result.filter((c) => !c.phone);
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
       result = result.filter(
@@ -111,7 +115,7 @@ function CompaniesIndex() {
       );
     }
     return result;
-  }, [companies, filterTypes, searchTerm]);
+  }, [companies, filterTypes, phoneFilter, searchTerm]);
 
   // Derive header title from active filter
   const headerTitle = useMemo(() => {
@@ -220,6 +224,8 @@ function CompaniesIndex() {
             </label>
             <select
               id="filter-phone"
+              value={phoneFilter}
+              onChange={(e) => setPhoneFilter(e.target.value)}
               className="mb-3 w-full rounded border border-border bg-card px-2 py-1.5 text-xs text-foreground outline-none"
             >
               <option>Any</option>
@@ -233,6 +239,8 @@ function CompaniesIndex() {
             </label>
             <select
               id="filter-taxid"
+              value={taxIdFilter}
+              onChange={(e) => setTaxIdFilter(e.target.value)}
               className="w-full rounded border border-border bg-card px-2 py-1.5 text-xs text-foreground outline-none"
             >
               <option>Any</option>

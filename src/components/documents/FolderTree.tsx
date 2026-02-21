@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
+import { cn } from "@/lib/utils";
 import { FolderTreeItem } from "./FolderTreeItem";
 
 interface FolderTreeProps {

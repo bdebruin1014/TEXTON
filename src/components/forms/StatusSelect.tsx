@@ -11,9 +11,10 @@ interface StatusSelectProps {
   statuses: readonly string[];
   className?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
-export function StatusSelect({ label, value, onSave, statuses, className, disabled }: StatusSelectProps) {
+export function StatusSelect({ label, value, onSave, statuses, className, disabled, required }: StatusSelectProps) {
   const [localValue, setLocalValue] = useState(value ?? "");
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -35,9 +36,11 @@ export function StatusSelect({ label, value, onSave, statuses, className, disabl
   };
 
   const currentColors = STATUS_COLORS[localValue];
+  const isRequiredEmpty = required && localValue.trim() === "";
+  const fieldState = isRequiredEmpty ? "field-required-empty" : "";
 
   return (
-    <div className="space-y-1.5">
+    <div className={cn("space-y-1.5", fieldState)}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-foreground">{label}</label>
         <SaveIndicator status={status} />

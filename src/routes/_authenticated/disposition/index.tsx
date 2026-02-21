@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/disposition/")({
 
 interface Disposition {
   id: string;
+  record_number: string | null;
   lot_number: string | null;
   project_name: string | null;
   buyer_name: string | null;
@@ -30,6 +31,12 @@ interface Disposition {
 }
 
 const columns: ColumnDef<Disposition, unknown>[] = [
+  {
+    accessorKey: "record_number",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="#" />,
+    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("record_number") ?? "—"}</span>,
+    size: 180,
+  },
   {
     accessorKey: "lot_number",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Lot" />,
@@ -106,7 +113,7 @@ function DispositionIndex() {
 
   const kpis: ModuleKpi[] = [
     { label: "Total Dispositions", value: dispositions.length },
-    { label: "Revenue (Closed)", value: formatCurrency(totalRevenue), accentColor: "#48BB78" },
+    { label: "Revenue (Closed)", value: formatCurrency(totalRevenue), accentColor: "#4A8C5E" },
     { label: "Pipeline Value", value: formatCurrency(pipeline), accentColor: "#3B6FA0" },
     {
       label: "Pending Close",
@@ -154,6 +161,7 @@ function DispositionIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Disposition"
+      onCreateWithAI={() => navigate({ to: "/disposition/new" })}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={7} />

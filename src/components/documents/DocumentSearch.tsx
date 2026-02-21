@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 export interface SearchFilters {
   fileType: string | null;
-  dateRange: 'today' | 'week' | 'month' | 'all';
+  dateRange: "today" | "week" | "month" | "all";
   tags: string[];
 }
 
@@ -15,44 +15,40 @@ interface DocumentSearchProps {
 }
 
 const FILE_TYPE_OPTIONS = [
-  { value: null, label: 'All Types' },
-  { value: 'pdf', label: 'PDF' },
-  { value: 'docx', label: 'Word' },
-  { value: 'xlsx', label: 'Excel' },
-  { value: 'image', label: 'Images' },
+  { value: null, label: "All Types" },
+  { value: "pdf", label: "PDF" },
+  { value: "docx", label: "Word" },
+  { value: "xlsx", label: "Excel" },
+  { value: "image", label: "Images" },
 ] as const;
 
 const DATE_RANGE_OPTIONS = [
-  { value: 'all', label: 'All Time' },
-  { value: 'today', label: 'Today' },
-  { value: 'week', label: 'This Week' },
-  { value: 'month', label: 'This Month' },
+  { value: "all", label: "All Time" },
+  { value: "today", label: "Today" },
+  { value: "week", label: "This Week" },
+  { value: "month", label: "This Month" },
 ] as const;
 
 const AVAILABLE_TAGS = [
-  'Contract',
-  'Invoice',
-  'Permit',
-  'Blueprint',
-  'Inspection',
-  'Proposal',
-  'Insurance',
-  'Legal',
-  'Financial',
-  'Photo',
+  "Contract",
+  "Invoice",
+  "Permit",
+  "Blueprint",
+  "Inspection",
+  "Proposal",
+  "Insurance",
+  "Legal",
+  "Financial",
+  "Photo",
 ];
 
 const DEFAULT_FILTERS: SearchFilters = {
   fileType: null,
-  dateRange: 'all',
+  dateRange: "all",
   tags: [],
 };
 
-export default function DocumentSearch({
-  value,
-  onChange,
-  onFilterChange,
-}: DocumentSearchProps) {
+export default function DocumentSearch({ value, onChange, onFilterChange }: DocumentSearchProps) {
   const [filters, setFilters] = useState<SearchFilters>(DEFAULT_FILTERS);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -62,16 +58,13 @@ export default function DocumentSearch({
     if (!dropdownOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
 
   const updateFilters = useCallback(
@@ -85,9 +78,7 @@ export default function DocumentSearch({
 
   const toggleTag = useCallback(
     (tag: string) => {
-      const next = filters.tags.includes(tag)
-        ? filters.tags.filter((t) => t !== tag)
-        : [...filters.tags, tag];
+      const next = filters.tags.includes(tag) ? filters.tags.filter((t) => t !== tag) : [...filters.tags, tag];
       updateFilters({ tags: next });
     },
     [filters.tags, updateFilters],
@@ -98,24 +89,17 @@ export default function DocumentSearch({
     onFilterChange?.(DEFAULT_FILTERS);
   }, [onFilterChange]);
 
-  const hasActiveFilters =
-    filters.fileType !== null ||
-    filters.dateRange !== 'all' ||
-    filters.tags.length > 0;
+  const hasActiveFilters = filters.fileType !== null || filters.dateRange !== "all" || filters.tags.length > 0;
 
   const activeFilterCount =
-    (filters.fileType !== null ? 1 : 0) +
-    (filters.dateRange !== 'all' ? 1 : 0) +
-    filters.tags.length;
+    (filters.fileType !== null ? 1 : 0) + (filters.dateRange !== "all" ? 1 : 0) + filters.tags.length;
 
   const getFileTypeLabel = (val: string | null): string => {
-    return FILE_TYPE_OPTIONS.find((o) => o.value === val)?.label ?? 'All Types';
+    return FILE_TYPE_OPTIONS.find((o) => o.value === val)?.label ?? "All Types";
   };
 
   const getDateRangeLabel = (val: string): string => {
-    return (
-      DATE_RANGE_OPTIONS.find((o) => o.value === val)?.label ?? 'All Time'
-    );
+    return DATE_RANGE_OPTIONS.find((o) => o.value === val)?.label ?? "All Time";
   };
 
   return (
@@ -134,7 +118,7 @@ export default function DocumentSearch({
           {value && (
             <button
               type="button"
-              onClick={() => onChange('')}
+              onClick={() => onChange("")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-gray-400 hover:text-gray-600"
               aria-label="Clear search"
             >
@@ -149,10 +133,10 @@ export default function DocumentSearch({
             type="button"
             onClick={() => setDropdownOpen((o) => !o)}
             className={cn(
-              'relative inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
+              "relative inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
               dropdownOpen || hasActiveFilters
-                ? 'border-[#143A23] bg-[#143A23]/5 text-[#143A23]'
-                : 'border-border bg-white text-gray-600 hover:bg-gray-50',
+                ? "border-[#143A23] bg-[#143A23]/5 text-[#143A23]"
+                : "border-border bg-white text-gray-600 hover:bg-gray-50",
             )}
             aria-label="Toggle filters"
           >
@@ -180,10 +164,10 @@ export default function DocumentSearch({
                         type="button"
                         onClick={() => updateFilters({ fileType: opt.value })}
                         className={cn(
-                          'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+                          "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                           filters.fileType === opt.value
-                            ? 'bg-[#143A23] text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+                            ? "bg-[#143A23] text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                         )}
                       >
                         {opt.label}
@@ -204,14 +188,14 @@ export default function DocumentSearch({
                         type="button"
                         onClick={() =>
                           updateFilters({
-                            dateRange: opt.value as SearchFilters['dateRange'],
+                            dateRange: opt.value as SearchFilters["dateRange"],
                           })
                         }
                         className={cn(
-                          'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+                          "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                           filters.dateRange === opt.value
-                            ? 'bg-[#143A23] text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+                            ? "bg-[#143A23] text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                         )}
                       >
                         {opt.label}
@@ -232,10 +216,10 @@ export default function DocumentSearch({
                         type="button"
                         onClick={() => toggleTag(tag)}
                         className={cn(
-                          'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+                          "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                           filters.tags.includes(tag)
-                            ? 'bg-[#143A23] text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+                            ? "bg-[#143A23] text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                         )}
                       >
                         {tag}
@@ -279,12 +263,12 @@ export default function DocumentSearch({
             </span>
           )}
 
-          {filters.dateRange !== 'all' && (
+          {filters.dateRange !== "all" && (
             <span className="inline-flex items-center gap-1 rounded-full bg-[#143A23]/10 px-2.5 py-0.5 text-xs font-medium text-[#143A23]">
               {getDateRangeLabel(filters.dateRange)}
               <button
                 type="button"
-                onClick={() => updateFilters({ dateRange: 'all' })}
+                onClick={() => updateFilters({ dateRange: "all" })}
                 className="rounded-full p-0.5 hover:bg-[#143A23]/10"
                 aria-label={`Remove ${getDateRangeLabel(filters.dateRange)} filter`}
               >

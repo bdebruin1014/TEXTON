@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 
 interface UseRealtimeOptions {
@@ -9,12 +9,10 @@ interface UseRealtimeOptions {
   enabled?: boolean;
 }
 
-/**
- * Subscribes to Supabase Realtime changes on a table and auto-invalidates
- * the specified TanStack Query keys when INSERT/UPDATE/DELETE events occur.
- */
 export function useRealtime({ table, filter, invalidateKeys, enabled = true }: UseRealtimeOptions) {
   const queryClient = useQueryClient();
+  const keysRef = useRef(invalidateKeys);
+  keysRef.current = invalidateKeys;
 
   useEffect(() => {
     if (!enabled) return;
@@ -30,7 +28,7 @@ export function useRealtime({ table, filter, invalidateKeys, enabled = true }: U
     if (filter) config.filter = filter;
 
     channel = channel.on("postgres_changes", config as never, () => {
-      for (const key of invalidateKeys) {
+      for (const key of keysRef.current) {
         queryClient.invalidateQueries({ queryKey: key });
       }
     });
@@ -40,5 +38,5 @@ export function useRealtime({ table, filter, invalidateKeys, enabled = true }: U
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [table, filter, enabled, queryClient, invalidateKeys]);
+  }, [table, filter, enabled, queryClient]);
 }

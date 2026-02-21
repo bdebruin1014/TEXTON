@@ -19,11 +19,7 @@ function Signatures() {
   const { data: contract, isLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contracts")
-        .select("*")
-        .eq("id", contractId)
-        .single();
+      const { data, error } = await supabase.from("rch_contracts").select("*").eq("id", contractId).single();
       if (error) throw error;
       return data;
     },
@@ -105,9 +101,7 @@ function Signatures() {
         {/* Client Signature */}
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-3">
-            {clientSigned ? (
-              <span className="text-lg text-success">{"✓"}</span>
-            ) : null}
+            {clientSigned ? <span className="text-lg text-success">{"✓"}</span> : null}
             <h3 className="text-sm font-semibold text-foreground">Client Signature</h3>
           </div>
           <div className="space-y-2">
@@ -136,9 +130,7 @@ function Signatures() {
         {/* RCH Signature */}
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-3">
-            {rchSigned ? (
-              <span className="text-lg text-success">{"✓"}</span>
-            ) : null}
+            {rchSigned ? <span className="text-lg text-success">{"✓"}</span> : null}
             <h3 className="text-sm font-semibold text-foreground">RCH Signature</h3>
           </div>
           <div className="space-y-2">

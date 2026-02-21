@@ -10,22 +10,22 @@
   --color-primary-50: #EBF2ED;
 
   /* ——— BUTTONS ——— */
-  --color-button: #2E6B42;
-  --color-button-hover: #245536;
+  --color-button: #143A23;
+  --color-button-hover: #1C4D30;
   --color-button-foreground: #FFFFFF;
 
   /* ——— NAVIGATION (top bar — darkest element) ——— */
   --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
   --color-nav-muted: #94A3B8;
-  --color-nav-active: #48BB78;
+  --color-nav-active: #4A8C5E;
 
   /* ——— SIDEBAR — DARK SLATE (lighter than nav, like Qualia) ——— */
   --color-sidebar: #2D3748;
   --sidebar-width: 240px;
-  --sidebar-active-border: #48BB78;
+  --sidebar-active-border: #4A8C5E;
   --sidebar-active-bg: rgba(255, 255, 255, 0.05);
-  --sidebar-active-text: #48BB78;
+  --sidebar-active-text: #FFFFFF;
   --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
   --sidebar-text: #A0AEC0;
   --sidebar-heading: #718096;

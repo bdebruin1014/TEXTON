@@ -24,7 +24,12 @@ export function KpiCard({ label, value, sub, accentColor, trend, className }: Kp
         <div className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
           {sub}
           {trend && (
-            <span className={cn("font-semibold text-[11px]", trend.direction === "up" ? "text-success" : "text-destructive")}>
+            <span
+              className={cn(
+                "font-semibold text-[11px]",
+                trend.direction === "up" ? "text-success" : "text-destructive",
+              )}
+            >
               {trend.direction === "up" ? "\u2191" : "\u2193"} {trend.text}
             </span>
           )}

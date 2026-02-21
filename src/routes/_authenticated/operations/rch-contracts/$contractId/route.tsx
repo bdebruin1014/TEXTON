@@ -55,9 +55,7 @@ function ContractLayout() {
   ];
 
   const title = contract ? contract.contract_number || "New Contract" : "Loading...";
-  const subtitle = [contract?.contract_type, contract?.owner_name, contract?.status]
-    .filter(Boolean)
-    .join(" \u00B7 ");
+  const subtitle = [contract?.contract_type, contract?.owner_name, contract?.status].filter(Boolean).join(" \u00B7 ");
 
   const sidebar = (
     <DetailSidebar

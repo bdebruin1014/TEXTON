@@ -17,8 +17,8 @@ export const SL_FIXED_COSTS = {
   PO_FEE: 3_000,
   PM_FEE: 3_500,
   AM_FEE: 5_000,
-  CONTINGENCY: 11_000,             // flat, never percentage
-  UTILITY_RATE_PER_MONTH: 350,     // Duration/30 × $350
+  CONTINGENCY: 11_000, // flat, never percentage
+  UTILITY_RATE_PER_MONTH: 350, // Duration/30 × $350
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -26,9 +26,9 @@ export const SL_FIXED_COSTS = {
 // ---------------------------------------------------------------------------
 
 export const SL_CONTRACT_DEFAULTS = {
-  SITE_SPECIFIC: 10_875,           // survey $1,700 + grading $1,700 + silt $2,000 + temp drive $500 + landscape $2,500 + flatwork $2,475
-  SOFT_COSTS: 2_650,               // building permits $2,050 + engineering $600
-  BUILDER_FEE: 15_000,             // fixed per house
+  SITE_SPECIFIC: 10_875, // survey $1,700 + grading $1,700 + silt $2,000 + temp drive $500 + landscape $2,500 + flatwork $2,475
+  SOFT_COSTS: 2_650, // building permits $2,050 + engineering $600
+  BUILDER_FEE: 15_000, // fixed per house
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ export const SL_CONTRACT_MINIMUMS = {
   LOT_PREP_MINIMUM: 15_000,
   SOFT_COSTS_MINIMUM: 15_000,
   BUILDER_FEE: 15_000,
-  BUILDING_PERMITS: 2_050,         // included in S&B
+  BUILDING_PERMITS: 2_050, // included in S&B
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -48,10 +48,10 @@ export const SL_CONTRACT_MINIMUMS = {
 
 export const SL_FINANCING_DEFAULTS = {
   LTC_RATIO: 0.85,
-  INTEREST_RATE: 0.10,
+  INTEREST_RATE: 0.1,
   COST_OF_CAPITAL_RATE: 0.16,
   PROJECT_DURATION_DAYS: 120,
-  DAY_COUNT_BASIS: 360,            // actual/360
+  DAY_COUNT_BASIS: 360, // actual/360
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ export const SL_FINANCING_DEFAULTS = {
 // ---------------------------------------------------------------------------
 
 export const SL_SALES_DEFAULTS = {
-  SELLING_COST_RATE: 0.085,        // 8.5% of ASP
+  SELLING_COST_RATE: 0.085, // 8.5% of ASP
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ export const SL_SALES_DEFAULTS = {
 // ---------------------------------------------------------------------------
 
 export const NPM_THRESHOLDS = {
-  STRONG: 0.10,
+  STRONG: 0.1,
   GOOD: 0.07,
   MARGINAL: 0.05,
 } as const;
@@ -77,9 +77,9 @@ export const NPM_THRESHOLDS = {
 // ---------------------------------------------------------------------------
 
 export const LAND_COST_THRESHOLDS = {
-  STRONG: 0.20,
+  STRONG: 0.2,
   ACCEPTABLE: 0.25,
-  CAUTION: 0.30,
+  CAUTION: 0.3,
 } as const;
 
 // ---------------------------------------------------------------------------

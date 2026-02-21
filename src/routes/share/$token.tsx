@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useShareAccess } from "@/hooks/useShareAccess";
 import { SharePage } from "@/components/documents/public/SharePage";
 import { SharePasswordGate } from "@/components/documents/public/SharePasswordGate";
+import { useShareAccess } from "@/hooks/useShareAccess";
 
 export const Route = createFileRoute("/share/$token")({
   component: ShareRoute,

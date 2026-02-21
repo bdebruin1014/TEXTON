@@ -48,11 +48,7 @@ function DealSheetDetail() {
   const { data: dealSheet, isLoading } = useQuery<DealSheetRow>({
     queryKey: ["deal-sheet", dealSheetId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("deal_sheets")
-        .select("*")
-        .eq("id", dealSheetId)
-        .single();
+      const { data, error } = await supabase.from("deal_sheets").select("*").eq("id", dealSheetId).single();
       if (error) throw error;
       return data;
     },
@@ -89,7 +85,7 @@ function DealSheetDetail() {
       selling_cost_rate: dealSheet.selling_cost_rate ?? 0.085,
       selling_concessions: dealSheet.selling_concessions ?? 0,
       ltc_ratio: dealSheet.ltc_ratio ?? 0.85,
-      interest_rate: dealSheet.interest_rate ?? 0.10,
+      interest_rate: dealSheet.interest_rate ?? 0.1,
       cost_of_capital: dealSheet.cost_of_capital ?? 0.16,
       project_duration_days: dealSheet.project_duration_days ?? 120,
     };
@@ -134,7 +130,12 @@ function DealSheetDetail() {
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">General</h3>
             <div className="space-y-4">
               <AutoSaveField label="Name" value={dealSheet.name} onSave={save("name")} placeholder="Deal sheet name" />
-              <AutoSaveField label="Address" value={dealSheet.address} onSave={save("address")} placeholder="Property address" />
+              <AutoSaveField
+                label="Address"
+                value={dealSheet.address}
+                onSave={save("address")}
+                placeholder="Property address"
+              />
             </div>
           </div>
 
@@ -147,11 +148,7 @@ function DealSheetDetail() {
                 value={dealSheet.lot_purchase_price}
                 onSave={save("lot_purchase_price")}
               />
-              <CurrencyInput
-                label="Closing Costs"
-                value={dealSheet.closing_costs}
-                onSave={save("closing_costs")}
-              />
+              <CurrencyInput label="Closing Costs" value={dealSheet.closing_costs} onSave={save("closing_costs")} />
             </div>
           </div>
 
@@ -159,11 +156,7 @@ function DealSheetDetail() {
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Construction Costs</h3>
             <div className="space-y-4">
-              <CurrencyInput
-                label="Sticks & Bricks"
-                value={dealSheet.sticks_bricks}
-                onSave={save("sticks_bricks")}
-              />
+              <CurrencyInput label="Sticks & Bricks" value={dealSheet.sticks_bricks} onSave={save("sticks_bricks")} />
               <CurrencyInput label="Upgrades" value={dealSheet.upgrades} onSave={save("upgrades")} />
               <CurrencyInput label="Soft Costs" value={dealSheet.soft_costs} onSave={save("soft_costs")} />
               <CurrencyInput label="Land Prep" value={dealSheet.land_prep} onSave={save("land_prep")} />
@@ -189,6 +182,7 @@ function DealSheetDetail() {
                 label="Selling Cost Rate"
                 value={dealSheet.selling_cost_rate ?? 0.085}
                 onSave={save("selling_cost_rate")}
+                autoValue={0.085}
               />
               <CurrencyInput
                 label="Selling Concessions"
@@ -202,20 +196,18 @@ function DealSheetDetail() {
           <div className="rounded-lg border border-border bg-card p-6">
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Financing</h3>
             <div className="space-y-4">
-              <PercentageInput
-                label="LTC Ratio"
-                value={dealSheet.ltc_ratio ?? 0.85}
-                onSave={save("ltc_ratio")}
-              />
+              <PercentageInput label="LTC Ratio" value={dealSheet.ltc_ratio ?? 0.85} onSave={save("ltc_ratio")} autoValue={0.85} />
               <PercentageInput
                 label="Interest Rate"
-                value={dealSheet.interest_rate ?? 0.10}
+                value={dealSheet.interest_rate ?? 0.1}
                 onSave={save("interest_rate")}
+                autoValue={0.1}
               />
               <PercentageInput
                 label="Cost of Capital"
                 value={dealSheet.cost_of_capital ?? 0.16}
                 onSave={save("cost_of_capital")}
+                autoValue={0.16}
               />
               <AutoSaveField
                 label="Project Duration (days)"
@@ -247,8 +239,16 @@ function DealSheetDetail() {
           <div className="space-y-6">
             {/* Verdicts */}
             <div className="grid grid-cols-2 gap-4">
-              <VerdictCard label="Net Profit Margin" value={formatPercent(dealOutputs.net_profit_margin)} verdict={dealOutputs.profit_verdict} />
-              <VerdictCard label="Land Cost Ratio" value={formatPercent(dealOutputs.land_cost_ratio)} verdict={dealOutputs.land_verdict} />
+              <VerdictCard
+                label="Net Profit Margin"
+                value={formatPercent(dealOutputs.net_profit_margin)}
+                verdict={dealOutputs.profit_verdict}
+              />
+              <VerdictCard
+                label="Land Cost Ratio"
+                value={formatPercent(dealOutputs.land_cost_ratio)}
+                verdict={dealOutputs.land_verdict}
+              />
             </div>
 
             {/* Cost Summary */}
@@ -312,8 +312,8 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
 
 const VERDICT_COLORS: Record<string, string> = {
   STRONG: "#3D7A4E",
-  GOOD: "#48BB78",
-  ACCEPTABLE: "#48BB78",
+  GOOD: "#4A8C5E",
+  ACCEPTABLE: "#4A8C5E",
   MARGINAL: "#C4841D",
   CAUTION: "#C4841D",
   "NO GO": "#B84040",
@@ -325,7 +325,9 @@ function VerdictCard({ label, value, verdict }: { label: string; value: string; 
   return (
     <div className="rounded-lg border-2 bg-card p-4 text-center" style={{ borderColor: color }}>
       <p className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</p>
-      <p className="mt-1 text-xl font-bold" style={{ color }}>{verdict}</p>
+      <p className="mt-1 text-xl font-bold" style={{ color }}>
+        {verdict}
+      </p>
       <p className="mt-0.5 text-sm text-muted">{value}</p>
     </div>
   );

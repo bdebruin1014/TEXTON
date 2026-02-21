@@ -1,15 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-
-import { cn } from "@/lib/utils";
-import {
-  useDocumentTags,
-  useRenameTag,
-  useDeleteTag,
-  type TagInfo,
-} from "@/hooks/useDocumentTags";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { type TagInfo, useDeleteTag, useDocumentTags, useRenameTag } from "@/hooks/useDocumentTags";
 import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/documents/tags")({
   component: DocumentTagsPage,
@@ -31,10 +25,7 @@ function useAddGlobalTag() {
       // Find any document and add the tag to it to register it in the taxonomy.
       // If no documents exist, we cannot create a "standalone" tag (they live on
       // documents). In that edge-case we surface an error.
-      const { data: docs, error: fetchError } = await supabase
-        .from("documents")
-        .select("id, tags")
-        .limit(1);
+      const { data: docs, error: fetchError } = await supabase.from("documents").select("id, tags").limit(1);
       if (fetchError) throw fetchError;
       if (!docs || docs.length === 0) {
         throw new Error("No documents exist yet. Upload a document first before creating tags.");
@@ -340,8 +331,7 @@ function DocumentTagsPage() {
                   disabled={!newTagName.trim() || addTagMutation.isPending}
                   className="inline-flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium text-white bg-[#143A23] hover:bg-[#143A23]/90 disabled:opacity-50 transition-colors"
                 >
-                  {"✓"}{" "}
-                  Add
+                  {"✓"} Add
                 </button>
                 <button
                   type="button"

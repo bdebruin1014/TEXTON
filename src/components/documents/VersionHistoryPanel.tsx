@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
-import { supabase } from '@/lib/supabase';
-import { formatDate, cn } from '@/lib/utils';
-import { formatFileSize } from '@/lib/documents/storage';
-import type { DocumentRecord } from '@/hooks/useDocuments';
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import type { DocumentRecord } from "@/hooks/useDocuments";
+import { formatFileSize } from "@/lib/documents/storage";
+import { supabase } from "@/lib/supabase";
+import { cn, formatDate } from "@/lib/utils";
 
 interface VersionHistoryPanelProps {
   document: DocumentRecord | null;
@@ -22,26 +21,26 @@ export function VersionHistoryPanel({
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   const { data: versions = [], isLoading } = useQuery({
-    queryKey: ['document-versions', document?.id],
+    queryKey: ["document-versions", document?.id],
     queryFn: async () => {
       if (!document) return [];
 
       const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('record_type', document.record_type)
-        .eq('record_id', document.record_id)
-        .eq('original_filename', document.original_filename)
-        .order('version', { ascending: false });
+        .from("documents")
+        .select("*")
+        .eq("record_type", document.record_type)
+        .eq("record_id", document.record_id)
+        .eq("original_filename", document.original_filename)
+        .order("version", { ascending: false });
 
       if (error) throw error;
       return data as DocumentRecord[];
@@ -54,11 +53,7 @@ export function VersionHistoryPanel({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/20"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="fixed inset-0 z-40 bg-black/20" onClick={onClose} aria-hidden="true" />
 
       {/* Panel */}
       <div className="fixed top-0 right-0 h-full w-96 z-50 bg-white border-l border-border shadow-xl flex flex-col">
@@ -77,9 +72,7 @@ export function VersionHistoryPanel({
         {/* Document info */}
         <div className="px-4 py-3 border-b border-border bg-gray-50">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-900 truncate">
-              {document.original_filename}
-            </span>
+            <span className="text-sm font-medium text-gray-900 truncate">{document.original_filename}</span>
           </div>
         </div>
 
@@ -90,9 +83,7 @@ export function VersionHistoryPanel({
               <div className="h-6 w-6 border-2 border-[#143A23] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : versions.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm text-gray-500">
-              No version history available.
-            </div>
+            <div className="px-4 py-8 text-center text-sm text-gray-500">No version history available.</div>
           ) : (
             <ul className="divide-y divide-border">
               {versions.map((version) => {
@@ -101,20 +92,15 @@ export function VersionHistoryPanel({
                 return (
                   <li
                     key={version.id}
-                    className={cn(
-                      'px-4 py-3 hover:bg-gray-50 transition-colors',
-                      isCurrent && 'bg-green-50/50'
-                    )}
+                    className={cn("px-4 py-3 hover:bg-gray-50 transition-colors", isCurrent && "bg-green-50/50")}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span
                             className={cn(
-                              'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium',
-                              isCurrent
-                                ? 'bg-[#143A23] text-white'
-                                : 'bg-gray-100 text-gray-700'
+                              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium",
+                              isCurrent ? "bg-[#143A23] text-white" : "bg-gray-100 text-gray-700",
                             )}
                           >
                             v{version.version}
@@ -125,19 +111,13 @@ export function VersionHistoryPanel({
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-900 truncate">
-                          {version.original_filename}
-                        </p>
+                        <p className="text-sm text-gray-900 truncate">{version.original_filename}</p>
                         <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
                           <span>{formatDate(version.created_at)}</span>
-                          {version.file_size != null && (
-                            <span>{formatFileSize(version.file_size)}</span>
-                          )}
+                          {version.file_size != null && <span>{formatFileSize(version.file_size)}</span>}
                         </div>
                         {version.uploaded_by && (
-                          <p className="mt-0.5 text-xs text-gray-400">
-                            by {version.uploaded_by}
-                          </p>
+                          <p className="mt-0.5 text-xs text-gray-400">by {version.uploaded_by}</p>
                         )}
                       </div>
 
@@ -173,7 +153,7 @@ export function VersionHistoryPanel({
         {/* Footer */}
         <div className="px-4 py-3 border-t border-border bg-gray-50">
           <p className="text-xs text-gray-500">
-            {versions.length} version{versions.length !== 1 ? 's' : ''} found
+            {versions.length} version{versions.length !== 1 ? "s" : ""} found
           </p>
         </div>
       </div>

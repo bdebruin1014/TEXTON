@@ -518,8 +518,8 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
 
 const VERDICT_COLORS: Record<string, string> = {
   STRONG: "#3D7A4E",
-  GOOD: "#48BB78",
-  ACCEPTABLE: "#48BB78",
+  GOOD: "#4A8C5E",
+  ACCEPTABLE: "#4A8C5E",
   MARGINAL: "#C4841D",
   CAUTION: "#C4841D",
   "NO GO": "#B84040",

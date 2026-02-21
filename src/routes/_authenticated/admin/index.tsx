@@ -20,6 +20,7 @@ const CARDS = [
   { label: "Upgrade Packages", description: "Exterior, interior & custom upgrades", path: "/admin/upgrade-packages" },
   { label: "Pricing Defaults", description: "Default pricing configuration values", path: "/admin/pricing-defaults" },
   { label: "Pricing Exclusions", description: "Items excluded from pricing", path: "/admin/pricing-exclusions" },
+  { label: "COA Templates", description: "Chart of Accounts templates for entity setup", path: "/admin/coa-templates" },
   { label: "Audit Log", description: "System-wide audit trail", path: "/admin/audit-log" },
 ] as const;
 

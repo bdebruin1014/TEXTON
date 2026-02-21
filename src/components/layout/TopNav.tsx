@@ -10,7 +10,7 @@ import { useUiStore } from "@/stores/uiStore";
  *
  * Dark navy (#112233) background — darkest element in the UI.
  * Logo left, text-only module links center, search + user right.
- * Active module gets a bright green (#48BB78) bottom indicator.
+ * Active module gets a green (#4A8C5E) bottom indicator.
  * "Operations" is a mega-dropdown consolidating Operations, Tools, and Reports.
  */
 

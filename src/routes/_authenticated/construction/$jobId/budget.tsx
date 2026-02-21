@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -76,6 +77,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
+    onError: () => toast.error("Failed to add budget line"),
   });
 
   const importTemplate = useMutation({
@@ -91,6 +93,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
+    onError: () => toast.error("Failed to import template"),
   });
 
   const deleteLine = useMutation({
@@ -99,6 +102,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
+    onError: () => toast.error("Failed to delete budget line"),
   });
 
   const totalBudgeted = lines.reduce((sum, l) => sum + (l.budgeted ?? 0), 0);

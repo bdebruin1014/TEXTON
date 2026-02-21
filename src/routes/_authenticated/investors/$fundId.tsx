@@ -234,8 +234,7 @@ function FundDetail() {
             onClick={() => addInvestor.mutate()}
             className="flex items-center gap-1.5 rounded-lg bg-button px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            Add Investor
+            + Add Investor
           </button>
         </div>
         {investors.length === 0 ? (

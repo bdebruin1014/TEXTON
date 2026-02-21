@@ -207,7 +207,7 @@ function AccountingIndex() {
 
       {/* KPI Summary Row */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #48BB78" }}>
+        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid var(--color-nav-active)" }}>
           <span className="text-lg font-bold text-foreground">{formatCurrency(totalCash)}</span>
           <p
             className="text-[10px] font-semibold uppercase tracking-wider"

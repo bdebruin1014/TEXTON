@@ -28,8 +28,8 @@ export interface SLDealInputs {
   closing_date?: string; // ISO date
 
   // Floor Plan (from build cost database)
-  floor_plan_id?: string;        // FK to floor_plans table
-  floor_plan_name: string;       // e.g. "HOLLY"
+  floor_plan_id?: string; // FK to floor_plans table
+  floor_plan_name: string; // e.g. "HOLLY"
   heated_sqft: number;
   bedrooms: number;
   bathrooms: number;
@@ -37,9 +37,9 @@ export interface SLDealInputs {
   garage?: string;
 
   // Construction costs (from build cost database)
-  sticks_bricks: number;         // S&B from DM Budget
-  site_specific?: number;        // default $10,875
-  soft_costs?: number;           // default $2,650
+  sticks_bricks: number; // S&B from DM Budget
+  site_specific?: number; // default $10,875
+  soft_costs?: number; // default $2,650
 
   // Upgrades
   exterior_upgrades?: number;
@@ -53,14 +53,14 @@ export interface SLDealInputs {
   additional_site_work?: number;
 
   // Financing
-  project_duration_days?: number;  // default 120
-  interest_rate?: number;          // annual, default 0.10
-  cost_of_capital_rate?: number;   // annual, default 0.16
-  ltc_ratio?: number;              // default 0.85
+  project_duration_days?: number; // default 120
+  interest_rate?: number; // annual, default 0.10
+  cost_of_capital_rate?: number; // annual, default 0.16
+  ltc_ratio?: number; // default 0.85
 
   // Sales
   asset_sales_price: number;
-  selling_cost_rate?: number;      // default 0.085 (8.5%)
+  selling_cost_rate?: number; // default 0.085 (8.5%)
   selling_concessions?: number;
 }
 
@@ -149,8 +149,8 @@ export interface SLDealResults {
 // Ratings
 // ---------------------------------------------------------------------------
 
-export type NPMRating = 'STRONG' | 'GOOD' | 'MARGINAL' | 'NO_GO';
-export type LandCostRating = 'STRONG' | 'ACCEPTABLE' | 'CAUTION' | 'OVERPAYING';
+export type NPMRating = "STRONG" | "GOOD" | "MARGINAL" | "NO_GO";
+export type LandCostRating = "STRONG" | "ACCEPTABLE" | "CAUTION" | "OVERPAYING";
 
 // ---------------------------------------------------------------------------
 // Sensitivity
@@ -177,7 +177,7 @@ export interface SensitivityResults {
 // Floor Plan (matches floor_plans table in Supabase)
 // ---------------------------------------------------------------------------
 
-export type FloorPlanType = 'SFH' | 'TH';
+export type FloorPlanType = "SFH" | "TH";
 
 export interface FloorPlan {
   id: string;
@@ -191,9 +191,9 @@ export interface FloorPlan {
   garage_bays: number;
   lot_width_ft?: number;
   lot_depth_ft?: number;
-  sb_contract?: number;       // S&B from RC Pricing Guide
-  sb_dm_budget?: number;      // S&B from DM Budget Sept 2025
-  total_dm_budget?: number;   // Total from DM Budget
+  sb_contract?: number; // S&B from RC Pricing Guide
+  sb_dm_budget?: number; // S&B from DM Budget Sept 2025
+  total_dm_budget?: number; // Total from DM Budget
   base_construction_cost: number;
   base_sale_price?: number;
   is_active: boolean;
@@ -207,7 +207,7 @@ export interface MunicipalityFees {
   id: string;
   name: string;
   county: string;
-  state: 'SC' | 'NC';
+  state: "SC" | "NC";
   water_tap: number;
   water_capacity: number;
   sewer_tap: number;
@@ -225,9 +225,9 @@ export interface MunicipalityFees {
 // Upgrade Options
 // ---------------------------------------------------------------------------
 
-export type InteriorTier = 'CLASSIC' | 'ELEGANCE';
-export type InteriorStyle = 'FOXCROFT' | 'MIDWOOD' | 'MADISON' | 'UPTOWN';
-export type PackageShorthand = 'A' | 'B' | 'C' | 'D' | 'NONE';
+export type InteriorTier = "CLASSIC" | "ELEGANCE";
+export type InteriorStyle = "FOXCROFT" | "MIDWOOD" | "MADISON" | "UPTOWN";
+export type PackageShorthand = "A" | "B" | "C" | "D" | "NONE";
 
 export interface InteriorPackageOption {
   tier: InteriorTier;
@@ -255,7 +255,7 @@ export interface DealSheetRow {
   sensitivity: SensitivityResults;
 
   // Status
-  status: 'draft' | 'submitted' | 'approved' | 'rejected';
-  recommendation?: 'GO' | 'NO_GO' | 'CONDITIONAL';
+  status: "draft" | "submitted" | "approved" | "rejected";
+  recommendation?: "GO" | "NO_GO" | "CONDITIONAL";
   notes?: string;
 }

@@ -128,7 +128,9 @@ function FolderTemplateList() {
                     {RECORD_TYPE_LABELS[template.record_type] ?? template.record_type}
                   </td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">
-                    {template.project_type ? (PROJECT_TYPE_LABELS[template.project_type] ?? template.project_type) : "All"}
+                    {template.project_type
+                      ? (PROJECT_TYPE_LABELS[template.project_type] ?? template.project_type)
+                      : "All"}
                   </td>
                   <td className="px-4 py-3">
                     {template.is_default && (

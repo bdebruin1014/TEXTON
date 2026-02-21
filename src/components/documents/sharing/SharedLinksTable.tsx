@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
 import { getShareUrl, useDocumentShares, useRevokeShare } from "@/hooks/useDocumentShares";
+import { formatDate } from "@/lib/utils";
 
 interface SharedLinksTableProps {
   recordType: string;

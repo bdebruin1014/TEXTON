@@ -34,13 +34,11 @@ export function useDocumentFolders(recordType: string, recordId: string) {
 export function useCreateFolder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (folder: {
-      name: string;
-      parent_id: string | null;
-      record_type: string;
-      record_id: string;
-    }) => {
-      const slug = folder.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    mutationFn: async (folder: { name: string; parent_id: string | null; record_type: string; record_id: string }) => {
+      const slug = folder.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
       const { data, error } = await supabase
         .from("document_folders")
         .insert({ ...folder, slug })
@@ -59,7 +57,10 @@ export function useRenameFolder() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
-      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
       const { error } = await supabase.from("document_folders").update({ name, slug }).eq("id", id);
       if (error) throw error;
     },
@@ -73,14 +74,13 @@ export function useDeleteFolder() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data: folder } = await supabase
-        .from("document_folders")
-        .select("parent_id")
-        .eq("id", id)
-        .single();
+      const { data: folder } = await supabase.from("document_folders").select("parent_id").eq("id", id).single();
 
       // Move child documents to parent folder (or root)
-      await supabase.from("documents").update({ folder_id: folder?.parent_id ?? null }).eq("folder_id", id);
+      await supabase
+        .from("documents")
+        .update({ folder_id: folder?.parent_id ?? null })
+        .eq("folder_id", id);
 
       const { error } = await supabase.from("document_folders").delete().eq("id", id);
       if (error) throw error;
@@ -91,4 +91,3 @@ export function useDeleteFolder() {
     },
   });
 }
-

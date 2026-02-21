@@ -216,7 +216,9 @@ function FolderTemplateEditor() {
           className="group flex items-center gap-1 border-b border-border/50 py-1.5 hover:bg-accent/30"
           style={{ paddingLeft: `${depth * 20 + 8}px` }}
         >
-          <span className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100 text-xs leading-none">{"⋮⋮"}</span>
+          <span className="h-3.5 w-3.5 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100 text-xs leading-none">
+            {"⋮⋮"}
+          </span>
           {hasChildren ? (
             <button type="button" onClick={() => toggleExpand(item.id)} className="shrink-0 p-0.5">
               {isExpanded ? "▾" : "▸"}
@@ -238,10 +240,7 @@ function FolderTemplateEditor() {
               className="flex-1 rounded border border-[#143A23] bg-white px-1.5 py-0.5 text-sm outline-none"
             />
           ) : (
-            <span
-              className="flex-1 cursor-text truncate text-sm text-foreground"
-              onClick={() => setEditingId(item.id)}
-            >
+            <span className="flex-1 cursor-text truncate text-sm text-foreground" onClick={() => setEditingId(item.id)}>
               {item.name}
             </span>
           )}
@@ -251,8 +250,7 @@ function FolderTemplateEditor() {
             onClick={() => addItem(item.id)}
             className="shrink-0 rounded p-0.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground"
             title="Add subfolder"
-          >
-          </button>
+          ></button>
           <button
             type="button"
             onClick={() => {

@@ -19,9 +19,7 @@ function ReportsLayout() {
 
   // Read active category from search params; default to "General" on index page
   const isIndexPage = location.pathname === "/reports" || location.pathname === "/reports/";
-  const activeCategory = isIndexPage
-    ? (location.search as Record<string, string>)?.category ?? "General"
-    : undefined;
+  const activeCategory = isIndexPage ? ((location.search as Record<string, string>)?.category ?? "General") : undefined;
 
   const sidebar = (
     <aside

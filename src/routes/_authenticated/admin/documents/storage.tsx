@@ -1,8 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-
-import { cn } from "@/lib/utils";
+import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/documents/storage")({
   component: StorageUsagePage,
@@ -74,7 +73,10 @@ function useStorageUsage() {
 
       const docs = data ?? [];
       const totalDocuments = docs.length;
-      const totalSize = docs.reduce((sum: number, d: { file_size: number | null }) => sum + ((d.file_size as number) ?? 0), 0);
+      const totalSize = docs.reduce(
+        (sum: number, d: { file_size: number | null }) => sum + ((d.file_size as number) ?? 0),
+        0,
+      );
       const averageFileSize = totalDocuments > 0 ? Math.round(totalSize / totalDocuments) : 0;
 
       // Aggregate per bucket
@@ -172,13 +174,7 @@ function FormSkeleton() {
 // Summary Card
 // ---------------------------------------------------------------------------
 
-function SummaryCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white border border-border rounded-lg p-5">
       <div className="flex items-center gap-2 mb-2">

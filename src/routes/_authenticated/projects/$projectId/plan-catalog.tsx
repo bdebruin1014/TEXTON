@@ -273,10 +273,7 @@ function PlanCatalog() {
         {elevationsLoading ? (
           <FormSkeleton />
         ) : elevations.length === 0 ? (
-          <EmptyState
-            title="No elevation options"
-            description="Add elevation options for the plans in this catalog"
-          />
+          <EmptyState title="No elevation options" description="Add elevation options for the plans in this catalog" />
         ) : (
           <div className="rounded-lg border border-border bg-card">
             <table className="w-full text-sm">
@@ -354,12 +351,8 @@ function PlanCatalog() {
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">
                     Category
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">
-                    Name
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">
-                    Price
-                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">Price</th>
                   <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted" />
                 </tr>
               </thead>

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import type { DocumentFolder } from "@/hooks/useDocumentFolders";
+import { cn } from "@/lib/utils";
 
 interface FolderTreeItemProps {
   folder: DocumentFolder;
@@ -61,7 +61,11 @@ export function FolderTreeItem({
             }}
             className="flex h-4 w-4 shrink-0 items-center justify-center"
           >
-            {expanded ? <span className="h-3 w-3 text-xs leading-none">&#9662;</span> : <span className="h-3 w-3 text-xs leading-none">&#9656;</span>}
+            {expanded ? (
+              <span className="h-3 w-3 text-xs leading-none">&#9662;</span>
+            ) : (
+              <span className="h-3 w-3 text-xs leading-none">&#9656;</span>
+            )}
           </span>
         ) : (
           <span className="h-4 w-4 shrink-0" />
@@ -80,7 +84,10 @@ export function FolderTreeItem({
           >
             <button
               type="button"
-              onClick={() => { onAddSubfolder(folder.id); closeMenu(); }}
+              onClick={() => {
+                onAddSubfolder(folder.id);
+                closeMenu();
+              }}
               className="block w-full px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
             >
               Add Subfolder
@@ -88,7 +95,10 @@ export function FolderTreeItem({
             {onShareFolder && (
               <button
                 type="button"
-                onClick={() => { onShareFolder(folder.id, folder.name); closeMenu(); }}
+                onClick={() => {
+                  onShareFolder(folder.id, folder.name);
+                  closeMenu();
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Share Folder

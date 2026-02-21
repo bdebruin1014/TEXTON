@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/construction/")({
 
 interface Job {
   id: string;
+  record_number: string | null;
   lot_number: string | null;
   floor_plan_name: string | null;
   project_name: string | null;
@@ -32,6 +33,12 @@ interface Job {
 }
 
 const columns: ColumnDef<Job, unknown>[] = [
+  {
+    accessorKey: "record_number",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="#" />,
+    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("record_number") ?? "—"}</span>,
+    size: 180,
+  },
   {
     accessorKey: "lot_number",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Lot" />,
@@ -117,7 +124,7 @@ function ConstructionIndex() {
     {
       label: "In Progress",
       value: statusCounts["In Progress"] ?? 0,
-      accentColor: "#48BB78",
+      accentColor: "#4A8C5E",
     },
   ];
 
@@ -159,6 +166,7 @@ function ConstructionIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Job"
+      onCreateWithAI={() => navigate({ to: "/construction/new" })}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={8} />

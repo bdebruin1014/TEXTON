@@ -183,8 +183,7 @@ function WorkflowDetail() {
             onClick={() => addMilestone.mutate()}
             className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
-            +
-            Add Milestone
+            + Add Milestone
           </button>
           <button
             type="button"
@@ -192,7 +191,6 @@ function WorkflowDetail() {
             disabled={!hasChanges || saveChanges.isPending}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            
             {saveChanges.isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
@@ -201,8 +199,11 @@ function WorkflowDetail() {
       {/* Workflow Name/Status */}
       <div className="mb-6 grid grid-cols-2 gap-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-foreground">Workflow Name</label>
+          <label htmlFor="wf-name" className="mb-1 block text-sm font-medium text-foreground">
+            Workflow Name
+          </label>
           <input
+            id="wf-name"
             type="text"
             defaultValue={workflow.name}
             onBlur={(e) => {
@@ -214,8 +215,11 @@ function WorkflowDetail() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-foreground">Status</label>
+          <label htmlFor="wf-status" className="mb-1 block text-sm font-medium text-foreground">
+            Status
+          </label>
           <select
+            id="wf-status"
             defaultValue={workflow.status}
             onChange={(e) => updateWorkflow.mutate({ status: e.target.value })}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
@@ -244,8 +248,7 @@ function WorkflowDetail() {
                   onClick={() => addTask.mutate(milestone.id)}
                   className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
                 >
-                  +
-                  Add Task
+                  + Add Task
                 </button>
               </div>
 
@@ -270,9 +273,7 @@ function WorkflowDetail() {
                     <tbody>
                       {milestone.tasks.map((task) => (
                         <tr key={task.id} className="border-b border-border last:border-b-0 hover:bg-card-hover">
-                          <td className="px-2 py-1.5 text-center">
-                            
-                          </td>
+                          <td className="px-2 py-1.5 text-center"></td>
                           <td className="px-3 py-1.5">
                             <input
                               type="text"
@@ -332,9 +333,7 @@ function WorkflowDetail() {
                               type="button"
                               onClick={() => deleteTask.mutate(task.id)}
                               className="rounded p-1 text-muted transition-colors hover:bg-destructive-bg hover:text-destructive"
-                            >
-                              
-                            </button>
+                            ></button>
                           </td>
                         </tr>
                       ))}

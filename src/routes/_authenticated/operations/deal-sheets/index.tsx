@@ -108,10 +108,7 @@ function DealSheetsIndex() {
   const { data: dealSheets = [], isLoading } = useQuery<DealSheet[]>({
     queryKey: ["deal-sheets"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("deal_sheets")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("deal_sheets").select("*").order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },

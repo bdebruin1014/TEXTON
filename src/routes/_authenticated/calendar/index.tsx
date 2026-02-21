@@ -5,6 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/calendar/")({
@@ -107,10 +108,10 @@ function CalendarPage() {
           </div>
           <button
             type="button"
+            onClick={() => toast.info("Event creation coming soon")}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
-            +
-            New Event
+            + New Event
           </button>
         </div>
       </div>

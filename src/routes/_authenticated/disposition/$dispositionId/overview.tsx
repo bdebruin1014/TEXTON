@@ -4,6 +4,7 @@ import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { ProjectSelect } from "@/components/forms/ProjectSelect";
 import { StatusSelect } from "@/components/forms/StatusSelect";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { RecordTeamAssignment } from "@/components/teams/RecordTeamAssignment";
 import { DISPOSITION_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
@@ -54,12 +55,13 @@ function Overview() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Project & Lot Assignment</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <ProjectSelect label="Project *" value={disposition.project_id} onSave={save("project_id")} />
+          <ProjectSelect label="Project" value={disposition.project_id} onSave={save("project_id")} />
           <AutoSaveField
-            label="Lot Number *"
+            label="Lot Number"
             value={disposition.lot_number}
             onSave={save("lot_number")}
             placeholder="Lot #"
+            required
           />
           <AutoSaveField
             label="Lot ID"
@@ -85,6 +87,7 @@ function Overview() {
             value={disposition.status}
             onSave={save("status")}
             statuses={DISPOSITION_STATUSES}
+            required
           />
           <AutoSaveField
             label="Project Name"
@@ -131,6 +134,11 @@ function Overview() {
             type="date"
           />
         </div>
+      </div>
+
+      {/* Team & Assignments */}
+      <div className="mb-8">
+        <RecordTeamAssignment recordType="disposition" recordId={dispositionId} />
       </div>
 
       {/* Notes */}

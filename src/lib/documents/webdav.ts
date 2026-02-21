@@ -28,7 +28,6 @@ export function getEditInPlaceUrl(document: {
   return `${protocol}:ofe|u|${webdavUrl}`;
 }
 
-
 export function getOfficeAppName(extension: string | null | undefined): string | null {
   if (!extension) return null;
   const ext = extension.toLowerCase().startsWith(".") ? extension.toLowerCase() : `.${extension.toLowerCase()}`;

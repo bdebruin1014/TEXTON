@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/pipeline/")({
 interface Opportunity {
   id: string;
   opportunity_name: string;
+  record_number: string | null;
   status: string;
   project_type: string | null;
   source: string | null;
@@ -32,6 +33,12 @@ interface Opportunity {
 }
 
 const columns: ColumnDef<Opportunity, unknown>[] = [
+  {
+    accessorKey: "record_number",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="#" />,
+    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("record_number") ?? "—"}</span>,
+    size: 180,
+  },
   {
     accessorKey: "opportunity_name",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
@@ -104,7 +111,7 @@ function PipelineIndex() {
     {
       label: "New Leads",
       value: statusCounts["New Lead"] ?? 0,
-      accentColor: "#48BB78",
+      accentColor: "#4A8C5E",
     },
     {
       label: "Under Review",
@@ -151,6 +158,7 @@ function PipelineIndex() {
       onStatusChange={setActiveStatus}
       onCreate={handleCreate}
       createLabel="New Opportunity"
+      onCreateWithAI={() => navigate({ to: "/pipeline/new" })}
     >
       {isLoading ? (
         <TableSkeleton rows={8} cols={6} />

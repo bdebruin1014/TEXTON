@@ -160,12 +160,7 @@ function ContractUpgrades() {
           }
         />
       ) : (
-        <DataTable
-          columns={columns}
-          data={upgrades}
-          searchKey="upgrade_name"
-          searchPlaceholder="Search upgrades..."
-        />
+        <DataTable columns={columns} data={upgrades} searchKey="upgrade_name" searchPlaceholder="Search upgrades..." />
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ModuleKpi {
@@ -23,7 +24,70 @@ interface ModuleIndexProps {
   /** Inline create button rendered top-right under the header */
   onCreate?: () => void;
   createLabel?: string;
+  /** When provided, shows a dropdown with Quick Create + Create with AI */
+  onCreateWithAI?: () => void;
   children: React.ReactNode;
+}
+
+function CreateDropdown({
+  createLabel,
+  onCreate,
+  onCreateWithAI,
+}: {
+  createLabel: string;
+  onCreate: () => void;
+  onCreateWithAI: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    if (ref.current && !ref.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex shrink-0 items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+      >
+        + {createLabel}
+        <span className="ml-1 text-xs opacity-70">{open ? "\u25B2" : "\u25BC"}</span>
+      </button>
+      {open && (
+        <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-border bg-card shadow-lg">
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onCreate();
+            }}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-accent first:rounded-t-lg"
+          >
+            Quick Create
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onCreateWithAI();
+            }}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-foreground transition-colors hover:bg-accent last:rounded-b-lg"
+          >
+            Create with AI
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function ModuleIndex({
@@ -35,17 +99,20 @@ export function ModuleIndex({
   onStatusChange,
   onCreate,
   createLabel = "New",
+  onCreateWithAI,
   children,
 }: ModuleIndexProps) {
   return (
     <div>
-      {/* Header + inline create button */}
+      {/* Header + create button (simple or dropdown) */}
       <div className="mb-5 flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
         </div>
-        {onCreate && (
+        {onCreate && onCreateWithAI ? (
+          <CreateDropdown createLabel={createLabel} onCreate={onCreate} onCreateWithAI={onCreateWithAI} />
+        ) : onCreate ? (
           <button
             type="button"
             onClick={onCreate}
@@ -53,7 +120,7 @@ export function ModuleIndex({
           >
             + {createLabel}
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* KPI Cards */}

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import { useUploadDocument } from "@/hooks/useDocuments";
+import { cn } from "@/lib/utils";
 
 interface FileUploadZoneProps {
   folderId: string | null;
@@ -47,7 +47,9 @@ export function FileUploadZone({
           {
             onSuccess: () => {
               setUploads((prev) =>
-                prev.map((u, j) => (j === prev.length - fileArray.length + i ? { ...u, status: "done", progress: 100 } : u)),
+                prev.map((u, j) =>
+                  j === prev.length - fileArray.length + i ? { ...u, status: "done", progress: 100 } : u,
+                ),
               );
               setTimeout(() => {
                 setUploads((prev) => prev.filter((u) => u.status !== "done"));

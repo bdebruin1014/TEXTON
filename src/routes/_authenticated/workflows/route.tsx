@@ -12,6 +12,7 @@ const NAV_SECTIONS = [
     items: [
       { label: "Core Workflows", path: "/workflows" },
       { label: "Templates", path: "/workflows/templates" },
+      { label: "Active Workflows", path: "/workflows/instances" },
     ],
   },
   {
@@ -19,7 +20,7 @@ const NAV_SECTIONS = [
     items: [
       { label: "Transaction Types", path: "/workflows/transaction-types" },
       { label: "Smart Actions", path: "/workflows/smart-actions" },
-      { label: "Assignment Groups", path: "/workflows/assignment-groups" },
+      { label: "Teams", path: "/workflows/teams" },
     ],
   },
 ];

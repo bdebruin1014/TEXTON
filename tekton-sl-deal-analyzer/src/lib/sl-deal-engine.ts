@@ -10,32 +10,32 @@
  * Cost vintage: DM Budget September 2025
  */
 
+import { SL_CONTRACT_DEFAULTS, SL_FIXED_COSTS } from "../data/sl-constants";
 import type {
+  LandCostRating,
+  NPMRating,
+  SensitivityResults,
+  SensitivityScenario,
   SLDealInputs,
   SLDealResults,
-  SensitivityScenario,
-  SensitivityResults,
-  NPMRating,
-  LandCostRating,
-} from '../types/sl-deal.types';
-import { SL_FIXED_COSTS, SL_CONTRACT_DEFAULTS } from '../data/sl-constants';
+} from "../types/sl-deal.types";
 
 // ---------------------------------------------------------------------------
 // Rating helpers
 // ---------------------------------------------------------------------------
 
 export function rateNPM(npm: number): NPMRating {
-  if (npm >= 0.10) return 'STRONG';
-  if (npm >= 0.07) return 'GOOD';
-  if (npm >= 0.05) return 'MARGINAL';
-  return 'NO_GO';
+  if (npm >= 0.1) return "STRONG";
+  if (npm >= 0.07) return "GOOD";
+  if (npm >= 0.05) return "MARGINAL";
+  return "NO_GO";
 }
 
 export function rateLandCost(ratio: number): LandCostRating {
-  if (ratio < 0.20) return 'STRONG';
-  if (ratio < 0.25) return 'ACCEPTABLE';
-  if (ratio < 0.30) return 'CAUTION';
-  return 'OVERPAYING';
+  if (ratio < 0.2) return "STRONG";
+  if (ratio < 0.25) return "ACCEPTABLE";
+  if (ratio < 0.3) return "CAUTION";
+  return "OVERPAYING";
 }
 
 // ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ export function calculateSLDeal(inputs: SLDealInputs): SLDealResults {
 
   // ---- 8. Financing ----
   const ltcRatio = inputs.ltc_ratio ?? 0.85;
-  const interestRate = inputs.interest_rate ?? 0.10;
+  const interestRate = inputs.interest_rate ?? 0.1;
   const costOfCapitalRate = inputs.cost_of_capital_rate ?? 0.16;
 
   const loanAmount = totalProjectCost * ltcRatio;
@@ -224,9 +224,9 @@ export function runSensitivityAnalysis(inputs: SLDealInputs): SensitivityResults
   return {
     base,
     bestCase: runScenario(inputs, 0.95, 1.05, 0),
-    worstCase: runScenario(inputs, 1.10, 0.90, 30),
-    costOverrun10: runScenario(inputs, 1.10, 1.0, 0),
-    aspDecline10: runScenario(inputs, 1.0, 0.90, 0),
+    worstCase: runScenario(inputs, 1.1, 0.9, 30),
+    costOverrun10: runScenario(inputs, 1.1, 1.0, 0),
+    aspDecline10: runScenario(inputs, 1.0, 0.9, 0),
     delay30Days: runScenario(inputs, 1.0, 1.0, 30),
   };
 }

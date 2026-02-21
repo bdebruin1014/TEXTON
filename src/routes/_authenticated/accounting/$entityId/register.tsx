@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   FilterClickList,
   FilterSection,
@@ -250,12 +251,14 @@ function EntityRegister() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => toast.info("Daily reconciliation coming soon")}
               className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
             >
               Finish Daily Reconciliation
             </button>
             <button
               type="button"
+              onClick={() => toast.info("Transaction entry coming soon")}
               className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-button-hover"
             >
               + Add Transaction

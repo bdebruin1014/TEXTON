@@ -104,14 +104,12 @@ function Reports() {
                       type="button"
                       className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
                     >
-                      Download
-                      PDF
+                      Download PDF
                     </button>
                     <button
                       type="button"
                       className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
                     >
-                      
                       Excel
                     </button>
                   </div>

@@ -115,20 +115,13 @@ serve(async (req) => {
 
   const payload: EmailPayload = await req.json();
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let emailSubject = "";
   let emailHtml = "";
 
   if (payload.template === "share_notification" && payload.share_id) {
-    const { data: share } = await supabase
-      .from("document_shares")
-      .select("*")
-      .eq("id", payload.share_id)
-      .single();
+    const { data: share } = await supabase.from("document_shares").select("*").eq("id", payload.share_id).single();
 
     if (!share) {
       return new Response(JSON.stringify({ error: "Share not found" }), {
@@ -140,10 +133,7 @@ serve(async (req) => {
     const result = buildShareEmail(share);
     emailSubject = result.subject;
     emailHtml = result.html;
-  } else if (
-    (payload.template === "upload_request" || payload.template === "reminder") &&
-    payload.request_id
-  ) {
+  } else if ((payload.template === "upload_request" || payload.template === "reminder") && payload.request_id) {
     const { data: request } = await supabase
       .from("upload_requests")
       .select("*, items:upload_request_items(*)")

@@ -16,10 +16,7 @@ serve(async (req) => {
     });
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   // Validate share token
   const { data: share } = await supabase
@@ -37,11 +34,7 @@ serve(async (req) => {
   }
 
   // Get document
-  const { data: doc } = await supabase
-    .from("documents")
-    .select("*")
-    .eq("id", documentId)
-    .single();
+  const { data: doc } = await supabase.from("documents").select("*").eq("id", documentId).single();
 
   if (!doc) {
     return new Response(JSON.stringify({ error: "Not found" }), {
@@ -51,9 +44,7 @@ serve(async (req) => {
   }
 
   // Generate signed URL (60 minutes)
-  const { data: signedUrl } = await supabase.storage
-    .from(doc.bucket)
-    .createSignedUrl(doc.storage_path, 3600);
+  const { data: signedUrl } = await supabase.storage.from(doc.storage_bucket).createSignedUrl(doc.storage_path, 3600);
 
   // Log download
   await supabase.from("document_share_access_log").insert({

@@ -3,11 +3,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { RCH_CONTRACT_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -27,14 +29,7 @@ interface RchContract {
   created_at: string;
 }
 
-const CONTRACT_STATUSES = [
-  "Draft",
-  "In Progress",
-  "Pending Signature",
-  "Executed",
-  "Jobs Created",
-  "Cancelled",
-];
+const CONTRACT_STATUSES = RCH_CONTRACT_STATUSES;
 
 const columns: ColumnDef<RchContract, unknown>[] = [
   {
@@ -49,7 +44,7 @@ const columns: ColumnDef<RchContract, unknown>[] = [
       const val = row.getValue("contract_type") as string | null;
       if (!val) return <span className="text-muted">---</span>;
       return (
-        <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+        <span className="inline-flex items-center rounded-full bg-info-bg px-2.5 py-0.5 text-xs font-medium text-info-text">
           {val}
         </span>
       );
@@ -121,12 +116,9 @@ function RchContractsIndex() {
   const totalUnits = contracts.reduce((sum, c) => sum + (c.unit_count ?? 0), 0);
 
   const handleCreate = async () => {
-    const { data, error } = await supabase
-      .from("rch_contracts")
-      .insert({ status: "Draft" })
-      .select()
-      .single();
+    const { data, error } = await supabase.from("rch_contracts").insert({ status: "Draft" }).select().single();
     if (error) {
+      toast.error("Failed to create contract");
       return;
     }
     navigate({ to: "/operations/rch-contracts/$contractId/overview", params: { contractId: data.id } });
@@ -157,9 +149,7 @@ function RchContractsIndex() {
           type="button"
           onClick={() => setActiveFilter("all")}
           className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-            activeFilter === "all"
-              ? "bg-primary text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            activeFilter === "all" ? "bg-primary text-white" : "bg-accent text-muted-foreground hover:bg-accent/80"
           }`}
         >
           All ({contracts.length})
@@ -170,9 +160,7 @@ function RchContractsIndex() {
             type="button"
             onClick={() => setActiveFilter(s)}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              activeFilter === s
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              activeFilter === s ? "bg-primary text-white" : "bg-accent text-muted-foreground hover:bg-accent/80"
             }`}
           >
             {s} ({statusCounts[s] ?? 0})

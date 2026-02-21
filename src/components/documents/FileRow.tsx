@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
-import { getFileIcon } from "@/lib/documents/icons";
-import { getOfficeAppName } from "@/lib/documents/webdav";
-import { formatFileSize } from "@/lib/documents/storage";
 import type { DocumentRecord } from "@/hooks/useDocuments";
+import { getFileIcon } from "@/lib/documents/icons";
+import { formatFileSize } from "@/lib/documents/storage";
+import { getOfficeAppName } from "@/lib/documents/webdav";
+import { formatDate } from "@/lib/utils";
 import { TagEditor } from "./TagEditor";
 
 interface FileRowProps {
@@ -57,11 +57,7 @@ export function FileRow({
         />
       </td>
       <td className="px-3 py-2">
-        <button
-          type="button"
-          onClick={() => onPreview?.(doc)}
-          className="flex items-center gap-2.5 text-left"
-        >
+        <button type="button" onClick={() => onPreview?.(doc)} className="flex items-center gap-2.5 text-left">
           <span
             className="inline-flex h-5 w-8 shrink-0 items-center justify-center rounded text-[9px] font-bold uppercase"
             style={{ backgroundColor: `${iconConfig.color}20`, color: iconConfig.color }}
@@ -71,9 +67,7 @@ export function FileRow({
           <div className="min-w-0">
             <div className="truncate text-sm font-medium text-foreground">
               {doc.name}
-              {doc.file_extension && (
-                <span className="text-muted-foreground">{doc.file_extension}</span>
-              )}
+              {doc.file_extension && <span className="text-muted-foreground">{doc.file_extension}</span>}
             </div>
             {/* Tags pills */}
             {doc.tags && doc.tags.length > 0 && (
@@ -131,7 +125,10 @@ export function FileRow({
               {/* Preview */}
               <button
                 type="button"
-                onClick={() => { onPreview?.(doc); setMenuOpen(false); }}
+                onClick={() => {
+                  onPreview?.(doc);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Preview
@@ -139,7 +136,10 @@ export function FileRow({
               {/* Download */}
               <button
                 type="button"
-                onClick={() => { onDownload(doc); setMenuOpen(false); }}
+                onClick={() => {
+                  onDownload(doc);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Download
@@ -148,7 +148,10 @@ export function FileRow({
               {officeApp && (
                 <button
                   type="button"
-                  onClick={() => { onEditInPlace(doc); setMenuOpen(false); }}
+                  onClick={() => {
+                    onEditInPlace(doc);
+                    setMenuOpen(false);
+                  }}
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
                 >
                   Edit in {officeApp}
@@ -158,7 +161,10 @@ export function FileRow({
               {onShare && (
                 <button
                   type="button"
-                  onClick={() => { onShare(doc); setMenuOpen(false); }}
+                  onClick={() => {
+                    onShare(doc);
+                    setMenuOpen(false);
+                  }}
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
                 >
                   Share
@@ -180,7 +186,10 @@ export function FileRow({
               {/* Move to Folder */}
               <button
                 type="button"
-                onClick={() => { onMove(doc.id); setMenuOpen(false); }}
+                onClick={() => {
+                  onMove(doc.id);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Move to Folder
@@ -188,7 +197,10 @@ export function FileRow({
               {/* Tags */}
               <button
                 type="button"
-                onClick={() => { setShowTags(true); setMenuOpen(false); }}
+                onClick={() => {
+                  setShowTags(true);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Tags
@@ -196,7 +208,10 @@ export function FileRow({
               {/* Version History */}
               <button
                 type="button"
-                onClick={() => { onVersionHistory?.(doc); setMenuOpen(false); }}
+                onClick={() => {
+                  onVersionHistory?.(doc);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Version History
@@ -213,7 +228,10 @@ export function FileRow({
               {/* Archive */}
               <button
                 type="button"
-                onClick={() => { onArchive(doc.id); setMenuOpen(false); }}
+                onClick={() => {
+                  onArchive(doc.id);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-foreground hover:bg-accent/50"
               >
                 Archive
@@ -221,7 +239,10 @@ export function FileRow({
               {/* Delete */}
               <button
                 type="button"
-                onClick={() => { onDelete(doc); setMenuOpen(false); }}
+                onClick={() => {
+                  onDelete(doc);
+                  setMenuOpen(false);
+                }}
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-destructive hover:bg-accent/50"
               >
                 Delete

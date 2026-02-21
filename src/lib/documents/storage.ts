@@ -9,11 +9,7 @@ export const BUCKET_MAP: Record<string, string> = {
   contact: "contact-docs",
 };
 
-export function getStoragePath(
-  recordId: string,
-  folderPath: string | null,
-  filename: string,
-): string {
+export function getStoragePath(recordId: string, folderPath: string | null, filename: string): string {
   const parts = [recordId];
   if (folderPath) parts.push(folderPath);
   parts.push(filename);

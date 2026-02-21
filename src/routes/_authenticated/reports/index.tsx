@@ -236,9 +236,7 @@ function ReportsIndex() {
     let result = PRESET_REPORTS.filter((r) => r.category === activeCategory);
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
-      result = result.filter(
-        (r) => r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q),
-      );
+      result = result.filter((r) => r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q));
     }
     return result;
   }, [activeCategory, searchTerm]);

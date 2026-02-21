@@ -154,12 +154,7 @@ function SterlingPO() {
           }
         />
       ) : (
-        <DataTable
-          columns={columns}
-          data={records}
-          searchKey="unit_lot_number"
-          searchPlaceholder="Search by unit..."
-        />
+        <DataTable columns={columns} data={records} searchKey="unit_lot_number" searchPlaceholder="Search by unit..." />
       )}
     </div>
   );

@@ -1,4 +1,11 @@
-import { createFileRoute, type ErrorComponentProps, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  type ErrorComponentProps,
+  Link,
+  Outlet,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
 import { AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageTransition } from "@/components/shared/PageTransition";

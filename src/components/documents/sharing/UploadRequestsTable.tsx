@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
 import {
   getUploadRequestUrl,
   useCancelUploadRequest,
   useSendReminder,
   useUploadRequests,
 } from "@/hooks/useUploadRequests";
+import { formatDate } from "@/lib/utils";
 
 interface UploadRequestsTableProps {
   recordType: string;
@@ -76,7 +76,8 @@ export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTabl
           <tbody>
             {requests.map((req) => {
               const totalItems = req.items?.length ?? 0;
-              const fulfilledItems = req.items?.filter((i) => i.status === "uploaded" || i.status === "accepted").length ?? 0;
+              const fulfilledItems =
+                req.items?.filter((i) => i.status === "uploaded" || i.status === "accepted").length ?? 0;
 
               return (
                 <tr

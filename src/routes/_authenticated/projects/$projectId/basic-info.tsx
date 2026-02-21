@@ -4,6 +4,7 @@ import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField"
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { StatusSelect } from "@/components/forms/StatusSelect";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { RecordTeamAssignment } from "@/components/teams/RecordTeamAssignment";
 import { PROJECT_STATUSES, PROJECT_TYPES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
@@ -112,14 +113,15 @@ function BasicInfo() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Project Identity</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <AutoSaveField label="Project Name" value={project.project_name} onSave={save("project_name")} />
-          <StatusSelect label="Status" value={project.status} onSave={save("status")} statuses={PROJECT_STATUSES} />
+          <AutoSaveField label="Project Name" value={project.project_name} onSave={save("project_name")} required />
+          <StatusSelect label="Status" value={project.status} onSave={save("status")} statuses={PROJECT_STATUSES} required />
           <AutoSaveSelect
             label="Project Type"
             value={project.project_type}
             onSave={save("project_type")}
             options={PROJECT_TYPES}
             placeholder="Select type..."
+            required
           />
           <AutoSaveField
             label="Entity"
@@ -143,6 +145,11 @@ function BasicInfo() {
             placeholder="Number of lots"
           />
         </div>
+      </div>
+
+      {/* Team & Assignments */}
+      <div className="mb-8">
+        <RecordTeamAssignment recordType="project" recordId={projectId} />
       </div>
 
       {/* Notes */}

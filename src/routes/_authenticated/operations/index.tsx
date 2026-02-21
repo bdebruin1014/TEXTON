@@ -8,6 +8,7 @@ const CARDS = [
   { label: "Deal Sheets", description: "Analyze lot-level deal economics", path: "/operations/deal-sheets" },
   { label: "E-Sign Documents", description: "Send and track DocuSeal documents", path: "/operations/esign" },
   { label: "RCH Contracts", description: "Manage RCH builder contracts", path: "/operations/rch-contracts" },
+  { label: "Matters", description: "Track legal, compliance, and operational matters", path: "/operations/matters" },
 ] as const;
 
 function OperationsOverview() {

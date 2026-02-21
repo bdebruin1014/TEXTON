@@ -21,11 +21,7 @@ function CreateJobs() {
   const { data: contract, isLoading: contractLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contracts")
-        .select("*")
-        .eq("id", contractId)
-        .single();
+      const { data, error } = await supabase.from("rch_contracts").select("*").eq("id", contractId).single();
       if (error) throw error;
       return data;
     },
@@ -123,22 +119,30 @@ function CreateJobs() {
               Units to Create as Jobs ({units.length})
             </h3>
             <div className="space-y-2">
-              {units.map((unit: { id: string; lot_number?: string | null; plan_name?: string | null; elevation?: string | null; phase?: string | null }) => (
-                <div
-                  key={unit.id}
-                  className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
-                >
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{unit.lot_number ?? "---"}</p>
-                      <p className="text-xs text-muted">
-                        {[unit.plan_name, unit.elevation, unit.phase].filter(Boolean).join(" / ") || "No details"}
-                      </p>
+              {units.map(
+                (unit: {
+                  id: string;
+                  lot_number?: string | null;
+                  plan_name?: string | null;
+                  elevation?: string | null;
+                  phase?: string | null;
+                }) => (
+                  <div
+                    key={unit.id}
+                    className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{unit.lot_number ?? "---"}</p>
+                        <p className="text-xs text-muted">
+                          {[unit.plan_name, unit.elevation, unit.phase].filter(Boolean).join(" / ") || "No details"}
+                        </p>
+                      </div>
                     </div>
+                    {createdJobIds.length > 0 && <span className="text-sm text-success">{"✓"}</span>}
                   </div>
-                  {createdJobIds.length > 0 && <span className="text-sm text-success">{"✓"}</span>}
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </div>
 
@@ -173,9 +177,7 @@ function CreateJobs() {
                   Creating {units.length} Job(s)...
                 </>
               ) : (
-                <>
-                  Create {units.length} Job(s)
-                </>
+                <>Create {units.length} Job(s)</>
               )}
             </button>
           )}

@@ -51,7 +51,6 @@ function SmartActions() {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Action Name" />,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          
           <span className="font-medium">{row.getValue("name")}</span>
         </div>
       ),
@@ -109,8 +108,7 @@ function SmartActions() {
           onClick={() => addAction.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Smart Action
+          + New Smart Action
         </button>
       </div>
 

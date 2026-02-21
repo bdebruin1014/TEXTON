@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { WorkflowLauncher } from "@/components/workflows/WorkflowLauncher";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "@/lib/utils";
 
@@ -26,6 +28,7 @@ interface Workflow {
 function WorkflowsList() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [showLauncher, setShowLauncher] = useState(false);
 
   const { data: workflows = [], isLoading } = useQuery<Workflow[]>({
     queryKey: ["workflows"],
@@ -125,14 +128,22 @@ function WorkflowsList() {
           <h1 className="text-xl font-semibold text-foreground">Core Workflows</h1>
           <p className="mt-0.5 text-sm text-muted">{workflows.length} workflow templates</p>
         </div>
-        <button
-          type="button"
-          onClick={() => addWorkflow.mutate()}
-          className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-        >
-          +
-          New Workflow
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setShowLauncher(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/5"
+          >
+            Launch Workflow
+          </button>
+          <button
+            type="button"
+            onClick={() => addWorkflow.mutate()}
+            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+          >
+            + New Template
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -151,6 +162,8 @@ function WorkflowsList() {
           onRowClick={(row) => navigate({ to: `/workflows/${row.id}` as string })}
         />
       )}
+
+      {showLauncher && <WorkflowLauncher onClose={() => setShowLauncher(false)} />}
     </div>
   );
 }

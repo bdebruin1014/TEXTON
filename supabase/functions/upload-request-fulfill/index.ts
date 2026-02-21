@@ -19,10 +19,7 @@ serve(async (req) => {
     });
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
+  const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   // Validate request token
   const { data: request } = await supabase
@@ -56,7 +53,7 @@ serve(async (req) => {
 
   // Validate file extension if constrained
   if (item.accepted_extensions?.length) {
-    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    const ext = file.name.includes(".") ? "." + file.name.split(".").pop()?.toLowerCase() : "";
     if (!item.accepted_extensions.includes(ext)) {
       return new Response(
         JSON.stringify({
@@ -103,20 +100,17 @@ serve(async (req) => {
   }
 
   // Create document record
-  const ext = "." + file.name.split(".").pop()?.toLowerCase();
   const { data: doc, error: docError } = await supabase
     .from("documents")
     .insert({
       record_type: request.record_type,
       record_id: request.record_id,
       folder_id: destinationFolderId,
-      name: file.name.replace(/\.[^.]+$/, ""),
-      original_filename: file.name,
+      file_name: file.name,
       storage_path: storagePath,
-      bucket,
-      mime_type: file.type,
+      storage_bucket: bucket,
+      file_type: file.type,
       file_size: file.size,
-      file_extension: ext,
       source: "upload",
       tags: item.auto_tag ? [item.auto_tag] : [],
       description: `Uploaded by ${request.recipient_name} via upload request: ${request.subject}`,

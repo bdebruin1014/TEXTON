@@ -112,8 +112,7 @@ function Draws() {
           onClick={() => addDraw.mutate()}
           className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
         >
-          +
-          New Draw Request
+          + New Draw Request
         </button>
       </div>
 

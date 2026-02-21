@@ -5,6 +5,7 @@ import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { ProjectSelect } from "@/components/forms/ProjectSelect";
 import { StatusSelect } from "@/components/forms/StatusSelect";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { RecordTeamAssignment } from "@/components/teams/RecordTeamAssignment";
 import { JOB_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 
@@ -55,8 +56,8 @@ function JobInfo() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Project & Lot Assignment</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <ProjectSelect label="Project *" value={job.project_id} onSave={save("project_id")} />
-          <AutoSaveField label="Lot Number *" value={job.lot_number} onSave={save("lot_number")} placeholder="Lot #" />
+          <ProjectSelect label="Project" value={job.project_id} onSave={save("project_id")} />
+          <AutoSaveField label="Lot Number" value={job.lot_number} onSave={save("lot_number")} placeholder="Lot #" required />
           <AutoSaveField label="Lot ID" value={job.lot_id} onSave={save("lot_id")} placeholder="Lot record ID" />
         </div>
       </div>
@@ -65,7 +66,7 @@ function JobInfo() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Job Identity</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <StatusSelect label="Status" value={job.status} onSave={save("status")} statuses={JOB_STATUSES} />
+          <StatusSelect label="Status" value={job.status} onSave={save("status")} statuses={JOB_STATUSES} required />
           <AutoSaveField
             label="Floor Plan"
             value={job.floor_plan_name}
@@ -123,6 +124,11 @@ function JobInfo() {
           <CurrencyInput label="Spent Total" value={job.spent_total} onSave={save("spent_total")} />
           <CurrencyInput label="Contract Amount" value={job.contract_amount} onSave={save("contract_amount")} />
         </div>
+      </div>
+
+      {/* Team & Assignments */}
+      <div className="mb-8">
+        <RecordTeamAssignment recordType="job" recordId={jobId} />
       </div>
 
       {/* Notes */}

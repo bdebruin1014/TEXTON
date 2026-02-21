@@ -1,11 +1,11 @@
 export const OPPORTUNITY_STATUSES = [
   "New Lead",
-  "Researching",
+  "Qualifying",
   "Analyzing",
   "Due Diligence",
   "Under Contract",
-  "Closed - Won",
-  "Closed - Lost",
+  "Closed Won",
+  "Closed Lost",
   "On Hold",
 ] as const;
 
@@ -68,6 +68,15 @@ export const ESIGN_STATUSES = [
   "Expired",
 ] as const;
 
+export const RCH_CONTRACT_STATUSES = [
+  "Draft",
+  "In Progress",
+  "Pending Signature",
+  "Executed",
+  "Jobs Created",
+  "Cancelled",
+] as const;
+
 export const PROJECT_TYPES = ["Scattered Lot", "Community Development", "Lot Development", "Lot Purchase"] as const;
 
 export const COST_BOOK_STATUSES = ["Draft", "Active", "Archived"] as const;
@@ -123,6 +132,55 @@ export const COMPANY_TYPE_CATEGORIES = [
 
 export const COMPANY_TYPES = COMPANY_TYPE_CATEGORIES.flatMap((c) => c.types);
 
+export const MATTER_STATUSES = ["open", "in_progress", "on_hold", "resolved", "closed", "cancelled"] as const;
+
+export const MATTER_PRIORITIES = ["critical", "high", "medium", "low"] as const;
+
+export const MATTER_CATEGORIES = [
+  "contract_dispute",
+  "refinance",
+  "insurance_claim",
+  "legal",
+  "compliance",
+  "zoning",
+  "permitting",
+  "partnership",
+  "vendor_dispute",
+  "title_issue",
+  "environmental",
+  "tax",
+  "investor_relations",
+  "construction_defect",
+  "other",
+] as const;
+
+export const MATTER_CATEGORY_LABELS: Record<string, string> = {
+  contract_dispute: "Contract Dispute",
+  refinance: "Refinance",
+  insurance_claim: "Insurance Claim",
+  legal: "Legal",
+  compliance: "Compliance",
+  zoning: "Zoning",
+  permitting: "Permitting",
+  partnership: "Partnership",
+  vendor_dispute: "Vendor Dispute",
+  title_issue: "Title Issue",
+  environmental: "Environmental",
+  tax: "Tax",
+  investor_relations: "Investor Relations",
+  construction_defect: "Construction Defect",
+  other: "Other",
+};
+
+export const MATTER_STATUS_LABELS: Record<string, string> = {
+  open: "Open",
+  in_progress: "In Progress",
+  on_hold: "On Hold",
+  resolved: "Resolved",
+  closed: "Closed",
+  cancelled: "Cancelled",
+};
+
 export const PO_STATUSES = [
   "Draft",
   "Submitted",
@@ -161,12 +219,12 @@ export const computeContingency = (sections1to5: number) => Math.min(10_000, sec
 export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   // Opportunity — muted/desaturated v3.2
   "New Lead": { bg: "bg-info-bg", text: "text-info-text" },
-  Researching: { bg: "bg-info-bg", text: "text-info-text" },
+  Qualifying: { bg: "bg-info-bg", text: "text-info-text" },
   Analyzing: { bg: "bg-info-bg", text: "text-info-text" },
   "Due Diligence": { bg: "bg-warning-bg", text: "text-warning-text" },
   "Under Contract": { bg: "bg-warning-bg", text: "text-warning-text" },
-  "Closed - Won": { bg: "bg-success-bg", text: "text-success-text" },
-  "Closed - Lost": { bg: "bg-destructive-bg", text: "text-destructive-text" },
+  "Closed Won": { bg: "bg-success-bg", text: "text-success-text" },
+  "Closed Lost": { bg: "bg-destructive-bg", text: "text-destructive-text" },
   "On Hold": { bg: "bg-accent", text: "text-muted-foreground" },
 
   // Project
@@ -225,6 +283,19 @@ export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   Declined: { bg: "bg-destructive-bg", text: "text-destructive-text" },
   Voided: { bg: "bg-accent", text: "text-muted-foreground" },
   Expired: { bg: "bg-warning-bg", text: "text-warning-text" },
+
+  // Matter
+  open: { bg: "bg-info-bg", text: "text-info-text" },
+  in_progress: { bg: "bg-warning-bg", text: "text-warning-text" },
+  on_hold: { bg: "bg-accent", text: "text-muted-foreground" },
+  resolved: { bg: "bg-success-bg", text: "text-success-text" },
+  cancelled: { bg: "bg-destructive-bg", text: "text-destructive-text" },
+
+  // Matter Priority
+  critical: { bg: "bg-destructive-bg", text: "text-destructive-text" },
+  high: { bg: "bg-warning-bg", text: "text-warning-text" },
+  medium: { bg: "bg-info-bg", text: "text-info-text" },
+  low: { bg: "bg-accent", text: "text-muted-foreground" },
 };
 
 export const NAV_MODULES = [
@@ -238,6 +309,43 @@ export const NAV_MODULES = [
   { label: "Admin", path: "/admin" },
 ] as const;
 
+// Teams
+export const TEAM_TYPES = ["department", "project", "ad_hoc"] as const;
+export const TEAM_TYPE_LABELS: Record<string, string> = {
+  department: "Department",
+  project: "Project Team",
+  ad_hoc: "Ad Hoc",
+};
+export const TEAM_MEMBER_ROLES = ["lead", "member", "viewer"] as const;
+export const ASSIGNMENT_ROLES = ["responsible", "accountable", "consulted", "informed"] as const;
+export const ASSIGNABLE_RECORD_TYPES = [
+  "opportunity",
+  "project",
+  "job",
+  "disposition",
+  "matter",
+  "rch_contract",
+] as const;
+
+// COA Template System
+export const COA_TEMPLATE_ENTITY_TYPE_MAP: Record<string, string> = {
+  operating: "Operating Company",
+  spe_scattered_lot: "SPE - Scattered Lot",
+  spe_community_dev: "SPE - Community Development",
+  spe_lot_dev: "SPE - Lot Development",
+  spe_lot_purchase: "SPE - Lot Purchase Only",
+};
+
+export const COA_VARIABLE_KEYS = ["ABBR", "MEMBER_1_NAME", "MEMBER_2_NAME"] as const;
+
+export const ENTITY_COA_TYPES = [
+  { value: "operating", label: "Operating Company" },
+  { value: "spe_scattered_lot", label: "SPE - Scattered Lot" },
+  { value: "spe_community_dev", label: "SPE - Community Development" },
+  { value: "spe_lot_dev", label: "SPE - Lot Development" },
+  { value: "spe_lot_purchase", label: "SPE - Lot Purchase Only" },
+] as const;
+
 export const OPS_DROPDOWN_SECTIONS = [
   {
     label: "Operations",
@@ -246,6 +354,7 @@ export const OPS_DROPDOWN_SECTIONS = [
       { label: "Workflows", path: "/workflows" },
       { label: "E-Signatures", path: "/operations/esign" },
       { label: "RCH Contracts", path: "/operations/rch-contracts" },
+      { label: "Matters", path: "/operations/matters" },
     ],
   },
   {

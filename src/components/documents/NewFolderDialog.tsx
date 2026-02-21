@@ -8,8 +8,11 @@ interface NewFolderDialogProps {
 export function NewFolderDialog({ onSubmit, onCancel }: NewFolderDialogProps) {
   const [name, setName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const submittedRef = useRef(false);
 
   const handleSubmit = () => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     const trimmed = name.trim();
     if (trimmed) {
       onSubmit(trimmed);

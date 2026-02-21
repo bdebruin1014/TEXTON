@@ -1,4 +1,4 @@
-export function TektonLogo({ size = "default" }: { size?: "sm" | "default" | "lg" }) {
+export function KovaLogo({ size = "default" }: { size?: "sm" | "default" | "lg" }) {
   const fontSize = { sm: 13, default: 16, lg: 20 }[size];
 
   return (
@@ -7,10 +7,13 @@ export function TektonLogo({ size = "default" }: { size?: "sm" | "default" | "lg
       style={{
         fontSize,
         letterSpacing: "2px",
-        color: "#2E6B42",
+        color: "#4A8C5E",
       }}
     >
       KOVA
     </span>
   );
 }
+
+/** @deprecated Use KovaLogo instead */
+export const TektonLogo = KovaLogo;

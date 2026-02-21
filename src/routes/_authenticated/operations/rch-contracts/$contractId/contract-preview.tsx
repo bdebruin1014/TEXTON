@@ -18,11 +18,7 @@ function ContractPreview() {
   const { data: contract, isLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contracts")
-        .select("*")
-        .eq("id", contractId)
-        .single();
+      const { data, error } = await supabase.from("rch_contracts").select("*").eq("id", contractId).single();
       if (error) throw error;
       return data;
     },
@@ -31,10 +27,7 @@ function ContractPreview() {
   const { data: units = [] } = useQuery({
     queryKey: ["rch-contract-units", contractId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("rch_contract_units")
-        .select("*")
-        .eq("contract_id", contractId);
+      const { data, error } = await supabase.from("rch_contract_units").select("*").eq("contract_id", contractId);
       if (error) throw error;
       return data ?? [];
     },
@@ -116,20 +109,25 @@ function ContractPreview() {
       {/* Units Preview */}
       {units.length > 0 && (
         <div className="mb-6 rounded-lg border border-border bg-card p-6">
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">
-            Units ({units.length})
-          </h3>
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Units ({units.length})</h3>
           <div className="space-y-2">
-            {units.map((unit: { id: string; lot_number?: string | null; plan_name?: string | null; elevation?: string | null }) => (
-              <div
-                key={unit.id}
-                className="flex items-center gap-4 rounded-lg border border-border bg-background px-4 py-2"
-              >
-                <span className="text-sm font-medium text-foreground">{unit.lot_number ?? "---"}</span>
-                <span className="text-sm text-muted">{unit.plan_name ?? "---"}</span>
-                <span className="text-sm text-muted">{unit.elevation ?? "---"}</span>
-              </div>
-            ))}
+            {units.map(
+              (unit: {
+                id: string;
+                lot_number?: string | null;
+                plan_name?: string | null;
+                elevation?: string | null;
+              }) => (
+                <div
+                  key={unit.id}
+                  className="flex items-center gap-4 rounded-lg border border-border bg-background px-4 py-2"
+                >
+                  <span className="text-sm font-medium text-foreground">{unit.lot_number ?? "---"}</span>
+                  <span className="text-sm text-muted">{unit.plan_name ?? "---"}</span>
+                  <span className="text-sm text-muted">{unit.elevation ?? "---"}</span>
+                </div>
+              ),
+            )}
           </div>
         </div>
       )}

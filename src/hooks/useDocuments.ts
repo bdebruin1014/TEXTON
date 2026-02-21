@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 import { BUCKET_MAP, getStoragePath } from "@/lib/documents/storage";
+import { supabase } from "@/lib/supabase";
 
 export interface DocumentRecord {
   id: string;
@@ -103,6 +104,7 @@ export function useUploadDocument() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["documents", data.record_type, data.record_id] });
     },
+    onError: () => toast.error("Failed to upload document"),
   });
 }
 
@@ -132,6 +134,7 @@ export function useRenameDocument() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["documents"] });
     },
+    onError: () => toast.error("Failed to rename document"),
   });
 }
 
@@ -145,6 +148,7 @@ export function useMoveDocument() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["documents"] });
     },
+    onError: () => toast.error("Failed to move document"),
   });
 }
 
@@ -160,6 +164,7 @@ export function useDeleteDocument() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["documents"] });
     },
+    onError: () => toast.error("Failed to delete document"),
   });
 }
 

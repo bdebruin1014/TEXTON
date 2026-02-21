@@ -46,6 +46,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAccountingIndexRouteImport } from './routes/_authenticated/accounting/index'
 import { Route as AuthenticatedWorkflowsTransactionTypesRouteImport } from './routes/_authenticated/workflows/transaction-types'
 import { Route as AuthenticatedWorkflowsTemplatesRouteImport } from './routes/_authenticated/workflows/templates'
+import { Route as AuthenticatedWorkflowsTeamsRouteImport } from './routes/_authenticated/workflows/teams'
 import { Route as AuthenticatedWorkflowsSmartActionsRouteImport } from './routes/_authenticated/workflows/smart-actions'
 import { Route as AuthenticatedWorkflowsAssignmentGroupsRouteImport } from './routes/_authenticated/workflows/assignment-groups'
 import { Route as AuthenticatedWorkflowsWorkflowIdRouteImport } from './routes/_authenticated/workflows/$workflowId'
@@ -57,12 +58,16 @@ import { Route as AuthenticatedPurchasingVendorsRouteImport } from './routes/_au
 import { Route as AuthenticatedPurchasingSubcontractsRouteImport } from './routes/_authenticated/purchasing/subcontracts'
 import { Route as AuthenticatedPurchasingPurchaseOrdersRouteImport } from './routes/_authenticated/purchasing/purchase-orders'
 import { Route as AuthenticatedPurchasingEstimatesRouteImport } from './routes/_authenticated/purchasing/estimates'
+import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
+import { Route as AuthenticatedPipelineNewRouteImport } from './routes/_authenticated/pipeline/new'
 import { Route as AuthenticatedInvestorsDistributionsRouteImport } from './routes/_authenticated/investors/distributions'
 import { Route as AuthenticatedInvestorsCapitalCallsRouteImport } from './routes/_authenticated/investors/capital-calls'
 import { Route as AuthenticatedInvestorsFundIdRouteImport } from './routes/_authenticated/investors/$fundId'
+import { Route as AuthenticatedDispositionNewRouteImport } from './routes/_authenticated/disposition/new'
 import { Route as AuthenticatedContactsEmployeesRouteImport } from './routes/_authenticated/contacts/employees'
 import { Route as AuthenticatedContactsCustomersRouteImport } from './routes/_authenticated/contacts/customers'
 import { Route as AuthenticatedContactsCompanyIdRouteImport } from './routes/_authenticated/contacts/$companyId'
+import { Route as AuthenticatedConstructionNewRouteImport } from './routes/_authenticated/construction/new'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminUpgradePackagesRouteImport } from './routes/_authenticated/admin/upgrade-packages'
 import { Route as AuthenticatedAdminSiteWorkItemsRouteImport } from './routes/_authenticated/admin/site-work-items'
@@ -100,11 +105,15 @@ import { Route as AuthenticatedAccountingEntityIdRouteRouteImport } from './rout
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects/$projectId/index'
 import { Route as AuthenticatedPipelineOpportunityIdIndexRouteImport } from './routes/_authenticated/pipeline/$opportunityId/index'
 import { Route as AuthenticatedOperationsRchContractsIndexRouteImport } from './routes/_authenticated/operations/rch-contracts/index'
+import { Route as AuthenticatedOperationsMattersIndexRouteImport } from './routes/_authenticated/operations/matters/index'
 import { Route as AuthenticatedOperationsEsignIndexRouteImport } from './routes/_authenticated/operations/esign/index'
 import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './routes/_authenticated/operations/deal-sheets/index'
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
+import { Route as AuthenticatedAdminCoaTemplatesIndexRouteImport } from './routes/_authenticated/admin/coa-templates/index'
 import { Route as AuthenticatedAccountingReconciliationsIndexRouteImport } from './routes/_authenticated/accounting/reconciliations/index'
+import { Route as AuthenticatedWorkflowsTeamsTeamIdRouteImport } from './routes/_authenticated/workflows/teams.$teamId'
+import { Route as AuthenticatedWorkflowsInstancesInstanceIdRouteImport } from './routes/_authenticated/workflows/instances/$instanceId'
 import { Route as AuthenticatedProjectsProjectIdUploadRequestsRouteImport } from './routes/_authenticated/projects/$projectId/upload-requests'
 import { Route as AuthenticatedProjectsProjectIdTimelineRouteImport } from './routes/_authenticated/projects/$projectId/timeline'
 import { Route as AuthenticatedProjectsProjectIdSharedLinksRouteImport } from './routes/_authenticated/projects/$projectId/shared-links'
@@ -140,6 +149,8 @@ import { Route as AuthenticatedPipelineOpportunityIdDealSheetRouteImport } from 
 import { Route as AuthenticatedPipelineOpportunityIdContactsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/contacts'
 import { Route as AuthenticatedPipelineOpportunityIdCompsRouteImport } from './routes/_authenticated/pipeline/$opportunityId/comps'
 import { Route as AuthenticatedPipelineOpportunityIdBasicInfoRouteImport } from './routes/_authenticated/pipeline/$opportunityId/basic-info'
+import { Route as AuthenticatedOperationsMattersNewRouteImport } from './routes/_authenticated/operations/matters/new'
+import { Route as AuthenticatedOperationsMattersMatterIdRouteImport } from './routes/_authenticated/operations/matters/$matterId'
 import { Route as AuthenticatedOperationsEsignEsignIdRouteImport } from './routes/_authenticated/operations/esign/$esignId'
 import { Route as AuthenticatedOperationsDealSheetsDealSheetIdRouteImport } from './routes/_authenticated/operations/deal-sheets/$dealSheetId'
 import { Route as AuthenticatedDispositionDispositionIdWarrantyRouteImport } from './routes/_authenticated/disposition/$dispositionId/warranty'
@@ -177,7 +188,9 @@ import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './rout
 import { Route as AuthenticatedAdminFloorPlansPlanIdRouteImport } from './routes/_authenticated/admin/floor-plans.$planId'
 import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_authenticated/admin/documents/tags'
 import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
+import { Route as AuthenticatedAdminDocumentTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/document-templates.$templateId'
 import { Route as AuthenticatedAdminCostBooksBookIdRouteImport } from './routes/_authenticated/admin/cost-books.$bookId'
+import { Route as AuthenticatedAdminCoaTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/coa-templates/$templateId'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
 import { Route as AuthenticatedAccountingEntityIdReportsRouteImport } from './routes/_authenticated/accounting/$entityId/reports'
@@ -408,6 +421,12 @@ const AuthenticatedWorkflowsTemplatesRoute =
     path: '/templates',
     getParentRoute: () => AuthenticatedWorkflowsRouteRoute,
   } as any)
+const AuthenticatedWorkflowsTeamsRoute =
+  AuthenticatedWorkflowsTeamsRouteImport.update({
+    id: '/teams',
+    path: '/teams',
+    getParentRoute: () => AuthenticatedWorkflowsRouteRoute,
+  } as any)
 const AuthenticatedWorkflowsSmartActionsRoute =
   AuthenticatedWorkflowsSmartActionsRouteImport.update({
     id: '/smart-actions',
@@ -474,6 +493,18 @@ const AuthenticatedPurchasingEstimatesRoute =
     path: '/estimates',
     getParentRoute: () => AuthenticatedPurchasingRouteRoute,
   } as any)
+const AuthenticatedProjectsNewRoute =
+  AuthenticatedProjectsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedProjectsRouteRoute,
+  } as any)
+const AuthenticatedPipelineNewRoute =
+  AuthenticatedPipelineNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedPipelineRouteRoute,
+  } as any)
 const AuthenticatedInvestorsDistributionsRoute =
   AuthenticatedInvestorsDistributionsRouteImport.update({
     id: '/distributions',
@@ -492,6 +523,12 @@ const AuthenticatedInvestorsFundIdRoute =
     path: '/$fundId',
     getParentRoute: () => AuthenticatedInvestorsRouteRoute,
   } as any)
+const AuthenticatedDispositionNewRoute =
+  AuthenticatedDispositionNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedDispositionRouteRoute,
+  } as any)
 const AuthenticatedContactsEmployeesRoute =
   AuthenticatedContactsEmployeesRouteImport.update({
     id: '/employees',
@@ -509,6 +546,12 @@ const AuthenticatedContactsCompanyIdRoute =
     id: '/$companyId',
     path: '/$companyId',
     getParentRoute: () => AuthenticatedContactsRouteRoute,
+  } as any)
+const AuthenticatedConstructionNewRoute =
+  AuthenticatedConstructionNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedConstructionRouteRoute,
   } as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
@@ -731,6 +774,12 @@ const AuthenticatedOperationsRchContractsIndexRoute =
     path: '/operations/rch-contracts/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedOperationsMattersIndexRoute =
+  AuthenticatedOperationsMattersIndexRouteImport.update({
+    id: '/operations/matters/',
+    path: '/operations/matters/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedOperationsEsignIndexRoute =
   AuthenticatedOperationsEsignIndexRouteImport.update({
     id: '/operations/esign/',
@@ -755,11 +804,29 @@ const AuthenticatedConstructionJobIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedAdminCoaTemplatesIndexRoute =
+  AuthenticatedAdminCoaTemplatesIndexRouteImport.update({
+    id: '/coa-templates/',
+    path: '/coa-templates/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAccountingReconciliationsIndexRoute =
   AuthenticatedAccountingReconciliationsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
+  } as any)
+const AuthenticatedWorkflowsTeamsTeamIdRoute =
+  AuthenticatedWorkflowsTeamsTeamIdRouteImport.update({
+    id: '/$teamId',
+    path: '/$teamId',
+    getParentRoute: () => AuthenticatedWorkflowsTeamsRoute,
+  } as any)
+const AuthenticatedWorkflowsInstancesInstanceIdRoute =
+  AuthenticatedWorkflowsInstancesInstanceIdRouteImport.update({
+    id: '/instances/$instanceId',
+    path: '/instances/$instanceId',
+    getParentRoute: () => AuthenticatedWorkflowsRouteRoute,
   } as any)
 const AuthenticatedProjectsProjectIdUploadRequestsRoute =
   AuthenticatedProjectsProjectIdUploadRequestsRouteImport.update({
@@ -970,6 +1037,18 @@ const AuthenticatedPipelineOpportunityIdBasicInfoRoute =
     id: '/basic-info',
     path: '/basic-info',
     getParentRoute: () => AuthenticatedPipelineOpportunityIdRouteRoute,
+  } as any)
+const AuthenticatedOperationsMattersNewRoute =
+  AuthenticatedOperationsMattersNewRouteImport.update({
+    id: '/operations/matters/new',
+    path: '/operations/matters/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOperationsMattersMatterIdRoute =
+  AuthenticatedOperationsMattersMatterIdRouteImport.update({
+    id: '/operations/matters/$matterId',
+    path: '/operations/matters/$matterId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedOperationsEsignEsignIdRoute =
   AuthenticatedOperationsEsignEsignIdRouteImport.update({
@@ -1193,11 +1272,23 @@ const AuthenticatedAdminDocumentsStorageRoute =
     path: '/storage',
     getParentRoute: () => AuthenticatedAdminDocumentsRoute,
   } as any)
+const AuthenticatedAdminDocumentTemplatesTemplateIdRoute =
+  AuthenticatedAdminDocumentTemplatesTemplateIdRouteImport.update({
+    id: '/document-templates/$templateId',
+    path: '/document-templates/$templateId',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminCostBooksBookIdRoute =
   AuthenticatedAdminCostBooksBookIdRouteImport.update({
     id: '/$bookId',
     path: '/$bookId',
     getParentRoute: () => AuthenticatedAdminCostBooksRoute,
+  } as any)
+const AuthenticatedAdminCoaTemplatesTemplateIdRoute =
+  AuthenticatedAdminCoaTemplatesTemplateIdRouteImport.update({
+    id: '/coa-templates/$templateId',
+    path: '/coa-templates/$templateId',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAccountingReconciliationsStartRoute =
   AuthenticatedAccountingReconciliationsStartRouteImport.update({
@@ -1393,12 +1484,16 @@ export interface FileRoutesByFullPath {
   '/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
   '/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/construction/new': typeof AuthenticatedConstructionNewRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/contacts/customers': typeof AuthenticatedContactsCustomersRoute
   '/contacts/employees': typeof AuthenticatedContactsEmployeesRoute
+  '/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
   '/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
+  '/pipeline/new': typeof AuthenticatedPipelineNewRoute
+  '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
@@ -1410,6 +1505,7 @@ export interface FileRoutesByFullPath {
   '/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
+  '/workflows/teams': typeof AuthenticatedWorkflowsTeamsRouteWithChildren
   '/workflows/templates': typeof AuthenticatedWorkflowsTemplatesRoute
   '/workflows/transaction-types': typeof AuthenticatedWorkflowsTransactionTypesRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
@@ -1435,7 +1531,9 @@ export interface FileRoutesByFullPath {
   '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
+  '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1473,6 +1571,8 @@ export interface FileRoutesByFullPath {
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
+  '/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
+  '/operations/matters/new': typeof AuthenticatedOperationsMattersNewRoute
   '/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
@@ -1508,11 +1608,15 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
+  '/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
+  '/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
+  '/operations/matters/': typeof AuthenticatedOperationsMattersIndexRoute
   '/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -1568,12 +1672,16 @@ export interface FileRoutesByTo {
   '/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
   '/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/construction/new': typeof AuthenticatedConstructionNewRoute
   '/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/contacts/customers': typeof AuthenticatedContactsCustomersRoute
   '/contacts/employees': typeof AuthenticatedContactsEmployeesRoute
+  '/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
   '/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
+  '/pipeline/new': typeof AuthenticatedPipelineNewRoute
+  '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
@@ -1585,6 +1693,7 @@ export interface FileRoutesByTo {
   '/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
+  '/workflows/teams': typeof AuthenticatedWorkflowsTeamsRouteWithChildren
   '/workflows/templates': typeof AuthenticatedWorkflowsTemplatesRoute
   '/workflows/transaction-types': typeof AuthenticatedWorkflowsTransactionTypesRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
@@ -1610,7 +1719,9 @@ export interface FileRoutesByTo {
   '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
+  '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1648,6 +1759,8 @@ export interface FileRoutesByTo {
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
+  '/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
+  '/operations/matters/new': typeof AuthenticatedOperationsMattersNewRoute
   '/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
@@ -1683,11 +1796,15 @@ export interface FileRoutesByTo {
   '/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
+  '/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
+  '/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/admin/coa-templates': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/operations/deal-sheets': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/operations/esign': typeof AuthenticatedOperationsEsignIndexRoute
+  '/operations/matters': typeof AuthenticatedOperationsMattersIndexRoute
   '/operations/rch-contracts': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/pipeline/$opportunityId': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -1761,12 +1878,16 @@ export interface FileRoutesById {
   '/_authenticated/admin/site-work-items': typeof AuthenticatedAdminSiteWorkItemsRoute
   '/_authenticated/admin/upgrade-packages': typeof AuthenticatedAdminUpgradePackagesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/construction/new': typeof AuthenticatedConstructionNewRoute
   '/_authenticated/contacts/$companyId': typeof AuthenticatedContactsCompanyIdRoute
   '/_authenticated/contacts/customers': typeof AuthenticatedContactsCustomersRoute
   '/_authenticated/contacts/employees': typeof AuthenticatedContactsEmployeesRoute
+  '/_authenticated/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/_authenticated/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/_authenticated/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
   '/_authenticated/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
+  '/_authenticated/pipeline/new': typeof AuthenticatedPipelineNewRoute
+  '/_authenticated/projects/new': typeof AuthenticatedProjectsNewRoute
   '/_authenticated/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/_authenticated/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/_authenticated/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
@@ -1778,6 +1899,7 @@ export interface FileRoutesById {
   '/_authenticated/workflows/$workflowId': typeof AuthenticatedWorkflowsWorkflowIdRoute
   '/_authenticated/workflows/assignment-groups': typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   '/_authenticated/workflows/smart-actions': typeof AuthenticatedWorkflowsSmartActionsRoute
+  '/_authenticated/workflows/teams': typeof AuthenticatedWorkflowsTeamsRouteWithChildren
   '/_authenticated/workflows/templates': typeof AuthenticatedWorkflowsTemplatesRoute
   '/_authenticated/workflows/transaction-types': typeof AuthenticatedWorkflowsTransactionTypesRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
@@ -1803,7 +1925,9 @@ export interface FileRoutesById {
   '/_authenticated/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/_authenticated/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/_authenticated/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
+  '/_authenticated/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/_authenticated/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/_authenticated/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1841,6 +1965,8 @@ export interface FileRoutesById {
   '/_authenticated/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
   '/_authenticated/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/_authenticated/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
+  '/_authenticated/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
+  '/_authenticated/operations/matters/new': typeof AuthenticatedOperationsMattersNewRoute
   '/_authenticated/pipeline/$opportunityId/basic-info': typeof AuthenticatedPipelineOpportunityIdBasicInfoRoute
   '/_authenticated/pipeline/$opportunityId/comps': typeof AuthenticatedPipelineOpportunityIdCompsRoute
   '/_authenticated/pipeline/$opportunityId/contacts': typeof AuthenticatedPipelineOpportunityIdContactsRoute
@@ -1876,11 +2002,15 @@ export interface FileRoutesById {
   '/_authenticated/projects/$projectId/shared-links': typeof AuthenticatedProjectsProjectIdSharedLinksRoute
   '/_authenticated/projects/$projectId/timeline': typeof AuthenticatedProjectsProjectIdTimelineRoute
   '/_authenticated/projects/$projectId/upload-requests': typeof AuthenticatedProjectsProjectIdUploadRequestsRoute
+  '/_authenticated/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
+  '/_authenticated/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/_authenticated/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/_authenticated/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/_authenticated/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/_authenticated/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
+  '/_authenticated/operations/matters/': typeof AuthenticatedOperationsMattersIndexRoute
   '/_authenticated/operations/rch-contracts/': typeof AuthenticatedOperationsRchContractsIndexRoute
   '/_authenticated/pipeline/$opportunityId/': typeof AuthenticatedPipelineOpportunityIdIndexRoute
   '/_authenticated/projects/$projectId/': typeof AuthenticatedProjectsProjectIdIndexRoute
@@ -1954,12 +2084,16 @@ export interface FileRouteTypes {
     | '/admin/site-work-items'
     | '/admin/upgrade-packages'
     | '/admin/users'
+    | '/construction/new'
     | '/contacts/$companyId'
     | '/contacts/customers'
     | '/contacts/employees'
+    | '/disposition/new'
     | '/investors/$fundId'
     | '/investors/capital-calls'
     | '/investors/distributions'
+    | '/pipeline/new'
+    | '/projects/new'
     | '/purchasing/estimates'
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
@@ -1971,6 +2105,7 @@ export interface FileRouteTypes {
     | '/workflows/$workflowId'
     | '/workflows/assignment-groups'
     | '/workflows/smart-actions'
+    | '/workflows/teams'
     | '/workflows/templates'
     | '/workflows/transaction-types'
     | '/accounting/'
@@ -1996,7 +2131,9 @@ export interface FileRouteTypes {
     | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/coa-templates/$templateId'
     | '/admin/cost-books/$bookId'
+    | '/admin/document-templates/$templateId'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
@@ -2034,6 +2171,8 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/warranty'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
+    | '/operations/matters/$matterId'
+    | '/operations/matters/new'
     | '/pipeline/$opportunityId/basic-info'
     | '/pipeline/$opportunityId/comps'
     | '/pipeline/$opportunityId/contacts'
@@ -2069,11 +2208,15 @@ export interface FileRouteTypes {
     | '/projects/$projectId/shared-links'
     | '/projects/$projectId/timeline'
     | '/projects/$projectId/upload-requests'
+    | '/workflows/instances/$instanceId'
+    | '/workflows/teams/$teamId'
     | '/accounting/reconciliations/'
+    | '/admin/coa-templates/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
     | '/operations/deal-sheets/'
     | '/operations/esign/'
+    | '/operations/matters/'
     | '/operations/rch-contracts/'
     | '/pipeline/$opportunityId/'
     | '/projects/$projectId/'
@@ -2129,12 +2272,16 @@ export interface FileRouteTypes {
     | '/admin/site-work-items'
     | '/admin/upgrade-packages'
     | '/admin/users'
+    | '/construction/new'
     | '/contacts/$companyId'
     | '/contacts/customers'
     | '/contacts/employees'
+    | '/disposition/new'
     | '/investors/$fundId'
     | '/investors/capital-calls'
     | '/investors/distributions'
+    | '/pipeline/new'
+    | '/projects/new'
     | '/purchasing/estimates'
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
@@ -2146,6 +2293,7 @@ export interface FileRouteTypes {
     | '/workflows/$workflowId'
     | '/workflows/assignment-groups'
     | '/workflows/smart-actions'
+    | '/workflows/teams'
     | '/workflows/templates'
     | '/workflows/transaction-types'
     | '/accounting'
@@ -2171,7 +2319,9 @@ export interface FileRouteTypes {
     | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/coa-templates/$templateId'
     | '/admin/cost-books/$bookId'
+    | '/admin/document-templates/$templateId'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
@@ -2209,6 +2359,8 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/warranty'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
+    | '/operations/matters/$matterId'
+    | '/operations/matters/new'
     | '/pipeline/$opportunityId/basic-info'
     | '/pipeline/$opportunityId/comps'
     | '/pipeline/$opportunityId/contacts'
@@ -2244,11 +2396,15 @@ export interface FileRouteTypes {
     | '/projects/$projectId/shared-links'
     | '/projects/$projectId/timeline'
     | '/projects/$projectId/upload-requests'
+    | '/workflows/instances/$instanceId'
+    | '/workflows/teams/$teamId'
     | '/accounting/reconciliations'
+    | '/admin/coa-templates'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
     | '/operations/deal-sheets'
     | '/operations/esign'
+    | '/operations/matters'
     | '/operations/rch-contracts'
     | '/pipeline/$opportunityId'
     | '/projects/$projectId'
@@ -2321,12 +2477,16 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/site-work-items'
     | '/_authenticated/admin/upgrade-packages'
     | '/_authenticated/admin/users'
+    | '/_authenticated/construction/new'
     | '/_authenticated/contacts/$companyId'
     | '/_authenticated/contacts/customers'
     | '/_authenticated/contacts/employees'
+    | '/_authenticated/disposition/new'
     | '/_authenticated/investors/$fundId'
     | '/_authenticated/investors/capital-calls'
     | '/_authenticated/investors/distributions'
+    | '/_authenticated/pipeline/new'
+    | '/_authenticated/projects/new'
     | '/_authenticated/purchasing/estimates'
     | '/_authenticated/purchasing/purchase-orders'
     | '/_authenticated/purchasing/subcontracts'
@@ -2338,6 +2498,7 @@ export interface FileRouteTypes {
     | '/_authenticated/workflows/$workflowId'
     | '/_authenticated/workflows/assignment-groups'
     | '/_authenticated/workflows/smart-actions'
+    | '/_authenticated/workflows/teams'
     | '/_authenticated/workflows/templates'
     | '/_authenticated/workflows/transaction-types'
     | '/_authenticated/accounting/'
@@ -2363,7 +2524,9 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/$entityId/reports'
     | '/_authenticated/accounting/reconciliations/history'
     | '/_authenticated/accounting/reconciliations/start'
+    | '/_authenticated/admin/coa-templates/$templateId'
     | '/_authenticated/admin/cost-books/$bookId'
+    | '/_authenticated/admin/document-templates/$templateId'
     | '/_authenticated/admin/documents/storage'
     | '/_authenticated/admin/documents/tags'
     | '/_authenticated/admin/floor-plans/$planId'
@@ -2401,6 +2564,8 @@ export interface FileRouteTypes {
     | '/_authenticated/disposition/$dispositionId/warranty'
     | '/_authenticated/operations/deal-sheets/$dealSheetId'
     | '/_authenticated/operations/esign/$esignId'
+    | '/_authenticated/operations/matters/$matterId'
+    | '/_authenticated/operations/matters/new'
     | '/_authenticated/pipeline/$opportunityId/basic-info'
     | '/_authenticated/pipeline/$opportunityId/comps'
     | '/_authenticated/pipeline/$opportunityId/contacts'
@@ -2436,11 +2601,15 @@ export interface FileRouteTypes {
     | '/_authenticated/projects/$projectId/shared-links'
     | '/_authenticated/projects/$projectId/timeline'
     | '/_authenticated/projects/$projectId/upload-requests'
+    | '/_authenticated/workflows/instances/$instanceId'
+    | '/_authenticated/workflows/teams/$teamId'
     | '/_authenticated/accounting/reconciliations/'
+    | '/_authenticated/admin/coa-templates/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
     | '/_authenticated/operations/deal-sheets/'
     | '/_authenticated/operations/esign/'
+    | '/_authenticated/operations/matters/'
     | '/_authenticated/operations/rch-contracts/'
     | '/_authenticated/pipeline/$opportunityId/'
     | '/_authenticated/projects/$projectId/'
@@ -2730,6 +2899,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkflowsTemplatesRouteImport
       parentRoute: typeof AuthenticatedWorkflowsRouteRoute
     }
+    '/_authenticated/workflows/teams': {
+      id: '/_authenticated/workflows/teams'
+      path: '/teams'
+      fullPath: '/workflows/teams'
+      preLoaderRoute: typeof AuthenticatedWorkflowsTeamsRouteImport
+      parentRoute: typeof AuthenticatedWorkflowsRouteRoute
+    }
     '/_authenticated/workflows/smart-actions': {
       id: '/_authenticated/workflows/smart-actions'
       path: '/smart-actions'
@@ -2807,6 +2983,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPurchasingEstimatesRouteImport
       parentRoute: typeof AuthenticatedPurchasingRouteRoute
     }
+    '/_authenticated/projects/new': {
+      id: '/_authenticated/projects/new'
+      path: '/new'
+      fullPath: '/projects/new'
+      preLoaderRoute: typeof AuthenticatedProjectsNewRouteImport
+      parentRoute: typeof AuthenticatedProjectsRouteRoute
+    }
+    '/_authenticated/pipeline/new': {
+      id: '/_authenticated/pipeline/new'
+      path: '/new'
+      fullPath: '/pipeline/new'
+      preLoaderRoute: typeof AuthenticatedPipelineNewRouteImport
+      parentRoute: typeof AuthenticatedPipelineRouteRoute
+    }
     '/_authenticated/investors/distributions': {
       id: '/_authenticated/investors/distributions'
       path: '/distributions'
@@ -2828,6 +3018,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvestorsFundIdRouteImport
       parentRoute: typeof AuthenticatedInvestorsRouteRoute
     }
+    '/_authenticated/disposition/new': {
+      id: '/_authenticated/disposition/new'
+      path: '/new'
+      fullPath: '/disposition/new'
+      preLoaderRoute: typeof AuthenticatedDispositionNewRouteImport
+      parentRoute: typeof AuthenticatedDispositionRouteRoute
+    }
     '/_authenticated/contacts/employees': {
       id: '/_authenticated/contacts/employees'
       path: '/employees'
@@ -2848,6 +3045,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/contacts/$companyId'
       preLoaderRoute: typeof AuthenticatedContactsCompanyIdRouteImport
       parentRoute: typeof AuthenticatedContactsRouteRoute
+    }
+    '/_authenticated/construction/new': {
+      id: '/_authenticated/construction/new'
+      path: '/new'
+      fullPath: '/construction/new'
+      preLoaderRoute: typeof AuthenticatedConstructionNewRouteImport
+      parentRoute: typeof AuthenticatedConstructionRouteRoute
     }
     '/_authenticated/admin/users': {
       id: '/_authenticated/admin/users'
@@ -3108,6 +3312,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperationsRchContractsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/operations/matters/': {
+      id: '/_authenticated/operations/matters/'
+      path: '/operations/matters'
+      fullPath: '/operations/matters/'
+      preLoaderRoute: typeof AuthenticatedOperationsMattersIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/operations/esign/': {
       id: '/_authenticated/operations/esign/'
       path: '/operations/esign'
@@ -3136,12 +3347,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdIndexRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/admin/coa-templates/': {
+      id: '/_authenticated/admin/coa-templates/'
+      path: '/coa-templates'
+      fullPath: '/admin/coa-templates/'
+      preLoaderRoute: typeof AuthenticatedAdminCoaTemplatesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/accounting/reconciliations/': {
       id: '/_authenticated/accounting/reconciliations/'
       path: '/'
       fullPath: '/accounting/reconciliations/'
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsIndexRouteImport
       parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
+    }
+    '/_authenticated/workflows/teams/$teamId': {
+      id: '/_authenticated/workflows/teams/$teamId'
+      path: '/$teamId'
+      fullPath: '/workflows/teams/$teamId'
+      preLoaderRoute: typeof AuthenticatedWorkflowsTeamsTeamIdRouteImport
+      parentRoute: typeof AuthenticatedWorkflowsTeamsRoute
+    }
+    '/_authenticated/workflows/instances/$instanceId': {
+      id: '/_authenticated/workflows/instances/$instanceId'
+      path: '/instances/$instanceId'
+      fullPath: '/workflows/instances/$instanceId'
+      preLoaderRoute: typeof AuthenticatedWorkflowsInstancesInstanceIdRouteImport
+      parentRoute: typeof AuthenticatedWorkflowsRouteRoute
     }
     '/_authenticated/projects/$projectId/upload-requests': {
       id: '/_authenticated/projects/$projectId/upload-requests'
@@ -3387,6 +3619,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/pipeline/$opportunityId/basic-info'
       preLoaderRoute: typeof AuthenticatedPipelineOpportunityIdBasicInfoRouteImport
       parentRoute: typeof AuthenticatedPipelineOpportunityIdRouteRoute
+    }
+    '/_authenticated/operations/matters/new': {
+      id: '/_authenticated/operations/matters/new'
+      path: '/operations/matters/new'
+      fullPath: '/operations/matters/new'
+      preLoaderRoute: typeof AuthenticatedOperationsMattersNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/operations/matters/$matterId': {
+      id: '/_authenticated/operations/matters/$matterId'
+      path: '/operations/matters/$matterId'
+      fullPath: '/operations/matters/$matterId'
+      preLoaderRoute: typeof AuthenticatedOperationsMattersMatterIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/operations/esign/$esignId': {
       id: '/_authenticated/operations/esign/$esignId'
@@ -3647,12 +3893,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDocumentsStorageRouteImport
       parentRoute: typeof AuthenticatedAdminDocumentsRoute
     }
+    '/_authenticated/admin/document-templates/$templateId': {
+      id: '/_authenticated/admin/document-templates/$templateId'
+      path: '/document-templates/$templateId'
+      fullPath: '/admin/document-templates/$templateId'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentTemplatesTemplateIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/cost-books/$bookId': {
       id: '/_authenticated/admin/cost-books/$bookId'
       path: '/$bookId'
       fullPath: '/admin/cost-books/$bookId'
       preLoaderRoute: typeof AuthenticatedAdminCostBooksBookIdRouteImport
       parentRoute: typeof AuthenticatedAdminCostBooksRoute
+    }
+    '/_authenticated/admin/coa-templates/$templateId': {
+      id: '/_authenticated/admin/coa-templates/$templateId'
+      path: '/coa-templates/$templateId'
+      fullPath: '/admin/coa-templates/$templateId'
+      preLoaderRoute: typeof AuthenticatedAdminCoaTemplatesTemplateIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/accounting/reconciliations/start': {
       id: '/_authenticated/accounting/reconciliations/start'
@@ -3974,6 +4234,9 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminUpgradePackagesRoute: typeof AuthenticatedAdminUpgradePackagesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminCoaTemplatesTemplateIdRoute: typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
+  AuthenticatedAdminDocumentTemplatesTemplateIdRoute: typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
+  AuthenticatedAdminCoaTemplatesIndexRoute: typeof AuthenticatedAdminCoaTemplatesIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
@@ -4004,6 +4267,12 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
       AuthenticatedAdminUpgradePackagesRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+    AuthenticatedAdminCoaTemplatesTemplateIdRoute:
+      AuthenticatedAdminCoaTemplatesTemplateIdRoute,
+    AuthenticatedAdminDocumentTemplatesTemplateIdRoute:
+      AuthenticatedAdminDocumentTemplatesTemplateIdRoute,
+    AuthenticatedAdminCoaTemplatesIndexRoute:
+      AuthenticatedAdminCoaTemplatesIndexRoute,
   }
 
 const AuthenticatedAdminRouteRouteWithChildren =
@@ -4079,6 +4348,7 @@ const AuthenticatedConstructionJobIdRouteRouteWithChildren =
 
 interface AuthenticatedConstructionRouteRouteChildren {
   AuthenticatedConstructionJobIdRouteRoute: typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
+  AuthenticatedConstructionNewRoute: typeof AuthenticatedConstructionNewRoute
   AuthenticatedConstructionIndexRoute: typeof AuthenticatedConstructionIndexRoute
 }
 
@@ -4086,6 +4356,7 @@ const AuthenticatedConstructionRouteRouteChildren: AuthenticatedConstructionRout
   {
     AuthenticatedConstructionJobIdRouteRoute:
       AuthenticatedConstructionJobIdRouteRouteWithChildren,
+    AuthenticatedConstructionNewRoute: AuthenticatedConstructionNewRoute,
     AuthenticatedConstructionIndexRoute: AuthenticatedConstructionIndexRoute,
   }
 
@@ -4176,6 +4447,7 @@ const AuthenticatedDispositionDispositionIdRouteRouteWithChildren =
 
 interface AuthenticatedDispositionRouteRouteChildren {
   AuthenticatedDispositionDispositionIdRouteRoute: typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
+  AuthenticatedDispositionNewRoute: typeof AuthenticatedDispositionNewRoute
   AuthenticatedDispositionIndexRoute: typeof AuthenticatedDispositionIndexRoute
 }
 
@@ -4183,6 +4455,7 @@ const AuthenticatedDispositionRouteRouteChildren: AuthenticatedDispositionRouteR
   {
     AuthenticatedDispositionDispositionIdRouteRoute:
       AuthenticatedDispositionDispositionIdRouteRouteWithChildren,
+    AuthenticatedDispositionNewRoute: AuthenticatedDispositionNewRoute,
     AuthenticatedDispositionIndexRoute: AuthenticatedDispositionIndexRoute,
   }
 
@@ -4266,6 +4539,7 @@ const AuthenticatedPipelineOpportunityIdRouteRouteWithChildren =
 
 interface AuthenticatedPipelineRouteRouteChildren {
   AuthenticatedPipelineOpportunityIdRouteRoute: typeof AuthenticatedPipelineOpportunityIdRouteRouteWithChildren
+  AuthenticatedPipelineNewRoute: typeof AuthenticatedPipelineNewRoute
   AuthenticatedPipelineIndexRoute: typeof AuthenticatedPipelineIndexRoute
 }
 
@@ -4273,6 +4547,7 @@ const AuthenticatedPipelineRouteRouteChildren: AuthenticatedPipelineRouteRouteCh
   {
     AuthenticatedPipelineOpportunityIdRouteRoute:
       AuthenticatedPipelineOpportunityIdRouteRouteWithChildren,
+    AuthenticatedPipelineNewRoute: AuthenticatedPipelineNewRoute,
     AuthenticatedPipelineIndexRoute: AuthenticatedPipelineIndexRoute,
   }
 
@@ -4367,6 +4642,7 @@ const AuthenticatedProjectsProjectIdRouteRouteWithChildren =
 
 interface AuthenticatedProjectsRouteRouteChildren {
   AuthenticatedProjectsProjectIdRouteRoute: typeof AuthenticatedProjectsProjectIdRouteRouteWithChildren
+  AuthenticatedProjectsNewRoute: typeof AuthenticatedProjectsNewRoute
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
 }
 
@@ -4374,6 +4650,7 @@ const AuthenticatedProjectsRouteRouteChildren: AuthenticatedProjectsRouteRouteCh
   {
     AuthenticatedProjectsProjectIdRouteRoute:
       AuthenticatedProjectsProjectIdRouteRouteWithChildren,
+    AuthenticatedProjectsNewRoute: AuthenticatedProjectsNewRoute,
     AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   }
 
@@ -4421,13 +4698,30 @@ const AuthenticatedReportsRouteRouteWithChildren =
     AuthenticatedReportsRouteRouteChildren,
   )
 
+interface AuthenticatedWorkflowsTeamsRouteChildren {
+  AuthenticatedWorkflowsTeamsTeamIdRoute: typeof AuthenticatedWorkflowsTeamsTeamIdRoute
+}
+
+const AuthenticatedWorkflowsTeamsRouteChildren: AuthenticatedWorkflowsTeamsRouteChildren =
+  {
+    AuthenticatedWorkflowsTeamsTeamIdRoute:
+      AuthenticatedWorkflowsTeamsTeamIdRoute,
+  }
+
+const AuthenticatedWorkflowsTeamsRouteWithChildren =
+  AuthenticatedWorkflowsTeamsRoute._addFileChildren(
+    AuthenticatedWorkflowsTeamsRouteChildren,
+  )
+
 interface AuthenticatedWorkflowsRouteRouteChildren {
   AuthenticatedWorkflowsWorkflowIdRoute: typeof AuthenticatedWorkflowsWorkflowIdRoute
   AuthenticatedWorkflowsAssignmentGroupsRoute: typeof AuthenticatedWorkflowsAssignmentGroupsRoute
   AuthenticatedWorkflowsSmartActionsRoute: typeof AuthenticatedWorkflowsSmartActionsRoute
+  AuthenticatedWorkflowsTeamsRoute: typeof AuthenticatedWorkflowsTeamsRouteWithChildren
   AuthenticatedWorkflowsTemplatesRoute: typeof AuthenticatedWorkflowsTemplatesRoute
   AuthenticatedWorkflowsTransactionTypesRoute: typeof AuthenticatedWorkflowsTransactionTypesRoute
   AuthenticatedWorkflowsIndexRoute: typeof AuthenticatedWorkflowsIndexRoute
+  AuthenticatedWorkflowsInstancesInstanceIdRoute: typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
 }
 
 const AuthenticatedWorkflowsRouteRouteChildren: AuthenticatedWorkflowsRouteRouteChildren =
@@ -4438,10 +4732,14 @@ const AuthenticatedWorkflowsRouteRouteChildren: AuthenticatedWorkflowsRouteRoute
       AuthenticatedWorkflowsAssignmentGroupsRoute,
     AuthenticatedWorkflowsSmartActionsRoute:
       AuthenticatedWorkflowsSmartActionsRoute,
+    AuthenticatedWorkflowsTeamsRoute:
+      AuthenticatedWorkflowsTeamsRouteWithChildren,
     AuthenticatedWorkflowsTemplatesRoute: AuthenticatedWorkflowsTemplatesRoute,
     AuthenticatedWorkflowsTransactionTypesRoute:
       AuthenticatedWorkflowsTransactionTypesRoute,
     AuthenticatedWorkflowsIndexRoute: AuthenticatedWorkflowsIndexRoute,
+    AuthenticatedWorkflowsInstancesInstanceIdRoute:
+      AuthenticatedWorkflowsInstancesInstanceIdRoute,
   }
 
 const AuthenticatedWorkflowsRouteRouteWithChildren =
@@ -4515,8 +4813,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedOperationsRchContractsContractIdRouteRoute: typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   AuthenticatedOperationsDealSheetsDealSheetIdRoute: typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   AuthenticatedOperationsEsignEsignIdRoute: typeof AuthenticatedOperationsEsignEsignIdRoute
+  AuthenticatedOperationsMattersMatterIdRoute: typeof AuthenticatedOperationsMattersMatterIdRoute
+  AuthenticatedOperationsMattersNewRoute: typeof AuthenticatedOperationsMattersNewRoute
   AuthenticatedOperationsDealSheetsIndexRoute: typeof AuthenticatedOperationsDealSheetsIndexRoute
   AuthenticatedOperationsEsignIndexRoute: typeof AuthenticatedOperationsEsignIndexRoute
+  AuthenticatedOperationsMattersIndexRoute: typeof AuthenticatedOperationsMattersIndexRoute
   AuthenticatedOperationsRchContractsIndexRoute: typeof AuthenticatedOperationsRchContractsIndexRoute
 }
 
@@ -4555,10 +4856,16 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedOperationsDealSheetsDealSheetIdRoute,
   AuthenticatedOperationsEsignEsignIdRoute:
     AuthenticatedOperationsEsignEsignIdRoute,
+  AuthenticatedOperationsMattersMatterIdRoute:
+    AuthenticatedOperationsMattersMatterIdRoute,
+  AuthenticatedOperationsMattersNewRoute:
+    AuthenticatedOperationsMattersNewRoute,
   AuthenticatedOperationsDealSheetsIndexRoute:
     AuthenticatedOperationsDealSheetsIndexRoute,
   AuthenticatedOperationsEsignIndexRoute:
     AuthenticatedOperationsEsignIndexRoute,
+  AuthenticatedOperationsMattersIndexRoute:
+    AuthenticatedOperationsMattersIndexRoute,
   AuthenticatedOperationsRchContractsIndexRoute:
     AuthenticatedOperationsRchContractsIndexRoute,
 }
