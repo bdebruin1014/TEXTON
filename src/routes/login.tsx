@@ -23,7 +23,8 @@ function LoginPage() {
       await signIn(email, password);
       navigate({ to: "/dashboard" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication failed");
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || "Authentication failed");
     } finally {
       setLoading(false);
     }
