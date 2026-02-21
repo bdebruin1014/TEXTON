@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatches, useRouterState } from "@tanstack/react-router";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
@@ -52,8 +52,21 @@ const NAV_SECTIONS = [
 function AccountingLayout() {
   const { activeEntityId, setActiveEntity } = useEntityStore();
   const matches = useMatches();
+  const location = useRouterState({ select: (s) => s.location });
   const currentPath = matches.at(-1)?.fullPath ?? "";
 
+  // Index page renders full-width (no sidebar)
+  const isIndex = location.pathname === "/accounting" || location.pathname === "/accounting/";
+
+  // Entity detail routes ($entityId/...) have their own sidebar via $entityId/route.tsx
+  const isEntityDetail = matches.some((m) => "entityId" in ((m.params as Record<string, unknown>) ?? {}));
+
+  // Pass through for index page and entity detail routes
+  if (isIndex || isEntityDetail) {
+    return <Outlet />;
+  }
+
+  // Flat routes (register, banking, etc.) get the module sidebar
   const { data: entities = [] } = useQuery<Entity[]>({
     queryKey: ["entities"],
     queryFn: async () => {

@@ -7,7 +7,7 @@ export function TektonLogo({ size = "default" }: { size?: "sm" | "default" | "lg
       style={{
         fontSize,
         letterSpacing: "2px",
-        color: "#4A8C5E",
+        color: "#2E6B42",
       }}
     >
       KOVA

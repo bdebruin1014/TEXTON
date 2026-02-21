@@ -20,6 +20,7 @@ import { Route as ShareTokenRouteImport } from './routes/share/$token'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedWorkflowsRouteRouteImport } from './routes/_authenticated/workflows/route'
+import { Route as AuthenticatedReportsRouteRouteImport } from './routes/_authenticated/reports/route'
 import { Route as AuthenticatedPurchasingRouteRouteImport } from './routes/_authenticated/purchasing/route'
 import { Route as AuthenticatedProjectsRouteRouteImport } from './routes/_authenticated/projects/route'
 import { Route as AuthenticatedPipelineRouteRouteImport } from './routes/_authenticated/pipeline/route'
@@ -31,6 +32,7 @@ import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAccountingRouteRouteImport } from './routes/_authenticated/accounting/route'
 import { Route as AuthenticatedWorkflowsIndexRouteImport } from './routes/_authenticated/workflows/index'
 import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authenticated/tools/index'
+import { Route as AuthenticatedReportsIndexRouteImport } from './routes/_authenticated/reports/index'
 import { Route as AuthenticatedPurchasingIndexRouteImport } from './routes/_authenticated/purchasing/index'
 import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
 import { Route as AuthenticatedPipelineIndexRouteImport } from './routes/_authenticated/pipeline/index'
@@ -94,6 +96,7 @@ import { Route as AuthenticatedPipelineOpportunityIdRouteRouteImport } from './r
 import { Route as AuthenticatedDispositionDispositionIdRouteRouteImport } from './routes/_authenticated/disposition/$dispositionId/route'
 import { Route as AuthenticatedConstructionJobIdRouteRouteImport } from './routes/_authenticated/construction/$jobId/route'
 import { Route as AuthenticatedAccountingReconciliationsRouteRouteImport } from './routes/_authenticated/accounting/reconciliations/route'
+import { Route as AuthenticatedAccountingEntityIdRouteRouteImport } from './routes/_authenticated/accounting/$entityId/route'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects/$projectId/index'
 import { Route as AuthenticatedPipelineOpportunityIdIndexRouteImport } from './routes/_authenticated/pipeline/$opportunityId/index'
 import { Route as AuthenticatedOperationsRchContractsIndexRouteImport } from './routes/_authenticated/operations/rch-contracts/index'
@@ -177,6 +180,12 @@ import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes
 import { Route as AuthenticatedAdminCostBooksBookIdRouteImport } from './routes/_authenticated/admin/cost-books.$bookId'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
+import { Route as AuthenticatedAccountingEntityIdReportsRouteImport } from './routes/_authenticated/accounting/$entityId/reports'
+import { Route as AuthenticatedAccountingEntityIdRegisterRouteImport } from './routes/_authenticated/accounting/$entityId/register'
+import { Route as AuthenticatedAccountingEntityIdReconciliationsRouteImport } from './routes/_authenticated/accounting/$entityId/reconciliations'
+import { Route as AuthenticatedAccountingEntityIdInvoicesRouteImport } from './routes/_authenticated/accounting/$entityId/invoices'
+import { Route as AuthenticatedAccountingEntityIdBankingRouteImport } from './routes/_authenticated/accounting/$entityId/banking'
+import { Route as AuthenticatedAccountingEntityIdAggregatePaymentsRouteImport } from './routes/_authenticated/accounting/$entityId/aggregate-payments'
 import { Route as AuthenticatedOperationsRchContractsContractIdRouteRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/route'
 import { Route as AuthenticatedAdminDocumentsFolderTemplatesIndexRouteImport } from './routes/_authenticated/admin/documents/folder-templates/index'
 import { Route as AuthenticatedOperationsRchContractsContractIdUpgradesRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/upgrades'
@@ -246,6 +255,12 @@ const AuthenticatedWorkflowsRouteRoute =
     path: '/workflows',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedReportsRouteRoute =
+  AuthenticatedReportsRouteRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPurchasingRouteRoute =
   AuthenticatedPurchasingRouteRouteImport.update({
     id: '/purchasing',
@@ -310,6 +325,12 @@ const AuthenticatedToolsIndexRoute = AuthenticatedToolsIndexRouteImport.update({
   path: '/tools/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedReportsIndexRoute =
+  AuthenticatedReportsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
 const AuthenticatedPurchasingIndexRoute =
   AuthenticatedPurchasingIndexRouteImport.update({
     id: '/',
@@ -684,6 +705,12 @@ const AuthenticatedAccountingReconciliationsRouteRoute =
   AuthenticatedAccountingReconciliationsRouteRouteImport.update({
     id: '/reconciliations',
     path: '/reconciliations',
+    getParentRoute: () => AuthenticatedAccountingRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdRouteRoute =
+  AuthenticatedAccountingEntityIdRouteRouteImport.update({
+    id: '/$entityId',
+    path: '/$entityId',
     getParentRoute: () => AuthenticatedAccountingRouteRoute,
   } as any)
 const AuthenticatedProjectsProjectIdIndexRoute =
@@ -1184,6 +1211,42 @@ const AuthenticatedAccountingReconciliationsHistoryRoute =
     path: '/history',
     getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
   } as any)
+const AuthenticatedAccountingEntityIdReportsRoute =
+  AuthenticatedAccountingEntityIdReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdRegisterRoute =
+  AuthenticatedAccountingEntityIdRegisterRouteImport.update({
+    id: '/register',
+    path: '/register',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdReconciliationsRoute =
+  AuthenticatedAccountingEntityIdReconciliationsRouteImport.update({
+    id: '/reconciliations',
+    path: '/reconciliations',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdInvoicesRoute =
+  AuthenticatedAccountingEntityIdInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdBankingRoute =
+  AuthenticatedAccountingEntityIdBankingRouteImport.update({
+    id: '/banking',
+    path: '/banking',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
+const AuthenticatedAccountingEntityIdAggregatePaymentsRoute =
+  AuthenticatedAccountingEntityIdAggregatePaymentsRouteImport.update({
+    id: '/aggregate-payments',
+    path: '/aggregate-payments',
+    getParentRoute: () => AuthenticatedAccountingEntityIdRouteRoute,
+  } as any)
 const AuthenticatedOperationsRchContractsContractIdRouteRoute =
   AuthenticatedOperationsRchContractsContractIdRouteRouteImport.update({
     id: '/operations/rch-contracts/$contractId',
@@ -1290,11 +1353,13 @@ export interface FileRoutesByFullPath {
   '/pipeline': typeof AuthenticatedPipelineRouteRouteWithChildren
   '/projects': typeof AuthenticatedProjectsRouteRouteWithChildren
   '/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
+  '/reports': typeof AuthenticatedReportsRouteRouteWithChildren
   '/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
+  '/accounting/$entityId': typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
@@ -1358,9 +1423,16 @@ export interface FileRoutesByFullPath {
   '/pipeline/': typeof AuthenticatedPipelineIndexRoute
   '/projects/': typeof AuthenticatedProjectsIndexRoute
   '/purchasing/': typeof AuthenticatedPurchasingIndexRoute
+  '/reports/': typeof AuthenticatedReportsIndexRoute
   '/tools/': typeof AuthenticatedToolsIndexRoute
   '/workflows/': typeof AuthenticatedWorkflowsIndexRoute
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
+  '/accounting/$entityId/aggregate-payments': typeof AuthenticatedAccountingEntityIdAggregatePaymentsRoute
+  '/accounting/$entityId/banking': typeof AuthenticatedAccountingEntityIdBankingRoute
+  '/accounting/$entityId/invoices': typeof AuthenticatedAccountingEntityIdInvoicesRoute
+  '/accounting/$entityId/reconciliations': typeof AuthenticatedAccountingEntityIdReconciliationsRoute
+  '/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
+  '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
@@ -1467,6 +1539,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
+  '/accounting/$entityId': typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   '/accounting/aggregate-payments': typeof AuthenticatedAccountingAggregatePaymentsRoute
   '/accounting/ap': typeof AuthenticatedAccountingApRoute
   '/accounting/ar': typeof AuthenticatedAccountingArRoute
@@ -1525,9 +1598,16 @@ export interface FileRoutesByTo {
   '/pipeline': typeof AuthenticatedPipelineIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
   '/purchasing': typeof AuthenticatedPurchasingIndexRoute
+  '/reports': typeof AuthenticatedReportsIndexRoute
   '/tools': typeof AuthenticatedToolsIndexRoute
   '/workflows': typeof AuthenticatedWorkflowsIndexRoute
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
+  '/accounting/$entityId/aggregate-payments': typeof AuthenticatedAccountingEntityIdAggregatePaymentsRoute
+  '/accounting/$entityId/banking': typeof AuthenticatedAccountingEntityIdBankingRoute
+  '/accounting/$entityId/invoices': typeof AuthenticatedAccountingEntityIdInvoicesRoute
+  '/accounting/$entityId/reconciliations': typeof AuthenticatedAccountingEntityIdReconciliationsRoute
+  '/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
+  '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
@@ -1641,11 +1721,13 @@ export interface FileRoutesById {
   '/_authenticated/pipeline': typeof AuthenticatedPipelineRouteRouteWithChildren
   '/_authenticated/projects': typeof AuthenticatedProjectsRouteRouteWithChildren
   '/_authenticated/purchasing': typeof AuthenticatedPurchasingRouteRouteWithChildren
+  '/_authenticated/reports': typeof AuthenticatedReportsRouteRouteWithChildren
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/share/$token': typeof ShareTokenRoute
   '/upload/$token': typeof UploadTokenRoute
+  '/_authenticated/accounting/$entityId': typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   '/_authenticated/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
   '/_authenticated/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/_authenticated/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
@@ -1709,9 +1791,16 @@ export interface FileRoutesById {
   '/_authenticated/pipeline/': typeof AuthenticatedPipelineIndexRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
   '/_authenticated/purchasing/': typeof AuthenticatedPurchasingIndexRoute
+  '/_authenticated/reports/': typeof AuthenticatedReportsIndexRoute
   '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
   '/_authenticated/workflows/': typeof AuthenticatedWorkflowsIndexRoute
   '/_authenticated/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
+  '/_authenticated/accounting/$entityId/aggregate-payments': typeof AuthenticatedAccountingEntityIdAggregatePaymentsRoute
+  '/_authenticated/accounting/$entityId/banking': typeof AuthenticatedAccountingEntityIdBankingRoute
+  '/_authenticated/accounting/$entityId/invoices': typeof AuthenticatedAccountingEntityIdInvoicesRoute
+  '/_authenticated/accounting/$entityId/reconciliations': typeof AuthenticatedAccountingEntityIdReconciliationsRoute
+  '/_authenticated/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
+  '/_authenticated/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/_authenticated/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
@@ -1825,11 +1914,13 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/projects'
     | '/purchasing'
+    | '/reports'
     | '/workflows'
     | '/dashboard'
     | '/settings'
     | '/share/$token'
     | '/upload/$token'
+    | '/accounting/$entityId'
     | '/accounting/reconciliations'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
@@ -1893,9 +1984,16 @@ export interface FileRouteTypes {
     | '/pipeline/'
     | '/projects/'
     | '/purchasing/'
+    | '/reports/'
     | '/tools/'
     | '/workflows/'
     | '/operations/rch-contracts/$contractId'
+    | '/accounting/$entityId/aggregate-payments'
+    | '/accounting/$entityId/banking'
+    | '/accounting/$entityId/invoices'
+    | '/accounting/$entityId/reconciliations'
+    | '/accounting/$entityId/register'
+    | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
     | '/admin/cost-books/$bookId'
@@ -2002,6 +2100,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/share/$token'
     | '/upload/$token'
+    | '/accounting/$entityId'
     | '/accounting/aggregate-payments'
     | '/accounting/ap'
     | '/accounting/ar'
@@ -2060,9 +2159,16 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/projects'
     | '/purchasing'
+    | '/reports'
     | '/tools'
     | '/workflows'
     | '/operations/rch-contracts/$contractId'
+    | '/accounting/$entityId/aggregate-payments'
+    | '/accounting/$entityId/banking'
+    | '/accounting/$entityId/invoices'
+    | '/accounting/$entityId/reconciliations'
+    | '/accounting/$entityId/register'
+    | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
     | '/admin/cost-books/$bookId'
@@ -2175,11 +2281,13 @@ export interface FileRouteTypes {
     | '/_authenticated/pipeline'
     | '/_authenticated/projects'
     | '/_authenticated/purchasing'
+    | '/_authenticated/reports'
     | '/_authenticated/workflows'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
     | '/share/$token'
     | '/upload/$token'
+    | '/_authenticated/accounting/$entityId'
     | '/_authenticated/accounting/reconciliations'
     | '/_authenticated/construction/$jobId'
     | '/_authenticated/disposition/$dispositionId'
@@ -2243,9 +2351,16 @@ export interface FileRouteTypes {
     | '/_authenticated/pipeline/'
     | '/_authenticated/projects/'
     | '/_authenticated/purchasing/'
+    | '/_authenticated/reports/'
     | '/_authenticated/tools/'
     | '/_authenticated/workflows/'
     | '/_authenticated/operations/rch-contracts/$contractId'
+    | '/_authenticated/accounting/$entityId/aggregate-payments'
+    | '/_authenticated/accounting/$entityId/banking'
+    | '/_authenticated/accounting/$entityId/invoices'
+    | '/_authenticated/accounting/$entityId/reconciliations'
+    | '/_authenticated/accounting/$entityId/register'
+    | '/_authenticated/accounting/$entityId/reports'
     | '/_authenticated/accounting/reconciliations/history'
     | '/_authenticated/accounting/reconciliations/start'
     | '/_authenticated/admin/cost-books/$bookId'
@@ -2433,6 +2548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkflowsRouteRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/purchasing': {
       id: '/_authenticated/purchasing'
       path: '/purchasing'
@@ -2509,6 +2631,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/tools/'
       preLoaderRoute: typeof AuthenticatedToolsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/reports/': {
+      id: '/_authenticated/reports/'
+      path: '/'
+      fullPath: '/reports/'
+      preLoaderRoute: typeof AuthenticatedReportsIndexRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
     }
     '/_authenticated/purchasing/': {
       id: '/_authenticated/purchasing/'
@@ -2949,6 +3078,13 @@ declare module '@tanstack/react-router' {
       path: '/reconciliations'
       fullPath: '/accounting/reconciliations'
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsRouteRouteImport
+      parentRoute: typeof AuthenticatedAccountingRouteRoute
+    }
+    '/_authenticated/accounting/$entityId': {
+      id: '/_authenticated/accounting/$entityId'
+      path: '/$entityId'
+      fullPath: '/accounting/$entityId'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdRouteRouteImport
       parentRoute: typeof AuthenticatedAccountingRouteRoute
     }
     '/_authenticated/projects/$projectId/': {
@@ -3532,6 +3668,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsHistoryRouteImport
       parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
     }
+    '/_authenticated/accounting/$entityId/reports': {
+      id: '/_authenticated/accounting/$entityId/reports'
+      path: '/reports'
+      fullPath: '/accounting/$entityId/reports'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdReportsRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
+    '/_authenticated/accounting/$entityId/register': {
+      id: '/_authenticated/accounting/$entityId/register'
+      path: '/register'
+      fullPath: '/accounting/$entityId/register'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdRegisterRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
+    '/_authenticated/accounting/$entityId/reconciliations': {
+      id: '/_authenticated/accounting/$entityId/reconciliations'
+      path: '/reconciliations'
+      fullPath: '/accounting/$entityId/reconciliations'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdReconciliationsRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
+    '/_authenticated/accounting/$entityId/invoices': {
+      id: '/_authenticated/accounting/$entityId/invoices'
+      path: '/invoices'
+      fullPath: '/accounting/$entityId/invoices'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdInvoicesRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
+    '/_authenticated/accounting/$entityId/banking': {
+      id: '/_authenticated/accounting/$entityId/banking'
+      path: '/banking'
+      fullPath: '/accounting/$entityId/banking'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdBankingRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
+    '/_authenticated/accounting/$entityId/aggregate-payments': {
+      id: '/_authenticated/accounting/$entityId/aggregate-payments'
+      path: '/aggregate-payments'
+      fullPath: '/accounting/$entityId/aggregate-payments'
+      preLoaderRoute: typeof AuthenticatedAccountingEntityIdAggregatePaymentsRouteImport
+      parentRoute: typeof AuthenticatedAccountingEntityIdRouteRoute
+    }
     '/_authenticated/operations/rch-contracts/$contractId': {
       id: '/_authenticated/operations/rch-contracts/$contractId'
       path: '/operations/rch-contracts/$contractId'
@@ -3626,6 +3804,36 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAccountingEntityIdRouteRouteChildren {
+  AuthenticatedAccountingEntityIdAggregatePaymentsRoute: typeof AuthenticatedAccountingEntityIdAggregatePaymentsRoute
+  AuthenticatedAccountingEntityIdBankingRoute: typeof AuthenticatedAccountingEntityIdBankingRoute
+  AuthenticatedAccountingEntityIdInvoicesRoute: typeof AuthenticatedAccountingEntityIdInvoicesRoute
+  AuthenticatedAccountingEntityIdReconciliationsRoute: typeof AuthenticatedAccountingEntityIdReconciliationsRoute
+  AuthenticatedAccountingEntityIdRegisterRoute: typeof AuthenticatedAccountingEntityIdRegisterRoute
+  AuthenticatedAccountingEntityIdReportsRoute: typeof AuthenticatedAccountingEntityIdReportsRoute
+}
+
+const AuthenticatedAccountingEntityIdRouteRouteChildren: AuthenticatedAccountingEntityIdRouteRouteChildren =
+  {
+    AuthenticatedAccountingEntityIdAggregatePaymentsRoute:
+      AuthenticatedAccountingEntityIdAggregatePaymentsRoute,
+    AuthenticatedAccountingEntityIdBankingRoute:
+      AuthenticatedAccountingEntityIdBankingRoute,
+    AuthenticatedAccountingEntityIdInvoicesRoute:
+      AuthenticatedAccountingEntityIdInvoicesRoute,
+    AuthenticatedAccountingEntityIdReconciliationsRoute:
+      AuthenticatedAccountingEntityIdReconciliationsRoute,
+    AuthenticatedAccountingEntityIdRegisterRoute:
+      AuthenticatedAccountingEntityIdRegisterRoute,
+    AuthenticatedAccountingEntityIdReportsRoute:
+      AuthenticatedAccountingEntityIdReportsRoute,
+  }
+
+const AuthenticatedAccountingEntityIdRouteRouteWithChildren =
+  AuthenticatedAccountingEntityIdRouteRoute._addFileChildren(
+    AuthenticatedAccountingEntityIdRouteRouteChildren,
+  )
+
 interface AuthenticatedAccountingReconciliationsRouteRouteChildren {
   AuthenticatedAccountingReconciliationsHistoryRoute: typeof AuthenticatedAccountingReconciliationsHistoryRoute
   AuthenticatedAccountingReconciliationsStartRoute: typeof AuthenticatedAccountingReconciliationsStartRoute
@@ -3648,6 +3856,7 @@ const AuthenticatedAccountingReconciliationsRouteRouteWithChildren =
   )
 
 interface AuthenticatedAccountingRouteRouteChildren {
+  AuthenticatedAccountingEntityIdRouteRoute: typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   AuthenticatedAccountingReconciliationsRouteRoute: typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
   AuthenticatedAccountingAggregatePaymentsRoute: typeof AuthenticatedAccountingAggregatePaymentsRoute
   AuthenticatedAccountingApRoute: typeof AuthenticatedAccountingApRoute
@@ -3665,6 +3874,8 @@ interface AuthenticatedAccountingRouteRouteChildren {
 
 const AuthenticatedAccountingRouteRouteChildren: AuthenticatedAccountingRouteRouteChildren =
   {
+    AuthenticatedAccountingEntityIdRouteRoute:
+      AuthenticatedAccountingEntityIdRouteRouteWithChildren,
     AuthenticatedAccountingReconciliationsRouteRoute:
       AuthenticatedAccountingReconciliationsRouteRouteWithChildren,
     AuthenticatedAccountingAggregatePaymentsRoute:
@@ -4196,6 +4407,20 @@ const AuthenticatedPurchasingRouteRouteWithChildren =
     AuthenticatedPurchasingRouteRouteChildren,
   )
 
+interface AuthenticatedReportsRouteRouteChildren {
+  AuthenticatedReportsIndexRoute: typeof AuthenticatedReportsIndexRoute
+}
+
+const AuthenticatedReportsRouteRouteChildren: AuthenticatedReportsRouteRouteChildren =
+  {
+    AuthenticatedReportsIndexRoute: AuthenticatedReportsIndexRoute,
+  }
+
+const AuthenticatedReportsRouteRouteWithChildren =
+  AuthenticatedReportsRouteRoute._addFileChildren(
+    AuthenticatedReportsRouteRouteChildren,
+  )
+
 interface AuthenticatedWorkflowsRouteRouteChildren {
   AuthenticatedWorkflowsWorkflowIdRoute: typeof AuthenticatedWorkflowsWorkflowIdRoute
   AuthenticatedWorkflowsAssignmentGroupsRoute: typeof AuthenticatedWorkflowsAssignmentGroupsRoute
@@ -4276,6 +4501,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPipelineRouteRoute: typeof AuthenticatedPipelineRouteRouteWithChildren
   AuthenticatedProjectsRouteRoute: typeof AuthenticatedProjectsRouteRouteWithChildren
   AuthenticatedPurchasingRouteRoute: typeof AuthenticatedPurchasingRouteRouteWithChildren
+  AuthenticatedReportsRouteRoute: typeof AuthenticatedReportsRouteRouteWithChildren
   AuthenticatedWorkflowsRouteRoute: typeof AuthenticatedWorkflowsRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -4309,6 +4535,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProjectsRouteRoute: AuthenticatedProjectsRouteRouteWithChildren,
   AuthenticatedPurchasingRouteRoute:
     AuthenticatedPurchasingRouteRouteWithChildren,
+  AuthenticatedReportsRouteRoute: AuthenticatedReportsRouteRouteWithChildren,
   AuthenticatedWorkflowsRouteRoute:
     AuthenticatedWorkflowsRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

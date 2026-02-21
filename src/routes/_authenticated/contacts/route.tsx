@@ -7,6 +7,79 @@ export const Route = createFileRoute("/_authenticated/contacts")({
   component: ContactsLayout,
 });
 
+/** Reusable sidebar nav link with active styling and hover */
+function SidebarLink({
+  to,
+  label,
+  isActive,
+  isButton,
+  onClick,
+}: {
+  to?: string;
+  label: string;
+  isActive: boolean;
+  isButton?: boolean;
+  onClick?: () => void;
+}) {
+  const style = {
+    borderLeft: isActive ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
+    backgroundColor: isActive ? "var(--sidebar-active-bg)" : undefined,
+    color: isActive ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
+    fontWeight: isActive ? 500 : 400,
+  } as const;
+
+  const className = "flex w-full items-center py-[7px] pl-4 pr-4 text-left text-[13px] transition-colors";
+
+  const handleEnter = (e: React.MouseEvent<HTMLElement>) => {
+    if (!isActive) {
+      e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg)";
+      e.currentTarget.style.color = "#FFFFFF";
+    }
+  };
+  const handleLeave = (e: React.MouseEvent<HTMLElement>) => {
+    if (!isActive) {
+      e.currentTarget.style.backgroundColor = "transparent";
+      e.currentTarget.style.color = "var(--sidebar-text)";
+    }
+  };
+
+  if (isButton) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={className}
+        style={style}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+      >
+        {label}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={to as string} className={className} style={style} onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+      {label}
+    </Link>
+  );
+}
+
+/** ALL-CAPS section divider with horizontal rule */
+function SectionDivider({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-2 px-4 pb-1 pt-4">
+      <span
+        className="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
+        style={{ color: "var(--sidebar-heading)" }}
+      >
+        {label}
+      </span>
+      <div className="h-px flex-1" style={{ backgroundColor: "var(--sidebar-border)" }} />
+    </div>
+  );
+}
+
 function ContactsLayout() {
   const matches = useMatches();
   const currentPath = matches.at(-1)?.fullPath ?? "";
@@ -18,7 +91,7 @@ function ContactsLayout() {
     currentPath === "/contacts" || currentPath === "/contacts/" || currentPath.startsWith("/contacts?");
   const activeType = isCompaniesPage ? ((location.search as Record<string, string>)?.type ?? "all") : undefined;
 
-  // Expand/collapse state for category parents — independent of filter
+  // Expand/collapse state for category parents
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   const toggleCategory = (label: string) => {
@@ -34,7 +107,6 @@ function ContactsLayout() {
     navigate({ to: "/contacts", search: type === "all" ? {} : { type } });
   };
 
-  // Check if a category is active (any of its types match the filter)
   const isCategoryActive = (category: (typeof COMPANY_TYPE_CATEGORIES)[number]) => {
     if (activeType === category.label) return true;
     return category.types.some((t) => t === activeType);
@@ -46,6 +118,9 @@ function ContactsLayout() {
     !currentPath.startsWith("/contacts/customers");
   const isEmployees = currentPath === "/contacts/employees" || currentPath.startsWith("/contacts/employees/");
   const isCustomers = currentPath === "/contacts/customers" || currentPath.startsWith("/contacts/customers/");
+
+  // Investor page detection (links point to /investors/*)
+  const isInvestorPage = location.pathname.startsWith("/investors");
 
   const sidebar = (
     <aside
@@ -59,45 +134,21 @@ function ContactsLayout() {
       <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
         <span className="text-sm font-semibold text-white">Contacts</span>
         <p className="text-[10px]" style={{ color: "var(--sidebar-heading)" }}>
-          People & companies directory
+          People, companies & investors
         </p>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-1">
-        {/* COMPANIES — top level */}
-        <button
-          type="button"
+        {/* ── COMPANIES ── */}
+        <SectionDivider label="Companies" />
+
+        <SidebarLink
+          label="All Companies"
+          isButton
+          isActive={(isCompaniesPage && activeType === "all") || isCompanyDetail}
           onClick={() => setFilter("all")}
-          className="flex w-full items-center justify-between py-[7px] pl-4 pr-4 text-left text-[13px] transition-colors"
-          style={{
-            borderLeft:
-              isCompaniesPage || isCompanyDetail
-                ? activeType === "all" || !isCompaniesPage
-                  ? "3px solid var(--sidebar-active-border)"
-                  : "3px solid transparent"
-                : "3px solid transparent",
-            backgroundColor:
-              (isCompaniesPage && activeType === "all") || isCompanyDetail ? "var(--sidebar-active-bg)" : undefined,
-            color:
-              (isCompaniesPage && activeType === "all") || isCompanyDetail
-                ? "var(--sidebar-active-text)"
-                : "var(--sidebar-text)",
-            fontWeight: isCompaniesPage || isCompanyDetail ? 500 : 400,
-          }}
-          onMouseEnter={(e) => {
-            if (!(isCompaniesPage && activeType === "all") && !isCompanyDetail) {
-              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!(isCompaniesPage && activeType === "all") && !isCompanyDetail) {
-              e.currentTarget.style.backgroundColor = "transparent";
-            }
-          }}
-        >
-          Companies
-        </button>
+        />
 
         {/* Company type categories */}
         {COMPANY_TYPE_CATEGORIES.map((category) => {
@@ -185,56 +236,38 @@ function ContactsLayout() {
           );
         })}
 
-        {/* Divider */}
-        <div className="mx-4 my-2 h-px" style={{ backgroundColor: "var(--sidebar-border)" }} />
+        {/* ── INVESTORS ── */}
+        <SectionDivider label="Investors" />
 
-        {/* EMPLOYEES */}
-        <Link
-          to="/contacts/employees"
-          className="flex w-full items-center py-[7px] pl-4 pr-4 text-[13px] transition-colors"
-          style={{
-            borderLeft: isEmployees ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
-            backgroundColor: isEmployees ? "var(--sidebar-active-bg)" : undefined,
-            color: isEmployees ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
-            fontWeight: isEmployees ? 500 : 400,
-          }}
-          onMouseEnter={(e) => {
-            if (!isEmployees) {
-              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isEmployees) {
-              e.currentTarget.style.backgroundColor = "transparent";
-            }
-          }}
-        >
-          Employees
-        </Link>
+        <SidebarLink
+          to="/investors"
+          label="Funds"
+          isActive={
+            isInvestorPage &&
+            !location.pathname.startsWith("/investors/capital-calls") &&
+            !location.pathname.startsWith("/investors/distributions")
+          }
+        />
+        <SidebarLink
+          to="/investors/capital-calls"
+          label="Capital Calls"
+          isActive={location.pathname.startsWith("/investors/capital-calls")}
+        />
+        <SidebarLink
+          to="/investors/distributions"
+          label="Distributions"
+          isActive={location.pathname.startsWith("/investors/distributions")}
+        />
 
-        {/* CUSTOMERS */}
-        <Link
-          to="/contacts/customers"
-          className="flex w-full items-center py-[7px] pl-4 pr-4 text-[13px] transition-colors"
-          style={{
-            borderLeft: isCustomers ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
-            backgroundColor: isCustomers ? "var(--sidebar-active-bg)" : undefined,
-            color: isCustomers ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
-            fontWeight: isCustomers ? 500 : 400,
-          }}
-          onMouseEnter={(e) => {
-            if (!isCustomers) {
-              e.currentTarget.style.backgroundColor = "var(--sidebar-hover-bg)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isCustomers) {
-              e.currentTarget.style.backgroundColor = "transparent";
-            }
-          }}
-        >
-          Customers
-        </Link>
+        {/* ── CUSTOMERS ── */}
+        <SectionDivider label="Customers" />
+
+        <SidebarLink to="/contacts/customers" label="All Customers" isActive={isCustomers} />
+
+        {/* ── EMPLOYEES ── */}
+        <SectionDivider label="Employees" />
+
+        <SidebarLink to="/contacts/employees" label="All Employees" isActive={isEmployees} />
       </nav>
     </aside>
   );

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { PageWithSidebar } from "@/components/layout/AppShell";
-import { DetailSidebar, type SidebarSection } from "@/components/layout/DetailSidebar";
+import { DetailSidebar, type ShortcutGroup, type SidebarSection } from "@/components/layout/DetailSidebar";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId")({
@@ -72,6 +72,24 @@ function ProjectLayout() {
     },
   ];
 
+  const shortcutGroups: ShortcutGroup[] = [
+    {
+      label: "Tasks",
+      items: [
+        { label: "Documents", path: `${basePath}/files` },
+        { label: "Accounting", path: "/accounting/register" },
+        { label: "Connect", path: `${basePath}/shared-links` },
+      ],
+    },
+    {
+      label: "Integrations",
+      items: [
+        { label: "E-Signatures", path: "/operations/esign" },
+        { label: "Workflows", path: "/workflows" },
+      ],
+    },
+  ];
+
   const sidebar = (
     <DetailSidebar
       backLabel="All Projects"
@@ -79,6 +97,7 @@ function ProjectLayout() {
       title={project?.project_name ?? "Loading..."}
       subtitle={[project?.project_type, project?.status].filter(Boolean).join(" · ")}
       sections={sections}
+      shortcutGroups={shortcutGroups}
     />
   );
 

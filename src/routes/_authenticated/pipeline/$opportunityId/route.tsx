@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { PageWithSidebar } from "@/components/layout/AppShell";
-import { DetailSidebar, type SidebarSection } from "@/components/layout/DetailSidebar";
+import { DetailSidebar, type ShortcutGroup, type SidebarSection } from "@/components/layout/DetailSidebar";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId")({
@@ -61,6 +61,24 @@ function OpportunityLayout() {
     },
   ];
 
+  const shortcutGroups: ShortcutGroup[] = [
+    {
+      label: "Tasks",
+      items: [
+        { label: "Documents", path: `${basePath}/documents` },
+        { label: "Accounting", path: "/accounting/register" },
+        { label: "Connect", path: `${basePath}/shared-links` },
+      ],
+    },
+    {
+      label: "Integrations",
+      items: [
+        { label: "E-Signatures", path: "/operations/esign" },
+        { label: "Workflows", path: "/workflows" },
+      ],
+    },
+  ];
+
   const sidebar = (
     <div className="flex h-full flex-col">
       <DetailSidebar
@@ -69,6 +87,7 @@ function OpportunityLayout() {
         title={opp?.opportunity_name ?? "Loading..."}
         subtitle={opp?.status}
         sections={sections}
+        shortcutGroups={shortcutGroups}
       />
       {/* Convert to Project button at bottom of sidebar */}
       <div

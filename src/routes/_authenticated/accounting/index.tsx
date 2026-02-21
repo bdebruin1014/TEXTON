@@ -1,14 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { ModuleIndex, type ModuleKpi } from "@/components/layout/ModuleIndex";
+import { toast } from "sonner";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { DataTable } from "@/components/tables/DataTable";
-import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/")({
   component: AccountingIndex,
@@ -43,9 +41,10 @@ interface Receivable {
 interface Reconciliation {
   entity_id: string | null;
   status: string;
+  reconciled_at: string | null;
 }
 
-interface EntityRow {
+interface EntityCard {
   id: string;
   name: string;
   entity_type: string | null;
@@ -54,57 +53,13 @@ interface EntityRow {
   apOutstanding: number;
   arOutstanding: number;
   reconciledCount: number;
+  lastReconciledDate: string | null;
 }
-
-const columns: ColumnDef<EntityRow, unknown>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Entity" />,
-    cell: ({ row }) => <span className="font-medium">{row.getValue("name")}</span>,
-  },
-  {
-    accessorKey: "entity_type",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
-    cell: ({ row }) => <span className="text-muted">{row.getValue("entity_type") ?? "—"}</span>,
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
-    cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
-  },
-  {
-    accessorKey: "cashBalance",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Cash Balance" />,
-    cell: ({ row }) => formatCurrency(row.getValue("cashBalance") as number),
-  },
-  {
-    accessorKey: "apOutstanding",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="AP Outstanding" />,
-    cell: ({ row }) => {
-      const val = row.getValue("apOutstanding") as number;
-      return val > 0 ? <span className="text-destructive">{formatCurrency(val)}</span> : formatCurrency(0);
-    },
-  },
-  {
-    accessorKey: "arOutstanding",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="AR Outstanding" />,
-    cell: ({ row }) => {
-      const val = row.getValue("arOutstanding") as number;
-      return val > 0 ? <span className="text-info">{formatCurrency(val)}</span> : formatCurrency(0);
-    },
-  },
-  {
-    accessorKey: "reconciledCount",
-    header: "Reconciled",
-    cell: ({ row }) => {
-      const count = row.getValue("reconciledCount") as number;
-      return <span className="text-muted">{count}</span>;
-    },
-  },
-];
 
 function AccountingIndex() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: entities = [], isLoading: entitiesLoading } = useQuery<Entity[]>({
     queryKey: ["entities"],
@@ -136,22 +91,26 @@ function AccountingIndex() {
   const { data: receivables = [] } = useQuery<Receivable[]>({
     queryKey: ["receivables_summary"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("receivables").select("entity_id, amount, received_amount, status");
+      const { data, error } = await supabase
+        .from("receivables")
+        .select("entity_id, amount, received_amount, status");
       if (error) throw error;
       return data ?? [];
     },
   });
 
   const { data: reconciliations = [] } = useQuery<Reconciliation[]>({
-    queryKey: ["reconciliations_summary"],
+    queryKey: ["reconciliations_summary_full"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("reconciliations").select("entity_id, status");
+      const { data, error } = await supabase
+        .from("reconciliations")
+        .select("entity_id, status, reconciled_at");
       if (error) throw error;
       return data ?? [];
     },
   });
 
-  const entityRows: EntityRow[] = useMemo(() => {
+  const entityCards: EntityCard[] = useMemo(() => {
     return entities.map((entity) => {
       const cashBalance = bankAccounts
         .filter((b) => b.entity_id === entity.id && b.status === "Active")
@@ -166,13 +125,17 @@ function AccountingIndex() {
 
       const arOutstanding = receivables
         .filter(
-          (r) => r.entity_id === entity.id && (r.status === "Open" || r.status === "Partial" || r.status === "Overdue"),
+          (r) =>
+            r.entity_id === entity.id && (r.status === "Open" || r.status === "Partial" || r.status === "Overdue"),
         )
         .reduce((sum, r) => sum + ((r.amount ?? 0) - (r.received_amount ?? 0)), 0);
 
-      const reconciledCount = reconciliations.filter(
-        (r) => r.entity_id === entity.id && r.status === "Reconciled",
-      ).length;
+      const entityRecs = reconciliations.filter((r) => r.entity_id === entity.id);
+      const reconciledCount = entityRecs.filter((r) => r.status === "Reconciled").length;
+      const lastReconciled = entityRecs
+        .filter((r) => r.status === "Reconciled" && r.reconciled_at)
+        .sort((a, b) => (b.reconciled_at ?? "").localeCompare(a.reconciled_at ?? ""))
+        .at(0);
 
       return {
         id: entity.id,
@@ -183,51 +146,154 @@ function AccountingIndex() {
         apOutstanding,
         arOutstanding,
         reconciledCount,
+        lastReconciledDate: lastReconciled?.reconciled_at ?? null,
       };
     });
   }, [entities, bankAccounts, bills, receivables, reconciliations]);
 
-  const totalCash = entityRows.reduce((sum, e) => sum + e.cashBalance, 0);
-  const totalAP = entityRows.reduce((sum, e) => sum + e.apOutstanding, 0);
-  const totalAR = entityRows.reduce((sum, e) => sum + e.arOutstanding, 0);
-  const totalReconciled = entityRows.reduce((sum, e) => sum + e.reconciledCount, 0);
+  const totalCash = entityCards.reduce((sum, e) => sum + e.cashBalance, 0);
+  const totalAP = entityCards.reduce((sum, e) => sum + e.apOutstanding, 0);
+  const totalAR = entityCards.reduce((sum, e) => sum + e.arOutstanding, 0);
   const activeEntities = entities.filter((e) => e.status === "Active").length;
 
-  const kpis: ModuleKpi[] = [
-    { label: "Cash Balance", value: formatCurrency(totalCash), accentColor: "#48BB78" },
-    {
-      label: "AP Outstanding",
-      value: formatCurrency(totalAP),
-      sub: `${bills.filter((b) => b.status === "Open" || b.status === "Approved" || b.status === "Partial").length} open bills`,
-      accentColor: "#B84040",
+  const createEntity = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase
+        .from("entities")
+        .insert({ name: "New Entity", status: "Active", entity_id: activeEntityId })
+        .select("id")
+        .single();
+      if (error) throw error;
+      return data;
     },
-    {
-      label: "AR Outstanding",
-      value: formatCurrency(totalAR),
-      sub: `${receivables.filter((r) => r.status === "Open" || r.status === "Partial" || r.status === "Overdue").length} open receivables`,
-      accentColor: "#3B6FA0",
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["entities"] });
+      toast.success("Entity created");
+      if (data?.id) {
+        navigate({ to: `/accounting/${data.id}/register` as string });
+      }
     },
-    {
-      label: "Reconciled Accounts",
-      value: totalReconciled,
-      sub: `${activeEntities} active entities`,
-      accentColor: "#C4841D",
-    },
-  ];
+    onError: () => toast.error("Failed to create entity"),
+  });
 
   return (
-    <ModuleIndex title="Accounting" subtitle="Financial overview across all entities" kpis={kpis}>
+    <div>
+      {/* Header */}
+      <div className="mb-5 flex items-start justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Accounting</h1>
+          <p className="mt-0.5 text-sm text-muted">
+            Financial overview across {activeEntities} active entities
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/accounting/journal-entries" as string })}
+            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+          >
+            + New Journal Entry
+          </button>
+          <button
+            type="button"
+            onClick={() => createEntity.mutate()}
+            className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+          >
+            + New Entity
+          </button>
+        </div>
+      </div>
+
+      {/* KPI Summary Row */}
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #48BB78" }}>
+          <span className="text-lg font-bold text-foreground">{formatCurrency(totalCash)}</span>
+          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+            Cash Balance
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #B84040" }}>
+          <span className="text-lg font-bold text-foreground">{formatCurrency(totalAP)}</span>
+          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+            AP Outstanding
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #3B6FA0" }}>
+          <span className="text-lg font-bold text-foreground">{formatCurrency(totalAR)}</span>
+          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+            AR Outstanding
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #C4841D" }}>
+          <span className="text-lg font-bold text-foreground">{activeEntities}</span>
+          <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+            Active Entities
+          </p>
+        </div>
+      </div>
+
+      {/* Entity Cards */}
       {entitiesLoading ? (
-        <TableSkeleton rows={6} cols={7} />
+        <TableSkeleton rows={4} cols={5} />
       ) : (
-        <DataTable
-          columns={columns}
-          data={entityRows}
-          searchKey="name"
-          searchPlaceholder="Search entities..."
-          onRowClick={(row) => navigate({ to: "/accounting/register", search: { entity: row.id } as never })}
-        />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {entityCards.map((entity) => (
+            <button
+              key={entity.id}
+              type="button"
+              onClick={() => navigate({ to: `/accounting/${entity.id}/register` as string })}
+              className="rounded-lg border border-border bg-card p-5 text-left transition-shadow hover:shadow-md"
+            >
+              {/* Entity header */}
+              <div className="mb-3 flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold text-white"
+                    style={{ backgroundColor: "var(--color-primary)" }}
+                  >
+                    {entity.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">{entity.name}</h3>
+                    <p className="text-[11px] text-muted">{entity.entity_type ?? "Entity"}</p>
+                  </div>
+                </div>
+                <StatusBadge status={entity.status} />
+              </div>
+
+              {/* Financial summary */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <span className="text-sm font-semibold text-foreground">{formatCurrency(entity.cashBalance)}</span>
+                  <p className="text-[10px] text-muted">Cash Balance</p>
+                </div>
+                <div>
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: entity.apOutstanding > 0 ? "var(--color-destructive)" : "var(--color-foreground)" }}
+                  >
+                    {formatCurrency(entity.apOutstanding)}
+                  </span>
+                  <p className="text-[10px] text-muted">AP Outstanding</p>
+                </div>
+                <div>
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: entity.arOutstanding > 0 ? "var(--color-info)" : "var(--color-foreground)" }}
+                  >
+                    {formatCurrency(entity.arOutstanding)}
+                  </span>
+                  <p className="text-[10px] text-muted">AR Outstanding</p>
+                </div>
+                <div>
+                  <span className="text-sm font-semibold text-foreground">{entity.reconciledCount}</span>
+                  <p className="text-[10px] text-muted">Reconciled</p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
       )}
-    </ModuleIndex>
+    </div>
   );
 }

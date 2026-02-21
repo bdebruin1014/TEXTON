@@ -1,3 +1,4 @@
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
 import { CommandPalette } from "./CommandPalette";
@@ -11,61 +12,84 @@ interface AppShellProps {
 }
 
 /**
+ * Context for allowing child pages to override the right panel.
+ * Pages call useSetRightPanel(true) on mount to signal they provide
+ * their own panel via RightFilterPanel (which portals into #right-panel-slot).
+ */
+const RightPanelOverrideContext = createContext<(has: boolean) => void>(() => {});
+
+export function useRightPanelOverride() {
+  const setHas = useContext(RightPanelOverrideContext);
+  useEffect(() => {
+    setHas(true);
+    return () => setHas(false);
+  }, [setHas]);
+}
+
+/**
  * Full application shell — Qualia pattern.
  *
  * Layout: dark TopNav on top, then 3 columns:
  *   LEFT: Dark slate sidebar (context-sensitive per module)
  *   CENTER: Content area with RecordTabBar above main (#F1F5F9 bg)
- *   RIGHT: Collapsible white panel (Chat / Tasks / Notes)
+ *   RIGHT: Collapsible white panel (Chat / Tasks / Notes) — swappable via context
  */
 export function AppShell({ sidebar, children }: AppShellProps) {
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
+  const [hasRightPanelOverride, setHasRightPanelOverride] = useState(false);
+
+  const overrideContextValue = useMemo(() => setHasRightPanelOverride, []);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <TopNav />
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Mobile overlay */}
-        {sidebarOpen && (
-          <button
-            type="button"
-            className="fixed inset-0 z-30 bg-black/50 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close sidebar"
-          />
-        )}
+    <RightPanelOverrideContext.Provider value={overrideContextValue}>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <TopNav />
+        <div className="flex flex-1 overflow-hidden relative">
+          {/* Mobile overlay */}
+          {sidebarOpen && (
+            <button
+              type="button"
+              className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Close sidebar"
+            />
+          )}
 
-        {/* Sidebar — drawer on mobile, static on desktop */}
-        {sidebar && (
-          <div
-            className={cn(
-              "fixed inset-y-0 left-0 z-40 w-[280px] pt-[var(--topnav-height)]",
-              "transform transition-transform duration-200 ease-in-out",
-              "lg:relative lg:z-auto lg:w-[240px] lg:pt-0 lg:translate-x-0",
-              sidebarOpen ? "translate-x-0" : "-translate-x-full",
-            )}
-            style={{ backgroundColor: "var(--color-sidebar)" }}
-          >
-            {sidebar}
-          </div>
-        )}
+          {/* Sidebar — drawer on mobile, static on desktop */}
+          {sidebar && (
+            <div
+              className={cn(
+                "fixed inset-y-0 left-0 z-40 w-[280px] pt-[var(--topnav-height)]",
+                "transform transition-transform duration-200 ease-in-out",
+                "lg:relative lg:z-auto lg:w-[240px] lg:pt-0 lg:translate-x-0",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full",
+              )}
+              style={{ backgroundColor: "var(--color-sidebar)" }}
+            >
+              {sidebar}
+            </div>
+          )}
 
-        {/* Content column */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <RecordTabBar />
-          <div className="flex flex-1 overflow-hidden">
-            <main className="flex-1 overflow-y-auto p-4 md:p-6" style={{ backgroundColor: "var(--color-background)" }}>
-              {children}
-            </main>
-            <div className="hidden xl:block">
-              <RightPanel />
+          {/* Content column */}
+          <div className="flex min-w-0 flex-1 flex-col">
+            <RecordTabBar />
+            <div className="flex flex-1 overflow-hidden">
+              <main
+                className="flex-1 overflow-y-auto p-4 md:p-6"
+                style={{ backgroundColor: "var(--color-background)" }}
+              >
+                {children}
+              </main>
+              <div className="hidden xl:block" id="right-panel-slot">
+                {!hasRightPanelOverride && <RightPanel />}
+              </div>
             </div>
           </div>
         </div>
+        <CommandPalette />
       </div>
-      <CommandPalette />
-    </div>
+    </RightPanelOverrideContext.Provider>
   );
 }
 

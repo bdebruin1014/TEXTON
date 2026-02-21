@@ -14,10 +14,9 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { useEntityStore } from "@/stores/entityStore";
 
-export const Route = createFileRoute("/_authenticated/accounting/register")({
-  component: Register,
+export const Route = createFileRoute("/_authenticated/accounting/$entityId/register")({
+  component: EntityRegister,
 });
 
 interface Transaction {
@@ -40,11 +39,6 @@ interface Transaction {
   is_void: boolean | null;
   is_reconciled: boolean | null;
   is_cleared: boolean | null;
-}
-
-interface Entity {
-  id: string;
-  name: string;
 }
 
 interface Filters {
@@ -85,27 +79,29 @@ const columns: ColumnDef<Transaction, unknown>[] = [
   {
     accessorKey: "payee",
     header: "To/From",
-    cell: ({ row }) => <span className="text-xs">{row.getValue("payee") ?? row.original.description ?? "—"}</span>,
+    cell: ({ row }) => <span className="text-xs">{row.getValue("payee") ?? row.original.description ?? "\u2014"}</span>,
   },
   {
     accessorKey: "instrument",
     header: "Instrument",
-    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("instrument") ?? "—"}</span>,
+    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("instrument") ?? "\u2014"}</span>,
   },
   {
     accessorKey: "receipt_number",
     header: "Receipt #",
-    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("receipt_number") ?? "—"}</span>,
+    cell: ({ row }) => (
+      <span className="font-mono text-xs text-muted">{row.getValue("receipt_number") ?? "\u2014"}</span>
+    ),
   },
   {
     accessorKey: "project_name",
     header: "Project",
-    cell: ({ row }) => <span className="text-xs text-muted">{row.getValue("project_name") ?? "—"}</span>,
+    cell: ({ row }) => <span className="text-xs text-muted">{row.getValue("project_name") ?? "\u2014"}</span>,
   },
   {
     accessorKey: "entity_name",
     header: "Entity",
-    cell: ({ row }) => <span className="text-xs text-muted">{row.getValue("entity_name") ?? "—"}</span>,
+    cell: ({ row }) => <span className="text-xs text-muted">{row.getValue("entity_name") ?? "\u2014"}</span>,
   },
   {
     accessorKey: "credit",
@@ -137,8 +133,8 @@ const columns: ColumnDef<Transaction, unknown>[] = [
   },
 ];
 
-function Register() {
-  const activeEntityId = useEntityStore((s) => s.activeEntityId);
+function EntityRegister() {
+  const { entityId } = Route.useParams();
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [activeTab, setActiveTab] = useState<"filter" | "daily-recs">("filter");
 
@@ -146,34 +142,28 @@ function Register() {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  // Fetch active entity name
-  const { data: entity } = useQuery<Entity | null>({
-    queryKey: ["entity", activeEntityId],
+  // Fetch entity name for display
+  const { data: entity } = useQuery({
+    queryKey: ["entity", entityId],
     queryFn: async () => {
-      if (!activeEntityId) return null;
-      const { data, error } = await supabase.from("entities").select("id, name").eq("id", activeEntityId).single();
+      const { data, error } = await supabase.from("entities").select("id, name").eq("id", entityId).single();
       if (error) return null;
       return data;
     },
-    enabled: !!activeEntityId,
   });
 
   const { data: transactions = [], isLoading } = useQuery<Transaction[]>({
-    queryKey: ["register", activeEntityId],
+    queryKey: ["register", entityId],
     queryFn: async () => {
-      let query = supabase
+      const { data, error } = await supabase
         .from("journal_entry_lines")
         .select(
           "id, journal_entry_id, transaction_date, reference, description, debit, credit, running_balance, account_name, account_number",
         )
+        .eq("entity_id", entityId)
         .order("transaction_date", { ascending: false })
         .limit(500);
-      if (activeEntityId) {
-        query = query.eq("entity_id", activeEntityId);
-      }
-      const { data, error } = await query;
       if (error) throw error;
-      // Map to Transaction interface (fields not in table get null defaults)
       return (data ?? []).map((row) => ({
         ...row,
         type: null,
@@ -243,7 +233,7 @@ function Register() {
     return transactions.reduce((sum, t) => sum + (t.credit ?? 0) - (t.debit ?? 0), 0);
   }, [transactions]);
 
-  const entityName = entity?.name ?? "All Entities";
+  const entityName = entity?.name ?? "Entity";
 
   return (
     <>
@@ -254,7 +244,7 @@ function Register() {
             <h1 className="text-xl font-semibold text-foreground">Register</h1>
             <p className="mt-0.5 text-xs text-muted">
               Showing {filters.voidStatus === "Non Void" ? "non-void" : filters.voidStatus === "Void" ? "void" : "all"}{" "}
-              transactions in entity {entityName}
+              transactions for {entityName}
             </p>
           </div>
           <div className="flex items-center gap-2">

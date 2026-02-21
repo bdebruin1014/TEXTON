@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
 
 export interface SidebarSection {
   /** ALL-CAPS divider label with horizontal rule ("ORDER", "CLOSING", etc.) */
@@ -13,6 +14,12 @@ interface SidebarLink {
   path: string;
   /** Optional trailing badge or count */
   badge?: string | number;
+}
+
+export interface ShortcutGroup {
+  /** ALL-CAPS divider label (e.g. "TASKS", "INTEGRATIONS") */
+  label: string;
+  items: Array<{ label: string; path: string }>;
 }
 
 interface DetailSidebarProps {
@@ -31,8 +38,10 @@ interface DetailSidebarProps {
   action?: { label: string; onClick: () => void };
   /** Grouped navigation sections */
   sections: SidebarSection[];
-  /** Bottom shortcut links pinned below scroll area */
+  /** Bottom shortcut links pinned below scroll area (flat, legacy) */
   shortcuts?: Array<{ label: string; path: string }>;
+  /** Grouped bottom shortcuts with section labels (TASKS, INTEGRATIONS, etc.) */
+  shortcutGroups?: ShortcutGroup[];
 }
 
 /**
@@ -42,9 +51,10 @@ interface DetailSidebarProps {
  * (title, subtitle, stats, action). Then grouped sections under
  * ALL-CAPS divider labels with horizontal rules extending to the
  * right edge. Active page = GREEN left border + GREEN text.
+ * Sections with collapsible=true show ▴/▾ arrows that collapse items.
  *
- * Bottom area has pinned shortcuts (like Qualia's TASKS section
- * with Documents, Accounting, Marketplace, Connect).
+ * Bottom area has pinned shortcuts grouped under divider labels
+ * (like Qualia's TASKS section with Documents, Accounting, Connect).
  */
 export function DetailSidebar({
   backLabel,
@@ -56,8 +66,19 @@ export function DetailSidebar({
   action,
   sections,
   shortcuts,
+  shortcutGroups,
 }: DetailSidebarProps) {
   const location = useRouterState({ select: (s) => s.location });
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+
+  const toggleSection = (label: string) => {
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  };
 
   return (
     <aside
@@ -133,61 +154,126 @@ export function DetailSidebar({
 
       {/* Section navigation — scrollable */}
       <nav className="flex-1 overflow-y-auto py-1">
-        {sections.map((section) => (
-          <div key={section.label}>
-            {/* Section divider: ALL CAPS label + horizontal rule */}
-            <div className="flex items-center gap-2 px-4 pb-1 pt-4">
-              <span
-                className="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: "var(--sidebar-heading)" }}
-              >
-                {section.label}
-              </span>
-              <div className="h-px flex-1" style={{ backgroundColor: "var(--sidebar-border)" }} />
-            </div>
-
-            {/* Section links */}
-            {section.items.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="flex w-full items-center justify-between py-[6px] pl-4 pr-4 text-[13px] transition-colors"
-                  style={{
-                    borderLeft: isActive ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
-                    backgroundColor: isActive ? "var(--sidebar-active-bg)" : undefined,
-                    color: isActive ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
-                    fontWeight: isActive ? 500 : 400,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sidebar-hover-bg)";
-                      (e.currentTarget as HTMLElement).style.color = "#FFFFFF";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-                      (e.currentTarget as HTMLElement).style.color = "var(--sidebar-text)";
-                    }
-                  }}
+        {sections.map((section) => {
+          const isCollapsed = collapsedSections.has(section.label);
+          return (
+            <div key={section.label}>
+              {/* Section divider: ALL CAPS label + horizontal rule + optional collapse arrow */}
+              <div className="flex items-center gap-2 px-4 pb-1 pt-4">
+                <span
+                  className="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
+                  style={{ color: "var(--sidebar-heading)" }}
                 >
-                  <span>{item.label}</span>
-                  {item.badge != null && (
-                    <span className="text-[11px]" style={{ color: "var(--sidebar-heading)" }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+                  {section.label}
+                </span>
+                <div className="h-px flex-1" style={{ backgroundColor: "var(--sidebar-border)" }} />
+                {section.collapsible !== false && (
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.label)}
+                    className="shrink-0 px-0.5 text-[10px] leading-none transition-colors hover:text-white"
+                    style={{ color: "var(--sidebar-heading)" }}
+                    aria-label={isCollapsed ? `Expand ${section.label}` : `Collapse ${section.label}`}
+                  >
+                    {isCollapsed ? "\u25BE" : "\u25B4"}
+                  </button>
+                )}
+              </div>
+
+              {/* Section links — hidden when collapsed */}
+              {!isCollapsed &&
+                section.items.map((item) => {
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className="flex w-full items-center justify-between py-[6px] pl-4 pr-4 text-[13px] transition-colors"
+                      style={{
+                        borderLeft: isActive ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
+                        backgroundColor: isActive ? "var(--sidebar-active-bg)" : undefined,
+                        color: isActive ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
+                        fontWeight: isActive ? 500 : 400,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sidebar-hover-bg)";
+                          (e.currentTarget as HTMLElement).style.color = "#FFFFFF";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                          (e.currentTarget as HTMLElement).style.color = "var(--sidebar-text)";
+                        }
+                      }}
+                    >
+                      <span>{item.label}</span>
+                      {item.badge != null && (
+                        <span className="text-[11px]" style={{ color: "var(--sidebar-heading)" }}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+            </div>
+          );
+        })}
       </nav>
 
-      {/* Bottom shortcuts — pinned below scroll, separated by divider + label */}
-      {shortcuts && shortcuts.length > 0 && (
+      {/* Bottom shortcuts — pinned below scroll area */}
+      {/* Grouped shortcuts (new) */}
+      {shortcutGroups && shortcutGroups.length > 0 && (
+        <div className="py-2" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
+          {shortcutGroups.map((group) => (
+            <div key={group.label}>
+              <div className="flex items-center gap-2 px-4 pb-1 pt-1">
+                <span
+                  className="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
+                  style={{ color: "var(--sidebar-heading)" }}
+                >
+                  {group.label}
+                </span>
+                <div className="h-px flex-1" style={{ backgroundColor: "var(--sidebar-border)" }} />
+              </div>
+              {group.items.map((s) => {
+                const isActive = location.pathname === s.path;
+                return (
+                  <Link
+                    key={s.path}
+                    to={s.path}
+                    className="flex items-center py-[6px] pl-4 pr-4 text-[13px] transition-colors"
+                    style={{
+                      borderLeft: isActive ? "3px solid var(--sidebar-active-border)" : "3px solid transparent",
+                      backgroundColor: isActive ? "var(--sidebar-active-bg)" : undefined,
+                      color: isActive ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
+                      fontWeight: isActive ? 500 : 400,
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sidebar-hover-bg)";
+                        (e.currentTarget as HTMLElement).style.color = "#FFFFFF";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                        (e.currentTarget as HTMLElement).style.color = "var(--sidebar-text)";
+                      }
+                    }}
+                  >
+                    {s.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Flat shortcuts (legacy, kept for backward compat) */}
+      {!shortcutGroups && shortcuts && shortcuts.length > 0 && (
         <div className="py-2" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
           <div className="flex items-center gap-2 px-4 pb-1 pt-1">
             <span
