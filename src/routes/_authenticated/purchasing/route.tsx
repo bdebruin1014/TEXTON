@@ -59,7 +59,12 @@ function PurchasingLayout() {
         <select
           value={activeEntityId ?? ""}
           onChange={(e) => setActiveEntity(e.target.value)}
-          className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm font-medium text-foreground outline-none focus:border-primary"
+          className="w-full rounded px-2 py-1.5 text-sm font-medium outline-none"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.06)",
+            border: "1px solid var(--sidebar-border)",
+            color: "var(--sidebar-active-text)",
+          }}
         >
           <option value="">All Entities</option>
           {entities.map((e) => (
