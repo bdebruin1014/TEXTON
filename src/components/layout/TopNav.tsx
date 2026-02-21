@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { NAV_MODULES } from "@/lib/constants";
+import { NAV_MODULES, OPS_DROPDOWN_SECTIONS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/uiStore";
 
@@ -11,9 +11,101 @@ import { useUiStore } from "@/stores/uiStore";
  * Dark navy (#112233) background — darkest element in the UI.
  * Logo left, text-only module links center, search + user right.
  * Active module gets a bright green (#48BB78) bottom indicator.
- * The active module text in the top nav also matches Qualia:
- * white text + green underline, versus muted gray for inactive.
+ * "Operations" is a mega-dropdown consolidating Operations, Tools, and Reports.
  */
+
+const OPS_PATHS = OPS_DROPDOWN_SECTIONS.flatMap((s) => s.items.map((i) => i.path));
+
+function OperationsDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const location = useRouterState({ select: (s) => s.location });
+
+  const isActive = open || OPS_PATHS.some((p) => location.pathname === p || location.pathname.startsWith(`${p}/`));
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={cn(
+          "relative flex items-center gap-1 rounded-md px-3 py-3.5 text-[13px] font-medium transition-colors",
+          isActive ? "text-white" : "hover:bg-white/[0.04]",
+        )}
+        style={{ color: isActive ? "#FFFFFF" : "var(--color-nav-muted)" }}
+      >
+        Operations
+        <span className="text-[10px] leading-none">{"\u25BE"}</span>
+        {isActive && !open && (
+          <span
+            className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t-sm"
+            style={{
+              background: "var(--color-nav-active)",
+              boxShadow: "0 0 8px rgba(72, 187, 120, 0.4)",
+            }}
+          />
+        )}
+      </button>
+
+      {open && (
+        <div
+          className="absolute left-0 top-full z-50 mt-1 w-64 rounded-lg py-2 shadow-xl"
+          style={{
+            backgroundColor: "#1E2A3A",
+            border: "1px solid rgba(255, 255, 255, 0.10)",
+          }}
+        >
+          {OPS_DROPDOWN_SECTIONS.map((section, idx) => (
+            <div key={section.label}>
+              {/* Section header: ALL-CAPS label + horizontal rule */}
+              <div className={cn("flex items-center gap-2 px-4 pb-1", idx === 0 ? "pt-1" : "pt-3")}>
+                <span
+                  className="shrink-0 text-[10px] font-semibold uppercase tracking-widest"
+                  style={{ color: "var(--sidebar-heading)" }}
+                >
+                  {section.label}
+                </span>
+                <div className="h-px flex-1" style={{ backgroundColor: "rgba(255, 255, 255, 0.08)" }} />
+              </div>
+
+              {/* Section links */}
+              {section.items.map((item) => {
+                const itemActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path as string}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "block px-4 py-1.5 text-[13px] transition-colors",
+                      itemActive ? "font-medium" : "hover:bg-white/5",
+                    )}
+                    style={{
+                      color: itemActive ? "#FFFFFF" : "rgba(255, 255, 255, 0.7)",
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TopNav() {
   const location = useRouterState({ select: (s) => s.location });
   const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
@@ -46,6 +138,10 @@ export function TopNav() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // Split NAV_MODULES: everything before Admin, then Operations dropdown, then Admin
+  const beforeAdmin = NAV_MODULES.filter((m) => m.label !== "Admin");
+  const admin = NAV_MODULES.find((m) => m.label === "Admin");
+
   return (
     <header
       className="flex h-[var(--topnav-height)] items-center justify-between px-4"
@@ -76,9 +172,9 @@ export function TopNav() {
         </Link>
       </div>
 
-      {/* Center: Module links — text only, no icons */}
+      {/* Center: Module links + Operations dropdown */}
       <nav className="hidden md:flex items-center gap-0.5">
-        {NAV_MODULES.map((mod) => {
+        {beforeAdmin.map((mod) => {
           const isActive = location.pathname.startsWith(mod.path);
           return (
             <Link
@@ -105,6 +201,38 @@ export function TopNav() {
             </Link>
           );
         })}
+
+        {/* Operations mega-dropdown */}
+        <OperationsDropdown />
+
+        {/* Admin */}
+        {admin &&
+          (() => {
+            const isActive = location.pathname.startsWith(admin.path);
+            return (
+              <Link
+                to={admin.path}
+                className={cn(
+                  "relative rounded-md px-3 py-3.5 text-[13px] font-medium transition-colors",
+                  isActive ? "text-white" : "hover:bg-white/[0.04]",
+                )}
+                style={{
+                  color: isActive ? "#FFFFFF" : "var(--color-nav-muted)",
+                }}
+              >
+                {admin.label}
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t-sm"
+                    style={{
+                      background: "var(--color-nav-active)",
+                      boxShadow: "0 0 8px rgba(72, 187, 120, 0.4)",
+                    }}
+                  />
+                )}
+              </Link>
+            );
+          })()}
       </nav>
 
       {/* Right: Search + Panel toggle + User */}

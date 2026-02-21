@@ -186,8 +186,34 @@ export const NAV_MODULES = [
   { label: "Accounting", path: "/accounting" },
   { label: "Contacts", path: "/contacts" },
   { label: "Calendar", path: "/calendar" },
-  { label: "Workflows", path: "/workflows" },
-  { label: "Operations", path: "/operations" },
-  { label: "Tools", path: "/tools" },
   { label: "Admin", path: "/admin" },
+] as const;
+
+export const OPS_DROPDOWN_SECTIONS = [
+  {
+    label: "Operations",
+    items: [
+      { label: "Dashboard", path: "/operations" },
+      { label: "Workflows", path: "/workflows" },
+      { label: "E-Signatures", path: "/operations/esign" },
+      { label: "RCH Contracts", path: "/operations/rch-contracts" },
+    ],
+  },
+  {
+    label: "Tools",
+    items: [
+      { label: "Deal Analyzer", path: "/tools/deal-analyzer" },
+      { label: "Community Proforma", path: "/tools/community-proforma" },
+      { label: "Lot Dev Proforma", path: "/tools/lot-dev-proforma" },
+      { label: "Lot Purchase Proforma", path: "/tools/lot-purchase-proforma" },
+    ],
+  },
+  {
+    label: "Reports",
+    items: [
+      { label: "Reports Dashboard", path: "/reports" },
+      { label: "Custom Reports", path: "/reports/custom" },
+      { label: "Subscribed Reports", path: "/reports/subscribed" },
+    ],
+  },
 ] as const;
