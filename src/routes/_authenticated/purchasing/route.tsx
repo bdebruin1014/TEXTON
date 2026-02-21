@@ -44,10 +44,18 @@ function PurchasingLayout() {
   });
 
   const sidebar = (
-    <aside className="flex h-full flex-col border-r border-border bg-sidebar" style={{ width: "var(--sidebar-width)" }}>
+    <aside
+      className="flex h-full flex-col bg-sidebar"
+      style={{ width: "var(--sidebar-width)", borderRight: "1px solid var(--sidebar-border)" }}
+    >
       {/* Entity Picker */}
-      <div className="border-b border-border px-4 py-3">
-        <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted">Entity</label>
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
+        <label
+          className="mb-1 block text-[10px] font-semibold uppercase tracking-wider"
+          style={{ color: "var(--sidebar-heading)" }}
+        >
+          Entity
+        </label>
         <select
           value={activeEntityId ?? ""}
           onChange={(e) => setActiveEntity(e.target.value)}
@@ -67,7 +75,12 @@ function PurchasingLayout() {
         {NAV_SECTIONS.map((section) => (
           <div key={section.label} className="mb-2">
             <div className="px-4 py-1">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">{section.label}</span>
+              <span
+                className="text-[10px] font-semibold uppercase tracking-wider"
+                style={{ color: "var(--sidebar-heading)" }}
+              >
+                {section.label}
+              </span>
             </div>
             {section.items.map((item) => {
               const isActive = currentPath === item.path || currentPath.startsWith(`${item.path}/`);
@@ -86,7 +99,7 @@ function PurchasingLayout() {
                           backgroundColor: "var(--sidebar-active-bg)",
                           color: "var(--sidebar-active-text)",
                         }
-                      : { color: "var(--color-muted)" }
+                      : { color: "var(--sidebar-text)" }
                   }
                 >
                   {item.label}

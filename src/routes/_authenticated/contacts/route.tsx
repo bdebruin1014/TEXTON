@@ -17,18 +17,30 @@ function ContactsLayout() {
   const currentPath = matches.at(-1)?.fullPath ?? "";
 
   const sidebar = (
-    <aside className="flex h-full flex-col border-r border-border bg-sidebar" style={{ width: "var(--sidebar-width)" }}>
+    <aside
+      className="flex h-full flex-col bg-sidebar"
+      style={{ width: "var(--sidebar-width)", borderRight: "1px solid var(--sidebar-border)" }}
+    >
       {/* Header */}
-      <div className="border-b border-border px-4 py-3">
-        <span className="text-sm font-semibold text-foreground">Contacts</span>
-        <p className="text-[10px] text-muted">People & companies directory</p>
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
+        <span className="text-sm font-semibold" style={{ color: "var(--sidebar-active-text)" }}>
+          Contacts
+        </span>
+        <p className="text-[10px]" style={{ color: "var(--sidebar-heading)" }}>
+          People & companies directory
+        </p>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-2">
         <div className="mb-2">
           <div className="px-4 py-1">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Directory</span>
+            <span
+              className="text-[10px] font-semibold uppercase tracking-wider"
+              style={{ color: "var(--sidebar-heading)" }}
+            >
+              Directory
+            </span>
           </div>
           {NAV_ITEMS.map((item) => {
             const isActive =
@@ -57,7 +69,7 @@ function ContactsLayout() {
                         backgroundColor: "var(--sidebar-active-bg)",
                         color: "var(--sidebar-active-text)",
                       }
-                    : { color: "var(--color-muted)" }
+                    : { color: "var(--sidebar-text)" }
                 }
               >
                 {item.label}

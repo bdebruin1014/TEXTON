@@ -52,10 +52,17 @@ function AdminLayout() {
   const currentPath = matches.at(-1)?.fullPath ?? "";
 
   const sidebar = (
-    <aside className="flex h-full flex-col border-r border-border bg-sidebar" style={{ width: "var(--sidebar-width)" }}>
-      <div className="border-b border-border px-4 py-3">
-        <span className="text-sm font-semibold text-foreground">Admin</span>
-        <p className="text-[10px] text-muted">System configuration</p>
+    <aside
+      className="flex h-full flex-col bg-sidebar"
+      style={{ width: "var(--sidebar-width)", borderRight: "1px solid var(--sidebar-border)" }}
+    >
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
+        <span className="text-sm font-semibold" style={{ color: "var(--sidebar-active-text)" }}>
+          Admin
+        </span>
+        <p className="text-[10px]" style={{ color: "var(--sidebar-heading)" }}>
+          System configuration
+        </p>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-2">
@@ -76,7 +83,7 @@ function AdminLayout() {
                     backgroundColor: "var(--sidebar-active-bg)",
                     color: "var(--sidebar-active-text)",
                   }
-                : { color: "var(--color-muted)" }
+                : { color: "var(--sidebar-text)" }
             }
           >
             Overview
@@ -86,7 +93,12 @@ function AdminLayout() {
         {NAV_SECTIONS.map((section) => (
           <div key={section.label} className="mb-2">
             <div className="px-4 py-1">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">{section.label}</span>
+              <span
+                className="text-[10px] font-semibold uppercase tracking-wider "
+                style={{ color: "var(--sidebar-heading)" }}
+              >
+                {section.label}
+              </span>
             </div>
             {section.items.map((item) => {
               const isActive = currentPath === item.path || currentPath.startsWith(`${item.path}/`);
@@ -105,7 +117,7 @@ function AdminLayout() {
                           backgroundColor: "var(--sidebar-active-bg)",
                           color: "var(--sidebar-active-text)",
                         }
-                      : { color: "var(--color-muted)" }
+                      : { color: "var(--sidebar-text)" }
                   }
                 >
                   {item.label}

@@ -71,7 +71,14 @@ function OpportunityLayout() {
         sections={sections}
       />
       {/* Convert to Project button at bottom of sidebar */}
-      <div className="border-r border-t border-border bg-sidebar px-4 py-3" style={{ width: "var(--sidebar-width)" }}>
+      <div
+        className="bg-sidebar px-4 py-3"
+        style={{
+          width: "var(--sidebar-width)",
+          borderRight: "1px solid var(--sidebar-border)",
+          borderTop: "1px solid var(--sidebar-border)",
+        }}
+      >
         <button
           type="button"
           className="w-full rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
