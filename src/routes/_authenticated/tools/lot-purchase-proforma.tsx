@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { calculateLotPurchaseProforma } from "@/lib/lot-purchase-proforma-engine";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -167,34 +168,8 @@ function LotPurchaseForm({ proforma, queryKey }: { proforma: LotPurchaseRecord; 
   );
 
   const p = proforma;
-
-  // Per-Home Economics
-  const totalCostPerHome =
-    p.lot_cost_per_lot + p.vertical_cost + p.upgrades + p.municipality_soft_costs + p.fixed_per_house_fees;
-  const sellingCosts = p.asp_per_home * p.selling_cost_pct;
-  const constructionInterest = totalCostPerHome * p.ltc_ratio * p.interest_rate * (p.project_duration_days / 360);
-  const totalAllInCost = totalCostPerHome + sellingCosts + p.seller_concession + constructionInterest;
-  const profitPerHome = p.asp_per_home - totalAllInCost;
-  const marginPerHome = p.asp_per_home > 0 ? profitPerHome / p.asp_per_home : 0;
-
-  // Project Totals
-  const totalEquity = p.total_lots * totalCostPerHome * (1 - p.ltc_ratio);
-  const totalRevenue = p.total_lots * p.asp_per_home;
-  const totalCosts = p.total_lots * totalAllInCost;
-  const totalProfit = totalRevenue - totalCosts;
-  const projectROI = totalEquity > 0 ? totalProfit / totalEquity : 0;
-  const equityMultiple = totalEquity > 0 ? (totalEquity + totalProfit) / totalEquity : 0;
-
-  // Takedown Schedule
-  const tranches = Array.from({ length: p.takedown_tranches }, (_, i) => {
-    const lots = i < p.takedown_tranches - 1 ? p.lots_per_tranche : p.total_lots - p.lots_per_tranche * i;
-    const totalCost = lots * p.lot_cost_per_lot;
-    const deposit = lots * p.deposit_per_lot;
-    return { tranche: i + 1, lots: Math.max(0, lots), totalCost, deposit };
-  });
-
-  // Absorption
-  const selloutMonths = p.absorption_homes_per_month > 0 ? Math.ceil(p.total_lots / p.absorption_homes_per_month) : 0;
+  const results = useMemo(() => calculateLotPurchaseProforma(p), [p]);
+  const { tranches, perHome, project } = results;
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -303,18 +278,22 @@ function LotPurchaseForm({ proforma, queryKey }: { proforma: LotPurchaseRecord; 
             <ResultRow label="Soft Costs" value={formatCurrency(p.municipality_soft_costs)} />
             <ResultRow label="Fixed Fees" value={formatCurrency(p.fixed_per_house_fees)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Hard Cost Subtotal" value={formatCurrency(totalCostPerHome)} bold />
+              <ResultRow label="Hard Cost Subtotal" value={formatCurrency(perHome.totalCostPerHome)} bold />
             </div>
-            <ResultRow label="Selling Costs" value={formatCurrency(sellingCosts)} />
+            <ResultRow label="Selling Costs" value={formatCurrency(perHome.sellingCosts)} />
             <ResultRow label="Concession" value={formatCurrency(p.seller_concession)} />
-            <ResultRow label="Construction Interest" value={formatCurrency(constructionInterest)} />
+            <ResultRow label="Construction Interest" value={formatCurrency(perHome.constructionInterest)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="All-In Cost / Home" value={formatCurrency(totalAllInCost)} bold />
+              <ResultRow label="All-In Cost / Home" value={formatCurrency(perHome.totalAllInCost)} bold />
             </div>
             <div className="mt-2 border-t border-border pt-2">
               <ResultRow label="ASP" value={formatCurrency(p.asp_per_home)} />
-              <ResultRow label="Profit / Home" value={formatCurrency(profitPerHome)} highlight={profitPerHome > 0} />
-              <ResultRow label="Margin" value={formatPercent(marginPerHome)} />
+              <ResultRow
+                label="Profit / Home"
+                value={formatCurrency(perHome.profitPerHome)}
+                highlight={perHome.profitPerHome > 0}
+              />
+              <ResultRow label="Margin" value={formatPercent(perHome.marginPerHome)} />
             </div>
           </div>
         </section>
@@ -322,14 +301,19 @@ function LotPurchaseForm({ proforma, queryKey }: { proforma: LotPurchaseRecord; 
         <section className="rounded-lg border border-border bg-card p-5">
           <h3 className="mb-3 text-sm font-semibold text-foreground">Project Summary ({p.total_lots} homes)</h3>
           <div className="space-y-1 text-xs">
-            <ResultRow label="Total Equity" value={formatCurrency(totalEquity)} />
-            <ResultRow label="Total Revenue" value={formatCurrency(totalRevenue)} />
-            <ResultRow label="Total Costs" value={formatCurrency(totalCosts)} />
-            <ResultRow label="Total Profit" value={formatCurrency(totalProfit)} bold highlight={totalProfit > 0} />
+            <ResultRow label="Total Equity" value={formatCurrency(project.totalEquity)} />
+            <ResultRow label="Total Revenue" value={formatCurrency(project.totalRevenue)} />
+            <ResultRow label="Total Costs" value={formatCurrency(project.totalCosts)} />
+            <ResultRow
+              label="Total Profit"
+              value={formatCurrency(project.totalProfit)}
+              bold
+              highlight={project.totalProfit > 0}
+            />
             <div className="mt-2 border-t border-border pt-2">
-              <ResultRow label="ROI on Equity" value={formatPercent(projectROI)} />
-              <ResultRow label="Equity Multiple" value={`${equityMultiple.toFixed(2)}x`} />
-              <ResultRow label="Sellout Period" value={`${selloutMonths} months`} />
+              <ResultRow label="ROI on Equity" value={formatPercent(project.projectROI)} />
+              <ResultRow label="Equity Multiple" value={`${project.equityMultiple.toFixed(2)}x`} />
+              <ResultRow label="Sellout Period" value={`${project.selloutMonths} months`} />
             </div>
           </div>
         </section>

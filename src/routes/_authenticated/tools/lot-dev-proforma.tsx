@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { calculateLotDevProforma } from "@/lib/lot-dev-proforma-engine";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -167,26 +168,8 @@ function LotDevForm({ proforma, queryKey }: { proforma: LotDevRecord; queryKey: 
   );
 
   const p = proforma;
-  const horizontalDev = p.total_lots * p.horizontal_dev_per_lot;
-  const carryCosts = p.total_lots * p.carry_costs_per_lot;
-  const subtotalHard = p.land_acquisition_cost + horizontalDev + p.entitlement_costs + p.amenity_costs + carryCosts;
-  const contingency = subtotalHard * p.contingency_pct;
-  const totalHardPlusContingency = subtotalHard + contingency;
-  const cmFee = p.total_lots * p.cm_fee_per_lot;
-  const developerFee = p.total_lots * p.developer_fee_per_lot;
-  const interestReserve = totalHardPlusContingency * p.bank_interest_rate * 0.5;
-  const totalUses = totalHardPlusContingency + cmFee + developerFee + interestReserve;
-
-  const seniorDebt = totalUses * p.bank_ltc;
-  const lpEquity = totalUses - seniorDebt;
-  const totalRevenue = p.total_lots * p.lot_sales_price;
-  const grossProfit = totalRevenue - totalUses;
-  const profitMargin = totalRevenue > 0 ? grossProfit / totalRevenue : 0;
-  const equityMultiple = lpEquity > 0 ? (lpEquity + grossProfit) / lpEquity : 0;
-
-  // Absorption schedule
-  const absorptionMonths = p.absorption_lots_per_month > 0 ? Math.ceil(p.total_lots / p.absorption_lots_per_month) : 0;
-  const breakevenLots = totalUses > 0 && p.lot_sales_price > 0 ? Math.ceil(totalUses / p.lot_sales_price) : 0;
+  const results = useMemo(() => calculateLotDevProforma(p), [p]);
+  const { sourcesUses: su, returns: ret, absorption: abs } = results;
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -248,24 +231,24 @@ function LotDevForm({ proforma, queryKey }: { proforma: LotDevRecord; queryKey: 
           <h3 className="mb-3 text-sm font-semibold text-foreground">Sources & Uses</h3>
           <div className="space-y-1 text-xs">
             <ResultRow label="Land Acquisition" value={formatCurrency(p.land_acquisition_cost)} />
-            <ResultRow label="Horizontal Development" value={formatCurrency(horizontalDev)} />
+            <ResultRow label="Horizontal Development" value={formatCurrency(su.horizontalDev)} />
             <ResultRow label="Entitlement Costs" value={formatCurrency(p.entitlement_costs)} />
             <ResultRow label="Amenity / Common" value={formatCurrency(p.amenity_costs)} />
-            <ResultRow label="Carry Costs" value={formatCurrency(carryCosts)} />
+            <ResultRow label="Carry Costs" value={formatCurrency(su.carryCosts)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Subtotal Hard" value={formatCurrency(subtotalHard)} bold />
+              <ResultRow label="Subtotal Hard" value={formatCurrency(su.subtotalHard)} bold />
             </div>
-            <ResultRow label="Contingency" value={formatCurrency(contingency)} />
-            <ResultRow label="Hard + Contingency" value={formatCurrency(totalHardPlusContingency)} bold />
-            <ResultRow label="CM Fee" value={formatCurrency(cmFee)} />
-            <ResultRow label="Developer Fee" value={formatCurrency(developerFee)} />
-            <ResultRow label="Interest Reserve" value={formatCurrency(interestReserve)} />
+            <ResultRow label="Contingency" value={formatCurrency(su.contingency)} />
+            <ResultRow label="Hard + Contingency" value={formatCurrency(su.totalHardPlusContingency)} bold />
+            <ResultRow label="CM Fee" value={formatCurrency(su.cmFee)} />
+            <ResultRow label="Developer Fee" value={formatCurrency(su.developerFee)} />
+            <ResultRow label="Interest Reserve" value={formatCurrency(su.interestReserve)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Total Uses" value={formatCurrency(totalUses)} bold />
+              <ResultRow label="Total Uses" value={formatCurrency(su.totalUses)} bold />
             </div>
             <div className="mt-2 border-t border-border pt-2">
-              <ResultRow label="Senior Debt" value={formatCurrency(seniorDebt)} />
-              <ResultRow label="LP Equity" value={formatCurrency(lpEquity)} />
+              <ResultRow label="Senior Debt" value={formatCurrency(su.seniorDebt)} />
+              <ResultRow label="LP Equity" value={formatCurrency(su.lpEquity)} />
             </div>
           </div>
         </section>
@@ -273,10 +256,10 @@ function LotDevForm({ proforma, queryKey }: { proforma: LotDevRecord; queryKey: 
         <section className="rounded-lg border border-border bg-card p-5">
           <h3 className="mb-3 text-sm font-semibold text-foreground">Returns</h3>
           <div className="space-y-1 text-xs">
-            <ResultRow label="Total Revenue" value={formatCurrency(totalRevenue)} />
-            <ResultRow label="Gross Profit" value={formatCurrency(grossProfit)} highlight={grossProfit > 0} />
-            <ResultRow label="Profit Margin" value={formatPercent(profitMargin)} />
-            <ResultRow label="Equity Multiple" value={`${equityMultiple.toFixed(2)}x`} />
+            <ResultRow label="Total Revenue" value={formatCurrency(ret.totalRevenue)} />
+            <ResultRow label="Gross Profit" value={formatCurrency(ret.grossProfit)} highlight={ret.grossProfit > 0} />
+            <ResultRow label="Profit Margin" value={formatPercent(ret.profitMargin)} />
+            <ResultRow label="Equity Multiple" value={`${ret.equityMultiple.toFixed(2)}x`} />
           </div>
         </section>
 
@@ -285,16 +268,9 @@ function LotDevForm({ proforma, queryKey }: { proforma: LotDevRecord; queryKey: 
           <div className="space-y-1 text-xs">
             <ResultRow label="Total Lots" value={String(p.total_lots)} />
             <ResultRow label="Lots Sold / Month" value={String(p.absorption_lots_per_month)} />
-            <ResultRow label="Sellout Period" value={`${absorptionMonths} months`} />
-            <ResultRow label="Breakeven Lots" value={String(breakevenLots)} />
-            <ResultRow
-              label="Breakeven Month"
-              value={
-                p.absorption_lots_per_month > 0
-                  ? `Month ${Math.ceil(breakevenLots / p.absorption_lots_per_month)}`
-                  : "—"
-              }
-            />
+            <ResultRow label="Sellout Period" value={`${abs.absorptionMonths} months`} />
+            <ResultRow label="Breakeven Lots" value={String(abs.breakevenLots)} />
+            <ResultRow label="Breakeven Month" value={abs.breakevenMonth > 0 ? `Month ${abs.breakevenMonth}` : "—"} />
           </div>
         </section>
       </div>

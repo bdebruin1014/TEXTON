@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
+import { calculateCommunityProforma } from "@/lib/community-proforma-engine";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -182,47 +183,9 @@ function CommunityProformaForm({ proforma, queryKey }: { proforma: ProformaRecor
     [proforma.id, queryClient, queryKey],
   );
 
-  // Phase 1 — Horizontal Development
   const p = proforma;
-  const landAcquisition = p.total_lots * p.land_value_per_lot;
-  const horizontalDev = p.total_lots * p.horizontal_dev_per_lot;
-  const ae = p.total_lots * p.ae_per_lot;
-  const carryCosts = p.total_lots * p.carry_costs_per_lot;
-  const subtotalHard = landAcquisition + horizontalDev + ae + p.amenity_package + p.monument_sign + carryCosts;
-  const contingency = subtotalHard * p.contingency_pct;
-  const totalHardPlusContingency = subtotalHard + contingency;
-  const cmFee = p.total_lots * p.cm_fee_per_lot;
-  const developerFee = p.total_lots * p.developer_fee_per_lot;
-  const interestReserve = totalHardPlusContingency * p.bank_interest_rate * 0.5;
-  const totalUses = totalHardPlusContingency + cmFee + developerFee + interestReserve;
-
-  const seniorDebt = totalUses * p.bank_ltc;
-  const lpEquity = totalUses - seniorDebt;
-  const lotSalesProceeds = p.total_lots * p.lot_sales_price;
-  const grossMarginPhase1 = lotSalesProceeds - totalUses;
-
-  // Phase 2 — Vertical Construction
-  const lotCost = p.lot_sales_price;
-  const constructionInterest = p.vertical_cost * 0.5 * p.construction_interest_rate * (p.construction_months / 12);
-  const sellingCosts = p.home_sales_price * p.selling_costs_pct;
-  const totalCostPerHome = lotCost + p.vertical_cost + constructionInterest + sellingCosts + p.seller_concession;
-  const perHomeProfit = p.home_sales_price - totalCostPerHome;
-  const perHomeMargin = p.home_sales_price > 0 ? perHomeProfit / p.home_sales_price : 0;
-
-  const totalRevenue = p.total_lots * p.home_sales_price;
-  const totalCosts = p.total_lots * totalCostPerHome;
-  const totalProfit = totalRevenue - totalCosts;
-
-  // LP Waterfall
-  const gpRolledEquity = grossMarginPhase1 > 0 ? grossMarginPhase1 : 0;
-  const totalLotCost = p.total_lots * p.lot_sales_price;
-  const slFundLPCapital = totalLotCost - gpRolledEquity;
-  const lpAccruedReturn = slFundLPCapital * p.lp_accruing_return_rate * (p.lp_investment_period_months / 12);
-  const totalLPPayout = slFundLPCapital + lpAccruedReturn;
-
-  const grossProfitFromSales = totalProfit;
-  const remainingToGPs = grossProfitFromSales - lpAccruedReturn;
-  const gpShare = remainingToGPs * p.gp_split_pct;
+  const results = useMemo(() => calculateCommunityProforma(p), [p]);
+  const { phase1, phase2PerHome, phase2Totals, waterfall } = results;
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -319,33 +282,33 @@ function CommunityProformaForm({ proforma, queryKey }: { proforma: ProformaRecor
         <section className="rounded-lg border border-border bg-card p-5">
           <h3 className="mb-3 text-sm font-semibold text-foreground">Phase 1 — Sources & Uses</h3>
           <div className="space-y-1 text-xs">
-            <ResultRow label="Land Acquisition" value={formatCurrency(landAcquisition)} />
-            <ResultRow label="Horizontal Development" value={formatCurrency(horizontalDev)} />
-            <ResultRow label="A&E" value={formatCurrency(ae)} />
+            <ResultRow label="Land Acquisition" value={formatCurrency(phase1.landAcquisition)} />
+            <ResultRow label="Horizontal Development" value={formatCurrency(phase1.horizontalDev)} />
+            <ResultRow label="A&E" value={formatCurrency(phase1.ae)} />
             <ResultRow label="Amenity Package" value={formatCurrency(p.amenity_package)} />
             <ResultRow label="Monument Sign" value={formatCurrency(p.monument_sign)} />
-            <ResultRow label="Carry Costs" value={formatCurrency(carryCosts)} />
+            <ResultRow label="Carry Costs" value={formatCurrency(phase1.carryCosts)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Subtotal Hard Costs" value={formatCurrency(subtotalHard)} bold />
+              <ResultRow label="Subtotal Hard Costs" value={formatCurrency(phase1.subtotalHard)} bold />
             </div>
-            <ResultRow label="Contingency" value={formatCurrency(contingency)} />
-            <ResultRow label="Hard + Contingency" value={formatCurrency(totalHardPlusContingency)} bold />
-            <ResultRow label="CM Fee" value={formatCurrency(cmFee)} />
-            <ResultRow label="Developer Fee" value={formatCurrency(developerFee)} />
-            <ResultRow label="Interest Reserve" value={formatCurrency(interestReserve)} />
+            <ResultRow label="Contingency" value={formatCurrency(phase1.contingency)} />
+            <ResultRow label="Hard + Contingency" value={formatCurrency(phase1.totalHardPlusContingency)} bold />
+            <ResultRow label="CM Fee" value={formatCurrency(phase1.cmFee)} />
+            <ResultRow label="Developer Fee" value={formatCurrency(phase1.developerFee)} />
+            <ResultRow label="Interest Reserve" value={formatCurrency(phase1.interestReserve)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Total Uses" value={formatCurrency(totalUses)} bold />
+              <ResultRow label="Total Uses" value={formatCurrency(phase1.totalUses)} bold />
             </div>
             <div className="mt-2 border-t border-border pt-2">
-              <ResultRow label="Senior Debt" value={formatCurrency(seniorDebt)} />
-              <ResultRow label="LP Equity" value={formatCurrency(lpEquity)} />
+              <ResultRow label="Senior Debt" value={formatCurrency(phase1.seniorDebt)} />
+              <ResultRow label="LP Equity" value={formatCurrency(phase1.lpEquity)} />
             </div>
             <div className="mt-2 border-t border-border pt-2">
-              <ResultRow label="Lot Sales Proceeds" value={formatCurrency(lotSalesProceeds)} />
+              <ResultRow label="Lot Sales Proceeds" value={formatCurrency(phase1.lotSalesProceeds)} />
               <ResultRow
                 label="Gross Margin"
-                value={formatCurrency(grossMarginPhase1)}
-                highlight={grossMarginPhase1 > 0}
+                value={formatCurrency(phase1.grossMargin)}
+                highlight={phase1.grossMargin > 0}
               />
             </div>
           </div>
@@ -356,15 +319,19 @@ function CommunityProformaForm({ proforma, queryKey }: { proforma: ProformaRecor
           <h3 className="mb-3 text-sm font-semibold text-foreground">Phase 2 — Per-Home Economics</h3>
           <div className="space-y-1 text-xs">
             <ResultRow label="Home Sales Price" value={formatCurrency(p.home_sales_price)} />
-            <ResultRow label="Lot Cost" value={formatCurrency(lotCost)} />
+            <ResultRow label="Lot Cost" value={formatCurrency(phase2PerHome.lotCost)} />
             <ResultRow label="Vertical Cost" value={formatCurrency(p.vertical_cost)} />
-            <ResultRow label="Construction Interest" value={formatCurrency(constructionInterest)} />
-            <ResultRow label="Selling Costs" value={formatCurrency(sellingCosts)} />
+            <ResultRow label="Construction Interest" value={formatCurrency(phase2PerHome.constructionInterest)} />
+            <ResultRow label="Selling Costs" value={formatCurrency(phase2PerHome.sellingCosts)} />
             <ResultRow label="Seller Concession" value={formatCurrency(p.seller_concession)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Total Cost / Home" value={formatCurrency(totalCostPerHome)} bold />
-              <ResultRow label="Profit / Home" value={formatCurrency(perHomeProfit)} highlight={perHomeProfit > 0} />
-              <ResultRow label="Margin" value={formatPercent(perHomeMargin)} />
+              <ResultRow label="Total Cost / Home" value={formatCurrency(phase2PerHome.totalCostPerHome)} bold />
+              <ResultRow
+                label="Profit / Home"
+                value={formatCurrency(phase2PerHome.perHomeProfit)}
+                highlight={phase2PerHome.perHomeProfit > 0}
+              />
+              <ResultRow label="Margin" value={formatPercent(phase2PerHome.perHomeMargin)} />
             </div>
           </div>
         </section>
@@ -373,9 +340,14 @@ function CommunityProformaForm({ proforma, queryKey }: { proforma: ProformaRecor
         <section className="rounded-lg border border-border bg-card p-5">
           <h3 className="mb-3 text-sm font-semibold text-foreground">Project Totals ({p.total_lots} homes)</h3>
           <div className="space-y-1 text-xs">
-            <ResultRow label="Total Revenue" value={formatCurrency(totalRevenue)} />
-            <ResultRow label="Total Costs" value={formatCurrency(totalCosts)} />
-            <ResultRow label="Total Profit" value={formatCurrency(totalProfit)} bold highlight={totalProfit > 0} />
+            <ResultRow label="Total Revenue" value={formatCurrency(phase2Totals.totalRevenue)} />
+            <ResultRow label="Total Costs" value={formatCurrency(phase2Totals.totalCosts)} />
+            <ResultRow
+              label="Total Profit"
+              value={formatCurrency(phase2Totals.totalProfit)}
+              bold
+              highlight={phase2Totals.totalProfit > 0}
+            />
           </div>
         </section>
 
@@ -383,18 +355,18 @@ function CommunityProformaForm({ proforma, queryKey }: { proforma: ProformaRecor
         <section className="rounded-lg border border-border bg-card p-5">
           <h3 className="mb-3 text-sm font-semibold text-foreground">LP Waterfall</h3>
           <div className="space-y-1 text-xs">
-            <ResultRow label="GP Rolled Equity" value={formatCurrency(gpRolledEquity)} />
-            <ResultRow label="Total Lot Cost" value={formatCurrency(totalLotCost)} />
-            <ResultRow label="SL Fund LP Capital" value={formatCurrency(slFundLPCapital)} />
-            <ResultRow label="LP Accrued Return" value={formatCurrency(lpAccruedReturn)} />
+            <ResultRow label="GP Rolled Equity" value={formatCurrency(waterfall.gpRolledEquity)} />
+            <ResultRow label="Total Lot Cost" value={formatCurrency(waterfall.totalLotCost)} />
+            <ResultRow label="SL Fund LP Capital" value={formatCurrency(waterfall.slFundLPCapital)} />
+            <ResultRow label="LP Accrued Return" value={formatCurrency(waterfall.lpAccruedReturn)} />
             <div className="border-t border-border pt-1">
-              <ResultRow label="Total LP Payout" value={formatCurrency(totalLPPayout)} bold />
+              <ResultRow label="Total LP Payout" value={formatCurrency(waterfall.totalLPPayout)} bold />
             </div>
             <div className="mt-2 border-t border-border pt-2">
-              <ResultRow label="Gross Profit" value={formatCurrency(grossProfitFromSales)} />
-              <ResultRow label="Less: LP Return" value={formatCurrency(-lpAccruedReturn)} />
-              <ResultRow label="Remaining to GPs" value={formatCurrency(remainingToGPs)} />
-              <ResultRow label="GP Share" value={formatCurrency(gpShare)} highlight={gpShare > 0} />
+              <ResultRow label="Gross Profit" value={formatCurrency(waterfall.grossProfitFromSales)} />
+              <ResultRow label="Less: LP Return" value={formatCurrency(-waterfall.lpAccruedReturn)} />
+              <ResultRow label="Remaining to GPs" value={formatCurrency(waterfall.remainingToGPs)} />
+              <ResultRow label="GP Share" value={formatCurrency(waterfall.gpShare)} highlight={waterfall.gpShare > 0} />
             </div>
           </div>
         </section>
