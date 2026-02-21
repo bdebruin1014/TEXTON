@@ -61,20 +61,23 @@ function AccountingLayout() {
   // Entity detail routes ($entityId/...) have their own sidebar via $entityId/route.tsx
   const isEntityDetail = matches.some((m) => "entityId" in ((m.params as Record<string, unknown>) ?? {}));
 
-  // Pass through for index page and entity detail routes
-  if (isIndex || isEntityDetail) {
-    return <Outlet />;
-  }
+  const needsSidebar = !isIndex && !isEntityDetail;
 
-  // Flat routes (register, banking, etc.) get the module sidebar
+  // Always call useQuery (Rules of Hooks) but only enable for flat routes
   const { data: entities = [] } = useQuery<Entity[]>({
     queryKey: ["entities"],
+    enabled: needsSidebar,
     queryFn: async () => {
       const { data, error } = await supabase.from("entities").select("id, name").order("name");
       if (error) throw error;
       return data ?? [];
     },
   });
+
+  // Pass through for index page and entity detail routes
+  if (!needsSidebar) {
+    return <Outlet />;
+  }
 
   const sidebar = (
     <aside

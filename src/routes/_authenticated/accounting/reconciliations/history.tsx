@@ -72,7 +72,7 @@ const columns: ColumnDef<Reconciliation, unknown>[] = [
   {
     accessorKey: "created_at",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Completed" />,
-    cell: ({ row }) => formatDate(row.getValue("created_at")),
+    cell: ({ row }) => <span>{formatDate(row.getValue("created_at"))}</span>,
   },
 ];
 

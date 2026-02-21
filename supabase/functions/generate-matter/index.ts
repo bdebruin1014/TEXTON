@@ -28,9 +28,14 @@ interface UploadedFile {
 
 interface RequestPayload {
   userId: string;
-  situationText: string;
-  relevantInfoText: string;
-  goalsText: string;
+  /** Direct fields (legacy) */
+  situationText?: string;
+  relevantInfoText?: string;
+  goalsText?: string;
+  /** Generic intake payload (from AIIntakePage) */
+  steps?: Record<string, string>;
+  entityId?: string;
+  moduleKey?: string;
   linkedRecords?: LinkedRecord[];
   uploadedFiles?: UploadedFile[];
 }
@@ -120,7 +125,12 @@ Deno.serve(async (req) => {
     // ── Parse & validate request ────────────────────────────────────────
     const payload: RequestPayload = await req.json();
 
-    const { userId, situationText, relevantInfoText, goalsText, linkedRecords = [], uploadedFiles = [] } = payload;
+    const { userId, steps = {}, linkedRecords = [], uploadedFiles = [] } = payload;
+
+    // Support both direct fields (legacy) and generic steps payload (AIIntakePage)
+    const situationText = payload.situationText || steps.situationText || "";
+    const relevantInfoText = payload.relevantInfoText || steps.relevantInfoText || "";
+    const goalsText = payload.goalsText || steps.goalsText || "";
 
     if (!userId || !situationText) {
       return jsonResponse({ error: "Missing required fields: userId and situationText are required" }, 400);
@@ -390,6 +400,7 @@ Deno.serve(async (req) => {
     // ── 6. Return success ───────────────────────────────────────────────
     return jsonResponse({
       success: true,
+      record_id: matterId,
       matter_id: matterId,
       matter_number: matter.matter_number,
     });

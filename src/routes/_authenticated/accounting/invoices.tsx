@@ -115,7 +115,7 @@ function Invoices() {
     {
       accessorKey: "invoice_date",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
-      cell: ({ row }) => formatDate(row.getValue("invoice_date")),
+      cell: ({ row }) => <span>{formatDate(row.getValue("invoice_date"))}</span>,
     },
     {
       accessorKey: "due_date",
