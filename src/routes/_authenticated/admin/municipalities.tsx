@@ -77,7 +77,21 @@ function Municipalities() {
     {
       accessorKey: "name",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-      cell: ({ row }) => <span className="font-medium">{row.getValue("name")}</span>,
+      cell: ({ row }) => {
+        const needsVerification =
+          !row.original.verified_date ||
+          Date.now() - new Date(row.original.verified_date).getTime() > 90 * 24 * 60 * 60 * 1000;
+        return (
+          <span className="font-medium">
+            {row.getValue("name")}
+            {needsVerification && (
+              <span className="ml-1.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
+                Needs Verification
+              </span>
+            )}
+          </span>
+        );
+      },
     },
     {
       accessorKey: "county",

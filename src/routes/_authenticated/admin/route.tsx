@@ -26,6 +26,10 @@ const NAV_SECTIONS = [
     label: "Configuration",
     items: [
       { label: "Floor Plans", path: "/admin/floor-plans" },
+      { label: "Municipalities", path: "/admin/municipalities" },
+      { label: "Upgrade Packages", path: "/admin/upgrade-packages" },
+      { label: "Site Work Items", path: "/admin/site-work-items" },
+      { label: "Pricing Defaults", path: "/admin/pricing-defaults" },
       { label: "Cost Codes", path: "/admin/cost-codes" },
       { label: "Documents", path: "/admin/documents" },
       { label: "Folder Templates", path: "/admin/documents/folder-templates" },

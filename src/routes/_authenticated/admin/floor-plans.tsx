@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -37,6 +37,7 @@ interface FloorPlan {
 
 function FloorPlansAdmin() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: plans = [], isLoading } = useQuery<FloorPlan[]>({
     queryKey: ["admin-floor-plans"],
@@ -193,7 +194,13 @@ function FloorPlansAdmin() {
       ) : plans.length === 0 ? (
         <EmptyState title="No floor plans" description="Add floor plans with specs, elevations, and base costs" />
       ) : (
-        <DataTable columns={columns} data={plans} searchKey="name" searchPlaceholder="Search floor plans..." />
+        <DataTable
+          columns={columns}
+          data={plans}
+          searchKey="name"
+          searchPlaceholder="Search floor plans..."
+          onRowClick={(plan) => navigate({ to: "/admin/floor-plans/$planId", params: { planId: plan.id } })}
+        />
       )}
     </div>
   );

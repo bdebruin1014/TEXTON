@@ -170,6 +170,7 @@ import { Route as AuthenticatedConstructionJobIdFilesRouteImport } from './route
 import { Route as AuthenticatedConstructionJobIdDailyLogsRouteImport } from './routes/_authenticated/construction/$jobId/daily-logs'
 import { Route as AuthenticatedConstructionJobIdChangeOrdersRouteImport } from './routes/_authenticated/construction/$jobId/change-orders'
 import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './routes/_authenticated/construction/$jobId/budget'
+import { Route as AuthenticatedAdminFloorPlansPlanIdRouteImport } from './routes/_authenticated/admin/floor-plans.$planId'
 import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_authenticated/admin/documents/tags'
 import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
@@ -1139,6 +1140,12 @@ const AuthenticatedConstructionJobIdBudgetRoute =
     path: '/budget',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedAdminFloorPlansPlanIdRoute =
+  AuthenticatedAdminFloorPlansPlanIdRouteImport.update({
+    id: '/$planId',
+    path: '/$planId',
+    getParentRoute: () => AuthenticatedAdminFloorPlansRoute,
+  } as any)
 const AuthenticatedAdminDocumentsTagsRoute =
   AuthenticatedAdminDocumentsTagsRouteImport.update({
     id: '/tags',
@@ -1297,7 +1304,7 @@ export interface FileRoutesByFullPath {
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
-  '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
+  '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRouteWithChildren
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
@@ -1343,6 +1350,7 @@ export interface FileRoutesByFullPath {
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
+  '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1461,7 +1469,7 @@ export interface FileRoutesByTo {
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
-  '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
+  '/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRouteWithChildren
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
@@ -1507,6 +1515,7 @@ export interface FileRoutesByTo {
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
+  '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1642,7 +1651,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/entities': typeof AuthenticatedAdminEntitiesRoute
   '/_authenticated/admin/esign-templates': typeof AuthenticatedAdminEsignTemplatesRoute
   '/_authenticated/admin/fee-schedule': typeof AuthenticatedAdminFeeScheduleRoute
-  '/_authenticated/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRoute
+  '/_authenticated/admin/floor-plans': typeof AuthenticatedAdminFloorPlansRouteWithChildren
   '/_authenticated/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/_authenticated/admin/municipalities': typeof AuthenticatedAdminMunicipalitiesRoute
   '/_authenticated/admin/permissions': typeof AuthenticatedAdminPermissionsRoute
@@ -1688,6 +1697,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
   '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/_authenticated/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
+  '/_authenticated/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
   '/_authenticated/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/_authenticated/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/_authenticated/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1869,6 +1879,7 @@ export interface FileRouteTypes {
     | '/accounting/reconciliations/start'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
+    | '/admin/floor-plans/$planId'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -2033,6 +2044,7 @@ export interface FileRouteTypes {
     | '/accounting/reconciliations/start'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
+    | '/admin/floor-plans/$planId'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -2213,6 +2225,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/reconciliations/start'
     | '/_authenticated/admin/documents/storage'
     | '/_authenticated/admin/documents/tags'
+    | '/_authenticated/admin/floor-plans/$planId'
     | '/_authenticated/construction/$jobId/budget'
     | '/_authenticated/construction/$jobId/change-orders'
     | '/_authenticated/construction/$jobId/daily-logs'
@@ -3444,6 +3457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdBudgetRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/admin/floor-plans/$planId': {
+      id: '/_authenticated/admin/floor-plans/$planId'
+      path: '/$planId'
+      fullPath: '/admin/floor-plans/$planId'
+      preLoaderRoute: typeof AuthenticatedAdminFloorPlansPlanIdRouteImport
+      parentRoute: typeof AuthenticatedAdminFloorPlansRoute
+    }
     '/_authenticated/admin/documents/tags': {
       id: '/_authenticated/admin/documents/tags'
       path: '/tags'
@@ -3654,6 +3674,21 @@ const AuthenticatedAdminDocumentsRouteWithChildren =
     AuthenticatedAdminDocumentsRouteChildren,
   )
 
+interface AuthenticatedAdminFloorPlansRouteChildren {
+  AuthenticatedAdminFloorPlansPlanIdRoute: typeof AuthenticatedAdminFloorPlansPlanIdRoute
+}
+
+const AuthenticatedAdminFloorPlansRouteChildren: AuthenticatedAdminFloorPlansRouteChildren =
+  {
+    AuthenticatedAdminFloorPlansPlanIdRoute:
+      AuthenticatedAdminFloorPlansPlanIdRoute,
+  }
+
+const AuthenticatedAdminFloorPlansRouteWithChildren =
+  AuthenticatedAdminFloorPlansRoute._addFileChildren(
+    AuthenticatedAdminFloorPlansRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAuditLogRoute: typeof AuthenticatedAdminAuditLogRoute
   AuthenticatedAdminBankAccountsRoute: typeof AuthenticatedAdminBankAccountsRoute
@@ -3662,7 +3697,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminEntitiesRoute: typeof AuthenticatedAdminEntitiesRoute
   AuthenticatedAdminEsignTemplatesRoute: typeof AuthenticatedAdminEsignTemplatesRoute
   AuthenticatedAdminFeeScheduleRoute: typeof AuthenticatedAdminFeeScheduleRoute
-  AuthenticatedAdminFloorPlansRoute: typeof AuthenticatedAdminFloorPlansRoute
+  AuthenticatedAdminFloorPlansRoute: typeof AuthenticatedAdminFloorPlansRouteWithChildren
   AuthenticatedAdminIntegrationsRoute: typeof AuthenticatedAdminIntegrationsRoute
   AuthenticatedAdminMunicipalitiesRoute: typeof AuthenticatedAdminMunicipalitiesRoute
   AuthenticatedAdminPermissionsRoute: typeof AuthenticatedAdminPermissionsRoute
@@ -3685,7 +3720,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminEsignTemplatesRoute:
       AuthenticatedAdminEsignTemplatesRoute,
     AuthenticatedAdminFeeScheduleRoute: AuthenticatedAdminFeeScheduleRoute,
-    AuthenticatedAdminFloorPlansRoute: AuthenticatedAdminFloorPlansRoute,
+    AuthenticatedAdminFloorPlansRoute:
+      AuthenticatedAdminFloorPlansRouteWithChildren,
     AuthenticatedAdminIntegrationsRoute: AuthenticatedAdminIntegrationsRoute,
     AuthenticatedAdminMunicipalitiesRoute:
       AuthenticatedAdminMunicipalitiesRoute,
