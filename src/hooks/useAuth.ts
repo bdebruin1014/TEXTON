@@ -1,23 +1,35 @@
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/authStore";
+import { useEntityStore } from "@/stores/entityStore";
 
 export function useAuth() {
   const { user, session, isLoading, setAuth, clear } = useAuthStore();
+  const { activeEntityId, setActiveEntity } = useEntityStore();
 
   useEffect(() => {
+    const initSession = async (userId: string | undefined) => {
+      if (!userId || activeEntityId) return;
+      const { data } = await supabase.from("user_profiles").select("entity_id").eq("user_id", userId).single();
+      if (data?.entity_id) {
+        setActiveEntity(data.entity_id);
+      }
+    };
+
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setAuth(s?.user ?? null, s);
+      initSession(s?.user?.id);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setAuth(s?.user ?? null, s);
+      initSession(s?.user?.id);
     });
 
     return () => subscription.unsubscribe();
-  }, [setAuth]);
+  }, [setAuth, activeEntityId, setActiveEntity]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
