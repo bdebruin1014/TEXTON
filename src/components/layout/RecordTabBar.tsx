@@ -12,10 +12,9 @@ export function RecordTabBar() {
 
   return (
     <div
-      className="flex items-end gap-px overflow-x-auto px-2"
+      className="project-tab-bar flex items-end gap-px overflow-x-auto scrollbar-none px-2"
       style={{
-        backgroundColor: "var(--color-nav-bg)",
-        borderBottom: "1px solid var(--color-border)",
+        backgroundColor: "var(--tab-bar-bg)",
         minHeight: 32,
       }}
     >
@@ -27,14 +26,11 @@ export function RecordTabBar() {
             className={cn(
               "group flex max-w-[200px] items-center gap-1.5 rounded-t-md px-3 py-1.5 text-xs font-medium transition-colors",
               isActive
-                ? "bg-background text-foreground"
-                : "text-white/60 hover:bg-white/[0.06] hover:text-white/80",
+                ? "bg-[var(--tab-active-bg)] text-[var(--tab-active-text)] font-semibold"
+                : "text-[var(--tab-text)] hover:bg-[var(--tab-hover-bg)] hover:text-[var(--tab-text-hover)]",
             )}
           >
-            <Link
-              to={tab.path}
-              className="min-w-0 flex-1 truncate"
-            >
+            <Link to={tab.path} className="min-w-0 flex-1 truncate">
               {tab.label}
             </Link>
             <button
@@ -49,7 +45,7 @@ export function RecordTabBar() {
                 }
               }}
               className="ml-1 flex-shrink-0 rounded px-0.5 text-[10px] opacity-0 transition-opacity group-hover:opacity-100"
-              style={{ color: isActive ? "var(--color-muted)" : "currentColor" }}
+              style={{ color: "var(--tab-close)" }}
               aria-label={`Close ${tab.label}`}
             >
               {"\u00D7"}

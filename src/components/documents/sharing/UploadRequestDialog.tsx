@@ -140,14 +140,14 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   placeholder="Name *"
-                  className="rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+                  className="rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
                 />
                 <input
                   type="email"
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
                   placeholder="Email *"
-                  className="rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+                  className="rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
                 />
               </div>
             )}
@@ -161,7 +161,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Documents Needed for..."
-              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
             />
           </div>
 
@@ -174,7 +174,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={2}
-              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
             />
           </div>
 
@@ -186,7 +186,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+                className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
               />
             </div>
             <div>
@@ -223,7 +223,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                       value={item.name}
                       onChange={(e) => updateItem(index, "name", e.target.value)}
                       placeholder="Document name *"
-                      className="flex-1 rounded-md border border-border px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+                      className="flex-1 rounded-md border border-border px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
                     />
                     <label className="flex items-center gap-1 text-xs whitespace-nowrap">
                       <input
@@ -249,14 +249,14 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
                     value={item.description}
                     onChange={(e) => updateItem(index, "description", e.target.value)}
                     placeholder="Description (optional)"
-                    className="w-full rounded-md border border-border px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-[#1B3022]/20"
+                    className="w-full rounded-md border border-border px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-[#143A23]/20"
                   />
                 </div>
               ))}
               <button
                 type="button"
                 onClick={addItem}
-                className="flex items-center gap-1 text-sm font-medium text-[#1B3022] hover:underline"
+                className="flex items-center gap-1 text-sm font-medium text-[#143A23] hover:underline"
               >
                 Add Item
               </button>
@@ -315,7 +315,7 @@ export function UploadRequestDialog({ open, onClose, recordType, recordId, folde
             type="button"
             onClick={handleSubmit}
             disabled={!recipientEmail || !subject || !items.some((i) => i.name.trim()) || createRequest.isPending}
-            className="rounded-md bg-[#1B3022] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1B3022]/90 disabled:opacity-50"
+            className="rounded-md bg-[#143A23] px-4 py-2 text-sm font-semibold text-white hover:bg-[#143A23]/90 disabled:opacity-50"
           >
             {createRequest.isPending ? "Sending..." : "Send Upload Request →"}
           </button>

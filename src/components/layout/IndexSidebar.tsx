@@ -70,15 +70,10 @@ export function IndexSidebar({ title, filters, activeFilter, onFilterChange, met
               <span>{item.label}</span>
               {item.count != null && (
                 <span
-                  className={cn(
-                    "rounded-full px-2 py-0.5 text-xs",
-                    isActive
-                      ? "font-medium"
-                      : "",
-                  )}
+                  className={cn("rounded-full px-2 py-0.5 text-xs", isActive ? "font-medium" : "")}
                   style={{
-                    backgroundColor: isActive ? "rgba(107, 158, 122, 0.2)" : "rgba(255, 255, 255, 0.08)",
-                    color: isActive ? "#6B9E7A" : "var(--sidebar-text)",
+                    backgroundColor: isActive ? "rgba(74, 140, 94, 0.2)" : "rgba(255, 255, 255, 0.08)",
+                    color: isActive ? "#4A8C5E" : "var(--sidebar-text)",
                   }}
                 >
                   {item.count}

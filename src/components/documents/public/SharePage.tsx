@@ -32,7 +32,7 @@ export function SharePage({ data, token }: SharePageProps) {
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#1B3022] text-xs font-bold text-white">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#143A23] text-xs font-bold text-white">
             TEK
           </div>
         </div>
@@ -40,22 +40,18 @@ export function SharePage({ data, token }: SharePageProps) {
         {/* Header */}
         <div className="mb-6 text-center">
           <p className="text-sm text-slate-500">
-            Shared by {share.created_by_name ?? "Tekton User"} · {new Date(share.created_at).toLocaleDateString()}
+            Shared by {share.created_by_name ?? "KOVA User"} · {new Date(share.created_at).toLocaleDateString()}
           </p>
         </div>
 
         {/* Card */}
         <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
           {/* Folder name or title */}
-          {share.folder_name && (
-            <h2 className="text-lg font-semibold text-slate-900 mb-2">📁 {share.folder_name}</h2>
-          )}
+          {share.folder_name && <h2 className="text-lg font-semibold text-slate-900 mb-2">📁 {share.folder_name}</h2>}
 
           {/* Message */}
           {share.message && (
-            <div className="mb-4 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 italic">
-              "{share.message}"
-            </div>
+            <div className="mb-4 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 italic">"{share.message}"</div>
           )}
 
           {/* Files */}
@@ -79,7 +75,7 @@ export function SharePage({ data, token }: SharePageProps) {
             <div className="mt-4 text-center">
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#1B3022] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1B3022]/90"
+                className="inline-flex items-center gap-2 rounded-lg bg-[#143A23] px-4 py-2 text-sm font-semibold text-white hover:bg-[#143A23]/90"
               >
                 Download All
               </button>
@@ -89,10 +85,8 @@ export function SharePage({ data, token }: SharePageProps) {
 
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-slate-400">
-          {share.expires_at && (
-            <p>This link expires {new Date(share.expires_at).toLocaleDateString()}</p>
-          )}
-          <p className="mt-1">Powered by Tekton</p>
+          {share.expires_at && <p>This link expires {new Date(share.expires_at).toLocaleDateString()}</p>}
+          <p className="mt-1">Powered by KOVA</p>
         </div>
       </div>
     </div>

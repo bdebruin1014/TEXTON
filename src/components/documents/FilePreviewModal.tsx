@@ -154,7 +154,7 @@ export function FilePreviewModal({
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-              <FileLabel label={iconConfig.label} className="text-lg text-[#1B3022]" />
+              <FileLabel label={iconConfig.label} className="text-lg text-[#143A23]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {document.name}
@@ -174,7 +174,7 @@ export function FilePreviewModal({
               <button
                 type="button"
                 onClick={() => onEditInPlace(document)}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#1B3022] px-4 py-2 text-sm font-medium text-white hover:bg-[#1B3022]/90 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-[#143A23] px-4 py-2 text-sm font-medium text-white hover:bg-[#143A23]/90 transition-colors"
               >
                 Edit in {officeAppName}
               </button>
@@ -196,7 +196,7 @@ export function FilePreviewModal({
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-            <FileLabel label={iconConfig.label} className="text-lg text-[#1B3022]" />
+            <FileLabel label={iconConfig.label} className="text-lg text-[#143A23]" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
             {document.name}
@@ -237,7 +237,7 @@ export function FilePreviewModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <FileLabel label={iconConfig.label} className="text-sm text-[#1B3022] shrink-0" />
+            <FileLabel label={iconConfig.label} className="text-sm text-[#143A23] shrink-0" />
             <h2 className="text-base font-semibold text-gray-900 truncate">
               {document.name}
             </h2>

@@ -27,7 +27,7 @@ export function MoveToFolderDialog({ folders, currentFolderId, onMove, onClose }
           disabled={isCurrent}
           className={cn(
             "flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors",
-            isSelected ? "bg-[#1B3022]/10 text-[#1B3022] font-medium" : "text-foreground hover:bg-accent/50",
+            isSelected ? "bg-[#143A23]/10 text-[#143A23] font-medium" : "text-foreground hover:bg-accent/50",
             isCurrent && "opacity-40",
           )}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
@@ -57,7 +57,7 @@ export function MoveToFolderDialog({ folders, currentFolderId, onMove, onClose }
             onClick={() => setSelectedId(null)}
             className={cn(
               "flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors",
-              selectedId === null ? "bg-[#1B3022]/10 text-[#1B3022] font-medium" : "text-foreground hover:bg-accent/50",
+              selectedId === null ? "bg-[#143A23]/10 text-[#143A23] font-medium" : "text-foreground hover:bg-accent/50",
             )}
           >
             <span>No Folder (Root)</span>

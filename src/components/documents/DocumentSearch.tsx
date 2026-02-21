@@ -129,7 +129,7 @@ export default function DocumentSearch({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Search documents..."
-            className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022] transition-colors"
+            className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23] transition-colors"
           />
           {value && (
             <button
@@ -151,14 +151,14 @@ export default function DocumentSearch({
             className={cn(
               'relative inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
               dropdownOpen || hasActiveFilters
-                ? 'border-[#1B3022] bg-[#1B3022]/5 text-[#1B3022]'
+                ? 'border-[#143A23] bg-[#143A23]/5 text-[#143A23]'
                 : 'border-border bg-white text-gray-600 hover:bg-gray-50',
             )}
             aria-label="Toggle filters"
           >
             Filters
             {activeFilterCount > 0 && (
-              <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#1B3022] px-1.5 text-xs font-semibold text-white">
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-[#143A23] px-1.5 text-xs font-semibold text-white">
                 {activeFilterCount}
               </span>
             )}
@@ -182,7 +182,7 @@ export default function DocumentSearch({
                         className={cn(
                           'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
                           filters.fileType === opt.value
-                            ? 'bg-[#1B3022] text-white'
+                            ? 'bg-[#143A23] text-white'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
                         )}
                       >
@@ -210,7 +210,7 @@ export default function DocumentSearch({
                         className={cn(
                           'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
                           filters.dateRange === opt.value
-                            ? 'bg-[#1B3022] text-white'
+                            ? 'bg-[#143A23] text-white'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
                         )}
                       >
@@ -234,7 +234,7 @@ export default function DocumentSearch({
                         className={cn(
                           'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
                           filters.tags.includes(tag)
-                            ? 'bg-[#1B3022] text-white'
+                            ? 'bg-[#143A23] text-white'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
                         )}
                       >
@@ -266,12 +266,12 @@ export default function DocumentSearch({
       {hasActiveFilters && (
         <div className="flex items-center gap-1.5 flex-wrap">
           {filters.fileType !== null && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#1B3022]/10 px-2.5 py-0.5 text-xs font-medium text-[#1B3022]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#143A23]/10 px-2.5 py-0.5 text-xs font-medium text-[#143A23]">
               {getFileTypeLabel(filters.fileType)}
               <button
                 type="button"
                 onClick={() => updateFilters({ fileType: null })}
-                className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
+                className="rounded-full p-0.5 hover:bg-[#143A23]/10"
                 aria-label={`Remove ${getFileTypeLabel(filters.fileType)} filter`}
               >
                 <span className="text-xs leading-none">&times;</span>
@@ -280,12 +280,12 @@ export default function DocumentSearch({
           )}
 
           {filters.dateRange !== 'all' && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#1B3022]/10 px-2.5 py-0.5 text-xs font-medium text-[#1B3022]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#143A23]/10 px-2.5 py-0.5 text-xs font-medium text-[#143A23]">
               {getDateRangeLabel(filters.dateRange)}
               <button
                 type="button"
                 onClick={() => updateFilters({ dateRange: 'all' })}
-                className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
+                className="rounded-full p-0.5 hover:bg-[#143A23]/10"
                 aria-label={`Remove ${getDateRangeLabel(filters.dateRange)} filter`}
               >
                 <span className="text-xs leading-none">&times;</span>
@@ -296,13 +296,13 @@ export default function DocumentSearch({
           {filters.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 rounded-full bg-[#1B3022]/10 px-2.5 py-0.5 text-xs font-medium text-[#1B3022]"
+              className="inline-flex items-center gap-1 rounded-full bg-[#143A23]/10 px-2.5 py-0.5 text-xs font-medium text-[#143A23]"
             >
               {tag}
               <button
                 type="button"
                 onClick={() => toggleTag(tag)}
-                className="rounded-full p-0.5 hover:bg-[#1B3022]/10"
+                className="rounded-full p-0.5 hover:bg-[#143A23]/10"
                 aria-label={`Remove ${tag} tag`}
               >
                 <span className="text-xs leading-none">&times;</span>

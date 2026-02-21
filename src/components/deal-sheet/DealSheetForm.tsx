@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DealSheetComps } from "@/components/deal-sheet/DealSheetComps";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
+import { CostBookSelect } from "@/components/forms/CostBookSelect";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { type FloorPlanData, FloorPlanSelect } from "@/components/forms/FloorPlanSelect";
 import { type MunicipalityFees, MunicipalitySelect } from "@/components/forms/MunicipalitySelect";
@@ -19,6 +20,7 @@ export interface DealSheetRecord {
   address: string | null;
   municipality_id: string | null;
   floor_plan_id: string | null;
+  cost_book_id: string | null;
   lot_purchase_price: number;
   closing_costs: number;
   acquisition_commission: number;
@@ -74,6 +76,7 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
   const [upgradePackage, setUpgradePackage] = useState("none");
   const [selectedPlanSF, setSelectedPlanSF] = useState<number>(0);
   const [showSensitivity, setShowSensitivity] = useState(false);
+  const [costBookId, setCostBookId] = useState<string | null>(sheet.cost_book_id ?? null);
 
   const updateSheet = useMutation({
     mutationFn: async (updates: Record<string, unknown>) => {
@@ -162,12 +165,30 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
   }, [sheetId, dealOutputs]);
 
   const handleFloorPlanLoaded = useCallback(
-    (plan: FloorPlanData) => {
-      const snb = plan.contract_snb ?? plan.dm_budget_snb ?? plan.base_construction_cost ?? 0;
+    async (plan: FloorPlanData) => {
       setSelectedPlanSF(plan.heated_sqft ?? 0);
+
+      // If a cost book is selected, try to get pricing from it
+      if (costBookId) {
+        const { data: cbPlan } = await supabase
+          .from("cost_book_plans")
+          .select("contract_snb, dm_budget_snb, base_construction_cost")
+          .eq("cost_book_id", costBookId)
+          .eq("floor_plan_id", plan.id)
+          .maybeSingle();
+
+        if (cbPlan) {
+          const snb = cbPlan.contract_snb ?? cbPlan.dm_budget_snb ?? cbPlan.base_construction_cost ?? 0;
+          updateSheet.mutate({ sticks_bricks: snb, floor_plan_id: plan.id });
+          return;
+        }
+      }
+
+      // Fallback: use floor plan's own pricing
+      const snb = plan.contract_snb ?? plan.dm_budget_snb ?? plan.base_construction_cost ?? 0;
       updateSheet.mutate({ sticks_bricks: snb, floor_plan_id: plan.id });
     },
-    [updateSheet],
+    [updateSheet, costBookId],
   );
 
   const handleMunicipalityFees = useCallback(
@@ -207,6 +228,14 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
           </h3>
           <div className="grid grid-cols-1 gap-x-6 gap-y-1 md:grid-cols-2">
             <AutoSaveField label="Street Address" value={sheet.address} onSave={saveText("address")} />
+            <CostBookSelect
+              label="Cost Book"
+              value={costBookId}
+              onSave={async (value) => {
+                setCostBookId(value || null);
+                await updateSheet.mutateAsync({ cost_book_id: value || null });
+              }}
+            />
             <FloorPlanSelect
               label="Floor Plan"
               value={sheet.floor_plan_id}
@@ -488,7 +517,7 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
 }
 
 const VERDICT_COLORS: Record<string, string> = {
-  STRONG: "#4A7A5B",
+  STRONG: "#3D7A4E",
   GOOD: "#48BB78",
   ACCEPTABLE: "#48BB78",
   MARGINAL: "#C4841D",

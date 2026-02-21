@@ -75,6 +75,7 @@ import { Route as AuthenticatedAdminEsignTemplatesRouteImport } from './routes/_
 import { Route as AuthenticatedAdminEntitiesRouteImport } from './routes/_authenticated/admin/entities'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin/documents'
 import { Route as AuthenticatedAdminCostCodesRouteImport } from './routes/_authenticated/admin/cost-codes'
+import { Route as AuthenticatedAdminCostBooksRouteImport } from './routes/_authenticated/admin/cost-books'
 import { Route as AuthenticatedAdminBankAccountsRouteImport } from './routes/_authenticated/admin/bank-accounts'
 import { Route as AuthenticatedAdminAuditLogRouteImport } from './routes/_authenticated/admin/audit-log'
 import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting/reports'
@@ -173,6 +174,7 @@ import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './rout
 import { Route as AuthenticatedAdminFloorPlansPlanIdRouteImport } from './routes/_authenticated/admin/floor-plans.$planId'
 import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_authenticated/admin/documents/tags'
 import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
+import { Route as AuthenticatedAdminCostBooksBookIdRouteImport } from './routes/_authenticated/admin/cost-books.$bookId'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
 import { Route as AuthenticatedOperationsRchContractsContractIdRouteRouteImport } from './routes/_authenticated/operations/rch-contracts/$contractId/route'
@@ -568,6 +570,12 @@ const AuthenticatedAdminCostCodesRoute =
   AuthenticatedAdminCostCodesRouteImport.update({
     id: '/cost-codes',
     path: '/cost-codes',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminCostBooksRoute =
+  AuthenticatedAdminCostBooksRouteImport.update({
+    id: '/cost-books',
+    path: '/cost-books',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminBankAccountsRoute =
@@ -1158,6 +1166,12 @@ const AuthenticatedAdminDocumentsStorageRoute =
     path: '/storage',
     getParentRoute: () => AuthenticatedAdminDocumentsRoute,
   } as any)
+const AuthenticatedAdminCostBooksBookIdRoute =
+  AuthenticatedAdminCostBooksBookIdRouteImport.update({
+    id: '/$bookId',
+    path: '/$bookId',
+    getParentRoute: () => AuthenticatedAdminCostBooksRoute,
+  } as any)
 const AuthenticatedAccountingReconciliationsStartRoute =
   AuthenticatedAccountingReconciliationsStartRouteImport.update({
     id: '/start',
@@ -1299,6 +1313,7 @@ export interface FileRoutesByFullPath {
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
+  '/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
@@ -1348,6 +1363,7 @@ export interface FileRoutesByFullPath {
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1464,6 +1480,7 @@ export interface FileRoutesByTo {
   '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
+  '/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
   '/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/admin/entities': typeof AuthenticatedAdminEntitiesRoute
@@ -1513,6 +1530,7 @@ export interface FileRoutesByTo {
   '/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1646,6 +1664,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/_authenticated/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/_authenticated/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
+  '/_authenticated/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
   '/_authenticated/admin/cost-codes': typeof AuthenticatedAdminCostCodesRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRouteWithChildren
   '/_authenticated/admin/entities': typeof AuthenticatedAdminEntitiesRoute
@@ -1695,6 +1714,7 @@ export interface FileRoutesById {
   '/_authenticated/operations/rch-contracts/$contractId': typeof AuthenticatedOperationsRchContractsContractIdRouteRouteWithChildren
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/_authenticated/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/_authenticated/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/_authenticated/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
@@ -1828,6 +1848,7 @@ export interface FileRouteTypes {
     | '/accounting/reports'
     | '/admin/audit-log'
     | '/admin/bank-accounts'
+    | '/admin/cost-books'
     | '/admin/cost-codes'
     | '/admin/documents'
     | '/admin/entities'
@@ -1877,6 +1898,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/cost-books/$bookId'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
@@ -1993,6 +2015,7 @@ export interface FileRouteTypes {
     | '/accounting/reports'
     | '/admin/audit-log'
     | '/admin/bank-accounts'
+    | '/admin/cost-books'
     | '/admin/cost-codes'
     | '/admin/documents'
     | '/admin/entities'
@@ -2042,6 +2065,7 @@ export interface FileRouteTypes {
     | '/operations/rch-contracts/$contractId'
     | '/accounting/reconciliations/history'
     | '/accounting/reconciliations/start'
+    | '/admin/cost-books/$bookId'
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
@@ -2174,6 +2198,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/reports'
     | '/_authenticated/admin/audit-log'
     | '/_authenticated/admin/bank-accounts'
+    | '/_authenticated/admin/cost-books'
     | '/_authenticated/admin/cost-codes'
     | '/_authenticated/admin/documents'
     | '/_authenticated/admin/entities'
@@ -2223,6 +2248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operations/rch-contracts/$contractId'
     | '/_authenticated/accounting/reconciliations/history'
     | '/_authenticated/accounting/reconciliations/start'
+    | '/_authenticated/admin/cost-books/$bookId'
     | '/_authenticated/admin/documents/storage'
     | '/_authenticated/admin/documents/tags'
     | '/_authenticated/admin/floor-plans/$planId'
@@ -2790,6 +2816,13 @@ declare module '@tanstack/react-router' {
       path: '/cost-codes'
       fullPath: '/admin/cost-codes'
       preLoaderRoute: typeof AuthenticatedAdminCostCodesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/cost-books': {
+      id: '/_authenticated/admin/cost-books'
+      path: '/cost-books'
+      fullPath: '/admin/cost-books'
+      preLoaderRoute: typeof AuthenticatedAdminCostBooksRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/bank-accounts': {
@@ -3478,6 +3511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDocumentsStorageRouteImport
       parentRoute: typeof AuthenticatedAdminDocumentsRoute
     }
+    '/_authenticated/admin/cost-books/$bookId': {
+      id: '/_authenticated/admin/cost-books/$bookId'
+      path: '/$bookId'
+      fullPath: '/admin/cost-books/$bookId'
+      preLoaderRoute: typeof AuthenticatedAdminCostBooksBookIdRouteImport
+      parentRoute: typeof AuthenticatedAdminCostBooksRoute
+    }
     '/_authenticated/accounting/reconciliations/start': {
       id: '/_authenticated/accounting/reconciliations/start'
       path: '/start'
@@ -3651,6 +3691,21 @@ const AuthenticatedAccountingRouteRouteWithChildren =
     AuthenticatedAccountingRouteRouteChildren,
   )
 
+interface AuthenticatedAdminCostBooksRouteChildren {
+  AuthenticatedAdminCostBooksBookIdRoute: typeof AuthenticatedAdminCostBooksBookIdRoute
+}
+
+const AuthenticatedAdminCostBooksRouteChildren: AuthenticatedAdminCostBooksRouteChildren =
+  {
+    AuthenticatedAdminCostBooksBookIdRoute:
+      AuthenticatedAdminCostBooksBookIdRoute,
+  }
+
+const AuthenticatedAdminCostBooksRouteWithChildren =
+  AuthenticatedAdminCostBooksRoute._addFileChildren(
+    AuthenticatedAdminCostBooksRouteChildren,
+  )
+
 interface AuthenticatedAdminDocumentsRouteChildren {
   AuthenticatedAdminDocumentsStorageRoute: typeof AuthenticatedAdminDocumentsStorageRoute
   AuthenticatedAdminDocumentsTagsRoute: typeof AuthenticatedAdminDocumentsTagsRoute
@@ -3692,6 +3747,7 @@ const AuthenticatedAdminFloorPlansRouteWithChildren =
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAuditLogRoute: typeof AuthenticatedAdminAuditLogRoute
   AuthenticatedAdminBankAccountsRoute: typeof AuthenticatedAdminBankAccountsRoute
+  AuthenticatedAdminCostBooksRoute: typeof AuthenticatedAdminCostBooksRouteWithChildren
   AuthenticatedAdminCostCodesRoute: typeof AuthenticatedAdminCostCodesRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRouteWithChildren
   AuthenticatedAdminEntitiesRoute: typeof AuthenticatedAdminEntitiesRoute
@@ -3713,6 +3769,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
   {
     AuthenticatedAdminAuditLogRoute: AuthenticatedAdminAuditLogRoute,
     AuthenticatedAdminBankAccountsRoute: AuthenticatedAdminBankAccountsRoute,
+    AuthenticatedAdminCostBooksRoute:
+      AuthenticatedAdminCostBooksRouteWithChildren,
     AuthenticatedAdminCostCodesRoute: AuthenticatedAdminCostCodesRoute,
     AuthenticatedAdminDocumentsRoute:
       AuthenticatedAdminDocumentsRouteWithChildren,

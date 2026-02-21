@@ -48,7 +48,7 @@ export function FolderTreeItem({
         className={cn(
           "flex w-full items-center gap-1 border-l-2 px-2 py-1.5 text-left text-sm transition-colors hover:bg-accent/50",
           isActive
-            ? "border-l-[#1B3022] bg-accent/30 font-medium text-foreground"
+            ? "border-l-[#143A23] bg-accent/30 font-medium text-foreground"
             : "border-transparent text-muted-foreground",
         )}
         style={{ paddingLeft: `${depth * 16 + 8}px` }}

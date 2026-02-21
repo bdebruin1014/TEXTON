@@ -20,16 +20,14 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#1B3022] text-xs font-bold text-white">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#143A23] text-xs font-bold text-white">
             TEK
           </div>
         </div>
 
         {/* Header */}
         <div className="mb-6 text-center">
-          <p className="text-sm text-slate-500">
-            Documents Requested by {request.created_by_name ?? "Tekton User"}
-          </p>
+          <p className="text-sm text-slate-500">Documents Requested by {request.created_by_name ?? "KOVA User"}</p>
         </div>
 
         {/* Card */}
@@ -46,9 +44,7 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
           {/* Progress */}
           <div className="mt-4 flex items-center gap-3">
             {request.due_date && (
-              <span className="text-xs text-slate-500">
-                Due: {new Date(request.due_date).toLocaleDateString()}
-              </span>
+              <span className="text-xs text-slate-500">Due: {new Date(request.due_date).toLocaleDateString()}</span>
             )}
             <span className="text-xs text-slate-500">
               {fulfilledItems} of {totalItems} items complete
@@ -56,7 +52,7 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
             <div
-              className="h-full rounded-full bg-[#1B3022] transition-all duration-500"
+              className="h-full rounded-full bg-[#143A23] transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -85,7 +81,7 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
 
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-slate-400">
-          <p>Powered by Tekton</p>
+          <p>Powered by KOVA</p>
         </div>
       </div>
     </div>

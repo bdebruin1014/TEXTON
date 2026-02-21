@@ -139,7 +139,7 @@ export function GenerateDocumentModal({
               placeholder="Search templates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
+              className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
             />
           </div>
         </div>
@@ -175,12 +175,12 @@ export function GenerateDocumentModal({
                     className={cn(
                       "relative flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-all hover:shadow-md",
                       isSelected
-                        ? "border-[#1B3022] bg-[#1B3022]/5 shadow-sm"
+                        ? "border-[#143A23] bg-[#143A23]/5 shadow-sm"
                         : "border-border bg-white hover:border-gray-300"
                     )}
                   >
                     {isSelected && (
-                      <span className="absolute top-3 right-3 text-sm font-bold text-[#1B3022]">&check;</span>
+                      <span className="absolute top-3 right-3 text-sm font-bold text-[#143A23]">&check;</span>
                     )}
                     <div className="flex items-center gap-3">
                       {getFileLabel(template.file_type)}
@@ -239,7 +239,7 @@ export function GenerateDocumentModal({
               className={cn(
                 "rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors flex items-center gap-2",
                 selectedTemplateId && !generateMutation.isPending
-                  ? "bg-[#1B3022] hover:bg-[#1B3022]/90 cursor-pointer"
+                  ? "bg-[#143A23] hover:bg-[#143A23]/90 cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed"
               )}
             >

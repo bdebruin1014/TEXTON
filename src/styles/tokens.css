@@ -1,89 +1,112 @@
-/* TEK·TON Design System v3.2 */
+/* KOVA Design System v3.1 */
 :root {
-  /* ——— CORE TRIAD ——— */
-  --color-primary: #1B3022;
+  /* ——— PRIMARY — deeper forest green ——— */
+  --color-primary: #143A23;
   --color-primary-foreground: #FFFFFF;
-  --color-primary-hover: #264733;
-  --color-primary-700: #2D5A3E;
-  --color-primary-accent: #6B9E7A;
-  --color-primary-100: #DDE6DF;
-  --color-primary-50: #F1F5F4;
+  --color-primary-hover: #1C4D30;
+  --color-primary-700: #1C4D30;
+  --color-primary-accent: #4A8C5E;
+  --color-primary-100: #D4E2D8;
+  --color-primary-50: #EBF2ED;
 
-  /* ——— BUTTONS — matches T logo green ——— */
-  --color-button: #6B9E7A;
-  --color-button-hover: #5A8D69;
+  /* ——— BUTTONS ——— */
+  --color-button: #4A8C5E;
+  --color-button-hover: #3D7A4E;
   --color-button-foreground: #FFFFFF;
 
   /* ——— NAVIGATION ——— */
-  --color-nav-bg: #0D1B24;
+  --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
-  --color-nav-muted: #7B8FA3;
-  --color-nav-active: #6B9E7A;
+  --color-nav-muted: #94A3B8;
+  --color-nav-active: #4A8C5E;
 
   /* ——— SURFACES ——— */
-  --color-background: #F0F3F7;
+  --color-background: #F1F5F9;
   --color-card: #FFFFFF;
   --color-card-foreground: #112233;
   --color-card-hover: #FAFBFC;
   --color-popover: #FFFFFF;
   --color-popover-foreground: #112233;
 
-  /* ——— SIDEBAR — DARK (Qualia pattern) ——— */
-  --color-sidebar: #1E2A30;
+  /* ——— SIDEBAR — DARK (matches nav) ——— */
+  --color-sidebar: #112233;
   --sidebar-width: 240px;
-  --sidebar-active-border: #6B9E7A;
-  --sidebar-active-bg: rgba(107, 158, 122, 0.12);
+  --sidebar-active-border: #4A8C5E;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.06);
   --sidebar-active-text: #FFFFFF;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
-  --sidebar-text: #A0AEC0;
-  --sidebar-heading: #7B8FA3;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+  --sidebar-text: #94A3B8;
+  --sidebar-heading: #5A6F82;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
 
   /* ——— TEXT HIERARCHY ——— */
   --color-foreground: #112233;
   --color-text-secondary: #4A5568;
-  --color-muted: #8896A6;
-  --color-muted-foreground: #8896A6;
-  --color-text-hint: #A0AEC0;
+  --color-muted: #64748B;
+  --color-muted-foreground: #64748B;
+  --color-text-hint: #94A3B8;
 
   /* ——— BORDERS ——— */
   --color-border: #E2E8F0;
   --color-border-light: #EDF2F7;
   --color-input: #E2E8F0;
-  --color-ring: #1B3022;
+  --color-ring: #143A23;
 
-  /* ——— STATUS — MUTED & DESATURATED ——— */
-  --color-success: #4A7A5B;
-  --color-success-bg: #E8EFEA;
+  /* ——— STATUS ——— */
+  --color-success: #3D7A4E;
+  --color-success-bg: #D4E2D8;
   --color-success-text: #2E5440;
   --color-success-foreground: #FFFFFF;
 
-  --color-warning: #9A7B4A;
-  --color-warning-bg: #F0EBE0;
+  --color-warning: #C4841D;
+  --color-warning-bg: #F3E8D0;
   --color-warning-text: #6B5530;
 
-  --color-info: #4A6B8A;
-  --color-info-bg: #E4ECF2;
+  --color-info: #3B6FA0;
+  --color-info-bg: #DBEAFE;
   --color-info-text: #34506B;
 
-  --color-destructive: #946060;
-  --color-destructive-bg: #F0E6E6;
+  --color-destructive: #B84040;
+  --color-destructive-bg: #F0D4D4;
   --color-destructive-text: #6B3E3E;
   --color-destructive-foreground: #FFFFFF;
 
   /* ——— ACCENT ——— */
-  --color-accent: #F1F5F4;
-  --color-accent-foreground: #1B3022;
+  --color-accent: #EBF2ED;
+  --color-accent-foreground: #143A23;
 
-  --color-secondary: #DDE6DF;
-  --color-secondary-foreground: #1B3022;
+  --color-secondary: #D4E2D8;
+  --color-secondary-foreground: #143A23;
+
+  /* ——— PROJECT TAB BAR ——— */
+  --tab-bar-bg: #D5DAE0;
+  --tab-bg: #D5DAE0;
+  --tab-text: #475569;
+  --tab-text-hover: #1E293B;
+  --tab-hover-bg: #E2E7EB;
+  --tab-active-bg: #F1F5F9;
+  --tab-active-text: #112233;
+  --tab-close: #94A3B8;
+
+  /* ——— FORM FIELD STATES ——— */
+  --field-required-bg: #FFF5F5;
+  --field-required-border: #F5C6C6;
+  --field-required-label: #B84040;
+  --field-auto-bg: #EFF6FF;
+  --field-auto-border: #BFDBFE;
+  --field-auto-text: #1E40AF;
+  --field-auto-label: #2563EB;
+  --field-override-bg: #FFFBEB;
+  --field-override-border: #FDE68A;
+  --field-override-text: #92400E;
+  --field-override-label: #D97706;
 
   /* ——— CHART COLORS ——— */
-  --color-chart-1: #1B3022;
-  --color-chart-2: #4A6B8A;
-  --color-chart-3: #9A7B4A;
-  --color-chart-4: #6B5B80;
-  --color-chart-5: #946060;
+  --color-chart-1: #143A23;
+  --color-chart-2: #3B6FA0;
+  --color-chart-3: #C4841D;
+  --color-chart-4: #7C5E99;
+  --color-chart-5: #B84040;
 
   /* ——— SHADOWS ——— */
   --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);

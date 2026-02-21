@@ -9,8 +9,8 @@ interface BulkActionBarProps {
 
 export function BulkActionBar({ selectedCount, onMove, onDelete, onDownload, onShare, onClear }: BulkActionBarProps) {
   return (
-    <div className="flex items-center gap-3 border-b border-border bg-[#1B3022]/5 px-4 py-2">
-      <span className="text-sm font-medium text-[#1B3022]">{selectedCount} selected</span>
+    <div className="flex items-center gap-3 border-b border-border bg-[#143A23]/5 px-4 py-2">
+      <span className="text-sm font-medium text-[#143A23]">{selectedCount} selected</span>
       <div className="flex items-center gap-1">
         {onShare && (
           <button

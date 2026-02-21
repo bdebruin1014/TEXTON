@@ -87,7 +87,7 @@ export function VersionHistoryPanel({
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="h-6 w-6 border-2 border-[#1B3022] border-t-transparent rounded-full animate-spin" />
+              <div className="h-6 w-6 border-2 border-[#143A23] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : versions.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-gray-500">
@@ -113,7 +113,7 @@ export function VersionHistoryPanel({
                             className={cn(
                               'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium',
                               isCurrent
-                                ? 'bg-[#1B3022] text-white'
+                                ? 'bg-[#143A23] text-white'
                                 : 'bg-gray-100 text-gray-700'
                             )}
                           >
@@ -145,7 +145,7 @@ export function VersionHistoryPanel({
                       <div className="flex items-center gap-1 shrink-0 pt-0.5">
                         <button
                           onClick={() => onDownloadVersion(version)}
-                          className="p-1.5 rounded-md text-gray-400 hover:text-[#1B3022] hover:bg-gray-100 transition-colors"
+                          className="p-1.5 rounded-md text-gray-400 hover:text-[#143A23] hover:bg-gray-100 transition-colors"
                           title="Download this version"
                           aria-label={`Download version ${version.version}`}
                         >
@@ -154,7 +154,7 @@ export function VersionHistoryPanel({
                         {!isCurrent && (
                           <button
                             onClick={() => onRestoreVersion(version)}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-[#1B3022] hover:bg-gray-100 transition-colors"
+                            className="p-1.5 rounded-md text-gray-400 hover:text-[#143A23] hover:bg-gray-100 transition-colors"
                             title="Restore this version"
                             aria-label={`Restore version ${version.version}`}
                           >

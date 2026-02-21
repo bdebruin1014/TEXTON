@@ -235,7 +235,7 @@ function FolderTemplateEditor() {
                 if (e.key === "Escape") setEditingId(null);
               }}
               onBlur={(e) => renameItem(item.id, e.target.value)}
-              className="flex-1 rounded border border-[#1B3022] bg-white px-1.5 py-0.5 text-sm outline-none"
+              className="flex-1 rounded border border-[#143A23] bg-white px-1.5 py-0.5 text-sm outline-none"
             />
           ) : (
             <span
@@ -316,7 +316,7 @@ function FolderTemplateEditor() {
           <button
             type="button"
             onClick={() => addItem(null)}
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#1B3022] hover:bg-accent/50"
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#143A23] hover:bg-accent/50"
           >
             Add Folder
           </button>

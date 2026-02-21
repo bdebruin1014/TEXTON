@@ -326,7 +326,7 @@ export function DragDropFileList({
                 className={cn(
                   "border-b border-border cursor-pointer transition-colors",
                   isSelected ? "bg-emerald-50" : "hover:bg-slate-50",
-                  isDragOver && "border-t-2 border-t-[#1B3022]",
+                  isDragOver && "border-t-2 border-t-[#143A23]",
                 )}
               >
                 {/* Checkbox */}

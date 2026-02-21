@@ -2,80 +2,80 @@
 @import "./tokens.css";
 
 @theme {
-  /* ——— CORE TRIAD ——— */
-  --color-primary: #1B3022;
+  /* ——— PRIMARY — deeper forest green ——— */
+  --color-primary: #143A23;
   --color-primary-foreground: #FFFFFF;
-  --color-primary-hover: #264733;
-  --color-primary-700: #2D5A3E;
-  --color-primary-accent: #6B9E7A;
-  --color-primary-100: #DDE6DF;
-  --color-primary-50: #F1F5F4;
+  --color-primary-hover: #1C4D30;
+  --color-primary-700: #1C4D30;
+  --color-primary-accent: #4A8C5E;
+  --color-primary-100: #D4E2D8;
+  --color-primary-50: #EBF2ED;
 
-  /* ——— BUTTONS — matches T logo green ——— */
-  --color-button: #6B9E7A;
-  --color-button-hover: #5A8D69;
+  /* ——— BUTTONS ——— */
+  --color-button: #4A8C5E;
+  --color-button-hover: #3D7A4E;
   --color-button-foreground: #FFFFFF;
 
   /* ——— NAVIGATION ——— */
-  --color-nav-bg: #0D1B24;
+  --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
-  --color-nav-muted: #7B8FA3;
-  --color-nav-active: #6B9E7A;
+  --color-nav-muted: #94A3B8;
+  --color-nav-active: #4A8C5E;
 
   /* ——— SURFACES ——— */
-  --color-background: #F0F3F7;
+  --color-background: #F1F5F9;
   --color-card: #FFFFFF;
   --color-card-foreground: #112233;
   --color-card-hover: #FAFBFC;
-  --color-sidebar: #1E2A30;
+  --color-sidebar: #112233;
   --color-popover: #FFFFFF;
   --color-popover-foreground: #112233;
 
   /* ——— TEXT HIERARCHY ——— */
   --color-foreground: #112233;
   --color-text-secondary: #4A5568;
-  --color-muted: #8896A6;
-  --color-muted-foreground: #8896A6;
-  --color-text-hint: #A0AEC0;
+  --color-muted: #64748B;
+  --color-muted-foreground: #64748B;
+  --color-text-hint: #94A3B8;
 
   /* ——— BORDERS ——— */
   --color-border: #E2E8F0;
   --color-border-light: #EDF2F7;
   --color-input: #E2E8F0;
-  --color-ring: #1B3022;
+  --color-ring: #143A23;
 
-  /* ——— STATUS — MUTED & DESATURATED ——— */
-  --color-success: #4A7A5B;
-  --color-success-bg: #E8EFEA;
+  /* ——— STATUS ——— */
+  --color-success: #3D7A4E;
+  --color-success-bg: #D4E2D8;
   --color-success-text: #2E5440;
   --color-success-foreground: #FFFFFF;
 
-  --color-warning: #9A7B4A;
-  --color-warning-bg: #F0EBE0;
+  --color-warning: #C4841D;
+  --color-warning-bg: #F3E8D0;
   --color-warning-text: #6B5530;
 
-  --color-info: #4A6B8A;
-  --color-info-bg: #E4ECF2;
+  --color-info: #3B6FA0;
+  --color-info-bg: #DBEAFE;
   --color-info-text: #34506B;
 
-  --color-destructive: #946060;
-  --color-destructive-bg: #F0E6E6;
+  --color-destructive: #B84040;
+  --color-destructive-bg: #F0D4D4;
   --color-destructive-text: #6B3E3E;
   --color-destructive-foreground: #FFFFFF;
 
   /* ——— ACCENT ——— */
-  --color-accent: #F1F5F4;
-  --color-accent-foreground: #1B3022;
+  --color-accent: #EBF2ED;
+  --color-accent-foreground: #143A23;
 
-  --color-secondary: #DDE6DF;
-  --color-secondary-foreground: #1B3022;
+  --color-secondary: #D4E2D8;
+  --color-secondary-foreground: #143A23;
 
   /* ——— CHART COLORS ——— */
-  --color-chart-1: #1B3022;
-  --color-chart-2: #4A6B8A;
-  --color-chart-3: #9A7B4A;
-  --color-chart-4: #6B5B80;
-  --color-chart-5: #946060;
+  --color-chart-1: #143A23;
+  --color-chart-2: #3B6FA0;
+  --color-chart-3: #C4841D;
+  --color-chart-4: #7C5E99;
+  --color-chart-5: #B84040;
 
   /* ——— SHADOWS ——— */
   --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);
@@ -131,5 +131,67 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(136, 150, 166, 0.3);
+  }
+}
+
+/* ===== FORM FIELD STATES ===== */
+
+/* Required (empty) — salmon background, clears when filled */
+.field-required-empty input,
+.field-required-empty select,
+.field-required-empty textarea {
+  background-color: var(--field-required-bg);
+  border-color: var(--field-required-border);
+}
+.field-required-empty label {
+  color: var(--field-required-label);
+  font-weight: 600;
+}
+
+/* Auto-generated — blue tint, readonly */
+.field-auto input,
+.field-auto select {
+  background-color: var(--field-auto-bg);
+  border-color: var(--field-auto-border);
+  color: var(--field-auto-text);
+}
+.field-auto label {
+  color: var(--field-auto-label);
+  font-weight: 600;
+}
+
+/* Manual override — yellow tint with cancel X */
+.field-override input,
+.field-override select {
+  background-color: var(--field-override-bg);
+  border-color: var(--field-override-border);
+  color: var(--field-override-text);
+  padding-right: 2rem;
+}
+.field-override label {
+  color: var(--field-override-label);
+  font-weight: 600;
+}
+
+/* ===== PROJECT TAB BAR — scrollable on mobile ===== */
+.project-tab-bar {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.project-tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== RESPONSIVE — Touch targets & iOS zoom prevention ===== */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  button {
+    min-height: 44px;
   }
 }

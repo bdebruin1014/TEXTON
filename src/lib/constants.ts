@@ -70,6 +70,8 @@ export const ESIGN_STATUSES = [
 
 export const PROJECT_TYPES = ["Scattered Lot", "Community Development", "Lot Development", "Lot Purchase"] as const;
 
+export const COST_BOOK_STATUSES = ["Draft", "Active", "Archived"] as const;
+
 export const FIXED_PER_HOUSE_FEES = {
   builder_fee: 15_000,
   am_fee: 5_000, // RCH-related entities only
@@ -143,6 +145,8 @@ export const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   Cancelled: { bg: "bg-destructive-bg", text: "text-destructive-text" },
 
   // PO
+  Active: { bg: "bg-success-bg", text: "text-success-text" },
+  Archived: { bg: "bg-info-bg", text: "text-info-text" },
   Draft: { bg: "bg-accent", text: "text-muted-foreground" },
   Submitted: { bg: "bg-info-bg", text: "text-info-text" },
   Approved: { bg: "bg-success-bg", text: "text-success-text" },

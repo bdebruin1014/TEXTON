@@ -9,6 +9,7 @@ import { useUiStore } from "@/stores/uiStore";
 export function TopNav() {
   const location = useRouterState({ select: (s) => s.location });
   const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
+  const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ export function TopNav() {
         .join("")
         .toUpperCase()
         .slice(0, 2)
-    : userEmail[0]?.toUpperCase() ?? "?";
+    : (userEmail[0]?.toUpperCase() ?? "?");
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -41,16 +42,27 @@ export function TopNav() {
       style={{
         backgroundColor: "var(--color-nav-bg)",
         borderBottom: "1px solid transparent",
-        borderImage: "linear-gradient(90deg, transparent, rgba(107, 158, 122, 0.2), transparent) 1",
+        borderImage: "linear-gradient(90deg, transparent, rgba(74, 140, 94, 0.2), transparent) 1",
       }}
     >
-      {/* Logo */}
-      <Link to="/dashboard" className="flex items-center">
-        <TektonLogo />
-      </Link>
+      {/* Hamburger (mobile only) + Logo */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden px-1 py-1 text-lg"
+          style={{ color: "var(--color-nav-muted)" }}
+          aria-label="Toggle sidebar"
+        >
+          {"\u2630"}
+        </button>
+        <Link to="/dashboard" className="flex items-center">
+          <TektonLogo />
+        </Link>
+      </div>
 
       {/* Module Links — text only, no icons */}
-      <nav className="flex items-center gap-0.5">
+      <nav className="hidden md:flex items-center gap-0.5">
         {NAV_MODULES.map((mod) => {
           const isActive = location.pathname.startsWith(mod.path);
           return (
@@ -71,24 +83,32 @@ export function TopNav() {
                   className="absolute bottom-0 left-3 right-3 h-0.5 rounded-t-sm"
                   style={{
                     background: "var(--color-nav-active)",
-                    boxShadow: "0 0 8px rgba(107, 158, 122, 0.4)",
+                    boxShadow: "0 0 8px rgba(74, 140, 94, 0.4)",
                   }}
                 />
               )}
             </Link>
           );
         })}
-
       </nav>
 
       {/* Right Side */}
       <div className="flex items-center gap-2">
-        {/* Search trigger */}
+        {/* Search trigger — compact on mobile, full on md+ */}
+        <button
+          type="button"
+          onClick={() => setCommandPaletteOpen(true)}
+          aria-label="Search"
+          className="md:hidden rounded-md px-2 py-1.5 text-sm"
+          style={{ color: "var(--color-nav-muted)" }}
+        >
+          {"\u2315"}
+        </button>
         <button
           type="button"
           onClick={() => setCommandPaletteOpen(true)}
           aria-label="Search — press Command K"
-          className="flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] transition-all focus:w-[260px]"
+          className="hidden md:flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] transition-all focus:w-[260px]"
           style={{
             color: "var(--color-nav-muted)",
             backgroundColor: "rgba(255, 255, 255, 0.06)",
@@ -97,9 +117,7 @@ export function TopNav() {
           }}
         >
           <span>Search...</span>
-          <kbd className="ml-auto rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium">
-            {"\u2318"}K
-          </kbd>
+          <kbd className="ml-auto rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-medium">{"\u2318"}K</kbd>
         </button>
 
         {/* User menu */}

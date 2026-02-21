@@ -37,7 +37,7 @@ export function FolderTree({
           className={cn(
             "flex w-full items-center gap-2 border-l-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent/50",
             activeFolderId === null
-              ? "border-l-[#1B3022] bg-accent/30 font-medium text-foreground"
+              ? "border-l-[#143A23] bg-accent/30 font-medium text-foreground"
               : "border-transparent text-muted-foreground",
           )}
         >

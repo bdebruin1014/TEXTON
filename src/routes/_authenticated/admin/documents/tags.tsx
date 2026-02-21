@@ -164,7 +164,7 @@ function TagRow({
                 if (e.key === "Enter") commitEdit();
                 if (e.key === "Escape") cancelEdit();
               }}
-              className="border border-border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
+              className="border border-border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
             />
             <button
               type="button"
@@ -288,7 +288,7 @@ function DocumentTagsPage() {
           onClick={() => setShowAddInput(true)}
           className={cn(
             "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors",
-            "bg-[#1B3022] hover:bg-[#1B3022]/90",
+            "bg-[#143A23] hover:bg-[#143A23]/90",
           )}
         >
           Add Tag
@@ -332,13 +332,13 @@ function DocumentTagsPage() {
                       setNewTagName("");
                     }
                   }}
-                  className="border border-border rounded px-3 py-1.5 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
+                  className="border border-border rounded px-3 py-1.5 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
                 />
                 <button
                   type="button"
                   onClick={handleAddTag}
                   disabled={!newTagName.trim() || addTagMutation.isPending}
-                  className="inline-flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium text-white bg-[#1B3022] hover:bg-[#1B3022]/90 disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium text-white bg-[#143A23] hover:bg-[#143A23]/90 disabled:opacity-50 transition-colors"
                 >
                   {"✓"}{" "}
                   Add
@@ -393,7 +393,7 @@ function DocumentTagsPage() {
                             setNewTagName("");
                           }
                         }}
-                        className="border border-border rounded px-2 py-1 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-[#1B3022]/20 focus:border-[#1B3022]"
+                        className="border border-border rounded px-2 py-1 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
                       />
                     </div>
                   </td>

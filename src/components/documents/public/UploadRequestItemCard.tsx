@@ -118,7 +118,7 @@ export function UploadRequestItemCard({
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="ml-2 text-[#1B3022] font-medium hover:underline"
+              className="ml-2 text-[#143A23] font-medium hover:underline"
             >
               Replace
             </button>
@@ -134,20 +134,20 @@ export function UploadRequestItemCard({
             onClick={() => inputRef.current?.click()}
             className={`cursor-pointer rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
               dragOver
-                ? "border-[#1B3022] bg-[#1B3022]/5"
+                ? "border-[#143A23] bg-[#143A23]/5"
                 : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
             }`}
           >
             {uploading ? (
               <div className="flex flex-col items-center gap-2">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-[#1B3022]" />
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-[#143A23]" />
                 <span className="text-xs text-slate-500">Uploading...</span>
               </div>
             ) : (
               <>
                 <span className="mx-auto text-sm text-slate-400">Upload</span>
                 <p className="mt-1 text-xs text-slate-500">
-                  Drag & drop file here or <span className="text-[#1B3022] font-medium">click to browse</span>
+                  Drag & drop file here or <span className="text-[#143A23] font-medium">click to browse</span>
                 </p>
               </>
             )}

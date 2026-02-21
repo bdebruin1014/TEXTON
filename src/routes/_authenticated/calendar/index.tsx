@@ -22,9 +22,9 @@ interface CalendarEvent {
 }
 
 const EVENT_COLORS: Record<string, string> = {
-  milestone: "#1B3022",
+  milestone: "#143A23",
   inspection: "#3B6FA0",
-  closing: "#4A7A5B",
+  closing: "#3D7A4E",
   construction: "#C4841D",
   capital_call: "#8B5CF6",
   meeting: "#6366F1",

@@ -25,6 +25,7 @@ const NAV_SECTIONS = [
   {
     label: "Configuration",
     items: [
+      { label: "Cost Books", path: "/admin/cost-books" },
       { label: "Floor Plans", path: "/admin/floor-plans" },
       { label: "Municipalities", path: "/admin/municipalities" },
       { label: "Upgrade Packages", path: "/admin/upgrade-packages" },
