@@ -33,6 +33,23 @@ serve(async (req) => {
     });
   }
 
+  // Check expiration
+  if (share.expires_at && new Date(share.expires_at) < new Date()) {
+    return new Response(JSON.stringify({ error: "Share link has expired" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // SECURITY: Verify the requested document belongs to this share
+  const shareDocIds = (share.items ?? []).map((i: { document_id: string }) => i.document_id);
+  if (!shareDocIds.includes(documentId)) {
+    return new Response(JSON.stringify({ error: "Document not in share" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   // Get document
   const { data: doc } = await supabase.from("documents").select("*").eq("id", documentId).single();
 
