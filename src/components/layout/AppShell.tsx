@@ -45,7 +45,7 @@ export function AppShell({ sidebar, children }: AppShellProps) {
     <RightPanelOverrideContext.Provider value={overrideContextValue}>
       <div className="flex h-screen flex-col overflow-hidden">
         <TopNav />
-        <div className="flex flex-1 overflow-hidden relative">
+        <div className="flex min-h-0 flex-1 relative">
           {/* Mobile overlay */}
           {sidebarOpen && (
             <button
@@ -56,13 +56,14 @@ export function AppShell({ sidebar, children }: AppShellProps) {
             />
           )}
 
-          {/* Sidebar — drawer on mobile, static on desktop */}
+          {/* Sidebar — drawer on mobile, sticky on desktop */}
           {sidebar && (
             <div
               className={cn(
                 "fixed inset-y-0 left-0 z-40 w-[280px] pt-[var(--topnav-height)]",
                 "transform transition-transform duration-200 ease-in-out",
-                "lg:relative lg:z-auto lg:w-[240px] lg:pt-0 lg:translate-x-0",
+                "lg:sticky lg:top-0 lg:z-auto lg:h-full lg:w-[240px] lg:shrink-0 lg:pt-0 lg:translate-x-0",
+                "overflow-y-auto",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full",
               )}
               style={{ backgroundColor: "var(--color-sidebar)" }}
@@ -72,9 +73,9 @@ export function AppShell({ sidebar, children }: AppShellProps) {
           )}
 
           {/* Content column */}
-          <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
             <RecordTabBar />
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex min-h-0 flex-1">
               <main
                 className="flex-1 overflow-y-auto p-4 md:p-6"
                 style={{ backgroundColor: "var(--color-background)" }}
@@ -100,8 +101,11 @@ export function AppShell({ sidebar, children }: AppShellProps) {
  */
 export function PageWithSidebar({ sidebar, children }: AppShellProps) {
   return (
-    <div className="flex h-full -m-4 md:-m-6 overflow-hidden">
-      <div className="shrink-0 overflow-y-auto" style={{ width: "var(--sidebar-width)" }}>
+    <div className="flex h-full -m-4 md:-m-6">
+      <div
+        className="sticky top-0 h-full shrink-0 overflow-y-auto"
+        style={{ width: "var(--sidebar-width)" }}
+      >
         {sidebar}
       </div>
       <div className="flex-1 overflow-y-auto p-4 md:p-6">{children}</div>
