@@ -24,7 +24,7 @@ CREATE POLICY "matters_update" ON public.matters
 
 CREATE POLICY "matters_delete" ON public.matters
   FOR DELETE TO authenticated
-  USING (created_by = auth.uid()::text);
+  USING (created_by = auth.uid());
 
 -- ============================================================
 -- 2. matter_contacts — access through parent matter
