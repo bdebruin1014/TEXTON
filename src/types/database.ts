@@ -80,6 +80,7 @@ export type Database = {
           created_at: string
           current_balance: number | null
           entity_id: string | null
+          gl_account_id: string | null
           id: string
           routing_number: string | null
           status: string
@@ -92,6 +93,7 @@ export type Database = {
           created_at?: string
           current_balance?: number | null
           entity_id?: string | null
+          gl_account_id?: string | null
           id?: string
           routing_number?: string | null
           status?: string
@@ -104,6 +106,7 @@ export type Database = {
           created_at?: string
           current_balance?: number | null
           entity_id?: string | null
+          gl_account_id?: string | null
           id?: string
           routing_number?: string | null
           status?: string
@@ -115,6 +118,108 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_gl_account_id_fkey"
+            columns: ["gl_account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_transactions: {
+        Row: {
+          amount: number
+          bank_account_id: string
+          category: string | null
+          check_number: string | null
+          created_at: string
+          description: string | null
+          entity_id: string | null
+          id: string
+          import_batch: string | null
+          import_source: string | null
+          is_matched: boolean
+          matched_je_line_id: string | null
+          payee: string | null
+          post_date: string | null
+          reconciliation_id: string | null
+          reference: string | null
+          transaction_date: string
+          transaction_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          bank_account_id: string
+          category?: string | null
+          check_number?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          import_batch?: string | null
+          import_source?: string | null
+          is_matched?: boolean
+          matched_je_line_id?: string | null
+          payee?: string | null
+          post_date?: string | null
+          reconciliation_id?: string | null
+          reference?: string | null
+          transaction_date: string
+          transaction_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bank_account_id?: string
+          category?: string | null
+          check_number?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          import_batch?: string | null
+          import_source?: string | null
+          is_matched?: boolean
+          matched_je_line_id?: string | null
+          payee?: string | null
+          post_date?: string | null
+          reconciliation_id?: string | null
+          reference?: string | null
+          transaction_date?: string
+          transaction_type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transactions_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_matched_je_line_id_fkey"
+            columns: ["matched_je_line_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entry_lines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transactions_reconciliation_id_fkey"
+            columns: ["reconciliation_id"]
+            isOneToOne: false
+            referencedRelation: "reconciliations"
             referencedColumns: ["id"]
           },
         ]
@@ -163,39 +268,166 @@ export type Database = {
           },
         ]
       }
+      bill_lines: {
+        Row: {
+          account_id: string | null
+          account_name: string | null
+          account_number: string | null
+          amount: number
+          bill_id: string
+          cost_code: string | null
+          created_at: string
+          description: string | null
+          entity_id: string | null
+          id: string
+          job_id: string | null
+          job_name: string | null
+          line_number: number
+          po_id: string | null
+          project_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          amount?: number
+          bill_id: string
+          cost_code?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          job_id?: string | null
+          job_name?: string | null
+          line_number?: number
+          po_id?: string | null
+          project_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          amount?: number
+          bill_id?: string
+          cost_code?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          job_id?: string | null
+          job_name?: string | null
+          line_number?: number
+          po_id?: string | null
+          project_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bill_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_lines_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_lines_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_lines_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_lines_po_id_fkey"
+            columns: ["po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bill_lines_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bills: {
         Row: {
           amount: number | null
+          approval_level: string | null
+          approved_at: string | null
+          approved_by: string | null
           bill_date: string
           bill_number: string | null
+          cost_code: string | null
           created_at: string
+          description: string | null
           due_date: string | null
           entity_id: string | null
           id: string
+          job_name: string | null
+          paid_amount: number | null
+          po_id: string | null
+          project_id: string | null
           status: string
           updated_at: string
           vendor_name: string | null
         }
         Insert: {
           amount?: number | null
+          approval_level?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           bill_date?: string
           bill_number?: string | null
+          cost_code?: string | null
           created_at?: string
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
+          job_name?: string | null
+          paid_amount?: number | null
+          po_id?: string | null
+          project_id?: string | null
           status?: string
           updated_at?: string
           vendor_name?: string | null
         }
         Update: {
           amount?: number | null
+          approval_level?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           bill_date?: string
           bill_number?: string | null
+          cost_code?: string | null
           created_at?: string
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
+          job_name?: string | null
+          paid_amount?: number | null
+          po_id?: string | null
+          project_id?: string | null
           status?: string
           updated_at?: string
           vendor_name?: string | null
@@ -206,6 +438,20 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bills_po_id_fkey"
+            columns: ["po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bills_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -259,6 +505,7 @@ export type Database = {
       }
       calendar_events: {
         Row: {
+          all_day: boolean | null
           created_at: string
           description: string | null
           end_date: string | null
@@ -272,6 +519,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          all_day?: boolean | null
           created_at?: string
           description?: string | null
           end_date?: string | null
@@ -285,6 +533,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          all_day?: boolean | null
           created_at?: string
           description?: string | null
           end_date?: string | null
@@ -359,10 +608,13 @@ export type Database = {
           amount: number | null
           approved_date: string | null
           co_number: number | null
+          cost_code: string | null
           created_at: string
           description: string | null
           id: string
           job_id: string
+          requested_by: string | null
+          requested_date: string | null
           status: string
           updated_at: string
         }
@@ -370,10 +622,13 @@ export type Database = {
           amount?: number | null
           approved_date?: string | null
           co_number?: number | null
+          cost_code?: string | null
           created_at?: string
           description?: string | null
           id?: string
           job_id: string
+          requested_by?: string | null
+          requested_date?: string | null
           status?: string
           updated_at?: string
         }
@@ -381,21 +636,17 @@ export type Database = {
           amount?: number | null
           approved_date?: string | null
           co_number?: number | null
+          cost_code?: string | null
           created_at?: string
           description?: string | null
           id?: string
           job_id?: string
+          requested_by?: string | null
+          requested_date?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "change_orders_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "change_orders_job_id_fkey"
             columns: ["job_id"]
@@ -1242,45 +1493,53 @@ export type Database = {
       daily_logs: {
         Row: {
           created_at: string
+          created_by: string | null
           crew_count: number | null
+          delays: string | null
           id: string
           job_id: string
           log_date: string
           notes: string | null
+          safety_incidents: string | null
           superintendent: string | null
+          temperature: string | null
           updated_at: string
           weather: string | null
+          work_performed: string | null
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           crew_count?: number | null
+          delays?: string | null
           id?: string
           job_id: string
           log_date?: string
           notes?: string | null
+          safety_incidents?: string | null
           superintendent?: string | null
+          temperature?: string | null
           updated_at?: string
           weather?: string | null
+          work_performed?: string | null
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           crew_count?: number | null
+          delays?: string | null
           id?: string
           job_id?: string
           log_date?: string
           notes?: string | null
+          safety_incidents?: string | null
           superintendent?: string | null
+          temperature?: string | null
           updated_at?: string
           weather?: string | null
+          work_performed?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "daily_logs_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "daily_logs_job_id_fkey"
             columns: ["job_id"]
@@ -2197,13 +2456,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "entities"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "dispositions_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
           },
           {
             foreignKeyName: "dispositions_job_id_fkey"
@@ -3281,6 +3533,69 @@ export type Database = {
           },
         ]
       }
+      fiscal_periods: {
+        Row: {
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          end_date: string
+          entity_id: string | null
+          fiscal_year: number
+          id: string
+          period_key: string
+          period_name: string
+          period_number: number
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          end_date: string
+          entity_id?: string | null
+          fiscal_year: number
+          id?: string
+          period_key: string
+          period_name: string
+          period_number: number
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          end_date?: string
+          entity_id?: string | null
+          fiscal_year?: number
+          id?: string
+          period_key?: string
+          period_name?: string
+          period_number?: number
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_periods_closed_by_fkey"
+            columns: ["closed_by"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_periods_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       floor_plan_images: {
         Row: {
           caption: string | null
@@ -3642,6 +3957,7 @@ export type Database = {
       }
       inspections: {
         Row: {
+          completed_date: string | null
           created_at: string
           id: string
           inspection_type: string | null
@@ -3654,6 +3970,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          completed_date?: string | null
           created_at?: string
           id?: string
           inspection_type?: string | null
@@ -3666,6 +3983,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          completed_date?: string | null
           created_at?: string
           id?: string
           inspection_type?: string | null
@@ -3678,13 +3996,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "inspections_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "inspections_job_id_fkey"
             columns: ["job_id"]
@@ -3791,16 +4102,89 @@ export type Database = {
           },
         ]
       }
+      invoice_lines: {
+        Row: {
+          account_id: string | null
+          account_name: string | null
+          account_number: string | null
+          amount: number
+          created_at: string
+          description: string | null
+          entity_id: string | null
+          id: string
+          invoice_id: string
+          line_number: number
+          quantity: number | null
+          unit_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          amount?: number
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          invoice_id: string
+          line_number?: number
+          quantity?: number | null
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          account_name?: string | null
+          account_number?: string | null
+          amount?: number
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          id?: string
+          invoice_id?: string
+          line_number?: number
+          quantity?: number | null
+          unit_price?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_lines_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_lines_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           amount: number | null
           created_at: string
+          customer_name: string | null
+          description: string | null
           due_date: string | null
           entity_id: string | null
           id: string
           invoice_date: string
           invoice_number: string | null
           paid_amount: number | null
+          project_id: string | null
           status: string
           updated_at: string
           vendor_name: string | null
@@ -3808,12 +4192,15 @@ export type Database = {
         Insert: {
           amount?: number | null
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
           invoice_date?: string
           invoice_number?: string | null
           paid_amount?: number | null
+          project_id?: string | null
           status?: string
           updated_at?: string
           vendor_name?: string | null
@@ -3821,12 +4208,15 @@ export type Database = {
         Update: {
           amount?: number | null
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
           invoice_date?: string
           invoice_number?: string | null
           paid_amount?: number | null
+          project_id?: string | null
           status?: string
           updated_at?: string
           vendor_name?: string | null
@@ -3837,6 +4227,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -3886,13 +4283,6 @@ export type Database = {
             foreignKeyName: "job_budget_lines_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
-          {
-            foreignKeyName: "job_budget_lines_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
@@ -3927,13 +4317,6 @@ export type Database = {
           storage_path?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "job_files_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "job_files_job_id_fkey"
             columns: ["job_id"]
@@ -4042,13 +4425,6 @@ export type Database = {
             foreignKeyName: "job_handoffs_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
-          {
-            foreignKeyName: "job_handoffs_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
@@ -4096,13 +4472,6 @@ export type Database = {
             foreignKeyName: "job_milestones_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
-          {
-            foreignKeyName: "job_milestones_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
@@ -4134,13 +4503,6 @@ export type Database = {
           storage_path?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "job_photos_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "job_photos_job_id_fkey"
             columns: ["job_id"]
@@ -4262,6 +4624,9 @@ export type Database = {
           entry_date: string
           entry_number: string | null
           id: string
+          reversal_of_id: string | null
+          source_id: string | null
+          source_type: string | null
           status: string
           updated_at: string
         }
@@ -4272,6 +4637,9 @@ export type Database = {
           entry_date?: string
           entry_number?: string | null
           id?: string
+          reversal_of_id?: string | null
+          source_id?: string | null
+          source_type?: string | null
           status?: string
           updated_at?: string
         }
@@ -4282,6 +4650,9 @@ export type Database = {
           entry_date?: string
           entry_number?: string | null
           id?: string
+          reversal_of_id?: string | null
+          source_id?: string | null
+          source_type?: string | null
           status?: string
           updated_at?: string
         }
@@ -4291,6 +4662,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entries_reversal_of_id_fkey"
+            columns: ["reversal_of_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -4306,7 +4684,10 @@ export type Database = {
           description: string | null
           entity_id: string | null
           id: string
+          is_reconciled: boolean | null
           journal_entry_id: string
+          reconciled_date: string | null
+          reconciliation_id: string | null
           reference: string | null
           running_balance: number | null
           transaction_date: string | null
@@ -4322,7 +4703,10 @@ export type Database = {
           description?: string | null
           entity_id?: string | null
           id?: string
+          is_reconciled?: boolean | null
           journal_entry_id: string
+          reconciled_date?: string | null
+          reconciliation_id?: string | null
           reference?: string | null
           running_balance?: number | null
           transaction_date?: string | null
@@ -4338,7 +4722,10 @@ export type Database = {
           description?: string | null
           entity_id?: string | null
           id?: string
+          is_reconciled?: boolean | null
           journal_entry_id?: string
+          reconciled_date?: string | null
+          reconciliation_id?: string | null
           reference?: string | null
           running_balance?: number | null
           transaction_date?: string | null
@@ -4364,6 +4751,13 @@ export type Database = {
             columns: ["journal_entry_id"]
             isOneToOne: false
             referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entry_lines_reconciliation_id_fkey"
+            columns: ["reconciliation_id"]
+            isOneToOne: false
+            referencedRelation: "reconciliations"
             referencedColumns: ["id"]
           },
         ]
@@ -4494,13 +4888,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "lots_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "lots_job_id_fkey"
             columns: ["job_id"]
@@ -5305,6 +5692,113 @@ export type Database = {
           },
         ]
       }
+      payment_applications: {
+        Row: {
+          amount: number
+          bank_account_id: string | null
+          batch_payment_id: string | null
+          bill_id: string | null
+          created_at: string
+          entity_id: string | null
+          id: string
+          invoice_id: string | null
+          journal_entry_id: string | null
+          notes: string | null
+          payment_date: string
+          payment_method: string | null
+          payment_type: string
+          receivable_id: string | null
+          reference_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          bank_account_id?: string | null
+          batch_payment_id?: string | null
+          bill_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          journal_entry_id?: string | null
+          notes?: string | null
+          payment_date?: string
+          payment_method?: string | null
+          payment_type: string
+          receivable_id?: string | null
+          reference_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bank_account_id?: string | null
+          batch_payment_id?: string | null
+          bill_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          journal_entry_id?: string | null
+          notes?: string | null
+          payment_date?: string
+          payment_method?: string | null
+          payment_type?: string
+          receivable_id?: string | null
+          reference_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_applications_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_batch_payment_id_fkey"
+            columns: ["batch_payment_id"]
+            isOneToOne: false
+            referencedRelation: "batch_payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "bills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_journal_entry_id_fkey"
+            columns: ["journal_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_applications_receivable_id_fkey"
+            columns: ["receivable_id"]
+            isOneToOne: false
+            referencedRelation: "receivables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       period_close: {
         Row: {
           accrue_expenses: string | null
@@ -5447,13 +5941,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "permits_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "permits_job_id_fkey"
             columns: ["job_id"]
@@ -5970,13 +6457,6 @@ export type Database = {
             foreignKeyName: "punch_list_items_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
-          {
-            foreignKeyName: "punch_list_items_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
             referencedRelation: "jobs"
             referencedColumns: ["id"]
           },
@@ -5985,10 +6465,13 @@ export type Database = {
       purchase_orders: {
         Row: {
           amount: number | null
+          cost_code: string | null
           created_at: string
+          description: string | null
           entity_id: string | null
           id: string
           issue_date: string | null
+          issued_date: string | null
           job_id: string | null
           po_number: string | null
           status: string
@@ -5997,10 +6480,13 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          cost_code?: string | null
           created_at?: string
+          description?: string | null
           entity_id?: string | null
           id?: string
           issue_date?: string | null
+          issued_date?: string | null
           job_id?: string | null
           po_number?: string | null
           status?: string
@@ -6009,10 +6495,13 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          cost_code?: string | null
           created_at?: string
+          description?: string | null
           entity_id?: string | null
           id?: string
           issue_date?: string | null
+          issued_date?: string | null
           job_id?: string | null
           po_number?: string | null
           status?: string
@@ -6026,13 +6515,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "entities"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "purchase_orders_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
           },
           {
             foreignKeyName: "purchase_orders_job_id_fkey"
@@ -6281,10 +6763,13 @@ export type Database = {
         Row: {
           amount: number | null
           created_at: string
+          customer_name: string | null
+          description: string | null
           due_date: string | null
           entity_id: string | null
           id: string
           invoice_date: string | null
+          project_name: string | null
           receivable_number: string | null
           receivable_type: string | null
           received_amount: number | null
@@ -6294,10 +6779,13 @@ export type Database = {
         Insert: {
           amount?: number | null
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
           invoice_date?: string | null
+          project_name?: string | null
           receivable_number?: string | null
           receivable_type?: string | null
           received_amount?: number | null
@@ -6307,10 +6795,13 @@ export type Database = {
         Update: {
           amount?: number | null
           created_at?: string
+          customer_name?: string | null
+          description?: string | null
           due_date?: string | null
           entity_id?: string | null
           id?: string
           invoice_date?: string | null
+          project_name?: string | null
           receivable_number?: string | null
           receivable_type?: string | null
           received_amount?: number | null
@@ -6434,6 +6925,8 @@ export type Database = {
       }
       selections: {
         Row: {
+          actual_cost: number | null
+          allowance: number | null
           amount: number | null
           approved_date: string | null
           category: string | null
@@ -6441,12 +6934,16 @@ export type Database = {
           id: string
           item_name: string | null
           job_id: string
+          notes: string | null
+          selected_option: string | null
           selection_made: string | null
           status: string
           updated_at: string
           vendor: string | null
         }
         Insert: {
+          actual_cost?: number | null
+          allowance?: number | null
           amount?: number | null
           approved_date?: string | null
           category?: string | null
@@ -6454,12 +6951,16 @@ export type Database = {
           id?: string
           item_name?: string | null
           job_id: string
+          notes?: string | null
+          selected_option?: string | null
           selection_made?: string | null
           status?: string
           updated_at?: string
           vendor?: string | null
         }
         Update: {
+          actual_cost?: number | null
+          allowance?: number | null
           amount?: number | null
           approved_date?: string | null
           category?: string | null
@@ -6467,19 +6968,14 @@ export type Database = {
           id?: string
           item_name?: string | null
           job_id?: string
+          notes?: string | null
+          selected_option?: string | null
           selection_made?: string | null
           status?: string
           updated_at?: string
           vendor?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "selections_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "selections_job_id_fkey"
             columns: ["job_id"]
@@ -6684,13 +7180,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "entities"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "subcontracts_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
           },
           {
             foreignKeyName: "subcontracts_job_id_fkey"
@@ -7192,49 +7681,60 @@ export type Database = {
       }
       warranty_claims: {
         Row: {
+          assigned_to: string | null
           assignee: string | null
           category: string | null
+          claim_number: string | null
+          completed_date: string | null
           created_at: string
           description: string | null
           id: string
           job_id: string
+          notes: string | null
+          reported_by: string | null
           reported_date: string | null
           resolved_date: string | null
+          scheduled_date: string | null
           status: string
           updated_at: string
         }
         Insert: {
+          assigned_to?: string | null
           assignee?: string | null
           category?: string | null
+          claim_number?: string | null
+          completed_date?: string | null
           created_at?: string
           description?: string | null
           id?: string
           job_id: string
+          notes?: string | null
+          reported_by?: string | null
           reported_date?: string | null
           resolved_date?: string | null
+          scheduled_date?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          assigned_to?: string | null
           assignee?: string | null
           category?: string | null
+          claim_number?: string | null
+          completed_date?: string | null
           created_at?: string
           description?: string | null
           id?: string
           job_id?: string
+          notes?: string | null
+          reported_by?: string | null
           reported_date?: string | null
           resolved_date?: string | null
+          scheduled_date?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "warranty_claims_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "job_cost_summary"
-            referencedColumns: ["job_id"]
-          },
           {
             foreignKeyName: "warranty_claims_job_id_fkey"
             columns: ["job_id"]
@@ -7570,20 +8070,116 @@ export type Database = {
       }
     }
     Views: {
-      job_cost_summary: {
+      balance_sheet_report: {
         Row: {
-          budgeted: number | null
-          committed: number | null
-          cost_code: string | null
+          account_id: string | null
+          account_name: string | null
+          account_number: string | null
+          account_type: string | null
+          balance: number | null
           entity_id: string | null
-          invoiced: number | null
-          job_id: string | null
-          job_name: string | null
-          paid: number | null
         }
         Relationships: [
           {
+            foreignKeyName: "journal_entry_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entry_lines_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      income_statement_report: {
+        Row: {
+          account_id: string | null
+          account_name: string | null
+          account_number: string | null
+          account_type: string | null
+          entity_id: string | null
+          entry_date: string | null
+          net_amount: number | null
+          total_credits: number | null
+          total_debits: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entry_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entry_lines_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_cost_summary: {
+        Row: {
+          actual: number | null
+          budgeted: number | null
+          committed: number | null
+          cost_code: string | null
+          cost_code_name: string | null
+          entity_id: string | null
+          id: string | null
+          job_id: string | null
+          job_name: string | null
+          paid: number | null
+          percent_complete: number | null
+          project_name: string | null
+          remaining: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_budget_lines_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "jobs_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trial_balance_report: {
+        Row: {
+          account_id: string | null
+          account_name: string | null
+          account_number: string | null
+          account_type: string | null
+          entity_id: string | null
+          net_balance: number | null
+          normal_balance: string | null
+          total_credits: number | null
+          total_debits: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entry_lines_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entry_lines_entity_id_fkey"
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "entities"

@@ -31,11 +31,19 @@ interface JournalEntry {
 
 interface JELine {
   id: string;
+  account_id: string | null;
   account_name: string | null;
   account_number: string | null;
   debit: number | null;
   credit: number | null;
   description: string | null;
+}
+
+interface COAAccount {
+  id: string;
+  account_number: string;
+  account_name: string;
+  account_type: string;
 }
 
 function JournalEntries() {
@@ -63,9 +71,26 @@ function JournalEntries() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("journal_entry_lines")
-        .select("id, account_name, account_number, debit, credit, description")
+        .select("id, account_id, account_name, account_number, debit, credit, description")
         .eq("journal_entry_id", expandedJE as string)
-        .order("debit", { ascending: false });
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: coaAccounts = [] } = useQuery<COAAccount[]>({
+    queryKey: ["coa-accounts", activeEntityId],
+    queryFn: async () => {
+      let query = supabase
+        .from("chart_of_accounts")
+        .select("id, account_number, account_name, account_type")
+        .eq("is_active", true)
+        .order("account_number");
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },
@@ -120,6 +145,82 @@ function JournalEntries() {
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["je-lines", expandedJE] }),
   });
+
+  const updateLine = useMutation({
+    mutationFn: async ({ id, field, value }: { id: string; field: string; value: unknown }) => {
+      const updates: Record<string, unknown> = { [field]: value };
+      if (field === "account_id" && value) {
+        const account = coaAccounts.find((a) => a.id === value);
+        if (account) {
+          updates.account_name = account.account_name;
+          updates.account_number = account.account_number;
+        }
+      }
+      const { error } = await supabase.from("journal_entry_lines").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["je-lines", expandedJE] }),
+  });
+
+  const deleteLine = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("journal_entry_lines").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["je-lines", expandedJE] }),
+  });
+
+  const reverseEntry = useMutation({
+    mutationFn: async (jeId: string) => {
+      const je = entries.find((e) => e.id === jeId);
+      if (!je) throw new Error("Entry not found");
+
+      const { data: sourceLines, error: linesErr } = await supabase
+        .from("journal_entry_lines")
+        .select("account_id, account_name, account_number, debit, credit, description")
+        .eq("journal_entry_id", jeId);
+      if (linesErr) throw linesErr;
+
+      const count = entries.length + 1;
+      const { data: newJE, error: jeErr } = await supabase
+        .from("journal_entries")
+        .insert({
+          entry_number: `JE-${String(count).padStart(4, "0")}`,
+          entry_date: new Date().toISOString().split("T")[0],
+          description: `Reversal of ${je.entry_number}`,
+          status: "Draft",
+          is_balanced: true,
+          entity_id: activeEntityId,
+          reversal_of_id: jeId,
+        })
+        .select("id")
+        .single();
+      if (jeErr) throw jeErr;
+
+      if (sourceLines && sourceLines.length > 0) {
+        const reversedLines = sourceLines.map((l) => ({
+          journal_entry_id: newJE.id,
+          account_id: l.account_id,
+          account_name: l.account_name,
+          account_number: l.account_number,
+          debit: l.credit ?? 0,
+          credit: l.debit ?? 0,
+          description: l.description,
+          entity_id: activeEntityId,
+        }));
+        const { error: insertErr } = await supabase.from("journal_entry_lines").insert(reversedLines);
+        if (insertErr) throw insertErr;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["journal-entries", activeEntityId] });
+      toast.success("Reversal entry created");
+    },
+    onError: () => toast.error("Failed to create reversal"),
+  });
+
+  const expandedEntry = entries.find((e) => e.id === expandedJE);
+  const isExpandedDraft = expandedEntry?.status === "Draft";
 
   const columns: ColumnDef<JournalEntry, unknown>[] = [
     {
@@ -196,16 +297,28 @@ function JournalEntries() {
               </button>
             )}
             {je.status === "Posted" && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateStatus.mutate({ id: je.id, status: "Void" });
-                }}
-                className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive-bg"
-              >
-                Void
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    reverseEntry.mutate(je.id);
+                  }}
+                  className="rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
+                >
+                  Reverse
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateStatus.mutate({ id: je.id, status: "Void" });
+                  }}
+                  className="rounded px-2 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive-bg"
+                >
+                  Void
+                </button>
+              </>
             )}
             <button
               type="button"
@@ -254,20 +367,24 @@ function JournalEntries() {
             onRowClick={(row) => setExpandedJE(expandedJE === row.id ? null : row.id)}
           />
 
-          {/* Expanded JE Lines */}
           {expandedJE && (
             <div className="mt-4 rounded-lg border border-border bg-card p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-foreground">
-                  Lines for {entries.find((e) => e.id === expandedJE)?.entry_number}
+                  Lines for {expandedEntry?.entry_number}
+                  {!isExpandedDraft && (
+                    <span className="ml-2 text-xs font-normal text-muted">(read-only — entry is {expandedEntry?.status})</span>
+                  )}
                 </h3>
-                <button
-                  type="button"
-                  onClick={() => addLine.mutate(expandedJE)}
-                  className="flex items-center gap-1 rounded bg-button px-2 py-1 text-xs font-medium text-white hover:bg-button-hover"
-                >
-                  + Add Line
-                </button>
+                {isExpandedDraft && (
+                  <button
+                    type="button"
+                    onClick={() => addLine.mutate(expandedJE)}
+                    className="flex items-center gap-1 rounded bg-button px-2 py-1 text-xs font-medium text-white hover:bg-button-hover"
+                  >
+                    + Add Line
+                  </button>
+                )}
               </div>
               {lines.length === 0 ? (
                 <p className="text-sm text-muted">No lines — add debit/credit lines to this entry.</p>
@@ -279,18 +396,110 @@ function JournalEntries() {
                       <th className="py-2 font-medium">Description</th>
                       <th className="py-2 text-right font-medium">Debit</th>
                       <th className="py-2 text-right font-medium">Credit</th>
+                      {isExpandedDraft && <th className="w-8 py-2" />}
                     </tr>
                   </thead>
                   <tbody>
                     {lines.map((line) => (
                       <tr key={line.id} className="border-b border-border/50">
                         <td className="py-2">
-                          <span className="font-mono text-xs">{line.account_number}</span>
-                          {line.account_name && <span className="ml-2 text-muted">{line.account_name}</span>}
+                          {isExpandedDraft ? (
+                            <select
+                              value={line.account_id ?? ""}
+                              onChange={(e) =>
+                                updateLine.mutate({
+                                  id: line.id,
+                                  field: "account_id",
+                                  value: e.target.value || null,
+                                })
+                              }
+                              className="w-full rounded border border-border bg-card px-2 py-1 text-xs"
+                            >
+                              <option value="">Select account...</option>
+                              {coaAccounts.map((a) => (
+                                <option key={a.id} value={a.id}>
+                                  {a.account_number} — {a.account_name}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <>
+                              <span className="font-mono text-xs">{line.account_number}</span>
+                              {line.account_name && <span className="ml-2 text-muted">{line.account_name}</span>}
+                            </>
+                          )}
                         </td>
-                        <td className="py-2 text-muted">{line.description ?? "—"}</td>
-                        <td className="py-2 text-right">{line.debit ? formatCurrency(line.debit) : ""}</td>
-                        <td className="py-2 text-right">{line.credit ? formatCurrency(line.credit) : ""}</td>
+                        <td className="py-2">
+                          {isExpandedDraft ? (
+                            <input
+                              type="text"
+                              defaultValue={line.description ?? ""}
+                              onBlur={(e) =>
+                                updateLine.mutate({
+                                  id: line.id,
+                                  field: "description",
+                                  value: e.target.value || null,
+                                })
+                              }
+                              className="w-full rounded border border-border bg-card px-2 py-1 text-xs"
+                              placeholder="Description"
+                            />
+                          ) : (
+                            <span className="text-muted">{line.description ?? "—"}</span>
+                          )}
+                        </td>
+                        <td className="py-2 text-right">
+                          {isExpandedDraft ? (
+                            <input
+                              type="number"
+                              defaultValue={line.debit ?? 0}
+                              onBlur={(e) =>
+                                updateLine.mutate({
+                                  id: line.id,
+                                  field: "debit",
+                                  value: Number(e.target.value) || 0,
+                                })
+                              }
+                              className="w-24 rounded border border-border bg-card px-2 py-1 text-right text-xs"
+                              min="0"
+                              step="0.01"
+                            />
+                          ) : (
+                            <span>{line.debit ? formatCurrency(line.debit) : ""}</span>
+                          )}
+                        </td>
+                        <td className="py-2 text-right">
+                          {isExpandedDraft ? (
+                            <input
+                              type="number"
+                              defaultValue={line.credit ?? 0}
+                              onBlur={(e) =>
+                                updateLine.mutate({
+                                  id: line.id,
+                                  field: "credit",
+                                  value: Number(e.target.value) || 0,
+                                })
+                              }
+                              className="w-24 rounded border border-border bg-card px-2 py-1 text-right text-xs"
+                              min="0"
+                              step="0.01"
+                            />
+                          ) : (
+                            <span>{line.credit ? formatCurrency(line.credit) : ""}</span>
+                          )}
+                        </td>
+                        {isExpandedDraft && (
+                          <td className="py-2 text-center">
+                            <button
+                              type="button"
+                              onClick={() => deleteLine.mutate(line.id)}
+                              className="rounded p-1 text-muted transition-colors hover:text-destructive"
+                              aria-label="Delete line"
+                            >
+                              &times;
+                            </button>
+                          </td>
+                        )}
                       </tr>
                     ))}
                     <tr className="font-medium">
@@ -303,6 +512,7 @@ function JournalEntries() {
                       <td className="py-2 text-right">
                         {formatCurrency(lines.reduce((s, l) => s + (l.credit ?? 0), 0))}
                       </td>
+                      {isExpandedDraft && <td />}
                     </tr>
                   </tbody>
                 </table>

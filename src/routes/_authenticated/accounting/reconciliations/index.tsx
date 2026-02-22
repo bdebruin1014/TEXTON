@@ -125,8 +125,11 @@ function ReconciliationDashboard() {
         </div>
       )}
 
-      {/* History Link */}
-      <div className="mt-6 text-center">
+      {/* Action Links */}
+      <div className="mt-6 flex items-center justify-center gap-6">
+        <Link to="/accounting/reconciliations/match" className="text-sm font-medium text-primary hover:underline">
+          Transaction Matching
+        </Link>
         <Link to="/accounting/reconciliations/history" className="text-sm font-medium text-primary hover:underline">
           View Reconciliation History
         </Link>

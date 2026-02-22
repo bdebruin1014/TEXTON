@@ -85,7 +85,6 @@ import { Route as AuthenticatedAdminCostCodesRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminCostBooksRouteImport } from './routes/_authenticated/admin/cost-books'
 import { Route as AuthenticatedAdminBankAccountsRouteImport } from './routes/_authenticated/admin/bank-accounts'
 import { Route as AuthenticatedAdminAuditLogRouteImport } from './routes/_authenticated/admin/audit-log'
-import { Route as AuthenticatedAccountingReportsRouteImport } from './routes/_authenticated/accounting/reports'
 import { Route as AuthenticatedAccountingRegisterRouteImport } from './routes/_authenticated/accounting/register'
 import { Route as AuthenticatedAccountingPeriodCloseRouteImport } from './routes/_authenticated/accounting/period-close'
 import { Route as AuthenticatedAccountingJournalEntriesRouteImport } from './routes/_authenticated/accounting/journal-entries'
@@ -100,6 +99,7 @@ import { Route as AuthenticatedProjectsProjectIdRouteRouteImport } from './route
 import { Route as AuthenticatedPipelineOpportunityIdRouteRouteImport } from './routes/_authenticated/pipeline/$opportunityId/route'
 import { Route as AuthenticatedDispositionDispositionIdRouteRouteImport } from './routes/_authenticated/disposition/$dispositionId/route'
 import { Route as AuthenticatedConstructionJobIdRouteRouteImport } from './routes/_authenticated/construction/$jobId/route'
+import { Route as AuthenticatedAccountingReportsRouteRouteImport } from './routes/_authenticated/accounting/reports/route'
 import { Route as AuthenticatedAccountingReconciliationsRouteRouteImport } from './routes/_authenticated/accounting/reconciliations/route'
 import { Route as AuthenticatedAccountingEntityIdRouteRouteImport } from './routes/_authenticated/accounting/$entityId/route'
 import { Route as AuthenticatedProjectsProjectIdIndexRouteImport } from './routes/_authenticated/projects/$projectId/index'
@@ -111,6 +111,7 @@ import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './ro
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
 import { Route as AuthenticatedAdminCoaTemplatesIndexRouteImport } from './routes/_authenticated/admin/coa-templates/index'
+import { Route as AuthenticatedAccountingReportsIndexRouteImport } from './routes/_authenticated/accounting/reports/index'
 import { Route as AuthenticatedAccountingReconciliationsIndexRouteImport } from './routes/_authenticated/accounting/reconciliations/index'
 import { Route as AuthenticatedWorkflowsTeamsTeamIdRouteImport } from './routes/_authenticated/workflows/teams.$teamId'
 import { Route as AuthenticatedWorkflowsInstancesInstanceIdRouteImport } from './routes/_authenticated/workflows/instances/$instanceId'
@@ -191,7 +192,13 @@ import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes
 import { Route as AuthenticatedAdminDocumentTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/document-templates.$templateId'
 import { Route as AuthenticatedAdminCostBooksBookIdRouteImport } from './routes/_authenticated/admin/cost-books.$bookId'
 import { Route as AuthenticatedAdminCoaTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/coa-templates/$templateId'
+import { Route as AuthenticatedAccountingReportsTrialBalanceRouteImport } from './routes/_authenticated/accounting/reports/trial-balance'
+import { Route as AuthenticatedAccountingReportsIncomeStatementRouteImport } from './routes/_authenticated/accounting/reports/income-statement'
+import { Route as AuthenticatedAccountingReportsCashFlowRouteImport } from './routes/_authenticated/accounting/reports/cash-flow'
+import { Route as AuthenticatedAccountingReportsBalanceSheetRouteImport } from './routes/_authenticated/accounting/reports/balance-sheet'
+import { Route as AuthenticatedAccountingReportsAgingRouteImport } from './routes/_authenticated/accounting/reports/aging'
 import { Route as AuthenticatedAccountingReconciliationsStartRouteImport } from './routes/_authenticated/accounting/reconciliations/start'
+import { Route as AuthenticatedAccountingReconciliationsMatchRouteImport } from './routes/_authenticated/accounting/reconciliations/match'
 import { Route as AuthenticatedAccountingReconciliationsHistoryRouteImport } from './routes/_authenticated/accounting/reconciliations/history'
 import { Route as AuthenticatedAccountingEntityIdReportsRouteImport } from './routes/_authenticated/accounting/$entityId/reports'
 import { Route as AuthenticatedAccountingEntityIdRegisterRouteImport } from './routes/_authenticated/accounting/$entityId/register'
@@ -654,12 +661,6 @@ const AuthenticatedAdminAuditLogRoute =
     path: '/audit-log',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAccountingReportsRoute =
-  AuthenticatedAccountingReportsRouteImport.update({
-    id: '/reports',
-    path: '/reports',
-    getParentRoute: () => AuthenticatedAccountingRouteRoute,
-  } as any)
 const AuthenticatedAccountingRegisterRoute =
   AuthenticatedAccountingRegisterRouteImport.update({
     id: '/register',
@@ -744,6 +745,12 @@ const AuthenticatedConstructionJobIdRouteRoute =
     path: '/$jobId',
     getParentRoute: () => AuthenticatedConstructionRouteRoute,
   } as any)
+const AuthenticatedAccountingReportsRouteRoute =
+  AuthenticatedAccountingReportsRouteRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAccountingRouteRoute,
+  } as any)
 const AuthenticatedAccountingReconciliationsRouteRoute =
   AuthenticatedAccountingReconciliationsRouteRouteImport.update({
     id: '/reconciliations',
@@ -809,6 +816,12 @@ const AuthenticatedAdminCoaTemplatesIndexRoute =
     id: '/coa-templates/',
     path: '/coa-templates/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAccountingReportsIndexRoute =
+  AuthenticatedAccountingReportsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
   } as any)
 const AuthenticatedAccountingReconciliationsIndexRoute =
   AuthenticatedAccountingReconciliationsIndexRouteImport.update({
@@ -1290,10 +1303,46 @@ const AuthenticatedAdminCoaTemplatesTemplateIdRoute =
     path: '/coa-templates/$templateId',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAccountingReportsTrialBalanceRoute =
+  AuthenticatedAccountingReportsTrialBalanceRouteImport.update({
+    id: '/trial-balance',
+    path: '/trial-balance',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
+  } as any)
+const AuthenticatedAccountingReportsIncomeStatementRoute =
+  AuthenticatedAccountingReportsIncomeStatementRouteImport.update({
+    id: '/income-statement',
+    path: '/income-statement',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
+  } as any)
+const AuthenticatedAccountingReportsCashFlowRoute =
+  AuthenticatedAccountingReportsCashFlowRouteImport.update({
+    id: '/cash-flow',
+    path: '/cash-flow',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
+  } as any)
+const AuthenticatedAccountingReportsBalanceSheetRoute =
+  AuthenticatedAccountingReportsBalanceSheetRouteImport.update({
+    id: '/balance-sheet',
+    path: '/balance-sheet',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
+  } as any)
+const AuthenticatedAccountingReportsAgingRoute =
+  AuthenticatedAccountingReportsAgingRouteImport.update({
+    id: '/aging',
+    path: '/aging',
+    getParentRoute: () => AuthenticatedAccountingReportsRouteRoute,
+  } as any)
 const AuthenticatedAccountingReconciliationsStartRoute =
   AuthenticatedAccountingReconciliationsStartRouteImport.update({
     id: '/start',
     path: '/start',
+    getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
+  } as any)
+const AuthenticatedAccountingReconciliationsMatchRoute =
+  AuthenticatedAccountingReconciliationsMatchRouteImport.update({
+    id: '/match',
+    path: '/match',
     getParentRoute: () => AuthenticatedAccountingReconciliationsRouteRoute,
   } as any)
 const AuthenticatedAccountingReconciliationsHistoryRoute =
@@ -1452,6 +1501,7 @@ export interface FileRoutesByFullPath {
   '/upload/$token': typeof UploadTokenRoute
   '/accounting/$entityId': typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
+  '/accounting/reports': typeof AuthenticatedAccountingReportsRouteRouteWithChildren
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
   '/pipeline/$opportunityId': typeof AuthenticatedPipelineOpportunityIdRouteRouteWithChildren
@@ -1466,7 +1516,6 @@ export interface FileRoutesByFullPath {
   '/accounting/journal-entries': typeof AuthenticatedAccountingJournalEntriesRoute
   '/accounting/period-close': typeof AuthenticatedAccountingPeriodCloseRoute
   '/accounting/register': typeof AuthenticatedAccountingRegisterRoute
-  '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
@@ -1530,7 +1579,13 @@ export interface FileRoutesByFullPath {
   '/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
   '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
+  '/accounting/reconciliations/match': typeof AuthenticatedAccountingReconciliationsMatchRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/accounting/reports/aging': typeof AuthenticatedAccountingReportsAgingRoute
+  '/accounting/reports/balance-sheet': typeof AuthenticatedAccountingReportsBalanceSheetRoute
+  '/accounting/reports/cash-flow': typeof AuthenticatedAccountingReportsCashFlowRoute
+  '/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
+  '/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
@@ -1611,6 +1666,7 @@ export interface FileRoutesByFullPath {
   '/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
   '/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/accounting/reports/': typeof AuthenticatedAccountingReportsIndexRoute
   '/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -1654,7 +1710,6 @@ export interface FileRoutesByTo {
   '/accounting/journal-entries': typeof AuthenticatedAccountingJournalEntriesRoute
   '/accounting/period-close': typeof AuthenticatedAccountingPeriodCloseRoute
   '/accounting/register': typeof AuthenticatedAccountingRegisterRoute
-  '/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
@@ -1718,7 +1773,13 @@ export interface FileRoutesByTo {
   '/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
   '/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
+  '/accounting/reconciliations/match': typeof AuthenticatedAccountingReconciliationsMatchRoute
   '/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/accounting/reports/aging': typeof AuthenticatedAccountingReportsAgingRoute
+  '/accounting/reports/balance-sheet': typeof AuthenticatedAccountingReportsBalanceSheetRoute
+  '/accounting/reports/cash-flow': typeof AuthenticatedAccountingReportsCashFlowRoute
+  '/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
+  '/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
@@ -1799,6 +1860,7 @@ export interface FileRoutesByTo {
   '/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
   '/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/accounting/reports': typeof AuthenticatedAccountingReportsIndexRoute
   '/admin/coa-templates': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -1846,6 +1908,7 @@ export interface FileRoutesById {
   '/upload/$token': typeof UploadTokenRoute
   '/_authenticated/accounting/$entityId': typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   '/_authenticated/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
+  '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRouteRouteWithChildren
   '/_authenticated/construction/$jobId': typeof AuthenticatedConstructionJobIdRouteRouteWithChildren
   '/_authenticated/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdRouteRouteWithChildren
   '/_authenticated/pipeline/$opportunityId': typeof AuthenticatedPipelineOpportunityIdRouteRouteWithChildren
@@ -1860,7 +1923,6 @@ export interface FileRoutesById {
   '/_authenticated/accounting/journal-entries': typeof AuthenticatedAccountingJournalEntriesRoute
   '/_authenticated/accounting/period-close': typeof AuthenticatedAccountingPeriodCloseRoute
   '/_authenticated/accounting/register': typeof AuthenticatedAccountingRegisterRoute
-  '/_authenticated/accounting/reports': typeof AuthenticatedAccountingReportsRoute
   '/_authenticated/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
   '/_authenticated/admin/bank-accounts': typeof AuthenticatedAdminBankAccountsRoute
   '/_authenticated/admin/cost-books': typeof AuthenticatedAdminCostBooksRouteWithChildren
@@ -1924,7 +1986,13 @@ export interface FileRoutesById {
   '/_authenticated/accounting/$entityId/register': typeof AuthenticatedAccountingEntityIdRegisterRoute
   '/_authenticated/accounting/$entityId/reports': typeof AuthenticatedAccountingEntityIdReportsRoute
   '/_authenticated/accounting/reconciliations/history': typeof AuthenticatedAccountingReconciliationsHistoryRoute
+  '/_authenticated/accounting/reconciliations/match': typeof AuthenticatedAccountingReconciliationsMatchRoute
   '/_authenticated/accounting/reconciliations/start': typeof AuthenticatedAccountingReconciliationsStartRoute
+  '/_authenticated/accounting/reports/aging': typeof AuthenticatedAccountingReportsAgingRoute
+  '/_authenticated/accounting/reports/balance-sheet': typeof AuthenticatedAccountingReportsBalanceSheetRoute
+  '/_authenticated/accounting/reports/cash-flow': typeof AuthenticatedAccountingReportsCashFlowRoute
+  '/_authenticated/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
+  '/_authenticated/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/_authenticated/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   '/_authenticated/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/_authenticated/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
@@ -2005,6 +2073,7 @@ export interface FileRoutesById {
   '/_authenticated/workflows/instances/$instanceId': typeof AuthenticatedWorkflowsInstancesInstanceIdRoute
   '/_authenticated/workflows/teams/$teamId': typeof AuthenticatedWorkflowsTeamsTeamIdRoute
   '/_authenticated/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
+  '/_authenticated/accounting/reports/': typeof AuthenticatedAccountingReportsIndexRoute
   '/_authenticated/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
@@ -2052,6 +2121,7 @@ export interface FileRouteTypes {
     | '/upload/$token'
     | '/accounting/$entityId'
     | '/accounting/reconciliations'
+    | '/accounting/reports'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
     | '/pipeline/$opportunityId'
@@ -2066,7 +2136,6 @@ export interface FileRouteTypes {
     | '/accounting/journal-entries'
     | '/accounting/period-close'
     | '/accounting/register'
-    | '/accounting/reports'
     | '/admin/audit-log'
     | '/admin/bank-accounts'
     | '/admin/cost-books'
@@ -2130,7 +2199,13 @@ export interface FileRouteTypes {
     | '/accounting/$entityId/register'
     | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
+    | '/accounting/reconciliations/match'
     | '/accounting/reconciliations/start'
+    | '/accounting/reports/aging'
+    | '/accounting/reports/balance-sheet'
+    | '/accounting/reports/cash-flow'
+    | '/accounting/reports/income-statement'
+    | '/accounting/reports/trial-balance'
     | '/admin/coa-templates/$templateId'
     | '/admin/cost-books/$bookId'
     | '/admin/document-templates/$templateId'
@@ -2211,6 +2286,7 @@ export interface FileRouteTypes {
     | '/workflows/instances/$instanceId'
     | '/workflows/teams/$teamId'
     | '/accounting/reconciliations/'
+    | '/accounting/reports/'
     | '/admin/coa-templates/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
@@ -2254,7 +2330,6 @@ export interface FileRouteTypes {
     | '/accounting/journal-entries'
     | '/accounting/period-close'
     | '/accounting/register'
-    | '/accounting/reports'
     | '/admin/audit-log'
     | '/admin/bank-accounts'
     | '/admin/cost-books'
@@ -2318,7 +2393,13 @@ export interface FileRouteTypes {
     | '/accounting/$entityId/register'
     | '/accounting/$entityId/reports'
     | '/accounting/reconciliations/history'
+    | '/accounting/reconciliations/match'
     | '/accounting/reconciliations/start'
+    | '/accounting/reports/aging'
+    | '/accounting/reports/balance-sheet'
+    | '/accounting/reports/cash-flow'
+    | '/accounting/reports/income-statement'
+    | '/accounting/reports/trial-balance'
     | '/admin/coa-templates/$templateId'
     | '/admin/cost-books/$bookId'
     | '/admin/document-templates/$templateId'
@@ -2399,6 +2480,7 @@ export interface FileRouteTypes {
     | '/workflows/instances/$instanceId'
     | '/workflows/teams/$teamId'
     | '/accounting/reconciliations'
+    | '/accounting/reports'
     | '/admin/coa-templates'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
@@ -2445,6 +2527,7 @@ export interface FileRouteTypes {
     | '/upload/$token'
     | '/_authenticated/accounting/$entityId'
     | '/_authenticated/accounting/reconciliations'
+    | '/_authenticated/accounting/reports'
     | '/_authenticated/construction/$jobId'
     | '/_authenticated/disposition/$dispositionId'
     | '/_authenticated/pipeline/$opportunityId'
@@ -2459,7 +2542,6 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/journal-entries'
     | '/_authenticated/accounting/period-close'
     | '/_authenticated/accounting/register'
-    | '/_authenticated/accounting/reports'
     | '/_authenticated/admin/audit-log'
     | '/_authenticated/admin/bank-accounts'
     | '/_authenticated/admin/cost-books'
@@ -2523,7 +2605,13 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/$entityId/register'
     | '/_authenticated/accounting/$entityId/reports'
     | '/_authenticated/accounting/reconciliations/history'
+    | '/_authenticated/accounting/reconciliations/match'
     | '/_authenticated/accounting/reconciliations/start'
+    | '/_authenticated/accounting/reports/aging'
+    | '/_authenticated/accounting/reports/balance-sheet'
+    | '/_authenticated/accounting/reports/cash-flow'
+    | '/_authenticated/accounting/reports/income-statement'
+    | '/_authenticated/accounting/reports/trial-balance'
     | '/_authenticated/admin/coa-templates/$templateId'
     | '/_authenticated/admin/cost-books/$bookId'
     | '/_authenticated/admin/document-templates/$templateId'
@@ -2604,6 +2692,7 @@ export interface FileRouteTypes {
     | '/_authenticated/workflows/instances/$instanceId'
     | '/_authenticated/workflows/teams/$teamId'
     | '/_authenticated/accounting/reconciliations/'
+    | '/_authenticated/accounting/reports/'
     | '/_authenticated/admin/coa-templates/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
@@ -3172,13 +3261,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditLogRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
-    '/_authenticated/accounting/reports': {
-      id: '/_authenticated/accounting/reports'
-      path: '/reports'
-      fullPath: '/accounting/reports'
-      preLoaderRoute: typeof AuthenticatedAccountingReportsRouteImport
-      parentRoute: typeof AuthenticatedAccountingRouteRoute
-    }
     '/_authenticated/accounting/register': {
       id: '/_authenticated/accounting/register'
       path: '/register'
@@ -3277,6 +3359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdRouteRouteImport
       parentRoute: typeof AuthenticatedConstructionRouteRoute
     }
+    '/_authenticated/accounting/reports': {
+      id: '/_authenticated/accounting/reports'
+      path: '/reports'
+      fullPath: '/accounting/reports'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsRouteRouteImport
+      parentRoute: typeof AuthenticatedAccountingRouteRoute
+    }
     '/_authenticated/accounting/reconciliations': {
       id: '/_authenticated/accounting/reconciliations'
       path: '/reconciliations'
@@ -3353,6 +3442,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/coa-templates/'
       preLoaderRoute: typeof AuthenticatedAdminCoaTemplatesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/accounting/reports/': {
+      id: '/_authenticated/accounting/reports/'
+      path: '/'
+      fullPath: '/accounting/reports/'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsIndexRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
     }
     '/_authenticated/accounting/reconciliations/': {
       id: '/_authenticated/accounting/reconciliations/'
@@ -3914,11 +4010,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCoaTemplatesTemplateIdRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/accounting/reports/trial-balance': {
+      id: '/_authenticated/accounting/reports/trial-balance'
+      path: '/trial-balance'
+      fullPath: '/accounting/reports/trial-balance'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsTrialBalanceRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
+    }
+    '/_authenticated/accounting/reports/income-statement': {
+      id: '/_authenticated/accounting/reports/income-statement'
+      path: '/income-statement'
+      fullPath: '/accounting/reports/income-statement'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsIncomeStatementRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
+    }
+    '/_authenticated/accounting/reports/cash-flow': {
+      id: '/_authenticated/accounting/reports/cash-flow'
+      path: '/cash-flow'
+      fullPath: '/accounting/reports/cash-flow'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsCashFlowRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
+    }
+    '/_authenticated/accounting/reports/balance-sheet': {
+      id: '/_authenticated/accounting/reports/balance-sheet'
+      path: '/balance-sheet'
+      fullPath: '/accounting/reports/balance-sheet'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsBalanceSheetRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
+    }
+    '/_authenticated/accounting/reports/aging': {
+      id: '/_authenticated/accounting/reports/aging'
+      path: '/aging'
+      fullPath: '/accounting/reports/aging'
+      preLoaderRoute: typeof AuthenticatedAccountingReportsAgingRouteImport
+      parentRoute: typeof AuthenticatedAccountingReportsRouteRoute
+    }
     '/_authenticated/accounting/reconciliations/start': {
       id: '/_authenticated/accounting/reconciliations/start'
       path: '/start'
       fullPath: '/accounting/reconciliations/start'
       preLoaderRoute: typeof AuthenticatedAccountingReconciliationsStartRouteImport
+      parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
+    }
+    '/_authenticated/accounting/reconciliations/match': {
+      id: '/_authenticated/accounting/reconciliations/match'
+      path: '/match'
+      fullPath: '/accounting/reconciliations/match'
+      preLoaderRoute: typeof AuthenticatedAccountingReconciliationsMatchRouteImport
       parentRoute: typeof AuthenticatedAccountingReconciliationsRouteRoute
     }
     '/_authenticated/accounting/reconciliations/history': {
@@ -4096,6 +4234,7 @@ const AuthenticatedAccountingEntityIdRouteRouteWithChildren =
 
 interface AuthenticatedAccountingReconciliationsRouteRouteChildren {
   AuthenticatedAccountingReconciliationsHistoryRoute: typeof AuthenticatedAccountingReconciliationsHistoryRoute
+  AuthenticatedAccountingReconciliationsMatchRoute: typeof AuthenticatedAccountingReconciliationsMatchRoute
   AuthenticatedAccountingReconciliationsStartRoute: typeof AuthenticatedAccountingReconciliationsStartRoute
   AuthenticatedAccountingReconciliationsIndexRoute: typeof AuthenticatedAccountingReconciliationsIndexRoute
 }
@@ -4104,6 +4243,8 @@ const AuthenticatedAccountingReconciliationsRouteRouteChildren: AuthenticatedAcc
   {
     AuthenticatedAccountingReconciliationsHistoryRoute:
       AuthenticatedAccountingReconciliationsHistoryRoute,
+    AuthenticatedAccountingReconciliationsMatchRoute:
+      AuthenticatedAccountingReconciliationsMatchRoute,
     AuthenticatedAccountingReconciliationsStartRoute:
       AuthenticatedAccountingReconciliationsStartRoute,
     AuthenticatedAccountingReconciliationsIndexRoute:
@@ -4115,9 +4256,40 @@ const AuthenticatedAccountingReconciliationsRouteRouteWithChildren =
     AuthenticatedAccountingReconciliationsRouteRouteChildren,
   )
 
+interface AuthenticatedAccountingReportsRouteRouteChildren {
+  AuthenticatedAccountingReportsAgingRoute: typeof AuthenticatedAccountingReportsAgingRoute
+  AuthenticatedAccountingReportsBalanceSheetRoute: typeof AuthenticatedAccountingReportsBalanceSheetRoute
+  AuthenticatedAccountingReportsCashFlowRoute: typeof AuthenticatedAccountingReportsCashFlowRoute
+  AuthenticatedAccountingReportsIncomeStatementRoute: typeof AuthenticatedAccountingReportsIncomeStatementRoute
+  AuthenticatedAccountingReportsTrialBalanceRoute: typeof AuthenticatedAccountingReportsTrialBalanceRoute
+  AuthenticatedAccountingReportsIndexRoute: typeof AuthenticatedAccountingReportsIndexRoute
+}
+
+const AuthenticatedAccountingReportsRouteRouteChildren: AuthenticatedAccountingReportsRouteRouteChildren =
+  {
+    AuthenticatedAccountingReportsAgingRoute:
+      AuthenticatedAccountingReportsAgingRoute,
+    AuthenticatedAccountingReportsBalanceSheetRoute:
+      AuthenticatedAccountingReportsBalanceSheetRoute,
+    AuthenticatedAccountingReportsCashFlowRoute:
+      AuthenticatedAccountingReportsCashFlowRoute,
+    AuthenticatedAccountingReportsIncomeStatementRoute:
+      AuthenticatedAccountingReportsIncomeStatementRoute,
+    AuthenticatedAccountingReportsTrialBalanceRoute:
+      AuthenticatedAccountingReportsTrialBalanceRoute,
+    AuthenticatedAccountingReportsIndexRoute:
+      AuthenticatedAccountingReportsIndexRoute,
+  }
+
+const AuthenticatedAccountingReportsRouteRouteWithChildren =
+  AuthenticatedAccountingReportsRouteRoute._addFileChildren(
+    AuthenticatedAccountingReportsRouteRouteChildren,
+  )
+
 interface AuthenticatedAccountingRouteRouteChildren {
   AuthenticatedAccountingEntityIdRouteRoute: typeof AuthenticatedAccountingEntityIdRouteRouteWithChildren
   AuthenticatedAccountingReconciliationsRouteRoute: typeof AuthenticatedAccountingReconciliationsRouteRouteWithChildren
+  AuthenticatedAccountingReportsRouteRoute: typeof AuthenticatedAccountingReportsRouteRouteWithChildren
   AuthenticatedAccountingAggregatePaymentsRoute: typeof AuthenticatedAccountingAggregatePaymentsRoute
   AuthenticatedAccountingApRoute: typeof AuthenticatedAccountingApRoute
   AuthenticatedAccountingArRoute: typeof AuthenticatedAccountingArRoute
@@ -4128,7 +4300,6 @@ interface AuthenticatedAccountingRouteRouteChildren {
   AuthenticatedAccountingJournalEntriesRoute: typeof AuthenticatedAccountingJournalEntriesRoute
   AuthenticatedAccountingPeriodCloseRoute: typeof AuthenticatedAccountingPeriodCloseRoute
   AuthenticatedAccountingRegisterRoute: typeof AuthenticatedAccountingRegisterRoute
-  AuthenticatedAccountingReportsRoute: typeof AuthenticatedAccountingReportsRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
 }
 
@@ -4138,6 +4309,8 @@ const AuthenticatedAccountingRouteRouteChildren: AuthenticatedAccountingRouteRou
       AuthenticatedAccountingEntityIdRouteRouteWithChildren,
     AuthenticatedAccountingReconciliationsRouteRoute:
       AuthenticatedAccountingReconciliationsRouteRouteWithChildren,
+    AuthenticatedAccountingReportsRouteRoute:
+      AuthenticatedAccountingReportsRouteRouteWithChildren,
     AuthenticatedAccountingAggregatePaymentsRoute:
       AuthenticatedAccountingAggregatePaymentsRoute,
     AuthenticatedAccountingApRoute: AuthenticatedAccountingApRoute,
@@ -4153,7 +4326,6 @@ const AuthenticatedAccountingRouteRouteChildren: AuthenticatedAccountingRouteRou
     AuthenticatedAccountingPeriodCloseRoute:
       AuthenticatedAccountingPeriodCloseRoute,
     AuthenticatedAccountingRegisterRoute: AuthenticatedAccountingRegisterRoute,
-    AuthenticatedAccountingReportsRoute: AuthenticatedAccountingReportsRoute,
     AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   }
 

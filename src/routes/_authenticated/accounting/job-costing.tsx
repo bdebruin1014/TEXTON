@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
@@ -28,6 +29,7 @@ interface CostSummary {
 
 function JobCosting() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+  const [showCTC, setShowCTC] = useState(false);
 
   const { data: costData = [], isLoading } = useQuery<CostSummary[]>({
     queryKey: ["job-costing", activeEntityId],
@@ -50,6 +52,23 @@ function JobCosting() {
       remaining: acc.remaining + (row.remaining ?? 0),
     }),
     { budgeted: 0, committed: 0, actual: 0, remaining: 0 },
+  );
+
+  // Cost-to-complete calculations
+  const ctcTotals = costData.reduce(
+    (acc, row) => {
+      const budgeted = row.budgeted ?? 0;
+      const actual = row.actual ?? 0;
+      const ctc = Math.max(budgeted - actual, 0);
+      const eac = actual + ctc;
+      const vac = budgeted - eac;
+      return {
+        ctc: acc.ctc + ctc,
+        eac: acc.eac + eac,
+        vac: acc.vac + vac,
+      };
+    },
+    { ctc: 0, eac: 0, vac: 0 },
   );
 
   const columns: ColumnDef<CostSummary, unknown>[] = [
@@ -97,57 +116,120 @@ function JobCosting() {
         return val ? formatCurrency(val) : "—";
       },
     },
-    {
-      accessorKey: "remaining",
-      header: "Remaining",
-      cell: ({ row }) => {
-        const val = row.getValue("remaining") as number | null;
-        if (val == null) return "—";
-        return <span className={val < 0 ? "text-destructive" : "text-success"}>{formatCurrency(val)}</span>;
-      },
-    },
-    {
-      accessorKey: "percent_complete",
-      header: "% Complete",
-      cell: ({ row }) => {
-        const val = row.getValue("percent_complete") as number | null;
-        if (val == null) return "—";
-        return (
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-16 rounded-full bg-accent">
-              <div
-                className="h-1.5 rounded-full bg-primary transition-all"
-                style={{ width: `${Math.min(val * 100, 100)}%` }}
-              />
-            </div>
-            <span className="text-xs text-muted">{formatPercent(val)}</span>
-          </div>
-        );
-      },
-    },
+    ...(showCTC
+      ? [
+          {
+            id: "cost_to_complete",
+            header: "Cost to Complete",
+            cell: ({ row }: { row: { original: CostSummary } }) => {
+              const budgeted = row.original.budgeted ?? 0;
+              const actual = row.original.actual ?? 0;
+              const ctc = Math.max(budgeted - actual, 0);
+              return <span className="font-medium">{formatCurrency(ctc)}</span>;
+            },
+          } as ColumnDef<CostSummary, unknown>,
+          {
+            id: "est_at_completion",
+            header: "Est. at Completion",
+            cell: ({ row }: { row: { original: CostSummary } }) => {
+              const budgeted = row.original.budgeted ?? 0;
+              const actual = row.original.actual ?? 0;
+              const ctc = Math.max(budgeted - actual, 0);
+              const eac = actual + ctc;
+              return <span className="font-medium">{formatCurrency(eac)}</span>;
+            },
+          } as ColumnDef<CostSummary, unknown>,
+          {
+            id: "variance_at_completion",
+            header: "VAC",
+            cell: ({ row }: { row: { original: CostSummary } }) => {
+              const budgeted = row.original.budgeted ?? 0;
+              const actual = row.original.actual ?? 0;
+              const ctc = Math.max(budgeted - actual, 0);
+              const eac = actual + ctc;
+              const vac = budgeted - eac;
+              return <span className={vac < 0 ? "text-destructive" : "text-success"}>{formatCurrency(vac)}</span>;
+            },
+          } as ColumnDef<CostSummary, unknown>,
+        ]
+      : [
+          {
+            accessorKey: "remaining",
+            header: "Remaining",
+            cell: ({ row }: { row: { getValue: (key: string) => unknown } }) => {
+              const val = row.getValue("remaining") as number | null;
+              if (val == null) return "—";
+              return <span className={val < 0 ? "text-destructive" : "text-success"}>{formatCurrency(val)}</span>;
+            },
+          } as ColumnDef<CostSummary, unknown>,
+          {
+            accessorKey: "percent_complete",
+            header: "% Complete",
+            cell: ({ row }: { row: { getValue: (key: string) => unknown } }) => {
+              const val = row.getValue("percent_complete") as number | null;
+              if (val == null) return "—";
+              return (
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-16 rounded-full bg-accent">
+                    <div
+                      className="h-1.5 rounded-full bg-primary transition-all"
+                      style={{ width: `${Math.min((val as number) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-muted">{formatPercent(val)}</span>
+                </div>
+              );
+            },
+          } as ColumnDef<CostSummary, unknown>,
+        ]),
   ];
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-foreground">Job Costing</h1>
-        <p className="mt-0.5 text-sm text-muted">
-          Budget vs actual by job and cost code — data flows from Construction POs and invoices
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Job Costing</h1>
+          <p className="mt-0.5 text-sm text-muted">
+            Budget vs actual by job and cost code — data flows from Construction POs and invoices
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowCTC(!showCTC)}
+          className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+            showCTC
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-foreground hover:bg-card-hover"
+          }`}
+        >
+          {showCTC ? "Standard View" : "Cost to Complete"}
+        </button>
       </div>
 
       {/* Summary KPIs */}
       {costData.length > 0 && (
-        <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className={`mb-6 grid gap-4 ${showCTC ? "grid-cols-3 lg:grid-cols-6" : "grid-cols-4"}`}>
           {[
             { label: "Total Budgeted", value: formatCurrency(totals.budgeted) },
             { label: "Committed", value: formatCurrency(totals.committed) },
             { label: "Actual", value: formatCurrency(totals.actual) },
-            {
-              label: "Remaining",
-              value: formatCurrency(totals.remaining),
-              color: totals.remaining < 0 ? "text-destructive" : "text-success",
-            },
+            ...(showCTC
+              ? [
+                  { label: "Cost to Complete", value: formatCurrency(ctcTotals.ctc), color: "text-info-text" },
+                  { label: "Est. at Completion", value: formatCurrency(ctcTotals.eac) },
+                  {
+                    label: "Variance at Completion",
+                    value: formatCurrency(ctcTotals.vac),
+                    color: ctcTotals.vac < 0 ? "text-destructive" : "text-success",
+                  },
+                ]
+              : [
+                  {
+                    label: "Remaining",
+                    value: formatCurrency(totals.remaining),
+                    color: totals.remaining < 0 ? "text-destructive" : "text-success",
+                  },
+                ]),
           ].map((kpi) => (
             <div key={kpi.label} className="rounded-lg border border-border bg-card p-4">
               <p className="text-xs text-muted">{kpi.label}</p>

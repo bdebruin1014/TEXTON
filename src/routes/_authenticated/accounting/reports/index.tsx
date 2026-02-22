@@ -1,9 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEntityStore } from "@/stores/entityStore";
 
-export const Route = createFileRoute("/_authenticated/accounting/reports")({
-  component: Reports,
+export const Route = createFileRoute("/_authenticated/accounting/reports/")({
+  component: ReportsIndex,
 });
 
 interface ReportType {
@@ -11,6 +10,7 @@ interface ReportType {
   name: string;
   description: string;
   category: string;
+  path: string | null;
 }
 
 const REPORTS: ReportType[] = [
@@ -19,52 +19,56 @@ const REPORTS: ReportType[] = [
     name: "Trial Balance",
     description: "Account balances at a point in time",
     category: "Financial",
+    path: "/accounting/reports/trial-balance",
   },
   {
     id: "income-statement",
     name: "Profit & Loss",
     description: "Revenue and expenses for a period",
     category: "Financial",
+    path: "/accounting/reports/income-statement",
   },
   {
     id: "balance-sheet",
     name: "Balance Sheet",
     description: "Assets, liabilities, and equity snapshot",
     category: "Financial",
+    path: "/accounting/reports/balance-sheet",
   },
   {
     id: "cash-flow",
     name: "Cash Flow Statement",
     description: "Cash inflows and outflows by category",
     category: "Financial",
+    path: "/accounting/reports/cash-flow",
   },
-  { id: "aged-ar", name: "Aged AR", description: "Accounts receivable aging by 30/60/90+ days", category: "Aging" },
-  { id: "aged-ap", name: "Aged AP", description: "Accounts payable aging by 30/60/90+ days", category: "Aging" },
+  {
+    id: "aging",
+    name: "AP/AR Aging",
+    description: "Accounts payable and receivable aging by 30/60/90+ days",
+    category: "Aging",
+    path: "/accounting/reports/aging",
+  },
   {
     id: "general-ledger",
     name: "General Ledger",
     description: "Complete transaction detail by account",
     category: "Detail",
+    path: null,
   },
   {
     id: "job-profitability",
     name: "Job Profitability",
     description: "Revenue vs cost by job for margin analysis",
     category: "Detail",
+    path: null,
   },
 ];
 
 const CATEGORIES = ["Financial", "Aging", "Detail"] as const;
 
-function Reports() {
+function ReportsIndex() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
-  const [generating, setGenerating] = useState<string | null>(null);
-
-  const generateReport = (reportId: string) => {
-    setGenerating(reportId);
-    // Placeholder: in production, fetch data and render report
-    setTimeout(() => setGenerating(null), 1500);
-  };
 
   return (
     <div>
@@ -89,29 +93,18 @@ function Reports() {
                   <h3 className="text-sm font-semibold text-foreground">{report.name}</h3>
                   <p className="mt-1 text-xs text-muted">{report.description}</p>
                   <div className="mt-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => generateReport(report.id)}
-                      disabled={generating === report.id}
-                      className="flex items-center gap-1.5 rounded bg-button px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-button-hover disabled:opacity-50"
-                    >
-                      {generating === report.id ? (
-                        <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />
-                      ) : null}
-                      Generate
-                    </button>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
-                    >
-                      Download PDF
-                    </button>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 rounded border border-border px-2 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
-                    >
-                      Excel
-                    </button>
+                    {report.path ? (
+                      <Link
+                        to={report.path}
+                        className="flex items-center gap-1.5 rounded bg-button px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-button-hover"
+                      >
+                        View Report
+                      </Link>
+                    ) : (
+                      <span className="rounded bg-card-hover px-3 py-1.5 text-xs font-medium text-muted">
+                        Coming Soon
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}

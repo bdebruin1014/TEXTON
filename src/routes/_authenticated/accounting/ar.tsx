@@ -36,6 +36,7 @@ function AccountsReceivable() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
   const [showDrawModal, setShowDrawModal] = useState(false);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showPayModal, setShowPayModal] = useState<string | null>(null);
 
   const { data: receivables = [], isLoading } = useQuery<Receivable[]>({
     queryKey: ["ar-receivables", activeEntityId],
@@ -96,6 +97,41 @@ function AccountsReceivable() {
       setShowInvoiceModal(false);
     },
     onError: () => toast.error("Failed to create invoice"),
+  });
+
+  const recordPayment = useMutation({
+    mutationFn: async (values: Record<string, string>) => {
+      const receivableId = showPayModal;
+      if (!receivableId) return;
+      const receivable = receivables.find((r) => r.id === receivableId);
+      if (!receivable) return;
+      const paymentAmount = Number(values.amount) || 0;
+
+      const { error } = await supabase.from("payment_applications").insert({
+        entity_id: activeEntityId,
+        payment_type: "AR",
+        receivable_id: receivableId,
+        amount: paymentAmount,
+        payment_method: values.payment_method || null,
+        reference_number: values.reference_number || null,
+        notes: values.notes || null,
+      });
+      if (error) throw error;
+
+      const newReceived = (receivable.received_amount ?? 0) + paymentAmount;
+      const newStatus = newReceived >= (receivable.amount ?? 0) ? "Collected" : "Partial";
+      const { error: updateErr } = await supabase
+        .from("receivables")
+        .update({ received_amount: newReceived, status: newStatus })
+        .eq("id", receivableId);
+      if (updateErr) throw updateErr;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ar-receivables", activeEntityId] });
+      toast.success("Payment recorded");
+      setShowPayModal(null);
+    },
+    onError: () => toast.error("Failed to record payment"),
   });
 
   const totalReceivable = receivables
@@ -169,6 +205,28 @@ function AccountsReceivable() {
       header: "Status",
       cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const r = row.original;
+        if (r.status === "Collected" || r.status === "Write-Off") return null;
+        const balance = (r.amount ?? 0) - (r.received_amount ?? 0);
+        if (balance <= 0) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowPayModal(r.id);
+            }}
+            className="rounded px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
+          >
+            Record Payment
+          </button>
+        );
+      },
+    },
   ];
 
   return (
@@ -241,6 +299,37 @@ function AccountsReceivable() {
           await addInvoice.mutateAsync(values);
         }}
         loading={addInvoice.isPending}
+      />
+
+      <CreateRecordModal
+        open={!!showPayModal}
+        onClose={() => setShowPayModal(null)}
+        title="Record Payment"
+        fields={[
+          {
+            name: "amount",
+            label: "Payment amount",
+            type: "number",
+            required: true,
+            placeholder: "Amount",
+            defaultValue: String(
+              (receivables.find((r) => r.id === showPayModal)?.amount ?? 0) -
+                (receivables.find((r) => r.id === showPayModal)?.received_amount ?? 0),
+            ),
+          },
+          {
+            name: "payment_method",
+            label: "Payment method",
+            type: "select",
+            options: ["Check", "Wire", "ACH", "EFT", "Cash", "Other"],
+          },
+          { name: "reference_number", label: "Reference #", type: "text", placeholder: "Check # or ref" },
+          { name: "notes", label: "Notes", type: "text", placeholder: "Notes" },
+        ]}
+        onSubmit={async (values) => {
+          await recordPayment.mutateAsync(values);
+        }}
+        loading={recordPayment.isPending}
       />
     </div>
   );
