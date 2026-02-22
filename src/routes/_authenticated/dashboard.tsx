@@ -51,12 +51,12 @@ interface Disposition {
 }
 
 const QUICK_ACTIONS = [
-  { label: "Daily Log", borderColor: "var(--color-success)" },
-  { label: "New PO", borderColor: "var(--color-info)" },
-  { label: "Inspection", borderColor: "var(--color-warning)" },
-  { label: "Create RFI", borderColor: "var(--color-destructive)" },
-  { label: "Punch List", borderColor: "#6B5B80" },
-  { label: "Reports", borderColor: "var(--color-muted-foreground)" },
+  { label: "Daily Log", borderColor: "var(--color-success)", path: "/construction" },
+  { label: "New PO", borderColor: "var(--color-info)", path: "/purchasing/purchase-orders" },
+  { label: "Inspection", borderColor: "var(--color-warning)", path: "/construction" },
+  { label: "Create RFI", borderColor: "var(--color-destructive)", path: "/construction" },
+  { label: "Punch List", borderColor: "#6B5B80", path: "/construction" },
+  { label: "Reports", borderColor: "var(--color-muted-foreground)", path: "/reports" },
 ] as const;
 
 function DashboardPage() {
@@ -216,6 +216,7 @@ function DashboardPage() {
           <button
             key={action.label}
             type="button"
+            onClick={() => navigate({ to: action.path })}
             className="bg-card border border-border rounded-[var(--radius-lg)] px-3 py-4 text-center shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
             style={{ borderTopWidth: 3, borderTopColor: action.borderColor }}
           >
