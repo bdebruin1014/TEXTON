@@ -17,7 +17,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
-  build: { sourcemap: true, chunkSizeWarningLimit: 600 },
+  build: { sourcemap: false, chunkSizeWarningLimit: 600 },
   test: {
     include: ["src/**/*.test.{ts,tsx}"],
   },

@@ -1,12 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-// ---------------------------------------------------------------------------
-// CORS
-// ---------------------------------------------------------------------------
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { getAuthUser } from "../_shared/auth.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -122,10 +116,21 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // ── Parse & validate request ────────────────────────────────────────
     const payload: RequestPayload = await req.json();
 
     const { userId, steps = {}, linkedRecords = [], uploadedFiles = [] } = payload;
+
+    // Use authenticated user ID instead of payload
+    const authenticatedUserId = user.id;
 
     // Support both direct fields (legacy) and generic steps payload (AIIntakePage)
     const situationText = payload.situationText || steps.situationText || "";
@@ -293,7 +298,7 @@ Deno.serve(async (req) => {
         linked_project_id: linkedProjectId,
         linked_opportunity_id: linkedOpportunityId,
         linked_entity_id: linkedEntityId,
-        created_by: userId,
+        created_by: authenticatedUserId,
       })
       .select("id, matter_number")
       .single();
@@ -387,7 +392,7 @@ Deno.serve(async (req) => {
         file_size: f.file_size ?? null,
         mime_type: f.mime_type ?? null,
         document_type: f.document_type ?? "other",
-        uploaded_by: userId,
+        uploaded_by: authenticatedUserId,
       }));
 
       const { error: docError } = await supabase.from("matter_documents").insert(docRows);

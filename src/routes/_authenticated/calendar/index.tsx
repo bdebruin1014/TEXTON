@@ -2,7 +2,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +20,15 @@ interface CalendarEvent {
   event_type: string;
   all_day: boolean;
   description: string | null;
+}
+
+interface EventFormData {
+  title: string;
+  event_type: string;
+  start_date: string;
+  end_date: string;
+  all_day: boolean;
+  description: string;
 }
 
 const EVENT_COLORS: Record<string, string> = {
@@ -44,9 +53,22 @@ const EVENT_LABELS: Record<string, string> = {
   other: "Other",
 };
 
+const EMPTY_FORM: EventFormData = {
+  title: "",
+  event_type: "other",
+  start_date: "",
+  end_date: "",
+  all_day: false,
+  description: "",
+};
+
 function CalendarPage() {
   const calendarRef = useRef<FullCalendar>(null);
+  const queryClient = useQueryClient();
   const [currentView, setCurrentView] = useState<"dayGridMonth" | "timeGridWeek" | "timeGridDay">("dayGridMonth");
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<EventFormData>(EMPTY_FORM);
 
   const { data: events = [] } = useQuery<CalendarEvent[]>({
     queryKey: ["calendar-events"],
@@ -56,6 +78,107 @@ function CalendarPage() {
       return data ?? [];
     },
   });
+
+  const createEvent = useMutation({
+    mutationFn: async (data: EventFormData) => {
+      const { error } = await supabase.from("calendar_events").insert({
+        title: data.title,
+        event_type: data.event_type,
+        start_date: data.start_date,
+        end_date: data.end_date || null,
+        all_day: data.all_day,
+        description: data.description || null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["calendar-events"] });
+      toast.success("Event created");
+      closeModal();
+    },
+    onError: () => toast.error("Failed to create event"),
+  });
+
+  const updateEvent = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: EventFormData }) => {
+      const { error } = await supabase
+        .from("calendar_events")
+        .update({
+          title: data.title,
+          event_type: data.event_type,
+          start_date: data.start_date,
+          end_date: data.end_date || null,
+          all_day: data.all_day,
+          description: data.description || null,
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["calendar-events"] });
+      toast.success("Event updated");
+      closeModal();
+    },
+    onError: () => toast.error("Failed to update event"),
+  });
+
+  const deleteEvent = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("calendar_events").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["calendar-events"] });
+      toast.success("Event deleted");
+      closeModal();
+    },
+    onError: () => toast.error("Failed to delete event"),
+  });
+
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+  };
+
+  const openCreate = (dateStr?: string) => {
+    const startDate = dateStr ? `${dateStr}T09:00` : "";
+    setForm({ ...EMPTY_FORM, start_date: startDate });
+    setEditingId(null);
+    setShowModal(true);
+  };
+
+  const openEdit = (eventId: string) => {
+    const event = events.find((e) => e.id === eventId);
+    if (!event) return;
+    setForm({
+      title: event.title,
+      event_type: event.event_type,
+      start_date: event.start_date?.replace(" ", "T")?.slice(0, 16) ?? "",
+      end_date: event.end_date?.replace(" ", "T")?.slice(0, 16) ?? "",
+      all_day: event.all_day,
+      description: event.description ?? "",
+    });
+    setEditingId(event.id);
+    setShowModal(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!form.start_date) {
+      toast.error("Start date is required");
+      return;
+    }
+    if (editingId) {
+      updateEvent.mutate({ id: editingId, data: form });
+    } else {
+      createEvent.mutate(form);
+    }
+  };
 
   const calendarEvents = useMemo(
     () =>
@@ -76,6 +199,8 @@ function CalendarPage() {
     setCurrentView(view);
     calendarRef.current?.getApi().changeView(view);
   };
+
+  const isPending = createEvent.isPending || updateEvent.isPending || deleteEvent.isPending;
 
   return (
     <div>
@@ -108,7 +233,7 @@ function CalendarPage() {
           </div>
           <button
             type="button"
-            onClick={() => toast.info("Event creation coming soon")}
+            onClick={() => openCreate()}
             className="flex items-center gap-1.5 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
           >
             + New Event
@@ -144,8 +269,133 @@ function CalendarPage() {
           dayMaxEvents={3}
           eventDisplay="block"
           eventTimeFormat={{ hour: "numeric", minute: "2-digit", meridiem: "short" }}
+          dateClick={(info) => openCreate(info.dateStr)}
+          eventClick={(info) => openEdit(info.event.id)}
         />
       </div>
+
+      {/* Event Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeModal}>
+          <div
+            className="w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">{editingId ? "Edit Event" : "New Event"}</h2>
+              <button type="button" onClick={closeModal} className="text-muted hover:text-foreground">
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Title</label>
+                <input
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  placeholder="Event title"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Event Type</label>
+                <select
+                  value={form.event_type}
+                  onChange={(e) => setForm({ ...form, event_type: e.target.value })}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                >
+                  {Object.entries(EVENT_LABELS).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-foreground">Start</label>
+                  <input
+                    type={form.all_day ? "date" : "datetime-local"}
+                    value={form.all_day ? form.start_date.split("T")[0] : form.start_date}
+                    onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-foreground">End</label>
+                  <input
+                    type={form.all_day ? "date" : "datetime-local"}
+                    value={form.all_day ? (form.end_date.split("T")[0] ?? "") : form.end_date}
+                    onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="all_day"
+                  checked={form.all_day}
+                  onChange={(e) => setForm({ ...form, all_day: e.target.checked })}
+                  className="rounded border-border"
+                />
+                <label htmlFor="all_day" className="text-sm text-foreground">
+                  All day event
+                </label>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground">Description</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  rows={3}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  placeholder="Optional description"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                {editingId ? (
+                  <button
+                    type="button"
+                    onClick={() => deleteEvent.mutate(editingId)}
+                    disabled={isPending}
+                    className="rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                ) : (
+                  <div />
+                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isPending}
+                    className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
+                  >
+                    {isPending ? "Saving..." : editingId ? "Update" : "Create"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

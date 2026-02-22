@@ -1,12 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-// ---------------------------------------------------------------------------
-// CORS
-// ---------------------------------------------------------------------------
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { getAuthUser } from "../_shared/auth.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -86,6 +80,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const payload: RequestPayload = await req.json();
     const { opportunityId } = payload;
 
