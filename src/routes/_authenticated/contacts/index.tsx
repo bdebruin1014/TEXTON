@@ -76,12 +76,16 @@ function CompaniesIndex() {
   const activeType = (location.search as Record<string, string>)?.type ?? "all";
 
   const { data: companies = [], isLoading } = useQuery<Company[]>({
-    queryKey: ["companies"],
+    queryKey: ["companies", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("companies")
         .select("id, name, company_type, phone, email, address, city, state, contact_count")
         .order("name");
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },

@@ -93,9 +93,13 @@ function ConstructionIndex() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
-    queryKey: ["jobs"],
+    queryKey: ["jobs", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("jobs").select("*").order("updated_at", { ascending: false });
+      let query = supabase.from("jobs").select("*").order("updated_at", { ascending: false });
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },

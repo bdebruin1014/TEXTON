@@ -79,12 +79,13 @@ function PipelineIndex() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
-    queryKey: ["opportunities"],
+    queryKey: ["opportunities", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("opportunities")
-        .select("*")
-        .order("updated_at", { ascending: false });
+      let query = supabase.from("opportunities").select("*").order("updated_at", { ascending: false });
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },

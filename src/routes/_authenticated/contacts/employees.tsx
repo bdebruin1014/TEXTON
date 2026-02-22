@@ -10,6 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "@/lib/utils";
+import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/contacts/employees")({
   component: Employees,
@@ -30,11 +31,16 @@ interface Employee {
 function Employees() {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
+  const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: employees = [], isLoading } = useQuery<Employee[]>({
-    queryKey: ["employees"],
+    queryKey: ["employees", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("employees").select("*").order("last_name").order("first_name");
+      let query = supabase.from("employees").select("*").order("last_name").order("first_name");
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },

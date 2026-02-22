@@ -83,9 +83,13 @@ function DispositionIndex() {
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
   const { data: dispositions = [], isLoading } = useQuery<Disposition[]>({
-    queryKey: ["dispositions"],
+    queryKey: ["dispositions", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("dispositions").select("*").order("updated_at", { ascending: false });
+      let query = supabase.from("dispositions").select("*").order("updated_at", { ascending: false });
+      if (activeEntityId) {
+        query = query.eq("entity_id", activeEntityId);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },
