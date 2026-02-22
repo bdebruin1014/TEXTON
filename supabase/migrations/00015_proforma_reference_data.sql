@@ -364,6 +364,17 @@ ON CONFLICT DO NOTHING;
 -- ============================================================
 -- (h) Seed fee_schedule — 1 row with current RCH defaults
 -- ============================================================
+-- Add flat-fee columns if they don't exist (table was created with _pct columns)
+ALTER TABLE public.fee_schedule
+  ADD COLUMN IF NOT EXISTS builder_fee numeric(15,2) DEFAULT 15000,
+  ADD COLUMN IF NOT EXISTS am_fee numeric(15,2) DEFAULT 5000,
+  ADD COLUMN IF NOT EXISTS builder_warranty numeric(15,2) DEFAULT 5000,
+  ADD COLUMN IF NOT EXISTS builders_risk numeric(15,2) DEFAULT 1500,
+  ADD COLUMN IF NOT EXISTS po_fee numeric(15,2) DEFAULT 3000,
+  ADD COLUMN IF NOT EXISTS bookkeeping numeric(15,2) DEFAULT 1500,
+  ADD COLUMN IF NOT EXISTS pm_fee numeric(15,2) DEFAULT 3500,
+  ADD COLUMN IF NOT EXISTS utilities numeric(15,2) DEFAULT 1400;
+
 INSERT INTO public.fee_schedule (
   builder_fee, am_fee, builder_warranty, builders_risk,
   po_fee, bookkeeping, pm_fee, utilities

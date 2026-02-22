@@ -6,7 +6,7 @@
 -- 1. workflow_instances
 -- ============================================================
 
-create table public.workflow_instances (
+create table if not exists public.workflow_instances (
   id                uuid primary key default gen_random_uuid(),
   template_id       uuid references public.workflow_templates(id) on delete set null,
   entity_id         uuid references public.entities(id) on delete set null,
@@ -23,15 +23,15 @@ create table public.workflow_instances (
   updated_at        timestamptz not null default now()
 );
 
-create index idx_workflow_instances_record on public.workflow_instances(record_type, record_id);
-create index idx_workflow_instances_template on public.workflow_instances(template_id);
-create index idx_workflow_instances_entity on public.workflow_instances(entity_id);
+create index if not exists idx_workflow_instances_record on public.workflow_instances(record_type, record_id);
+create index if not exists idx_workflow_instances_template on public.workflow_instances(template_id);
+create index if not exists idx_workflow_instances_entity on public.workflow_instances(entity_id);
 
 -- ============================================================
 -- 2. workflow_instance_milestones
 -- ============================================================
 
-create table public.workflow_instance_milestones (
+create table if not exists public.workflow_instance_milestones (
   id            uuid primary key default gen_random_uuid(),
   instance_id   uuid not null references public.workflow_instances(id) on delete cascade,
   name          text not null,
@@ -42,13 +42,13 @@ create table public.workflow_instance_milestones (
   updated_at    timestamptz not null default now()
 );
 
-create index idx_wf_milestones_instance on public.workflow_instance_milestones(instance_id);
+create index if not exists idx_wf_milestones_instance on public.workflow_instance_milestones(instance_id);
 
 -- ============================================================
 -- 3. workflow_instance_tasks
 -- ============================================================
 
-create table public.workflow_instance_tasks (
+create table if not exists public.workflow_instance_tasks (
   id                  uuid primary key default gen_random_uuid(),
   instance_id         uuid not null references public.workflow_instances(id) on delete cascade,
   milestone_id        uuid references public.workflow_instance_milestones(id) on delete set null,
@@ -68,22 +68,25 @@ create table public.workflow_instance_tasks (
   updated_at          timestamptz not null default now()
 );
 
-create index idx_wf_tasks_instance on public.workflow_instance_tasks(instance_id);
-create index idx_wf_tasks_milestone on public.workflow_instance_tasks(milestone_id);
-create index idx_wf_tasks_assignee on public.workflow_instance_tasks(assigned_to_user);
+create index if not exists idx_wf_tasks_instance on public.workflow_instance_tasks(instance_id);
+create index if not exists idx_wf_tasks_milestone on public.workflow_instance_tasks(milestone_id);
+create index if not exists idx_wf_tasks_assignee on public.workflow_instance_tasks(assigned_to_user);
 
 -- ============================================================
 -- 4. Triggers
 -- ============================================================
 
+drop trigger if exists set_workflow_instances_updated_at on public.workflow_instances;
 create trigger set_workflow_instances_updated_at
   before update on public.workflow_instances
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_workflow_instance_milestones_updated_at on public.workflow_instance_milestones;
 create trigger set_workflow_instance_milestones_updated_at
   before update on public.workflow_instance_milestones
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_workflow_instance_tasks_updated_at on public.workflow_instance_tasks;
 create trigger set_workflow_instance_tasks_updated_at
   before update on public.workflow_instance_tasks
   for each row execute function public.set_updated_at();
@@ -115,6 +118,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_auto_complete_milestone on public.workflow_instance_tasks;
 create trigger trg_auto_complete_milestone
   after update on public.workflow_instance_tasks
   for each row execute function public.auto_complete_milestone();
@@ -146,6 +150,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_auto_complete_instance on public.workflow_instance_milestones;
 create trigger trg_auto_complete_instance
   after update on public.workflow_instance_milestones
   for each row execute function public.auto_complete_instance();
@@ -159,23 +164,28 @@ alter table public.workflow_instance_milestones enable row level security;
 alter table public.workflow_instance_tasks enable row level security;
 
 -- Instances: entity-scoped
+drop policy if exists "wf_instances_select" on public.workflow_instances;
 create policy "wf_instances_select" on public.workflow_instances
   for select to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "wf_instances_insert" on public.workflow_instances;
 create policy "wf_instances_insert" on public.workflow_instances
   for insert to authenticated
   with check (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "wf_instances_update" on public.workflow_instances;
 create policy "wf_instances_update" on public.workflow_instances
   for update to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "wf_instances_delete" on public.workflow_instances;
 create policy "wf_instances_delete" on public.workflow_instances
   for delete to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
 -- Milestones + Tasks: accessible via instance
+drop policy if exists "wf_milestones_all" on public.workflow_instance_milestones;
 create policy "wf_milestones_all" on public.workflow_instance_milestones
   for all to authenticated
   using (exists (
@@ -184,6 +194,7 @@ create policy "wf_milestones_all" on public.workflow_instance_milestones
     and (wi.entity_id is null or wi.entity_id = public.auth_entity_id())
   ));
 
+drop policy if exists "wf_tasks_all" on public.workflow_instance_tasks;
 create policy "wf_tasks_all" on public.workflow_instance_tasks
   for all to authenticated
   using (exists (

@@ -69,6 +69,25 @@ export function FloorPlanSelect({
     },
   });
 
+  // Fetch primary rendering image for the selected plan
+  const { data: thumbnail } = useQuery({
+    queryKey: ["floor-plan-thumbnail", localValue],
+    queryFn: async () => {
+      if (!localValue) return null;
+      const { data, error } = await supabase
+        .from("floor_plan_images")
+        .select("storage_path")
+        .eq("floor_plan_id", localValue)
+        .eq("is_primary", true)
+        .eq("image_type", "rendering")
+        .maybeSingle();
+      if (error || !data) return null;
+      const { data: urlData } = supabase.storage.from("floor-plan-images").getPublicUrl(data.storage_path);
+      return urlData.publicUrl;
+    },
+    enabled: !!localValue,
+  });
+
   const handleChange = async (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
@@ -93,26 +112,35 @@ export function FloorPlanSelect({
         <span className="text-sm font-medium text-foreground">{label}</span>
         <SaveIndicator status={status} />
       </div>
-      <select
-        value={localValue}
-        onChange={(e) => handleChange(e.target.value)}
-        disabled={disabled}
-        className={cn(
-          "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors",
-          "focus:border-primary focus:ring-1 focus:ring-primary",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          className,
+      <div className="flex items-center gap-3">
+        {thumbnail && (
+          <img
+            src={thumbnail}
+            alt="Plan rendering"
+            className="h-10 w-10 shrink-0 rounded border border-border object-cover"
+          />
         )}
-      >
-        <option value="">Select floor plan...</option>
-        {plans.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-            {p.plan_type ? ` [${p.plan_type}]` : ""}
-            {p.heated_sqft ? ` ${p.heated_sqft.toLocaleString()} sf` : ""}
-          </option>
-        ))}
-      </select>
+        <select
+          value={localValue}
+          onChange={(e) => handleChange(e.target.value)}
+          disabled={disabled}
+          className={cn(
+            "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors",
+            "focus:border-primary focus:ring-1 focus:ring-primary",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            className,
+          )}
+        >
+          <option value="">Select floor plan...</option>
+          {plans.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+              {p.plan_type ? ` [${p.plan_type}]` : ""}
+              {p.heated_sqft ? ` ${p.heated_sqft.toLocaleString()} sf` : ""}
+            </option>
+          ))}
+        </select>
+      </div>
     </label>
   );
 }

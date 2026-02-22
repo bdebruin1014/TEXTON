@@ -35,7 +35,7 @@ alter table public.esign_signers
 -- 4. DocuSeal Config Table
 -- ============================================================
 
-create table public.docuseal_config (
+create table if not exists public.docuseal_config (
   id        uuid primary key default gen_random_uuid(),
   entity_id uuid unique references public.entities(id) on delete cascade,
   api_key   text not null,
@@ -45,6 +45,7 @@ create table public.docuseal_config (
   updated_at timestamptz not null default now()
 );
 
+drop trigger if exists set_docuseal_config_updated_at on public.docuseal_config;
 create trigger set_docuseal_config_updated_at
   before update on public.docuseal_config
   for each row execute function public.set_updated_at();
@@ -52,18 +53,22 @@ create trigger set_docuseal_config_updated_at
 -- RLS: entity-scoped
 alter table public.docuseal_config enable row level security;
 
+drop policy if exists "docuseal_config_select" on public.docuseal_config;
 create policy "docuseal_config_select" on public.docuseal_config
   for select to authenticated
   using (entity_id = public.auth_entity_id());
 
+drop policy if exists "docuseal_config_insert" on public.docuseal_config;
 create policy "docuseal_config_insert" on public.docuseal_config
   for insert to authenticated
   with check (entity_id = public.auth_entity_id());
 
+drop policy if exists "docuseal_config_update" on public.docuseal_config;
 create policy "docuseal_config_update" on public.docuseal_config
   for update to authenticated
   using (entity_id = public.auth_entity_id());
 
+drop policy if exists "docuseal_config_delete" on public.docuseal_config;
 create policy "docuseal_config_delete" on public.docuseal_config
   for delete to authenticated
   using (entity_id = public.auth_entity_id());

@@ -105,6 +105,7 @@ drop policy if exists "upload_request_log_public_insert" on public.upload_reques
 
 -- ---- entities ----
 -- Users can only see their own entity
+drop policy if exists "entity_scope" on public.entities;
 create policy "entity_scope" on public.entities
   for all to authenticated
   using (id = public.auth_entity_id())
@@ -112,156 +113,182 @@ create policy "entity_scope" on public.entities
 
 -- ---- user_profiles ----
 -- Users see profiles within their entity
+drop policy if exists "entity_scope" on public.user_profiles;
 create policy "entity_scope" on public.user_profiles
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- opportunities ----
+drop policy if exists "entity_scope" on public.opportunities;
 create policy "entity_scope" on public.opportunities
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- projects ----
+drop policy if exists "entity_scope" on public.projects;
 create policy "entity_scope" on public.projects
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- jobs ----
+drop policy if exists "entity_scope" on public.jobs;
 create policy "entity_scope" on public.jobs
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- dispositions ----
+drop policy if exists "entity_scope" on public.dispositions;
 create policy "entity_scope" on public.dispositions
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- subcontracts ----
+drop policy if exists "entity_scope" on public.subcontracts;
 create policy "entity_scope" on public.subcontracts
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- companies ----
+drop policy if exists "entity_scope" on public.companies;
 create policy "entity_scope" on public.companies
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- employees ----
+drop policy if exists "entity_scope" on public.employees;
 create policy "entity_scope" on public.employees
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- customers ----
+drop policy if exists "entity_scope" on public.customers;
 create policy "entity_scope" on public.customers
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- vendors ----
+drop policy if exists "entity_scope" on public.vendors;
 create policy "entity_scope" on public.vendors
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- chart_of_accounts ----
+drop policy if exists "entity_scope" on public.chart_of_accounts;
 create policy "entity_scope" on public.chart_of_accounts
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- journal_entries ----
+drop policy if exists "entity_scope" on public.journal_entries;
 create policy "entity_scope" on public.journal_entries
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- journal_entry_lines ----
+drop policy if exists "entity_scope" on public.journal_entry_lines;
 create policy "entity_scope" on public.journal_entry_lines
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- invoices ----
+drop policy if exists "entity_scope" on public.invoices;
 create policy "entity_scope" on public.invoices
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- bills ----
+drop policy if exists "entity_scope" on public.bills;
 create policy "entity_scope" on public.bills
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- receivables ----
+drop policy if exists "entity_scope" on public.receivables;
 create policy "entity_scope" on public.receivables
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- bank_accounts ----
+drop policy if exists "entity_scope" on public.bank_accounts;
 create policy "entity_scope" on public.bank_accounts
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- batch_payments ----
+drop policy if exists "entity_scope" on public.batch_payments;
 create policy "entity_scope" on public.batch_payments
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- reconciliations ----
+drop policy if exists "entity_scope" on public.reconciliations;
 create policy "entity_scope" on public.reconciliations
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- period_close ----
+drop policy if exists "entity_scope" on public.period_close;
 create policy "entity_scope" on public.period_close
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- purchase_orders ----
+drop policy if exists "entity_scope" on public.purchase_orders;
 create policy "entity_scope" on public.purchase_orders
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- estimates ----
+drop policy if exists "entity_scope" on public.estimates;
 create policy "entity_scope" on public.estimates
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- funds ----
+drop policy if exists "entity_scope" on public.funds;
 create policy "entity_scope" on public.funds
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- deal_sheets ----
+drop policy if exists "entity_scope" on public.deal_sheets;
 create policy "entity_scope" on public.deal_sheets
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- document_folders ----
+drop policy if exists "entity_scope" on public.document_folders;
 create policy "entity_scope" on public.document_folders
   for all to authenticated
   using (entity_id = public.auth_entity_id())
   with check (entity_id = public.auth_entity_id());
 
 -- ---- documents (from 20260220_document_management) ----
+drop policy if exists "entity_scope" on public.documents;
 create policy "entity_scope" on public.documents
   for all to authenticated
   using (entity_id = public.auth_entity_id())
@@ -276,6 +303,7 @@ create policy "entity_scope" on public.documents
 -- -------------------------------------------------------
 
 -- parcels: can belong to opportunity or project; scope via either
+drop policy if exists "entity_scope" on public.parcels;
 create policy "entity_scope" on public.parcels
   for all to authenticated
   using (
@@ -304,6 +332,7 @@ create policy "entity_scope" on public.parcels
   );
 
 -- deal_analyses
+drop policy if exists "entity_scope" on public.deal_analyses;
 create policy "entity_scope" on public.deal_analyses
   for all to authenticated
   using (
@@ -322,6 +351,7 @@ create policy "entity_scope" on public.deal_analyses
   );
 
 -- due_diligence_items: can belong to opportunity or project
+drop policy if exists "entity_scope" on public.due_diligence_items;
 create policy "entity_scope" on public.due_diligence_items
   for all to authenticated
   using (
@@ -350,6 +380,7 @@ create policy "entity_scope" on public.due_diligence_items
   );
 
 -- comparable_sales
+drop policy if exists "entity_scope" on public.comparable_sales;
 create policy "entity_scope" on public.comparable_sales
   for all to authenticated
   using (
@@ -368,6 +399,7 @@ create policy "entity_scope" on public.comparable_sales
   );
 
 -- counter_offers
+drop policy if exists "entity_scope" on public.counter_offers;
 create policy "entity_scope" on public.counter_offers
   for all to authenticated
   using (
@@ -390,6 +422,7 @@ create policy "entity_scope" on public.counter_offers
 -- -------------------------------------------------------
 
 -- floor_plans (project_id is nullable; if null, treat as global config)
+drop policy if exists "entity_scope" on public.floor_plans;
 create policy "entity_scope" on public.floor_plans
   for all to authenticated
   using (
@@ -410,6 +443,7 @@ create policy "entity_scope" on public.floor_plans
   );
 
 -- lots
+drop policy if exists "entity_scope" on public.lots;
 create policy "entity_scope" on public.lots
   for all to authenticated
   using (
@@ -428,6 +462,7 @@ create policy "entity_scope" on public.lots
   );
 
 -- lot_takedowns
+drop policy if exists "entity_scope" on public.lot_takedowns;
 create policy "entity_scope" on public.lot_takedowns
   for all to authenticated
   using (
@@ -446,6 +481,7 @@ create policy "entity_scope" on public.lot_takedowns
   );
 
 -- budget_lines
+drop policy if exists "entity_scope" on public.budget_lines;
 create policy "entity_scope" on public.budget_lines
   for all to authenticated
   using (
@@ -464,6 +500,7 @@ create policy "entity_scope" on public.budget_lines
   );
 
 -- horizontal_line_items
+drop policy if exists "entity_scope" on public.horizontal_line_items;
 create policy "entity_scope" on public.horizontal_line_items
   for all to authenticated
   using (
@@ -482,6 +519,7 @@ create policy "entity_scope" on public.horizontal_line_items
   );
 
 -- milestones
+drop policy if exists "entity_scope" on public.milestones;
 create policy "entity_scope" on public.milestones
   for all to authenticated
   using (
@@ -500,6 +538,7 @@ create policy "entity_scope" on public.milestones
   );
 
 -- closeout_items
+drop policy if exists "entity_scope" on public.closeout_items;
 create policy "entity_scope" on public.closeout_items
   for all to authenticated
   using (
@@ -518,6 +557,7 @@ create policy "entity_scope" on public.closeout_items
   );
 
 -- insurance_certificates
+drop policy if exists "entity_scope" on public.insurance_certificates;
 create policy "entity_scope" on public.insurance_certificates
   for all to authenticated
   using (
@@ -536,6 +576,7 @@ create policy "entity_scope" on public.insurance_certificates
   );
 
 -- draw_requests
+drop policy if exists "entity_scope" on public.draw_requests;
 create policy "entity_scope" on public.draw_requests
   for all to authenticated
   using (
@@ -554,6 +595,7 @@ create policy "entity_scope" on public.draw_requests
   );
 
 -- project_investors
+drop policy if exists "entity_scope" on public.project_investors;
 create policy "entity_scope" on public.project_investors
   for all to authenticated
   using (
@@ -572,6 +614,7 @@ create policy "entity_scope" on public.project_investors
   );
 
 -- project_components
+drop policy if exists "entity_scope" on public.project_components;
 create policy "entity_scope" on public.project_components
   for all to authenticated
   using (
@@ -590,6 +633,7 @@ create policy "entity_scope" on public.project_components
   );
 
 -- project_plan_catalog
+drop policy if exists "entity_scope" on public.project_plan_catalog;
 create policy "entity_scope" on public.project_plan_catalog
   for all to authenticated
   using (
@@ -608,6 +652,7 @@ create policy "entity_scope" on public.project_plan_catalog
   );
 
 -- project_upgrade_catalog
+drop policy if exists "entity_scope" on public.project_upgrade_catalog;
 create policy "entity_scope" on public.project_upgrade_catalog
   for all to authenticated
   using (
@@ -626,6 +671,7 @@ create policy "entity_scope" on public.project_upgrade_catalog
   );
 
 -- project_elevation_options (grandchild: -> project_plan_catalog -> projects)
+drop policy if exists "entity_scope" on public.project_elevation_options;
 create policy "entity_scope" on public.project_elevation_options
   for all to authenticated
   using (
@@ -650,6 +696,7 @@ create policy "entity_scope" on public.project_elevation_options
 -- -------------------------------------------------------
 
 -- job_budget_lines
+drop policy if exists "entity_scope" on public.job_budget_lines;
 create policy "entity_scope" on public.job_budget_lines
   for all to authenticated
   using (
@@ -668,6 +715,7 @@ create policy "entity_scope" on public.job_budget_lines
   );
 
 -- job_milestones
+drop policy if exists "entity_scope" on public.job_milestones;
 create policy "entity_scope" on public.job_milestones
   for all to authenticated
   using (
@@ -686,6 +734,7 @@ create policy "entity_scope" on public.job_milestones
   );
 
 -- daily_logs
+drop policy if exists "entity_scope" on public.daily_logs;
 create policy "entity_scope" on public.daily_logs
   for all to authenticated
   using (
@@ -704,6 +753,7 @@ create policy "entity_scope" on public.daily_logs
   );
 
 -- change_orders
+drop policy if exists "entity_scope" on public.change_orders;
 create policy "entity_scope" on public.change_orders
   for all to authenticated
   using (
@@ -722,6 +772,7 @@ create policy "entity_scope" on public.change_orders
   );
 
 -- inspections
+drop policy if exists "entity_scope" on public.inspections;
 create policy "entity_scope" on public.inspections
   for all to authenticated
   using (
@@ -740,6 +791,7 @@ create policy "entity_scope" on public.inspections
   );
 
 -- permits
+drop policy if exists "entity_scope" on public.permits;
 create policy "entity_scope" on public.permits
   for all to authenticated
   using (
@@ -758,6 +810,7 @@ create policy "entity_scope" on public.permits
   );
 
 -- punch_list_items
+drop policy if exists "entity_scope" on public.punch_list_items;
 create policy "entity_scope" on public.punch_list_items
   for all to authenticated
   using (
@@ -776,6 +829,7 @@ create policy "entity_scope" on public.punch_list_items
   );
 
 -- selections
+drop policy if exists "entity_scope" on public.selections;
 create policy "entity_scope" on public.selections
   for all to authenticated
   using (
@@ -794,6 +848,7 @@ create policy "entity_scope" on public.selections
   );
 
 -- warranty_claims
+drop policy if exists "entity_scope" on public.warranty_claims;
 create policy "entity_scope" on public.warranty_claims
   for all to authenticated
   using (
@@ -812,6 +867,7 @@ create policy "entity_scope" on public.warranty_claims
   );
 
 -- job_photos
+drop policy if exists "entity_scope" on public.job_photos;
 create policy "entity_scope" on public.job_photos
   for all to authenticated
   using (
@@ -830,6 +886,7 @@ create policy "entity_scope" on public.job_photos
   );
 
 -- job_files
+drop policy if exists "entity_scope" on public.job_files;
 create policy "entity_scope" on public.job_files
   for all to authenticated
   using (
@@ -848,6 +905,7 @@ create policy "entity_scope" on public.job_files
   );
 
 -- job_handoffs
+drop policy if exists "entity_scope" on public.job_handoffs;
 create policy "entity_scope" on public.job_handoffs
   for all to authenticated
   using (
@@ -866,6 +924,7 @@ create policy "entity_scope" on public.job_handoffs
   );
 
 -- job_handoff_items (grandchild: -> job_handoffs -> jobs)
+drop policy if exists "entity_scope" on public.job_handoff_items;
 create policy "entity_scope" on public.job_handoff_items
   for all to authenticated
   using (
@@ -890,6 +949,7 @@ create policy "entity_scope" on public.job_handoff_items
 -- -------------------------------------------------------
 
 -- disposition_options
+drop policy if exists "entity_scope" on public.disposition_options;
 create policy "entity_scope" on public.disposition_options
   for all to authenticated
   using (
@@ -908,6 +968,7 @@ create policy "entity_scope" on public.disposition_options
   );
 
 -- offers
+drop policy if exists "entity_scope" on public.offers;
 create policy "entity_scope" on public.offers
   for all to authenticated
   using (
@@ -926,6 +987,7 @@ create policy "entity_scope" on public.offers
   );
 
 -- showings
+drop policy if exists "entity_scope" on public.showings;
 create policy "entity_scope" on public.showings
   for all to authenticated
   using (
@@ -944,6 +1006,7 @@ create policy "entity_scope" on public.showings
   );
 
 -- listing_photos
+drop policy if exists "entity_scope" on public.listing_photos;
 create policy "entity_scope" on public.listing_photos
   for all to authenticated
   using (
@@ -962,6 +1025,7 @@ create policy "entity_scope" on public.listing_photos
   );
 
 -- disposition_files
+drop policy if exists "entity_scope" on public.disposition_files;
 create policy "entity_scope" on public.disposition_files
   for all to authenticated
   using (
@@ -984,6 +1048,7 @@ create policy "entity_scope" on public.disposition_files
 -- -------------------------------------------------------
 
 -- contacts
+drop policy if exists "entity_scope" on public.contacts;
 create policy "entity_scope" on public.contacts
   for all to authenticated
   using (
@@ -1002,6 +1067,7 @@ create policy "entity_scope" on public.contacts
   );
 
 -- contact_assignments (grandchild: -> contacts -> companies)
+drop policy if exists "entity_scope" on public.contact_assignments;
 create policy "entity_scope" on public.contact_assignments
   for all to authenticated
   using (
@@ -1026,6 +1092,7 @@ create policy "entity_scope" on public.contact_assignments
 -- -------------------------------------------------------
 
 -- investments
+drop policy if exists "entity_scope" on public.investments;
 create policy "entity_scope" on public.investments
   for all to authenticated
   using (
@@ -1044,6 +1111,7 @@ create policy "entity_scope" on public.investments
   );
 
 -- capital_calls
+drop policy if exists "entity_scope" on public.capital_calls;
 create policy "entity_scope" on public.capital_calls
   for all to authenticated
   using (
@@ -1062,6 +1130,7 @@ create policy "entity_scope" on public.capital_calls
   );
 
 -- distributions
+drop policy if exists "entity_scope" on public.distributions;
 create policy "entity_scope" on public.distributions
   for all to authenticated
   using (
@@ -1084,6 +1153,7 @@ create policy "entity_scope" on public.distributions
 -- -------------------------------------------------------
 
 -- deal_sheet_site_work
+drop policy if exists "entity_scope" on public.deal_sheet_site_work;
 create policy "entity_scope" on public.deal_sheet_site_work
   for all to authenticated
   using (
@@ -1102,6 +1172,7 @@ create policy "entity_scope" on public.deal_sheet_site_work
   );
 
 -- deal_sheet_comps
+drop policy if exists "entity_scope" on public.deal_sheet_comps;
 create policy "entity_scope" on public.deal_sheet_comps
   for all to authenticated
   using (
@@ -1120,6 +1191,7 @@ create policy "entity_scope" on public.deal_sheet_comps
   );
 
 -- deal_sheet_upgrades
+drop policy if exists "entity_scope" on public.deal_sheet_upgrades;
 create policy "entity_scope" on public.deal_sheet_upgrades
   for all to authenticated
   using (
@@ -1138,6 +1210,7 @@ create policy "entity_scope" on public.deal_sheet_upgrades
   );
 
 -- deal_sheet_checklist
+drop policy if exists "entity_scope" on public.deal_sheet_checklist;
 create policy "entity_scope" on public.deal_sheet_checklist
   for all to authenticated
   using (
@@ -1160,6 +1233,7 @@ create policy "entity_scope" on public.deal_sheet_checklist
 -- -------------------------------------------------------
 
 -- sticks_bricks_items
+drop policy if exists "entity_scope" on public.sticks_bricks_items;
 create policy "entity_scope" on public.sticks_bricks_items
   for all to authenticated
   using (
@@ -1195,12 +1269,14 @@ create policy "entity_scope" on public.sticks_bricks_items
 -- -------------------------------------------------------
 
 -- rch_contracts
+drop policy if exists "entity_scope" on public.rch_contracts;
 create policy "entity_scope" on public.rch_contracts
   for all to authenticated
   using (owner_entity_id = public.auth_entity_id())
   with check (owner_entity_id = public.auth_entity_id());
 
 -- rch_contract_units
+drop policy if exists "entity_scope" on public.rch_contract_units;
 create policy "entity_scope" on public.rch_contract_units
   for all to authenticated
   using (
@@ -1219,6 +1295,7 @@ create policy "entity_scope" on public.rch_contract_units
   );
 
 -- rch_contract_draws
+drop policy if exists "entity_scope" on public.rch_contract_draws;
 create policy "entity_scope" on public.rch_contract_draws
   for all to authenticated
   using (
@@ -1245,12 +1322,14 @@ create policy "entity_scope" on public.rch_contract_draws
 -- -------------------------------------------------------
 
 -- workflow_milestones
+drop policy if exists "entity_scope" on public.workflow_milestones;
 create policy "entity_scope" on public.workflow_milestones
   for all to authenticated
   using (true)
   with check (true);
 
 -- workflow_tasks
+drop policy if exists "entity_scope" on public.workflow_tasks;
 create policy "entity_scope" on public.workflow_tasks
   for all to authenticated
   using (true)
@@ -1263,12 +1342,14 @@ create policy "entity_scope" on public.workflow_tasks
 -- esign_documents: polymorphic record_type/record_id makes it hard to
 -- scope generically. Treat as accessible to all authenticated users
 -- since the parent esign_templates is global config.
+drop policy if exists "entity_scope" on public.esign_documents;
 create policy "entity_scope" on public.esign_documents
   for all to authenticated
   using (true)
   with check (true);
 
 -- esign_signers
+drop policy if exists "entity_scope" on public.esign_signers;
 create policy "entity_scope" on public.esign_signers
   for all to authenticated
   using (true)
@@ -1280,6 +1361,7 @@ create policy "entity_scope" on public.esign_signers
 
 -- document_activity references either a document_id or folder_id.
 -- Scope via the document's or folder's entity_id.
+drop policy if exists "entity_scope" on public.document_activity;
 create policy "entity_scope" on public.document_activity
   for all to authenticated
   using (
@@ -1313,58 +1395,76 @@ create policy "entity_scope" on public.document_activity
 -- These tables have no meaningful entity ownership or are shared
 -- reference data / system configuration.
 
+drop policy if exists "authenticated_access" on public.cost_codes;
 create policy "authenticated_access" on public.cost_codes
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.workflow_templates;
 create policy "authenticated_access" on public.workflow_templates
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.document_templates;
 create policy "authenticated_access" on public.document_templates
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.fee_schedule;
 create policy "authenticated_access" on public.fee_schedule
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.permission_groups;
 create policy "authenticated_access" on public.permission_groups
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.calendar_events;
 create policy "authenticated_access" on public.calendar_events
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.municipalities;
 create policy "authenticated_access" on public.municipalities
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.site_work_items;
 create policy "authenticated_access" on public.site_work_items
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.upgrade_packages;
 create policy "authenticated_access" on public.upgrade_packages
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.pricing_defaults;
 create policy "authenticated_access" on public.pricing_defaults
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.pricing_exclusions;
 create policy "authenticated_access" on public.pricing_exclusions
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.handoff_checklist_items;
 create policy "authenticated_access" on public.handoff_checklist_items
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.esign_templates;
 create policy "authenticated_access" on public.esign_templates
   for all to authenticated using (true) with check (true);
 
 -- Additional global/system tables (no entity_id, shared config)
+drop policy if exists "authenticated_access" on public.assignment_groups;
 create policy "authenticated_access" on public.assignment_groups
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.smart_actions;
 create policy "authenticated_access" on public.smart_actions
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.transaction_types;
 create policy "authenticated_access" on public.transaction_types
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.order_templates;
 create policy "authenticated_access" on public.order_templates
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "authenticated_access" on public.audit_log;
 create policy "authenticated_access" on public.audit_log
   for all to authenticated using (true) with check (true);
 
@@ -1377,6 +1477,7 @@ create policy "authenticated_access" on public.audit_log
 -- ---- document_shares ----
 -- Authenticated: users see shares they created or shares linked to
 -- records within their entity (via document_folders/documents entity_id)
+drop policy if exists "entity_scope" on public.document_shares;
 create policy "entity_scope" on public.document_shares
   for all to authenticated
   using (
@@ -1397,12 +1498,14 @@ create policy "entity_scope" on public.document_shares
   );
 
 -- Anon: read active, non-expired shares (validated by token in app)
+drop policy if exists "shares_public_read" on public.document_shares;
 create policy "shares_public_read" on public.document_shares
   for select to anon
   using (status = 'active' and (expires_at is null or expires_at > now()));
 
 -- ---- document_share_items ----
 -- Authenticated: items belonging to shares the user can see
+drop policy if exists "entity_scope" on public.document_share_items;
 create policy "entity_scope" on public.document_share_items
   for all to authenticated
   using (
@@ -1435,11 +1538,13 @@ create policy "entity_scope" on public.document_share_items
   );
 
 -- Anon: read share items
+drop policy if exists "share_items_public_read" on public.document_share_items;
 create policy "share_items_public_read" on public.document_share_items
   for select to anon using (true);
 
 -- ---- document_share_access_log ----
 -- Authenticated: log entries for shares the user can see
+drop policy if exists "entity_scope" on public.document_share_access_log;
 create policy "entity_scope" on public.document_share_access_log
   for all to authenticated
   using (
@@ -1459,23 +1564,27 @@ create policy "entity_scope" on public.document_share_access_log
   with check (true);
 
 -- Anon: insert access log entries
+drop policy if exists "share_log_public_insert" on public.document_share_access_log;
 create policy "share_log_public_insert" on public.document_share_access_log
   for insert to anon with check (true);
 
 -- ---- upload_requests ----
 -- Authenticated: requests created by the user or linked to entity records
+drop policy if exists "entity_scope" on public.upload_requests;
 create policy "entity_scope" on public.upload_requests
   for all to authenticated
   using (created_by = auth.uid())
   with check (created_by = auth.uid());
 
 -- Anon: read active/partial, non-expired upload requests
+drop policy if exists "upload_requests_public_read" on public.upload_requests;
 create policy "upload_requests_public_read" on public.upload_requests
   for select to anon
   using (status in ('pending', 'partial') and (expires_at is null or expires_at > now()));
 
 -- ---- upload_request_items ----
 -- Authenticated: items belonging to requests the user created
+drop policy if exists "entity_scope" on public.upload_request_items;
 create policy "entity_scope" on public.upload_request_items
   for all to authenticated
   using (
@@ -1494,14 +1603,17 @@ create policy "entity_scope" on public.upload_request_items
   );
 
 -- Anon: read + update items (for uploading files)
+drop policy if exists "upload_request_items_public_read" on public.upload_request_items;
 create policy "upload_request_items_public_read" on public.upload_request_items
   for select to anon using (true);
 
+drop policy if exists "upload_request_items_public_update" on public.upload_request_items;
 create policy "upload_request_items_public_update" on public.upload_request_items
   for update to anon using (true);
 
 -- ---- upload_request_access_log ----
 -- Authenticated: log entries for requests the user created
+drop policy if exists "entity_scope" on public.upload_request_access_log;
 create policy "entity_scope" on public.upload_request_access_log
   for all to authenticated
   using (
@@ -1514,6 +1626,7 @@ create policy "entity_scope" on public.upload_request_access_log
   with check (true);
 
 -- Anon: insert access log entries
+drop policy if exists "upload_request_log_public_insert" on public.upload_request_access_log;
 create policy "upload_request_log_public_insert" on public.upload_request_access_log
   for insert to anon with check (true);
 
@@ -1522,6 +1635,7 @@ create policy "upload_request_log_public_insert" on public.upload_request_access
 -- ============================================================
 -- When anon users view a shared document link, they need to read
 -- the documents table to preview/download files.
+drop policy if exists "documents_public_read" on public.documents;
 create policy "documents_public_read" on public.documents
   for select to anon
   using (

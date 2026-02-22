@@ -8,7 +8,7 @@
 -- ============================================================
 
 -- folder_templates: reusable folder structures per project_type / entity_type
-create table public.folder_templates (
+create table if not exists public.folder_templates (
   id            uuid primary key default gen_random_uuid(),
   name          text not null,
   description   text,
@@ -24,7 +24,7 @@ create table public.folder_templates (
 );
 
 -- folder_template_items: individual folders within a template (self-referential tree)
-create table public.folder_template_items (
+create table if not exists public.folder_template_items (
   id            uuid primary key default gen_random_uuid(),
   template_id   uuid not null references public.folder_templates(id) on delete cascade,
   parent_id     uuid references public.folder_template_items(id) on delete cascade,
@@ -35,7 +35,7 @@ create table public.folder_template_items (
 );
 
 -- document_folders: instantiated folder hierarchy on a real record
-create table public.document_folders (
+create table if not exists public.document_folders (
   id            uuid primary key default gen_random_uuid(),
   entity_id     uuid references public.entities(id) on delete set null,
   parent_id     uuid references public.document_folders(id) on delete cascade,
@@ -50,7 +50,7 @@ create table public.document_folders (
 );
 
 -- documents: individual files stored in Supabase Storage
-create table public.documents (
+create table if not exists public.documents (
   id              uuid primary key default gen_random_uuid(),
   entity_id       uuid references public.entities(id) on delete set null,
   folder_id       uuid references public.document_folders(id) on delete set null,
@@ -72,8 +72,29 @@ create table public.documents (
   updated_at      timestamptz not null default now()
 );
 
+-- If documents table already existed with old schema (from 00007), add missing columns
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS entity_id uuid;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS folder_id uuid;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS record_type text DEFAULT 'project';
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS record_id uuid;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS file_type text;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS storage_bucket text DEFAULT 'project-docs';
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS uploaded_by uuid;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS description text;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS tags text[] DEFAULT '{}';
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS version integer DEFAULT 1;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS parent_version uuid;
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS is_archived boolean DEFAULT false;
+-- Backfill record_id from legacy columns for any existing rows
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'documents' AND column_name = 'project_id') THEN
+    UPDATE public.documents SET record_id = COALESCE(project_id, opportunity_id) WHERE record_id IS NULL AND (project_id IS NOT NULL OR opportunity_id IS NOT NULL);
+    UPDATE public.documents SET record_type = CASE WHEN project_id IS NOT NULL THEN 'project' WHEN opportunity_id IS NOT NULL THEN 'opportunity' ELSE 'project' END WHERE record_type = 'project' AND project_id IS NULL AND opportunity_id IS NOT NULL;
+  END IF;
+END $$;
+
 -- document_activity: audit trail for document actions
-create table public.document_activity (
+create table if not exists public.document_activity (
   id            uuid primary key default gen_random_uuid(),
   document_id   uuid references public.documents(id) on delete cascade,
   folder_id     uuid references public.document_folders(id) on delete cascade,
@@ -94,34 +115,34 @@ create table public.document_activity (
 -- ============================================================
 
 -- folder_templates
-create index idx_folder_templates_entity_type on public.folder_templates (entity_type);
-create index idx_folder_templates_project_type on public.folder_templates (project_type);
-create index idx_folder_templates_default on public.folder_templates (entity_type, project_type, is_default)
+create index if not exists idx_folder_templates_entity_type on public.folder_templates (entity_type);
+create index if not exists idx_folder_templates_project_type on public.folder_templates (project_type);
+create index if not exists idx_folder_templates_default on public.folder_templates (entity_type, project_type, is_default)
   where is_default = true;
 
 -- folder_template_items
-create index idx_folder_template_items_template on public.folder_template_items (template_id);
-create index idx_folder_template_items_parent on public.folder_template_items (parent_id);
+create index if not exists idx_folder_template_items_template on public.folder_template_items (template_id);
+create index if not exists idx_folder_template_items_parent on public.folder_template_items (parent_id);
 
 -- document_folders
-create index idx_document_folders_record on public.document_folders (record_type, record_id);
-create index idx_document_folders_entity on public.document_folders (entity_id);
-create index idx_document_folders_parent on public.document_folders (parent_id);
-create index idx_document_folders_slug on public.document_folders (record_type, record_id, slug);
+create index if not exists idx_document_folders_record on public.document_folders (record_type, record_id);
+create index if not exists idx_document_folders_entity on public.document_folders (entity_id);
+create index if not exists idx_document_folders_parent on public.document_folders (parent_id);
+create index if not exists idx_document_folders_slug on public.document_folders (record_type, record_id, slug);
 
 -- documents
-create index idx_documents_record on public.documents (record_type, record_id);
-create index idx_documents_folder on public.documents (folder_id);
-create index idx_documents_entity on public.documents (entity_id);
-create index idx_documents_uploaded_by on public.documents (uploaded_by);
-create index idx_documents_tags on public.documents using gin (tags);
-create index idx_documents_archived on public.documents (is_archived) where is_archived = false;
+create index if not exists idx_documents_record on public.documents (record_type, record_id);
+create index if not exists idx_documents_folder on public.documents (folder_id);
+create index if not exists idx_documents_entity on public.documents (entity_id);
+create index if not exists idx_documents_uploaded_by on public.documents (uploaded_by);
+create index if not exists idx_documents_tags on public.documents using gin (tags);
+create index if not exists idx_documents_archived on public.documents (is_archived) where is_archived = false;
 
 -- document_activity
-create index idx_document_activity_document on public.document_activity (document_id);
-create index idx_document_activity_folder on public.document_activity (folder_id);
-create index idx_document_activity_user on public.document_activity (user_id);
-create index idx_document_activity_created on public.document_activity (created_at desc);
+create index if not exists idx_document_activity_document on public.document_activity (document_id);
+create index if not exists idx_document_activity_folder on public.document_activity (folder_id);
+create index if not exists idx_document_activity_user on public.document_activity (user_id);
+create index if not exists idx_document_activity_created on public.document_activity (created_at desc);
 
 
 -- ============================================================
@@ -136,11 +157,13 @@ alter table public.documents enable row level security;
 alter table public.document_activity enable row level security;
 
 -- folder_templates: all authenticated can read; only admins can write
+drop policy if exists "folder_templates_select" on public.folder_templates;
 create policy "folder_templates_select"
   on public.folder_templates for select
   to authenticated
   using (true);
 
+drop policy if exists "folder_templates_insert" on public.folder_templates;
 create policy "folder_templates_insert"
   on public.folder_templates for insert
   to authenticated
@@ -151,6 +174,7 @@ create policy "folder_templates_insert"
     )
   );
 
+drop policy if exists "folder_templates_update" on public.folder_templates;
 create policy "folder_templates_update"
   on public.folder_templates for update
   to authenticated
@@ -167,6 +191,7 @@ create policy "folder_templates_update"
     )
   );
 
+drop policy if exists "folder_templates_delete" on public.folder_templates;
 create policy "folder_templates_delete"
   on public.folder_templates for delete
   to authenticated
@@ -178,11 +203,13 @@ create policy "folder_templates_delete"
   );
 
 -- folder_template_items: same pattern as folder_templates
+drop policy if exists "folder_template_items_select" on public.folder_template_items;
 create policy "folder_template_items_select"
   on public.folder_template_items for select
   to authenticated
   using (true);
 
+drop policy if exists "folder_template_items_insert" on public.folder_template_items;
 create policy "folder_template_items_insert"
   on public.folder_template_items for insert
   to authenticated
@@ -193,6 +220,7 @@ create policy "folder_template_items_insert"
     )
   );
 
+drop policy if exists "folder_template_items_update" on public.folder_template_items;
 create policy "folder_template_items_update"
   on public.folder_template_items for update
   to authenticated
@@ -209,6 +237,7 @@ create policy "folder_template_items_update"
     )
   );
 
+drop policy if exists "folder_template_items_delete" on public.folder_template_items;
 create policy "folder_template_items_delete"
   on public.folder_template_items for delete
   to authenticated
@@ -220,6 +249,7 @@ create policy "folder_template_items_delete"
   );
 
 -- document_folders: authenticated full access
+drop policy if exists "document_folders_all" on public.document_folders;
 create policy "document_folders_all"
   on public.document_folders for all
   to authenticated
@@ -227,6 +257,7 @@ create policy "document_folders_all"
   with check (true);
 
 -- documents: authenticated full access
+drop policy if exists "documents_all" on public.documents;
 create policy "documents_all"
   on public.documents for all
   to authenticated
@@ -234,6 +265,7 @@ create policy "documents_all"
   with check (true);
 
 -- document_activity: authenticated full access
+drop policy if exists "document_activity_all" on public.document_activity;
 create policy "document_activity_all"
   on public.document_activity for all
   to authenticated
@@ -245,22 +277,27 @@ create policy "document_activity_all"
 -- 4. TRIGGERS — set_updated_at
 -- ============================================================
 
+drop trigger if exists set_updated_at_folder_templates on public.folder_templates;
 create trigger set_updated_at_folder_templates
   before update on public.folder_templates
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_updated_at_folder_template_items on public.folder_template_items;
 create trigger set_updated_at_folder_template_items
   before update on public.folder_template_items
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_updated_at_document_folders on public.document_folders;
 create trigger set_updated_at_document_folders
   before update on public.document_folders
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_updated_at_documents on public.documents;
 create trigger set_updated_at_documents
   before update on public.documents
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_updated_at_document_activity on public.document_activity;
 create trigger set_updated_at_document_activity
   before update on public.document_activity
   for each row execute function public.set_updated_at();
@@ -383,18 +420,22 @@ end;
 $$ language plpgsql security definer;
 
 -- Auto-apply triggers on record creation
+drop trigger if exists trg_auto_folders_projects on public.projects;
 create trigger trg_auto_folders_projects
   after insert on public.projects
   for each row execute function public.auto_apply_folder_template();
 
+drop trigger if exists trg_auto_folders_jobs on public.jobs;
 create trigger trg_auto_folders_jobs
   after insert on public.jobs
   for each row execute function public.auto_apply_folder_template();
 
+drop trigger if exists trg_auto_folders_dispositions on public.dispositions;
 create trigger trg_auto_folders_dispositions
   after insert on public.dispositions
   for each row execute function public.auto_apply_folder_template();
 
+drop trigger if exists trg_auto_folders_opportunities on public.opportunities;
 create trigger trg_auto_folders_opportunities
   after insert on public.opportunities
   for each row execute function public.auto_apply_folder_template();
@@ -420,126 +461,150 @@ on conflict (id) do nothing;
 -- ============================================================
 
 -- project-docs
+drop policy if exists "project_docs_select" on storage.objects;
 create policy "project_docs_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'project-docs');
 
+drop policy if exists "project_docs_insert" on storage.objects;
 create policy "project_docs_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'project-docs');
 
+drop policy if exists "project_docs_update" on storage.objects;
 create policy "project_docs_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'project-docs');
 
+drop policy if exists "project_docs_delete" on storage.objects;
 create policy "project_docs_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'project-docs');
 
 -- job-docs
+drop policy if exists "job_docs_select" on storage.objects;
 create policy "job_docs_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'job-docs');
 
+drop policy if exists "job_docs_insert" on storage.objects;
 create policy "job_docs_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'job-docs');
 
+drop policy if exists "job_docs_update" on storage.objects;
 create policy "job_docs_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'job-docs');
 
+drop policy if exists "job_docs_delete" on storage.objects;
 create policy "job_docs_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'job-docs');
 
 -- disposition-docs
+drop policy if exists "disposition_docs_select" on storage.objects;
 create policy "disposition_docs_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'disposition-docs');
 
+drop policy if exists "disposition_docs_insert" on storage.objects;
 create policy "disposition_docs_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'disposition-docs');
 
+drop policy if exists "disposition_docs_update" on storage.objects;
 create policy "disposition_docs_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'disposition-docs');
 
+drop policy if exists "disposition_docs_delete" on storage.objects;
 create policy "disposition_docs_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'disposition-docs');
 
 -- entity-docs
+drop policy if exists "entity_docs_select" on storage.objects;
 create policy "entity_docs_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'entity-docs');
 
+drop policy if exists "entity_docs_insert" on storage.objects;
 create policy "entity_docs_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'entity-docs');
 
+drop policy if exists "entity_docs_update" on storage.objects;
 create policy "entity_docs_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'entity-docs');
 
+drop policy if exists "entity_docs_delete" on storage.objects;
 create policy "entity_docs_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'entity-docs');
 
 -- contact-docs
+drop policy if exists "contact_docs_select" on storage.objects;
 create policy "contact_docs_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'contact-docs');
 
+drop policy if exists "contact_docs_insert" on storage.objects;
 create policy "contact_docs_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'contact-docs');
 
+drop policy if exists "contact_docs_update" on storage.objects;
 create policy "contact_docs_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'contact-docs');
 
+drop policy if exists "contact_docs_delete" on storage.objects;
 create policy "contact_docs_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'contact-docs');
 
 -- templates
+drop policy if exists "templates_select" on storage.objects;
 create policy "templates_select"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'templates');
 
+drop policy if exists "templates_insert" on storage.objects;
 create policy "templates_insert"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'templates');
 
+drop policy if exists "templates_update" on storage.objects;
 create policy "templates_update"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'templates');
 
+drop policy if exists "templates_delete" on storage.objects;
 create policy "templates_delete"
   on storage.objects for delete
   to authenticated
@@ -561,7 +626,8 @@ values (
   'project',
   'Scattered Lot',
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -643,7 +709,8 @@ values (
   'project',
   'Community Development',
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -847,7 +914,8 @@ values (
   'project',
   'Lot Development',
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -929,7 +997,8 @@ values (
   'project',
   'Lot Purchase',
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -979,7 +1048,8 @@ values (
   'job',
   null,
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -1093,7 +1163,8 @@ values (
   'disposition',
   null,
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare
@@ -1205,7 +1276,8 @@ values (
   'opportunity',
   null,
   true
-);
+)
+on conflict (id) do nothing;
 
 do $$
 declare

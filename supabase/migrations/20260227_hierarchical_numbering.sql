@@ -57,6 +57,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_entity_number on public.entities;
 create trigger trg_entity_number
   before insert on public.entities
   for each row execute function public.generate_entity_number();
@@ -97,6 +98,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_opportunity_number on public.opportunities;
 create trigger trg_opportunity_number
   before insert on public.opportunities
   for each row execute function public.generate_opportunity_number();
@@ -138,6 +140,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_project_number on public.projects;
 create trigger trg_project_number
   before insert on public.projects
   for each row execute function public.generate_project_number();
@@ -165,6 +168,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_lot_number on public.lots;
 create trigger trg_lot_number
   before insert on public.lots
   for each row execute function public.generate_lot_number();
@@ -204,6 +208,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_job_number on public.jobs;
 create trigger trg_job_number
   before insert on public.jobs
   for each row execute function public.generate_job_number();
@@ -240,6 +245,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_disposition_number on public.dispositions;
 create trigger trg_disposition_number
   before insert on public.dispositions
   for each row execute function public.generate_disposition_number();
@@ -270,6 +276,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_rch_contract_number on public.rch_contracts;
 create trigger trg_rch_contract_number
   before insert on public.rch_contracts
   for each row execute function public.generate_rch_contract_number();
@@ -296,17 +303,21 @@ update public.entities
   where record_number is null;
 
 -- Backfill opportunities
-update public.opportunities o
-  set record_number = (
-    select right(extract(year from o.created_at)::text, 2) || '-' || coalesce(e.name, 'Unknown') || '-' ||
+WITH numbered AS (
+  SELECT o.id,
+    right(extract(year from o.created_at)::text, 2) || '-' || coalesce(e.name, 'Unknown') || '-' ||
       lpad(
         (row_number() over (partition by o.entity_id order by o.created_at))::text,
         3, '0'
-      )
-    from public.entities e
-    where e.id = o.entity_id
-  )
-  where o.record_number is null and o.entity_id is not null;
+      ) AS new_number
+  FROM public.opportunities o
+  JOIN public.entities e ON e.id = o.entity_id
+  WHERE o.record_number IS NULL AND o.entity_id IS NOT NULL
+)
+UPDATE public.opportunities o
+  SET record_number = numbered.new_number
+  FROM numbered
+  WHERE o.id = numbered.id;
 
 -- Backfill projects
 update public.projects p
@@ -350,11 +361,18 @@ update public.dispositions d
   where d.record_number is null and d.job_id is not null;
 
 -- Backfill RCH contracts
-update public.rch_contracts c
-  set record_number = right(extract(year from c.created_at)::text, 2) || '-' ||
-    coalesce(c.client_name, 'Client') || '-' ||
-    lpad(
-      (row_number() over (order by c.created_at))::text,
-      2, '0'
-    )
-  where c.record_number is null;
+WITH numbered AS (
+  SELECT c.id,
+    right(extract(year from c.created_at)::text, 2) || '-' ||
+      coalesce(c.client_name, 'Client') || '-' ||
+      lpad(
+        (row_number() over (order by c.created_at))::text,
+        2, '0'
+      ) AS new_number
+  FROM public.rch_contracts c
+  WHERE c.record_number IS NULL
+)
+UPDATE public.rch_contracts c
+  SET record_number = numbered.new_number
+  FROM numbered
+  WHERE c.id = numbered.id;

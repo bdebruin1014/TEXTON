@@ -1,8 +1,13 @@
+-- Ensure pgcrypto is available for gen_random_bytes()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- Make extensions schema accessible
+SET search_path TO public, extensions;
+
 -- ============================================================
 -- DOCUMENT SHARES (External share links)
 -- ============================================================
 
-CREATE TABLE document_shares (
+CREATE TABLE IF NOT EXISTS document_shares (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   -- Share token (URL-safe, unguessable)
@@ -54,15 +59,15 @@ CREATE TABLE document_shares (
   revoked_by UUID REFERENCES auth.users(id)
 );
 
-CREATE INDEX idx_document_shares_token ON document_shares(share_token) WHERE status = 'active';
-CREATE INDEX idx_document_shares_record ON document_shares(record_type, record_id);
-CREATE INDEX idx_document_shares_creator ON document_shares(created_by);
+CREATE INDEX IF NOT EXISTS idx_document_shares_token ON document_shares(share_token) WHERE status = 'active';
+CREATE INDEX IF NOT EXISTS idx_document_shares_record ON document_shares(record_type, record_id);
+CREATE INDEX IF NOT EXISTS idx_document_shares_creator ON document_shares(created_by);
 
 -- ============================================================
 -- DOCUMENT SHARE ITEMS (for 'selection' type shares)
 -- ============================================================
 
-CREATE TABLE document_share_items (
+CREATE TABLE IF NOT EXISTS document_share_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   share_id UUID NOT NULL REFERENCES document_shares(id) ON DELETE CASCADE,
   document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
@@ -75,13 +80,13 @@ CREATE TABLE document_share_items (
   UNIQUE(share_id, document_id)
 );
 
-CREATE INDEX idx_document_share_items_share ON document_share_items(share_id);
+CREATE INDEX IF NOT EXISTS idx_document_share_items_share ON document_share_items(share_id);
 
 -- ============================================================
 -- DOCUMENT SHARE ACCESS LOG
 -- ============================================================
 
-CREATE TABLE document_share_access_log (
+CREATE TABLE IF NOT EXISTS document_share_access_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   share_id UUID NOT NULL REFERENCES document_shares(id) ON DELETE CASCADE,
 
@@ -101,14 +106,14 @@ CREATE TABLE document_share_access_log (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX idx_share_access_log_share ON document_share_access_log(share_id);
-CREATE INDEX idx_share_access_log_time ON document_share_access_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_share_access_log_share ON document_share_access_log(share_id);
+CREATE INDEX IF NOT EXISTS idx_share_access_log_time ON document_share_access_log(created_at DESC);
 
 -- ============================================================
 -- UPLOAD REQUESTS
 -- ============================================================
 
-CREATE TABLE upload_requests (
+CREATE TABLE IF NOT EXISTS upload_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   -- Request token (URL-safe, unguessable)
@@ -157,15 +162,15 @@ CREATE TABLE upload_requests (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX idx_upload_requests_token ON upload_requests(request_token) WHERE status IN ('pending', 'partial');
-CREATE INDEX idx_upload_requests_record ON upload_requests(record_type, record_id);
-CREATE INDEX idx_upload_requests_status ON upload_requests(status);
+CREATE INDEX IF NOT EXISTS idx_upload_requests_token ON upload_requests(request_token) WHERE status IN ('pending', 'partial');
+CREATE INDEX IF NOT EXISTS idx_upload_requests_record ON upload_requests(record_type, record_id);
+CREATE INDEX IF NOT EXISTS idx_upload_requests_status ON upload_requests(status);
 
 -- ============================================================
 -- UPLOAD REQUEST ITEMS (the checklist)
 -- ============================================================
 
-CREATE TABLE upload_request_items (
+CREATE TABLE IF NOT EXISTS upload_request_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   request_id UUID NOT NULL REFERENCES upload_requests(id) ON DELETE CASCADE,
 
@@ -196,13 +201,13 @@ CREATE TABLE upload_request_items (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX idx_upload_request_items_request ON upload_request_items(request_id);
+CREATE INDEX IF NOT EXISTS idx_upload_request_items_request ON upload_request_items(request_id);
 
 -- ============================================================
 -- UPLOAD REQUEST ACCESS LOG
 -- ============================================================
 
-CREATE TABLE upload_request_access_log (
+CREATE TABLE IF NOT EXISTS upload_request_access_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   request_id UUID NOT NULL REFERENCES upload_requests(id) ON DELETE CASCADE,
 
@@ -232,35 +237,48 @@ ALTER TABLE upload_request_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE upload_request_access_log ENABLE ROW LEVEL SECURITY;
 
 -- Authenticated users can manage shares for records they have access to
+DROP POLICY IF EXISTS "shares_access" ON document_shares;
 CREATE POLICY "shares_access" ON document_shares
   FOR ALL TO authenticated USING (true);
+DROP POLICY IF EXISTS "share_items_access" ON document_share_items;
 CREATE POLICY "share_items_access" ON document_share_items
   FOR ALL TO authenticated USING (true);
+DROP POLICY IF EXISTS "share_log_access" ON document_share_access_log;
 CREATE POLICY "share_log_access" ON document_share_access_log
   FOR ALL TO authenticated USING (true);
+DROP POLICY IF EXISTS "upload_requests_access" ON upload_requests;
 CREATE POLICY "upload_requests_access" ON upload_requests
   FOR ALL TO authenticated USING (true);
+DROP POLICY IF EXISTS "upload_request_items_access" ON upload_request_items;
 CREATE POLICY "upload_request_items_access" ON upload_request_items
   FOR ALL TO authenticated USING (true);
+DROP POLICY IF EXISTS "upload_request_log_access" ON upload_request_access_log;
 CREATE POLICY "upload_request_log_access" ON upload_request_access_log
   FOR ALL TO authenticated USING (true);
 
 -- ANON access for public share/upload pages (token-validated in app logic)
+DROP POLICY IF EXISTS "shares_public_read" ON document_shares;
 CREATE POLICY "shares_public_read" ON document_shares
   FOR SELECT TO anon
   USING (status = 'active' AND (expires_at IS NULL OR expires_at > now()));
+DROP POLICY IF EXISTS "share_items_public_read" ON document_share_items;
 CREATE POLICY "share_items_public_read" ON document_share_items
   FOR SELECT TO anon USING (true);
+DROP POLICY IF EXISTS "share_log_public_insert" ON document_share_access_log;
 CREATE POLICY "share_log_public_insert" ON document_share_access_log
   FOR INSERT TO anon WITH CHECK (true);
 
+DROP POLICY IF EXISTS "upload_requests_public_read" ON upload_requests;
 CREATE POLICY "upload_requests_public_read" ON upload_requests
   FOR SELECT TO anon
   USING (status IN ('pending', 'partial') AND (expires_at IS NULL OR expires_at > now()));
+DROP POLICY IF EXISTS "upload_request_items_public_read" ON upload_request_items;
 CREATE POLICY "upload_request_items_public_read" ON upload_request_items
   FOR SELECT TO anon USING (true);
+DROP POLICY IF EXISTS "upload_request_items_public_update" ON upload_request_items;
 CREATE POLICY "upload_request_items_public_update" ON upload_request_items
   FOR UPDATE TO anon USING (true);
+DROP POLICY IF EXISTS "upload_request_log_public_insert" ON upload_request_access_log;
 CREATE POLICY "upload_request_log_public_insert" ON upload_request_access_log
   FOR INSERT TO anon WITH CHECK (true);
 
@@ -268,10 +286,13 @@ CREATE POLICY "upload_request_log_public_insert" ON upload_request_access_log
 -- TRIGGERS
 -- ============================================================
 
+DROP TRIGGER IF EXISTS set_updated_at_document_shares ON document_shares;
 CREATE TRIGGER set_updated_at_document_shares
   BEFORE UPDATE ON document_shares FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+DROP TRIGGER IF EXISTS set_updated_at_upload_requests ON upload_requests;
 CREATE TRIGGER set_updated_at_upload_requests
   BEFORE UPDATE ON upload_requests FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+DROP TRIGGER IF EXISTS set_updated_at_upload_request_items ON upload_request_items;
 CREATE TRIGGER set_updated_at_upload_request_items
   BEFORE UPDATE ON upload_request_items FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
@@ -323,6 +344,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+DROP TRIGGER IF EXISTS auto_update_request_status ON upload_request_items;
 CREATE TRIGGER auto_update_request_status
   AFTER UPDATE OF status ON upload_request_items
   FOR EACH ROW EXECUTE FUNCTION update_upload_request_status();
@@ -333,18 +355,22 @@ CREATE TRIGGER auto_update_request_status
 
 -- Bucket for externally uploaded files (via upload requests)
 INSERT INTO storage.buckets (id, name, public, file_size_limit)
-VALUES ('upload-inbox', 'upload-inbox', false, 104857600);
+VALUES ('upload-inbox', 'upload-inbox', false, 104857600)
+ON CONFLICT DO NOTHING;
 
 -- Anon can upload to inbox (token validation happens in Edge Function)
+DROP POLICY IF EXISTS "Anon upload to inbox" ON storage.objects;
 CREATE POLICY "Anon upload to inbox"
   ON storage.objects FOR INSERT TO anon
   WITH CHECK (bucket_id = 'upload-inbox');
 
 -- Authenticated users can read inbox (to move files to proper bucket)
+DROP POLICY IF EXISTS "Auth read inbox" ON storage.objects;
 CREATE POLICY "Auth read inbox"
   ON storage.objects FOR SELECT TO authenticated
   USING (bucket_id = 'upload-inbox');
 
+DROP POLICY IF EXISTS "Auth delete inbox" ON storage.objects;
 CREATE POLICY "Auth delete inbox"
   ON storage.objects FOR DELETE TO authenticated
   USING (bucket_id = 'upload-inbox');

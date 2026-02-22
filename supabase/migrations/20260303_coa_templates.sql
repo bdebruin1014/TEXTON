@@ -4,7 +4,7 @@
 -- ============================================================
 -- coa_templates
 -- ============================================================
-create table public.coa_templates (
+create table if not exists public.coa_templates (
   id           uuid primary key default gen_random_uuid(),
   name         text not null,
   description  text,
@@ -19,7 +19,7 @@ create table public.coa_templates (
 -- ============================================================
 -- coa_template_items
 -- ============================================================
-create table public.coa_template_items (
+create table if not exists public.coa_template_items (
   id              uuid primary key default gen_random_uuid(),
   template_id     uuid not null references public.coa_templates(id) on delete cascade,
   account_number  text not null,
@@ -33,12 +33,12 @@ create table public.coa_template_items (
   sort_order      integer not null default 0
 );
 
-create index idx_coa_template_items_template on public.coa_template_items(template_id);
+create index if not exists idx_coa_template_items_template on public.coa_template_items(template_id);
 
 -- ============================================================
 -- entity_coa_assignments
 -- ============================================================
-create table public.entity_coa_assignments (
+create table if not exists public.entity_coa_assignments (
   id           uuid primary key default gen_random_uuid(),
   entity_id    uuid not null references public.entities(id) on delete cascade,
   template_id  uuid not null references public.coa_templates(id) on delete restrict,
@@ -47,8 +47,8 @@ create table public.entity_coa_assignments (
   variables    jsonb not null default '{}'
 );
 
-create unique index idx_entity_coa_unique on public.entity_coa_assignments(entity_id);
-create index idx_entity_coa_template on public.entity_coa_assignments(template_id);
+create unique index if not exists idx_entity_coa_unique on public.entity_coa_assignments(entity_id);
+create index if not exists idx_entity_coa_template on public.entity_coa_assignments(template_id);
 
 -- ============================================================
 -- Alter chart_of_accounts: add lock and source_template columns
@@ -67,38 +67,47 @@ alter table public.coa_template_items enable row level security;
 alter table public.entity_coa_assignments enable row level security;
 
 -- Templates are readable by all authenticated users
+drop policy if exists "coa_templates_select" on public.coa_templates;
 create policy "coa_templates_select" on public.coa_templates
   for select to authenticated using (true);
 
 -- Template items readable by all authenticated users
+drop policy if exists "coa_template_items_select" on public.coa_template_items;
 create policy "coa_template_items_select" on public.coa_template_items
   for select to authenticated using (true);
 
 -- Assignments scoped to entities the user can access (via entity membership)
+drop policy if exists "entity_coa_assignments_select" on public.entity_coa_assignments;
 create policy "entity_coa_assignments_select" on public.entity_coa_assignments
   for select to authenticated using (true);
 
+drop policy if exists "entity_coa_assignments_insert" on public.entity_coa_assignments;
 create policy "entity_coa_assignments_insert" on public.entity_coa_assignments
   for insert to authenticated with check (true);
 
+drop policy if exists "entity_coa_assignments_update" on public.entity_coa_assignments;
 create policy "entity_coa_assignments_update" on public.entity_coa_assignments
   for update to authenticated using (true);
 
 -- ============================================================
 -- Seed: 5 COA templates
 -- ============================================================
-insert into public.coa_templates (name, description, entity_types, is_default) values
+insert into public.coa_templates (name, description, entity_types, is_default)
+select * from (values
   ('Operating Company', 'Standard COA for operating companies (Red Cedar Homes, VanRock Holdings)', ARRAY['operating'], true),
   ('SPE - Scattered Lot', 'SPE chart of accounts for scattered lot home building projects', ARRAY['spe_scattered_lot'], true),
   ('SPE - Community Development', 'SPE chart of accounts for community / subdivision development projects', ARRAY['spe_community_dev'], true),
   ('SPE - Lot Development', 'SPE chart of accounts for raw land → finished lots projects', ARRAY['spe_lot_dev'], true),
-  ('SPE - Lot Purchase Only', 'SPE chart of accounts for lot acquisition (no construction)', ARRAY['spe_lot_purchase'], true);
+  ('SPE - Lot Purchase Only', 'SPE chart of accounts for lot acquisition (no construction)', ARRAY['spe_lot_purchase'], true)
+) as v(name, description, entity_types, is_default)
+where not exists (select 1 from public.coa_templates t where t.name = v.name);
 
 -- ============================================================
 -- Seed: Operating Company template items (core accounts)
 -- ============================================================
 with tmpl as (select id from public.coa_templates where name = 'Operating Company' limit 1)
-insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order) values
+insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+select * from (values
   ((select id from tmpl), '1000', '{{ABBR}} - Cash & Equivalents', 'Asset', true, 'Asset', true, 1),
   ((select id from tmpl), '1010', '{{ABBR}} - Operating Checking', 'Asset', false, 'Asset', true, 2),
   ((select id from tmpl), '1020', '{{ABBR}} - Savings / Reserve', 'Asset', false, 'Asset', true, 3),
@@ -121,13 +130,19 @@ insert into public.coa_template_items (template_id, account_number, account_name
   ((select id from tmpl), '5010', '{{ABBR}} - Payroll', 'Expense', false, 'Expense', true, 20),
   ((select id from tmpl), '5020', '{{ABBR}} - Office & Admin', 'Expense', false, 'Expense', true, 21),
   ((select id from tmpl), '5030', '{{ABBR}} - Insurance', 'Expense', false, 'Expense', true, 22),
-  ((select id from tmpl), '5040', '{{ABBR}} - Professional Services', 'Expense', false, 'Expense', true, 23);
+  ((select id from tmpl), '5040', '{{ABBR}} - Professional Services', 'Expense', false, 'Expense', true, 23)
+) as v(template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+where not exists (
+  select 1 from public.coa_template_items i
+  where i.template_id = v.template_id and i.account_number = v.account_number
+);
 
 -- ============================================================
 -- Seed: SPE - Scattered Lot template items
 -- ============================================================
 with tmpl as (select id from public.coa_templates where name = 'SPE - Scattered Lot' limit 1)
-insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order) values
+insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+select * from (values
   ((select id from tmpl), '1000', '{{ABBR}} - Cash & Equivalents', 'Asset', true, 'Asset', true, 1),
   ((select id from tmpl), '1010', '{{ABBR}} - Operating Checking', 'Asset', false, 'Asset', true, 2),
   ((select id from tmpl), '1100', '{{ABBR}} - Land Inventory', 'Asset', true, 'Asset', true, 3),
@@ -159,13 +174,19 @@ insert into public.coa_template_items (template_id, account_number, account_name
   ((select id from tmpl), '6030', '{{ABBR}} - Warranty Reserve', 'Expense', false, 'Expense', true, 29),
   ((select id from tmpl), '7000', '{{ABBR}} - Financing Costs', 'Expense', true, 'Expense', true, 30),
   ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 31),
-  ((select id from tmpl), '7020', '{{ABBR}} - Loan Fees', 'Expense', false, 'Expense', true, 32);
+  ((select id from tmpl), '7020', '{{ABBR}} - Loan Fees', 'Expense', false, 'Expense', true, 32)
+) as v(template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+where not exists (
+  select 1 from public.coa_template_items i
+  where i.template_id = v.template_id and i.account_number = v.account_number
+);
 
 -- ============================================================
 -- Seed: SPE - Community Development template items
 -- ============================================================
 with tmpl as (select id from public.coa_templates where name = 'SPE - Community Development' limit 1)
-insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order) values
+insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+select * from (values
   ((select id from tmpl), '1000', '{{ABBR}} - Cash & Equivalents', 'Asset', true, 'Asset', true, 1),
   ((select id from tmpl), '1010', '{{ABBR}} - Operating Checking', 'Asset', false, 'Asset', true, 2),
   ((select id from tmpl), '1100', '{{ABBR}} - Land Inventory', 'Asset', true, 'Asset', true, 3),
@@ -192,13 +213,19 @@ insert into public.coa_template_items (template_id, account_number, account_name
   ((select id from tmpl), '5030', '{{ABBR}} - Selling Costs', 'Expense', false, 'Expense', true, 24),
   ((select id from tmpl), '6000', '{{ABBR}} - Development Expenses', 'Expense', true, 'Expense', true, 25),
   ((select id from tmpl), '7000', '{{ABBR}} - Financing Costs', 'Expense', true, 'Expense', true, 26),
-  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 27);
+  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 27)
+) as v(template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+where not exists (
+  select 1 from public.coa_template_items i
+  where i.template_id = v.template_id and i.account_number = v.account_number
+);
 
 -- ============================================================
 -- Seed: SPE - Lot Development template items
 -- ============================================================
 with tmpl as (select id from public.coa_templates where name = 'SPE - Lot Development' limit 1)
-insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order) values
+insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+select * from (values
   ((select id from tmpl), '1000', '{{ABBR}} - Cash & Equivalents', 'Asset', true, 'Asset', true, 1),
   ((select id from tmpl), '1010', '{{ABBR}} - Operating Checking', 'Asset', false, 'Asset', true, 2),
   ((select id from tmpl), '1100', '{{ABBR}} - Land Inventory', 'Asset', true, 'Asset', true, 3),
@@ -221,13 +248,19 @@ insert into public.coa_template_items (template_id, account_number, account_name
   ((select id from tmpl), '5020', '{{ABBR}} - Development COGS', 'Expense', false, 'Expense', true, 20),
   ((select id from tmpl), '5030', '{{ABBR}} - Selling Costs', 'Expense', false, 'Expense', true, 21),
   ((select id from tmpl), '7000', '{{ABBR}} - Financing Costs', 'Expense', true, 'Expense', true, 22),
-  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 23);
+  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 23)
+) as v(template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+where not exists (
+  select 1 from public.coa_template_items i
+  where i.template_id = v.template_id and i.account_number = v.account_number
+);
 
 -- ============================================================
 -- Seed: SPE - Lot Purchase Only template items
 -- ============================================================
 with tmpl as (select id from public.coa_templates where name = 'SPE - Lot Purchase Only' limit 1)
-insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order) values
+insert into public.coa_template_items (template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+select * from (values
   ((select id from tmpl), '1000', '{{ABBR}} - Cash & Equivalents', 'Asset', true, 'Asset', true, 1),
   ((select id from tmpl), '1010', '{{ABBR}} - Operating Checking', 'Asset', false, 'Asset', true, 2),
   ((select id from tmpl), '1100', '{{ABBR}} - Land Inventory', 'Asset', true, 'Asset', true, 3),
@@ -248,9 +281,15 @@ insert into public.coa_template_items (template_id, account_number, account_name
   ((select id from tmpl), '5020', '{{ABBR}} - Insurance', 'Expense', false, 'Expense', true, 18),
   ((select id from tmpl), '5030', '{{ABBR}} - Selling Costs', 'Expense', false, 'Expense', true, 19),
   ((select id from tmpl), '7000', '{{ABBR}} - Financing Costs', 'Expense', true, 'Expense', true, 20),
-  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 21);
+  ((select id from tmpl), '7010', '{{ABBR}} - Interest Expense', 'Expense', false, 'Expense', true, 21)
+) as v(template_id, account_number, account_name, account_type, is_group, root_type, is_required, sort_order)
+where not exists (
+  select 1 from public.coa_template_items i
+  where i.template_id = v.template_id and i.account_number = v.account_number
+);
 
 -- Updated timestamp trigger
+drop trigger if exists set_coa_templates_updated_at on public.coa_templates;
 create trigger set_coa_templates_updated_at
   before update on public.coa_templates
-  for each row execute function public.update_updated_at_column();
+  for each row execute function public.set_updated_at();

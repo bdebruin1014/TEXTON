@@ -7,15 +7,34 @@
 -- ============================================================
 
 -- Add new columns to assignment_groups before renaming
-alter table public.assignment_groups
-  add column if not exists entity_id uuid references public.entities(id) on delete set null,
-  add column if not exists team_type text not null default 'department'
-    check (team_type in ('department', 'project', 'ad_hoc')),
-  add column if not exists color text default '#48BB78',
-  add column if not exists member_count integer not null default 0;
+-- (idempotent: target whichever table name currently exists)
+do $$
+declare
+  target_table text;
+begin
+  if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'assignment_groups') then
+    target_table := 'assignment_groups';
+  elsif exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'teams') then
+    target_table := 'teams';
+  else
+    raise exception 'Neither assignment_groups nor teams table exists';
+  end if;
 
--- Rename table
-alter table public.assignment_groups rename to teams;
+  execute format('alter table public.%I add column if not exists entity_id uuid references public.entities(id) on delete set null', target_table);
+  execute format('alter table public.%I add column if not exists team_type text not null default ''department''', target_table);
+  execute format('alter table public.%I add column if not exists color text default ''#48BB78''', target_table);
+  execute format('alter table public.%I add column if not exists member_count integer not null default 0', target_table);
+end;
+$$;
+
+-- Rename table (idempotent: only rename if assignment_groups still exists)
+do $$
+begin
+  if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'assignment_groups') then
+    alter table public.assignment_groups rename to teams;
+  end if;
+end;
+$$;
 
 -- Drop the old jsonb members column (data migrated to team_members)
 alter table public.teams drop column if exists members;
@@ -24,7 +43,7 @@ alter table public.teams drop column if exists members;
 -- 2. team_members — junction table
 -- ============================================================
 
-create table public.team_members (
+create table if not exists public.team_members (
   id         uuid primary key default gen_random_uuid(),
   team_id    uuid not null references public.teams(id) on delete cascade,
   user_id    uuid not null references public.user_profiles(id) on delete cascade,
@@ -35,14 +54,14 @@ create table public.team_members (
   unique (team_id, user_id)
 );
 
-create index idx_team_members_team on public.team_members(team_id);
-create index idx_team_members_user on public.team_members(user_id);
+create index if not exists idx_team_members_team on public.team_members(team_id);
+create index if not exists idx_team_members_user on public.team_members(user_id);
 
 -- ============================================================
 -- 3. record_teams — polymorphic record assignment
 -- ============================================================
 
-create table public.record_teams (
+create table if not exists public.record_teams (
   id              uuid primary key default gen_random_uuid(),
   team_id         uuid references public.teams(id) on delete cascade,
   user_id         uuid references public.user_profiles(id) on delete cascade,
@@ -57,9 +76,9 @@ create table public.record_teams (
   constraint record_teams_has_assignee check (team_id is not null or user_id is not null)
 );
 
-create index idx_record_teams_record on public.record_teams(record_type, record_id);
-create index idx_record_teams_team on public.record_teams(team_id);
-create index idx_record_teams_user on public.record_teams(user_id);
+create index if not exists idx_record_teams_record on public.record_teams(record_type, record_id);
+create index if not exists idx_record_teams_team on public.record_teams(team_id);
+create index if not exists idx_record_teams_user on public.record_teams(user_id);
 
 -- ============================================================
 -- 4. TRIGGERS — member_count auto-update
@@ -83,19 +102,23 @@ begin
 end;
 $$;
 
+drop trigger if exists trg_team_member_count on public.team_members;
 create trigger trg_team_member_count
   after insert or delete on public.team_members
   for each row execute function public.update_team_member_count();
 
 -- updated_at triggers
+drop trigger if exists set_teams_updated_at on public.teams;
 create trigger set_teams_updated_at
   before update on public.teams
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_team_members_updated_at on public.team_members;
 create trigger set_team_members_updated_at
   before update on public.team_members
   for each row execute function public.set_updated_at();
 
+drop trigger if exists set_record_teams_updated_at on public.record_teams;
 create trigger set_record_teams_updated_at
   before update on public.record_teams
   for each row execute function public.set_updated_at();
@@ -109,23 +132,28 @@ alter table public.team_members enable row level security;
 alter table public.record_teams enable row level security;
 
 -- Teams: entity-scoped (or global teams with null entity_id visible to all)
+drop policy if exists "teams_select" on public.teams;
 create policy "teams_select" on public.teams
   for select to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "teams_insert" on public.teams;
 create policy "teams_insert" on public.teams
   for insert to authenticated
   with check (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "teams_update" on public.teams;
 create policy "teams_update" on public.teams
   for update to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
+drop policy if exists "teams_delete" on public.teams;
 create policy "teams_delete" on public.teams
   for delete to authenticated
   using (entity_id is null or entity_id = public.auth_entity_id());
 
 -- Team members: accessible if you can see the team
+drop policy if exists "team_members_select" on public.team_members;
 create policy "team_members_select" on public.team_members
   for select to authenticated
   using (exists (
@@ -134,6 +162,7 @@ create policy "team_members_select" on public.team_members
     and (t.entity_id is null or t.entity_id = public.auth_entity_id())
   ));
 
+drop policy if exists "team_members_insert" on public.team_members;
 create policy "team_members_insert" on public.team_members
   for insert to authenticated
   with check (exists (
@@ -142,6 +171,7 @@ create policy "team_members_insert" on public.team_members
     and (t.entity_id is null or t.entity_id = public.auth_entity_id())
   ));
 
+drop policy if exists "team_members_update" on public.team_members;
 create policy "team_members_update" on public.team_members
   for update to authenticated
   using (exists (
@@ -150,6 +180,7 @@ create policy "team_members_update" on public.team_members
     and (t.entity_id is null or t.entity_id = public.auth_entity_id())
   ));
 
+drop policy if exists "team_members_delete" on public.team_members;
 create policy "team_members_delete" on public.team_members
   for delete to authenticated
   using (exists (
@@ -159,15 +190,19 @@ create policy "team_members_delete" on public.team_members
   ));
 
 -- Record teams: accessible to authenticated users (record-level RLS handled by parent)
+drop policy if exists "record_teams_select" on public.record_teams;
 create policy "record_teams_select" on public.record_teams
   for select to authenticated using (true);
 
+drop policy if exists "record_teams_insert" on public.record_teams;
 create policy "record_teams_insert" on public.record_teams
   for insert to authenticated with check (true);
 
+drop policy if exists "record_teams_update" on public.record_teams;
 create policy "record_teams_update" on public.record_teams
   for update to authenticated using (true);
 
+drop policy if exists "record_teams_delete" on public.record_teams;
 create policy "record_teams_delete" on public.record_teams
   for delete to authenticated using (true);
 

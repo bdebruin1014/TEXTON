@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { ComingSoonPlaceholder } from "@/components/deal-sheet/ComingSoonPlaceholder";
 import { DealSheetForm, type DealSheetRecord } from "@/components/deal-sheet/DealSheetForm";
+import { ProjectTypeGate } from "@/components/deal-sheet/ProjectTypeGate";
+import { ScenarioComparison } from "@/components/deal-sheet/ScenarioComparison";
+import { ScenarioTabBar } from "@/components/deal-sheet/ScenarioTabBar";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
 
@@ -13,32 +17,56 @@ function DealSheet() {
   const { opportunityId } = Route.useParams();
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [compareMode, setCompareMode] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
 
-  const { data: sheets = [], isLoading } = useQuery<DealSheetRecord[]>({
-    queryKey: ["deal-sheets", opportunityId],
+  // Fetch opportunity to check project_type
+  const { data: opp, isLoading: oppLoading } = useQuery({
+    queryKey: ["opportunity", opportunityId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("opportunities")
+        .select("id, project_type")
+        .eq("id", opportunityId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch all deal sheets for this opportunity
+  const sheetsQueryKey = useMemo(() => ["deal-sheets", opportunityId], [opportunityId]);
+  const { data: sheets = [], isLoading: sheetsLoading } = useQuery<DealSheetRecord[]>({
+    queryKey: sheetsQueryKey,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("deal_sheets")
         .select("*")
         .eq("opportunity_id", opportunityId)
-        .order("created_at", { ascending: false });
+        .order("scenario_number", { ascending: true });
       if (error) throw error;
       return data ?? [];
     },
+    enabled: !!opp?.project_type && opp.project_type === "Scattered Lot",
   });
 
   const active = useMemo(() => {
     if (selectedId) return sheets.find((s) => s.id === selectedId) ?? sheets[0];
-    return sheets[0];
+    // Default to primary, or first
+    return sheets.find((s) => s.is_primary) ?? sheets[0];
   }, [sheets, selectedId]);
 
   const createSheet = useMutation({
     mutationFn: async () => {
+      const nextNumber = sheets.length + 1;
       const { data, error } = await supabase
         .from("deal_sheets")
         .insert({
           opportunity_id: opportunityId,
-          name: `Analysis ${sheets.length + 1}`,
+          name: `Scenario ${nextNumber}`,
+          scenario_number: nextNumber,
+          scenario_name: `Scenario ${nextNumber}`,
+          is_primary: sheets.length === 0,
           deal_type: "scattered_lot",
           lot_purchase_price: 0,
           closing_costs: 0,
@@ -64,28 +92,77 @@ function DealSheet() {
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["deal-sheets", opportunityId] });
+      queryClient.invalidateQueries({ queryKey: sheetsQueryKey });
       setSelectedId(data.id);
+      setCompareMode(false);
     },
   });
 
-  if (isLoading) return <FormSkeleton />;
+  const suggestScenarios = async () => {
+    setAiLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-deal-scenarios`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ opportunityId }),
+      });
+      if (!res.ok) {
+        const errBody = await res.text();
+        console.error("AI scenario generation failed:", errBody);
+      }
+      queryClient.invalidateQueries({ queryKey: sheetsQueryKey });
+    } catch (err) {
+      console.error("Suggest scenarios error:", err);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
+  if (oppLoading || sheetsLoading) return <FormSkeleton />;
+
+  // Gate 1: No project type → show classification cards
+  if (!opp?.project_type) {
+    return <ProjectTypeGate opportunityId={opportunityId} />;
+  }
+
+  // Gate 2: Non-Scattered Lot types → coming soon
+  if (opp.project_type !== "Scattered Lot") {
+    return <ComingSoonPlaceholder projectType={opp.project_type} />;
+  }
+
+  // No sheets yet → empty state
   if (!active) {
     return (
       <div>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Deal Sheet</h2>
-          <button
-            type="button"
-            onClick={() => createSheet.mutate()}
-            className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-          >
-            + New Analysis
-          </button>
+          <h2 className="text-lg font-semibold text-foreground">Deal Analyzer</h2>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={suggestScenarios}
+              disabled={aiLoading}
+              className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+            >
+              {aiLoading ? "Generating..." : "Suggest Scenarios"}
+            </button>
+            <button
+              type="button"
+              onClick={() => createSheet.mutate()}
+              disabled={createSheet.isPending}
+              className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
+            >
+              + New Scenario
+            </button>
+          </div>
         </div>
         <div className="flex items-center justify-center rounded-lg border border-dashed border-border py-24">
-          <p className="text-sm text-muted">No deal analysis yet. Create one to get started.</p>
+          <p className="text-sm text-muted">No deal scenarios yet. Create one or let AI suggest scenarios.</p>
         </div>
       </div>
     );
@@ -94,33 +171,52 @@ function DealSheet() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold text-foreground">Deal Sheet</h2>
-          {sheets.length > 1 && (
-            <select
-              value={active.id}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-foreground">Deal Analyzer</h2>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={suggestScenarios}
+            disabled={aiLoading}
+            className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+          >
+            {aiLoading ? "Generating..." : "Suggest Scenarios"}
+          </button>
+          {sheets.length < 5 && (
+            <button
+              type="button"
+              onClick={() => createSheet.mutate()}
+              disabled={createSheet.isPending}
+              className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
             >
-              {sheets.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name || "Untitled"}
-                </option>
-              ))}
-            </select>
+              + New Scenario
+            </button>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => createSheet.mutate()}
-          className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"
-        >
-          + New Analysis
-        </button>
       </div>
 
-      <DealSheetForm sheet={active} queryKey={["deal-sheets", opportunityId]} />
+      {/* Scenario tabs */}
+      {sheets.length > 1 && (
+        <div className="mb-6">
+          <ScenarioTabBar
+            sheets={sheets}
+            activeId={active.id}
+            compareMode={compareMode}
+            onSelect={(id) => {
+              setSelectedId(id);
+              setCompareMode(false);
+            }}
+            onCompare={() => setCompareMode(true)}
+          />
+        </div>
+      )}
+
+      {/* Content */}
+      {compareMode ? (
+        <ScenarioComparison sheets={sheets} queryKey={sheetsQueryKey} />
+      ) : (
+        <DealSheetForm sheet={active} queryKey={sheetsQueryKey} />
+      )}
     </div>
   );
 }

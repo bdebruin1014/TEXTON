@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { FloorPlanImages } from "@/components/admin/FloorPlanImages";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
@@ -326,6 +327,11 @@ function FloorPlanDetail() {
             </select>
           </div>
         </div>
+      </div>
+
+      {/* Images Section */}
+      <div className="mb-8">
+        <FloorPlanImages planId={planId} />
       </div>
 
       {/* Sticks & Bricks Section */}

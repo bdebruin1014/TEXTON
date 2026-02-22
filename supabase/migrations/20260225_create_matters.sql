@@ -4,7 +4,7 @@
 -- ============================================================================
 
 -- ── MATTERS ────────────────────────────────────────────────────────────────
-create table public.matters (
+create table if not exists public.matters (
   id                     uuid primary key default gen_random_uuid(),
   matter_number          text unique not null,
   title                  text not null,
@@ -54,6 +54,7 @@ begin
 end;
 $$ language plpgsql;
 
+drop trigger if exists trg_matters_auto_number on public.matters;
 create trigger trg_matters_auto_number
   before insert on public.matters
   for each row
@@ -61,24 +62,25 @@ create trigger trg_matters_auto_number
   execute function public.generate_matter_number();
 
 -- Updated_at trigger
+drop trigger if exists trg_matters_updated_at on public.matters;
 create trigger trg_matters_updated_at
   before update on public.matters
   for each row
   execute function public.set_updated_at();
 
 -- Indexes
-create index idx_matters_status on public.matters(status);
-create index idx_matters_priority on public.matters(priority);
-create index idx_matters_category on public.matters(category);
-create index idx_matters_created_by on public.matters(created_by);
-create index idx_matters_assigned_to on public.matters(assigned_to);
-create index idx_matters_linked_project on public.matters(linked_project_id);
-create index idx_matters_linked_opportunity on public.matters(linked_opportunity_id);
-create index idx_matters_linked_entity on public.matters(linked_entity_id);
-create index idx_matters_created_at on public.matters(created_at desc);
+create index if not exists idx_matters_status on public.matters(status);
+create index if not exists idx_matters_priority on public.matters(priority);
+create index if not exists idx_matters_category on public.matters(category);
+create index if not exists idx_matters_created_by on public.matters(created_by);
+create index if not exists idx_matters_assigned_to on public.matters(assigned_to);
+create index if not exists idx_matters_linked_project on public.matters(linked_project_id);
+create index if not exists idx_matters_linked_opportunity on public.matters(linked_opportunity_id);
+create index if not exists idx_matters_linked_entity on public.matters(linked_entity_id);
+create index if not exists idx_matters_created_at on public.matters(created_at desc);
 
 -- ── MATTER CONTACTS ────────────────────────────────────────────────────────
-create table public.matter_contacts (
+create table if not exists public.matter_contacts (
   id          uuid primary key default gen_random_uuid(),
   matter_id   uuid not null references public.matters(id) on delete cascade,
   contact_id  uuid not null references public.contacts(id) on delete cascade,
@@ -89,11 +91,11 @@ create table public.matter_contacts (
   unique(matter_id, contact_id, role)
 );
 
-create index idx_matter_contacts_matter on public.matter_contacts(matter_id);
-create index idx_matter_contacts_contact on public.matter_contacts(contact_id);
+create index if not exists idx_matter_contacts_matter on public.matter_contacts(matter_id);
+create index if not exists idx_matter_contacts_contact on public.matter_contacts(contact_id);
 
 -- ── MATTER WORKFLOW STEPS ──────────────────────────────────────────────────
-create table public.matter_workflow_steps (
+create table if not exists public.matter_workflow_steps (
   id              uuid primary key default gen_random_uuid(),
   matter_id       uuid not null references public.matters(id) on delete cascade,
   parent_step_id  uuid references public.matter_workflow_steps(id) on delete cascade,
@@ -113,18 +115,19 @@ create table public.matter_workflow_steps (
   updated_at      timestamptz not null default now()
 );
 
+drop trigger if exists trg_matter_workflow_steps_updated_at on public.matter_workflow_steps;
 create trigger trg_matter_workflow_steps_updated_at
   before update on public.matter_workflow_steps
   for each row
   execute function public.set_updated_at();
 
-create index idx_matter_workflow_steps_matter on public.matter_workflow_steps(matter_id);
-create index idx_matter_workflow_steps_parent on public.matter_workflow_steps(parent_step_id);
-create index idx_matter_workflow_steps_status on public.matter_workflow_steps(status);
-create index idx_matter_workflow_steps_order on public.matter_workflow_steps(matter_id, step_order);
+create index if not exists idx_matter_workflow_steps_matter on public.matter_workflow_steps(matter_id);
+create index if not exists idx_matter_workflow_steps_parent on public.matter_workflow_steps(parent_step_id);
+create index if not exists idx_matter_workflow_steps_status on public.matter_workflow_steps(status);
+create index if not exists idx_matter_workflow_steps_order on public.matter_workflow_steps(matter_id, step_order);
 
 -- ── MATTER DOCUMENTS ───────────────────────────────────────────────────────
-create table public.matter_documents (
+create table if not exists public.matter_documents (
   id             uuid primary key default gen_random_uuid(),
   matter_id      uuid not null references public.matters(id) on delete cascade,
   file_name      text not null,
@@ -138,10 +141,10 @@ create table public.matter_documents (
   created_at     timestamptz not null default now()
 );
 
-create index idx_matter_documents_matter on public.matter_documents(matter_id);
+create index if not exists idx_matter_documents_matter on public.matter_documents(matter_id);
 
 -- ── MATTER NOTES ───────────────────────────────────────────────────────────
-create table public.matter_notes (
+create table if not exists public.matter_notes (
   id              uuid primary key default gen_random_uuid(),
   matter_id       uuid not null references public.matters(id) on delete cascade,
   note_type       text not null default 'comment'
@@ -153,11 +156,11 @@ create table public.matter_notes (
   created_at      timestamptz not null default now()
 );
 
-create index idx_matter_notes_matter on public.matter_notes(matter_id);
-create index idx_matter_notes_created_at on public.matter_notes(matter_id, created_at desc);
+create index if not exists idx_matter_notes_matter on public.matter_notes(matter_id);
+create index if not exists idx_matter_notes_created_at on public.matter_notes(matter_id, created_at desc);
 
 -- ── MATTER LINKED RECORDS ──────────────────────────────────────────────────
-create table public.matter_linked_records (
+create table if not exists public.matter_linked_records (
   id                        uuid primary key default gen_random_uuid(),
   matter_id                 uuid not null references public.matters(id) on delete cascade,
   record_type               text not null
@@ -168,8 +171,8 @@ create table public.matter_linked_records (
   unique(matter_id, record_type, record_id)
 );
 
-create index idx_matter_linked_records_matter on public.matter_linked_records(matter_id);
-create index idx_matter_linked_records_target on public.matter_linked_records(record_type, record_id);
+create index if not exists idx_matter_linked_records_matter on public.matter_linked_records(matter_id);
+create index if not exists idx_matter_linked_records_target on public.matter_linked_records(record_type, record_id);
 
 -- ── STORAGE BUCKET ─────────────────────────────────────────────────────────
 insert into storage.buckets (id, name, public, file_size_limit)
@@ -195,6 +198,10 @@ begin
   ])
   loop
     execute format(
+      'drop policy if exists "Authenticated full access" on public.%I',
+      tbl
+    );
+    execute format(
       'create policy "Authenticated full access" on public.%I for all to authenticated using (true) with check (true)',
       tbl
     );
@@ -203,14 +210,17 @@ end;
 $$;
 
 -- Storage policies for matter-documents bucket
+drop policy if exists "Authenticated upload matter docs" on storage.objects;
 create policy "Authenticated upload matter docs"
   on storage.objects for insert to authenticated
   with check (bucket_id = 'matter-documents');
 
+drop policy if exists "Authenticated read matter docs" on storage.objects;
 create policy "Authenticated read matter docs"
   on storage.objects for select to authenticated
   using (bucket_id = 'matter-documents');
 
+drop policy if exists "Authenticated delete matter docs" on storage.objects;
 create policy "Authenticated delete matter docs"
   on storage.objects for delete to authenticated
   using (bucket_id = 'matter-documents');

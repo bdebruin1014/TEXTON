@@ -375,3 +375,50 @@ export const OPS_DROPDOWN_SECTIONS = [
     ],
   },
 ] as const;
+
+export const JENNYS_CHECKLIST_ITEMS = [
+  // Lot & Title
+  "Verify lot dimensions match MLS/tax records",
+  "Confirm lot is buildable (no wetlands, easements, setback issues)",
+  "Check flood zone status (FEMA map)",
+  "Verify lot access and road frontage",
+  "Confirm utilities available (water, sewer, gas, electric)",
+  "Review HOA/POA restrictions and architectural guidelines",
+  "Check for liens or encumbrances",
+  "Verify zoning allows intended use",
+  // Municipality
+  "Confirm municipality and jurisdiction",
+  "Verify impact fee schedule is current",
+  "Check tap fee schedule (water, sewer, gas)",
+  "Confirm permit fee schedule",
+  "Verify school/fire/transportation impact fees",
+  "Check for any moratoriums or pending fee changes",
+  // Floor Plan & Construction
+  "Verify floor plan fits lot (width, depth, setbacks)",
+  "Confirm S&B pricing is current (within 90 days)",
+  "Verify upgrade package pricing",
+  "Check site work estimate with grading contractor",
+  "Confirm driveway/flatwork scope and cost",
+  "Verify tree removal/clearing scope",
+  "Check retaining wall requirements",
+  "Confirm septic vs. sewer connection",
+  // Financial
+  "Verify lot purchase price matches contract",
+  "Confirm closing cost estimate",
+  "Check comparable sales (minimum 3 comps)",
+  "Verify ASP is supported by comps",
+  "Confirm selling cost rate with broker",
+  "Verify LTC ratio with lender",
+  "Confirm interest rate with lender",
+  "Check project duration estimate with PM",
+  // Legal & Entity
+  "Confirm purchasing entity (SPE or existing)",
+  "Verify RCH-related entity status for fee structure",
+  "Check insurance requirements",
+  "Confirm builder warranty terms",
+  // Final Review
+  "NPM meets minimum threshold (>= 5%)",
+  "LCR within acceptable range (<= 25%)",
+  "Sensitivity analysis reviewed (worst case acceptable)",
+  "Deal sheet reviewed by second analyst",
+] as const;

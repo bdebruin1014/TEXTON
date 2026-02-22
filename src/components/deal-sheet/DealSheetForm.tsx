@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DealSheetComps } from "@/components/deal-sheet/DealSheetComps";
+import { VerificationChecklist } from "@/components/deal-sheet/VerificationChecklist";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CostBookSelect } from "@/components/forms/CostBookSelect";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
@@ -43,6 +44,16 @@ export interface DealSheetRecord {
   cost_of_capital: number;
   project_duration_days: number;
   created_at: string;
+  // Scenario fields
+  scenario_number: number | null;
+  scenario_name: string | null;
+  is_primary: boolean;
+  sensitivity_results: unknown | null;
+  breakeven_asp: number | null;
+  min_asp_5pct_margin: number | null;
+  // Stored verdict fields (from computed results)
+  profit_verdict: string | null;
+  land_verdict: string | null;
 }
 
 const FEE_LABELS: Record<string, string> = {
@@ -133,10 +144,11 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
     return runSensitivityAnalysis(inputs);
   }, [inputs, showSensitivity]);
 
-  // Persist computed results
+  // Persist computed results + sensitivity data
   const sheetId = sheet.id;
   useEffect(() => {
     if (!dealOutputs) return;
+    const sensitivityData = runSensitivityAnalysis(inputs);
     supabase
       .from("deal_sheets")
       .update({
@@ -159,10 +171,13 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
         land_cost_ratio: dealOutputs.land_cost_ratio,
         profit_verdict: dealOutputs.profit_verdict,
         land_verdict: dealOutputs.land_verdict,
+        sensitivity_results: sensitivityData,
+        breakeven_asp: sensitivityData.breakevenASP,
+        min_asp_5pct_margin: sensitivityData.minimumASP5pct,
       })
       .eq("id", sheetId)
       .then();
-  }, [sheetId, dealOutputs]);
+  }, [sheetId, dealOutputs, inputs]);
 
   const handleFloorPlanLoaded = useCallback(
     async (plan: FloorPlanData) => {
@@ -395,6 +410,9 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
 
         {/* Comparable Sales */}
         <DealSheetComps dealSheetId={sheet.id} />
+
+        {/* Verification Checklist */}
+        <VerificationChecklist dealSheetId={sheet.id} />
       </div>
 
       {/* RIGHT: Results Column (sticky) */}

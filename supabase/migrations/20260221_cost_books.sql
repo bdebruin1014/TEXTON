@@ -7,7 +7,7 @@
 -- ============================================================
 -- 1. cost_books — Master table for pricing vintages
 -- ============================================================
-create table public.cost_books (
+create table if not exists public.cost_books (
   id              uuid primary key default gen_random_uuid(),
   name            text not null,
   description     text,
@@ -21,14 +21,14 @@ create table public.cost_books (
 );
 
 -- Only one default cost book at a time
-create unique index cost_books_single_default
+create unique index if not exists cost_books_single_default
   on public.cost_books (is_default)
   where (is_default = true);
 
 -- ============================================================
 -- 2. cost_book_plans — Per-plan S&B totals within a cost book
 -- ============================================================
-create table public.cost_book_plans (
+create table if not exists public.cost_book_plans (
   id                    uuid primary key default gen_random_uuid(),
   cost_book_id          uuid not null references public.cost_books(id) on delete cascade,
   floor_plan_id         uuid not null references public.floor_plans(id) on delete cascade,
@@ -46,7 +46,7 @@ create table public.cost_book_plans (
 -- ============================================================
 -- 3. cost_book_line_items — 53 S&B line items per plan per cost book
 -- ============================================================
-create table public.cost_book_line_items (
+create table if not exists public.cost_book_line_items (
   id              uuid primary key default gen_random_uuid(),
   cost_book_id    uuid not null references public.cost_books(id) on delete cascade,
   floor_plan_id   uuid not null references public.floor_plans(id) on delete cascade,
@@ -61,7 +61,7 @@ create table public.cost_book_line_items (
 -- ============================================================
 -- 4. cost_book_upgrades — Upgrade package pricing per vintage
 -- ============================================================
-create table public.cost_book_upgrades (
+create table if not exists public.cost_book_upgrades (
   id                  uuid primary key default gen_random_uuid(),
   cost_book_id        uuid not null references public.cost_books(id) on delete cascade,
   upgrade_package_id  uuid not null references public.upgrade_packages(id) on delete cascade,
@@ -74,7 +74,7 @@ create table public.cost_book_upgrades (
 -- ============================================================
 -- 5. cost_book_site_work — Site work defaults per vintage
 -- ============================================================
-create table public.cost_book_site_work (
+create table if not exists public.cost_book_site_work (
   id                uuid primary key default gen_random_uuid(),
   cost_book_id      uuid not null references public.cost_books(id) on delete cascade,
   site_work_item_id uuid not null references public.site_work_items(id) on delete cascade,
@@ -87,7 +87,7 @@ create table public.cost_book_site_work (
 -- ============================================================
 -- 6. cost_book_fees — Fee schedule overrides per vintage
 -- ============================================================
-create table public.cost_book_fees (
+create table if not exists public.cost_book_fees (
   id              uuid primary key default gen_random_uuid(),
   cost_book_id    uuid not null references public.cost_books(id) on delete cascade,
   builder_fee     numeric(15,2),
@@ -122,6 +122,10 @@ begin
   loop
     execute format('alter table public.%I enable row level security', tbl);
     execute format(
+      'drop policy if exists "Authenticated users full access" on public.%I',
+      tbl
+    );
+    execute format(
       'create policy "Authenticated users full access" on public.%I '
       'for all to authenticated using (true) with check (true)',
       tbl
@@ -141,6 +145,10 @@ begin
     values ('cost_books'),('cost_book_plans'),('cost_book_line_items'),
            ('cost_book_upgrades'),('cost_book_site_work'),('cost_book_fees')
   loop
+    execute format(
+      'drop trigger if exists set_updated_at on public.%I',
+      tbl
+    );
     execute format(
       'create trigger set_updated_at before update on public.%I '
       'for each row execute function public.set_updated_at()',
@@ -163,7 +171,8 @@ values (
   '2025-09-01',
   'Active',
   true
-);
+)
+on conflict (id) do nothing;
 
 -- (b) "RC Pricing Guide (Legacy)" — Archived
 insert into public.cost_books (id, name, description, effective_date, status, is_default)
@@ -174,7 +183,8 @@ values (
   '2025-01-01',
   'Archived',
   false
-);
+)
+on conflict (id) do nothing;
 
 -- Seed cost_book_plans for DM Budget (from dm_budget_snb on floor_plans)
 insert into public.cost_book_plans (cost_book_id, floor_plan_id, contract_snb, dm_budget_snb, dm_budget_total, contract_total, base_construction_cost, cost_per_sf)
@@ -188,7 +198,8 @@ select
   fp.base_construction_cost,
   fp.cost_per_sf
 from public.floor_plans fp
-where fp.status = 'Active';
+where fp.status = 'Active'
+on conflict do nothing;
 
 -- Seed cost_book_plans for RC Pricing Guide (same data, represents contract pricing)
 insert into public.cost_book_plans (cost_book_id, floor_plan_id, contract_snb, dm_budget_snb, dm_budget_total, contract_total, base_construction_cost, cost_per_sf)
@@ -202,7 +213,8 @@ select
   fp.base_construction_cost,
   fp.cost_per_sf
 from public.floor_plans fp
-where fp.status = 'Active';
+where fp.status = 'Active'
+on conflict do nothing;
 
 -- Seed cost_book_line_items from sticks_bricks_items (TULIP's 53 items)
 insert into public.cost_book_line_items (cost_book_id, floor_plan_id, category, description, amount, sort_order)
@@ -213,7 +225,12 @@ select
   sbi.description,
   sbi.amount,
   sbi.sort_order
-from public.sticks_bricks_items sbi;
+from public.sticks_bricks_items sbi
+where not exists (
+  select 1 from public.cost_book_line_items
+  where cost_book_id = 'a0000000-0000-0000-0000-000000000001'
+  limit 1
+);
 
 insert into public.cost_book_line_items (cost_book_id, floor_plan_id, category, description, amount, sort_order)
 select
@@ -223,25 +240,34 @@ select
   sbi.description,
   sbi.amount,
   sbi.sort_order
-from public.sticks_bricks_items sbi;
+from public.sticks_bricks_items sbi
+where not exists (
+  select 1 from public.cost_book_line_items
+  where cost_book_id = 'a0000000-0000-0000-0000-000000000002'
+  limit 1
+);
 
 -- Seed cost_book_upgrades from upgrade_packages
 insert into public.cost_book_upgrades (cost_book_id, upgrade_package_id, amount)
 select 'a0000000-0000-0000-0000-000000000001', up.id, up.default_amount
-from public.upgrade_packages up;
+from public.upgrade_packages up
+on conflict do nothing;
 
 insert into public.cost_book_upgrades (cost_book_id, upgrade_package_id, amount)
 select 'a0000000-0000-0000-0000-000000000002', up.id, up.default_amount
-from public.upgrade_packages up;
+from public.upgrade_packages up
+on conflict do nothing;
 
 -- Seed cost_book_site_work from site_work_items
 insert into public.cost_book_site_work (cost_book_id, site_work_item_id, amount)
 select 'a0000000-0000-0000-0000-000000000001', swi.id, swi.default_amount
-from public.site_work_items swi;
+from public.site_work_items swi
+on conflict do nothing;
 
 insert into public.cost_book_site_work (cost_book_id, site_work_item_id, amount)
 select 'a0000000-0000-0000-0000-000000000002', swi.id, swi.default_amount
-from public.site_work_items swi;
+from public.site_work_items swi
+on conflict do nothing;
 
 -- Seed cost_book_fees from fee_schedule (if it has the right columns)
 insert into public.cost_book_fees (cost_book_id, builder_fee, am_fee, builder_warranty, builders_risk, po_fee, bookkeeping, pm_fee, utilities)
@@ -249,14 +275,16 @@ select 'a0000000-0000-0000-0000-000000000001',
   fs.builder_fee, fs.am_fee, fs.builder_warranty, fs.builders_risk,
   fs.po_fee, fs.bookkeeping, fs.pm_fee, fs.utilities
 from public.fee_schedule fs
-limit 1;
+limit 1
+on conflict do nothing;
 
 insert into public.cost_book_fees (cost_book_id, builder_fee, am_fee, builder_warranty, builders_risk, po_fee, bookkeeping, pm_fee, utilities)
 select 'a0000000-0000-0000-0000-000000000002',
   fs.builder_fee, fs.am_fee, fs.builder_warranty, fs.builders_risk,
   fs.po_fee, fs.bookkeeping, fs.pm_fee, fs.utilities
 from public.fee_schedule fs
-limit 1;
+limit 1
+on conflict do nothing;
 
 -- ============================================================
 -- 11. Clone function — atomically copies a cost book
