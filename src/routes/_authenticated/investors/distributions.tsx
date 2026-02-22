@@ -72,6 +72,18 @@ function Distributions() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["distributions"] }),
   });
 
+  const deleteDistribution = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("distributions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["distributions"] });
+      toast.success("Distribution deleted");
+    },
+    onError: () => toast.error("Failed to delete distribution"),
+  });
+
   const totalDistributed = distributions.reduce((sum, d) => sum + (d.total_amount ?? 0), 0);
 
   const columns: ColumnDef<Distribution, unknown>[] = [
@@ -138,6 +150,25 @@ function Distributions() {
             className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
           >
             Issue Notice
+          </button>
+        ) : null,
+    },
+    {
+      id: "delete",
+      header: "",
+      cell: ({ row }) =>
+        row.original.status === "Draft" ? (
+          <button
+            type="button"
+            className="text-xs text-destructive hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("Delete this distribution?")) {
+                deleteDistribution.mutate(row.original.id);
+              }
+            }}
+          >
+            Delete
           </button>
         ) : null,
     },

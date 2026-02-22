@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -75,8 +75,21 @@ const columns: ColumnDef<Opportunity, unknown>[] = [
 
 function PipelineIndex() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeStatus, setActiveStatus] = useState("all");
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("opportunities").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      toast.success("Opportunity deleted");
+    },
+    onError: () => toast.error("Failed to delete opportunity"),
+  });
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["opportunities", activeEntityId],
@@ -90,6 +103,32 @@ function PipelineIndex() {
       return data ?? [];
     },
   });
+
+  const allColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className="text-xs text-destructive hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("Delete this opportunity? This cannot be undone.")) {
+                deleteMutation.mutate(row.original.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        ),
+        size: 80,
+      } as ColumnDef<Opportunity, unknown>,
+    ],
+    [deleteMutation],
+  );
 
   const filteredOpportunities = useMemo(() => {
     if (activeStatus === "all") return opportunities;
@@ -165,7 +204,7 @@ function PipelineIndex() {
         <TableSkeleton rows={8} cols={6} />
       ) : (
         <DataTable
-          columns={columns}
+          columns={allColumns}
           data={filteredOpportunities}
           searchKey="opportunity_name"
           searchPlaceholder="Search opportunities..."

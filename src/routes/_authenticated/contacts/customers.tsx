@@ -68,6 +68,18 @@ function Customers() {
     onError: () => toast.error("Failed to add customer"),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("customers").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      toast.success("Customer deleted");
+    },
+    onError: () => toast.error("Failed to delete customer"),
+  });
+
   const columns: ColumnDef<Customer, unknown>[] = [
     {
       accessorKey: "last_name",
@@ -124,6 +136,25 @@ function Customers() {
       accessorKey: "created_at",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Added" />,
       cell: ({ row }) => formatDate(row.getValue("created_at")),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <button
+          type="button"
+          className="text-xs text-destructive hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (window.confirm("Delete this customer record?")) {
+              deleteMutation.mutate(row.original.id);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
+      size: 80,
     },
   ];
 

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -79,8 +79,21 @@ const columns: ColumnDef<Disposition, unknown>[] = [
 
 function DispositionIndex() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeStatus, setActiveStatus] = useState("all");
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("dispositions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dispositions"] });
+      toast.success("Disposition deleted");
+    },
+    onError: () => toast.error("Failed to delete disposition"),
+  });
 
   const { data: dispositions = [], isLoading } = useQuery<Disposition[]>({
     queryKey: ["dispositions", activeEntityId],
@@ -94,6 +107,32 @@ function DispositionIndex() {
       return data ?? [];
     },
   });
+
+  const allColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className="text-xs text-destructive hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("Delete this disposition? This cannot be undone.")) {
+                deleteMutation.mutate(row.original.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        ),
+        size: 80,
+      } as ColumnDef<Disposition, unknown>,
+    ],
+    [deleteMutation],
+  );
 
   const filtered = useMemo(() => {
     if (activeStatus === "all") return dispositions;
@@ -173,7 +212,7 @@ function DispositionIndex() {
         <EmptyState title="No dispositions yet" description="Create a new disposition to start tracking sales" />
       ) : (
         <DataTable
-          columns={columns}
+          columns={allColumns}
           data={filtered}
           searchKey="buyer_name"
           searchPlaceholder="Search dispositions..."

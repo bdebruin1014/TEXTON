@@ -129,6 +129,44 @@ function CompaniesIndex() {
     return activeType;
   }, [activeType]);
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("companies").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      toast.success("Company deleted");
+    },
+    onError: () => toast.error("Failed to delete company"),
+  });
+
+  const allColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className="text-xs text-destructive hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("Delete this company and all associated contacts?")) {
+                deleteMutation.mutate(row.original.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        ),
+        size: 80,
+      } as ColumnDef<Company, unknown>,
+    ],
+    [deleteMutation],
+  );
+
   const addCompany = useMutation({
     mutationFn: async (values: Record<string, string>) => {
       const { data, error } = await supabase
@@ -184,7 +222,7 @@ function CompaniesIndex() {
           <EmptyState title="No companies found" description="Try adjusting your filters or add a new company" />
         ) : (
           <DataTable
-            columns={columns}
+            columns={allColumns}
             data={filtered}
             searchKey="name"
             searchPlaceholder="Search companies..."

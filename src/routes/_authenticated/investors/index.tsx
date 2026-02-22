@@ -71,6 +71,18 @@ function FundsList() {
     onError: () => toast.error("Failed to create fund"),
   });
 
+  const deleteFund = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("funds").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["funds"] });
+      toast.success("Fund deleted");
+    },
+    onError: () => toast.error("Failed to delete fund"),
+  });
+
   const totalCommitted = funds.reduce((sum, f) => sum + (f.total_committed ?? 0), 0);
   const totalCalled = funds.reduce((sum, f) => sum + (f.total_called ?? 0), 0);
   const totalDistributed = funds.reduce((sum, f) => sum + (f.total_distributed ?? 0), 0);
@@ -132,6 +144,24 @@ function FundsList() {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
+    },
+    {
+      id: "delete",
+      header: "",
+      cell: ({ row }) => (
+        <button
+          type="button"
+          className="text-xs text-destructive hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (window.confirm("Delete this fund? This will also delete all related investments, capital calls, and distributions.")) {
+              deleteFund.mutate(row.original.id);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
     },
   ];
 

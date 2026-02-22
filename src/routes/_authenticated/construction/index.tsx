@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
@@ -89,8 +89,21 @@ const columns: ColumnDef<Job, unknown>[] = [
 
 function ConstructionIndex() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeStatus, setActiveStatus] = useState("all");
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("jobs").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast.success("Job deleted");
+    },
+    onError: () => toast.error("Failed to delete job"),
+  });
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
     queryKey: ["jobs", activeEntityId],
@@ -104,6 +117,32 @@ function ConstructionIndex() {
       return data ?? [];
     },
   });
+
+  const allColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className="text-xs text-destructive hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("Delete this job? This cannot be undone.")) {
+                deleteMutation.mutate(row.original.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        ),
+        size: 80,
+      } as ColumnDef<Job, unknown>,
+    ],
+    [deleteMutation],
+  );
 
   const filteredJobs = useMemo(() => {
     if (activeStatus === "all") return jobs;
@@ -178,7 +217,7 @@ function ConstructionIndex() {
         <EmptyState title="No jobs yet" description="Create a new job to start tracking construction" />
       ) : (
         <DataTable
-          columns={columns}
+          columns={allColumns}
           data={filteredJobs}
           searchKey="lot_number"
           searchPlaceholder="Search jobs..."

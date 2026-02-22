@@ -562,9 +562,11 @@ export type Database = {
           call_date: string
           call_number: string | null
           created_at: string
+          due_date: string | null
           fund_id: string | null
           fund_name: string | null
           id: string
+          purpose: string | null
           status: string
           total_amount: number | null
           updated_at: string
@@ -574,9 +576,11 @@ export type Database = {
           call_date?: string
           call_number?: string | null
           created_at?: string
+          due_date?: string | null
           fund_id?: string | null
           fund_name?: string | null
           id?: string
+          purpose?: string | null
           status?: string
           total_amount?: number | null
           updated_at?: string
@@ -586,9 +590,11 @@ export type Database = {
           call_date?: string
           call_number?: string | null
           created_at?: string
+          due_date?: string | null
           fund_id?: string | null
           fund_name?: string | null
           id?: string
+          purpose?: string | null
           status?: string
           total_amount?: number | null
           updated_at?: string
@@ -2485,34 +2491,40 @@ export type Database = {
           created_at: string
           distribution_date: string
           distribution_number: string | null
+          distribution_type: string | null
           fund_id: string | null
           fund_name: string | null
           id: string
           status: string
           total_amount: number | null
           updated_at: string
+          waterfall_tier: string | null
         }
         Insert: {
           created_at?: string
           distribution_date?: string
           distribution_number?: string | null
+          distribution_type?: string | null
           fund_id?: string | null
           fund_name?: string | null
           id?: string
           status?: string
           total_amount?: number | null
           updated_at?: string
+          waterfall_tier?: string | null
         }
         Update: {
           created_at?: string
           distribution_date?: string
           distribution_number?: string | null
+          distribution_type?: string | null
           fund_id?: string | null
           fund_name?: string | null
           id?: string
           status?: string
           total_amount?: number | null
           updated_at?: string
+          waterfall_tier?: string | null
         }
         Relationships: [
           {
@@ -3833,12 +3845,15 @@ export type Database = {
           fund_type: string | null
           id: string
           name: string
+          preferred_return: number | null
+          promote_structure: string | null
           status: string
           total_called: number | null
           total_committed: number | null
           total_deployed: number | null
           total_distributed: number | null
           updated_at: string
+          vintage_year: number | null
         }
         Insert: {
           created_at?: string
@@ -3847,12 +3862,15 @@ export type Database = {
           fund_type?: string | null
           id?: string
           name: string
+          preferred_return?: number | null
+          promote_structure?: string | null
           status?: string
           total_called?: number | null
           total_committed?: number | null
           total_deployed?: number | null
           total_distributed?: number | null
           updated_at?: string
+          vintage_year?: number | null
         }
         Update: {
           created_at?: string
@@ -3861,12 +3879,15 @@ export type Database = {
           fund_type?: string | null
           id?: string
           name?: string
+          preferred_return?: number | null
+          promote_structure?: string | null
           status?: string
           total_called?: number | null
           total_committed?: number | null
           total_deployed?: number | null
           total_distributed?: number | null
           updated_at?: string
+          vintage_year?: number | null
         }
         Relationships: [
           {

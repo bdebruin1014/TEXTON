@@ -67,6 +67,18 @@ function Employees() {
     onError: () => toast.error("Failed to add employee"),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("employees").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      toast.success("Employee deleted");
+    },
+    onError: () => toast.error("Failed to delete employee"),
+  });
+
   const activeCount = employees.filter((e) => e.status === "Active").length;
 
   const columns: ColumnDef<Employee, unknown>[] = [
@@ -119,6 +131,25 @@ function Employees() {
         const color = status === "Active" ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
       },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <button
+          type="button"
+          className="text-xs text-destructive hover:underline"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (window.confirm("Delete this employee record?")) {
+              deleteMutation.mutate(row.original.id);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
+      size: 80,
     },
   ];
 
