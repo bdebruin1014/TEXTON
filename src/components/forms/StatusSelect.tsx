@@ -22,17 +22,19 @@ export function StatusSelect({ label, value, onSave, statuses, className, disabl
     setLocalValue(value ?? "");
   }, [value]);
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
-    } catch {
-      setStatus("error");
-    }
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
+      } catch {
+        setStatus("error");
+      }
+    });
   };
 
   const currentColors = STATUS_COLORS[localValue];

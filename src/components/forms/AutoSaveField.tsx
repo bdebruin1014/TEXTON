@@ -157,17 +157,20 @@ export function AutoSaveSelect({
 
   const { fieldState, isOverridden } = computeFieldState(localValue, required, autoValue);
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
-    } catch {
-      setStatus("error");
-    }
+    // Use startTransition-style deferral: update UI immediately, save in microtask
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
+      } catch {
+        setStatus("error");
+      }
+    });
   };
 
   const handleRevert = () => {
