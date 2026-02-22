@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { useRef } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
@@ -48,6 +49,7 @@ function Settlement() {
       if (uploadError) throw uploadError;
       await mutation.mutateAsync({ [field]: path });
     },
+    onError: () => toast.error("Failed to upload document"),
   });
 
   const handleUpload = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {

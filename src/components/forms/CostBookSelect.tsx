@@ -26,22 +26,24 @@ export function CostBookSelect({ label, value, onSave, onBookSelected, className
   // Filter to only show Active and Draft books (not Archived) for new selection
   const selectableBooks = books.filter((b) => b.status !== "Archived");
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
 
-      if (onBookSelected && newValue) {
-        const selected = books.find((b) => b.id === newValue);
-        if (selected) onBookSelected(selected);
+        if (onBookSelected && newValue) {
+          const selected = books.find((b) => b.id === newValue);
+          if (selected) onBookSelected(selected);
+        }
+      } catch {
+        setStatus("error");
       }
-    } catch {
-      setStatus("error");
-    }
+    });
   };
 
   return (

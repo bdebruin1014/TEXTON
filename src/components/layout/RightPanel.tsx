@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { useUiStore } from "@/stores/uiStore";
 
 interface CollapsibleSectionProps {
@@ -129,7 +130,7 @@ export function RightPanel() {
         action={{
           label: "+ Add",
           onClick: () => {
-            /* TODO: open add note dialog */
+            toast.info("Use the detail page to add notes");
           },
         }}
       >

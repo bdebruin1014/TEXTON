@@ -59,7 +59,40 @@ function CostCodes() {
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Placeholder: parse CSV and bulk insert
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        try {
+          const text = ev.target?.result as string;
+          const lines = text.split("\n").filter((l) => l.trim());
+          if (lines.length < 2) {
+            toast.error("CSV must have a header row and at least one data row");
+            return;
+          }
+          // Skip header row, parse: code, description, category
+          const rows = lines.slice(1).map((line) => {
+            const cols = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
+            return {
+              code: cols[0] ?? "",
+              description: cols[1] ?? null,
+              category: cols[2] || null,
+              status: "Active",
+            };
+          }).filter((r) => r.code);
+
+          if (rows.length === 0) {
+            toast.error("No valid rows found in CSV");
+            return;
+          }
+
+          const { error } = await supabase.from("cost_codes").insert(rows);
+          if (error) throw error;
+          queryClient.invalidateQueries({ queryKey: ["cost-codes"] });
+          toast.success(`Imported ${rows.length} cost code(s)`);
+        } catch {
+          toast.error("Failed to import cost codes");
+        }
+      };
+      reader.readAsText(file);
     }
     e.target.value = "";
   };

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { useRef } from "react";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
@@ -80,12 +81,14 @@ function Marketing() {
   const deletePhoto = useMutation({
     mutationFn: async (photo: ListingPhoto) => {
       if (photo.storage_path) {
-        await supabase.storage.from("photos").remove([photo.storage_path]);
+        const { error: storageError } = await supabase.storage.from("photos").remove([photo.storage_path]);
+        if (storageError) console.warn("Storage cleanup failed:", storageError.message);
       }
       const { error } = await supabase.from("listing_photos").delete().eq("id", photo.id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["listing-photos", dispositionId] }),
+    onError: () => toast.error("Failed to delete photo"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

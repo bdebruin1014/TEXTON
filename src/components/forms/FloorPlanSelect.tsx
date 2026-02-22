@@ -88,22 +88,24 @@ export function FloorPlanSelect({
     enabled: !!localValue,
   });
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
 
-      if (onPlanLoaded && newValue) {
-        const selected = plans.find((p) => p.id === newValue);
-        if (selected) onPlanLoaded(selected);
+        if (onPlanLoaded && newValue) {
+          const selected = plans.find((p) => p.id === newValue);
+          if (selected) onPlanLoaded(selected);
+        }
+      } catch {
+        setStatus("error");
       }
-    } catch {
-      setStatus("error");
-    }
+    });
   };
 
   return (

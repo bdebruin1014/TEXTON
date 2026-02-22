@@ -176,7 +176,9 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
         min_asp_5pct_margin: sensitivityData.minimumASP5pct,
       })
       .eq("id", sheetId)
-      .then();
+      .then(({ error }) => {
+        if (error) console.warn("Failed to persist computed deal sheet results:", error.message);
+      });
   }, [sheetId, dealOutputs, inputs]);
 
   const handleFloorPlanLoaded = useCallback(
@@ -347,8 +349,8 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
               <input
                 type="checkbox"
                 checked={sheet.is_rch_related_owner}
-                onChange={async (e) => {
-                  await updateSheet.mutateAsync({ is_rch_related_owner: e.target.checked });
+                onChange={(e) => {
+                  updateSheet.mutate({ is_rch_related_owner: e.target.checked });
                 }}
                 className="rounded border-border"
               />

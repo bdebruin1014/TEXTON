@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { useRef } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -52,17 +53,20 @@ function Photos() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
+    onError: () => toast.error("Failed to upload photo"),
   });
 
   const deletePhoto = useMutation({
     mutationFn: async (photo: Photo) => {
       if (photo.storage_path) {
-        await supabase.storage.from("photos").remove([photo.storage_path]);
+        const { error: storageError } = await supabase.storage.from("photos").remove([photo.storage_path]);
+        if (storageError) console.warn("Storage cleanup failed:", storageError.message);
       }
       const { error } = await supabase.from("job_photos").delete().eq("id", photo.id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
+    onError: () => toast.error("Failed to delete photo"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

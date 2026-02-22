@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminOverview,
@@ -32,10 +33,13 @@ function getGreeting(): string {
 }
 
 function AdminOverview() {
+  const { user } = useAuth();
+  const firstName = (user?.user_metadata?.full_name as string)?.split(" ")[0] ?? "there";
+
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-xl font-semibold text-foreground">{getGreeting()}, Bryan</h1>
+        <h1 className="text-xl font-semibold text-foreground">{getGreeting()}, {firstName}</h1>
         <p className="mt-0.5 text-sm text-muted">System administration and configuration</p>
       </div>
 

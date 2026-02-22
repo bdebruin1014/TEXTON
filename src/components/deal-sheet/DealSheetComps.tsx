@@ -147,10 +147,11 @@ function CompRow({ comp, queryKey, onDelete }: { comp: Comp; queryKey: unknown[]
     (field: string, value: string | number | null) => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(async () => {
-        await supabase
+        const { error } = await supabase
           .from("deal_sheet_comps")
           .update({ [field]: value })
           .eq("id", comp.id);
+        if (error) console.warn("Failed to save comp field:", error.message);
         queryClient.invalidateQueries({ queryKey });
       }, 800);
     },

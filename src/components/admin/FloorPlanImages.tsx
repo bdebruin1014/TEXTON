@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
 
@@ -85,11 +86,13 @@ export function FloorPlanImages({ planId }: FloorPlanImagesProps) {
 
   const deleteImage = useMutation({
     mutationFn: async (image: FloorPlanImage) => {
-      await supabase.storage.from("floor-plan-images").remove([image.storage_path]);
+      const { error: storageError } = await supabase.storage.from("floor-plan-images").remove([image.storage_path]);
+      if (storageError) throw storageError;
       const { error } = await supabase.from("floor_plan_images").delete().eq("id", image.id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+    onError: () => toast.error("Failed to delete image"),
   });
 
   const togglePrimary = useMutation({

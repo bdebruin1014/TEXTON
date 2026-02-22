@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { toast } from "sonner";
 
 import { useRef } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -59,17 +60,20 @@ function ContractFiles() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
+    onError: () => toast.error("Failed to upload file"),
   });
 
   const deleteFile = useMutation({
     mutationFn: async (file: ContractFile) => {
       if (file.storage_path) {
-        await supabase.storage.from("documents").remove([file.storage_path]);
+        const { error: storageError } = await supabase.storage.from("documents").remove([file.storage_path]);
+        if (storageError) console.warn("Storage cleanup failed:", storageError.message);
       }
       const { error } = await supabase.from("rch_contract_files").delete().eq("id", file.id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
+    onError: () => toast.error("Failed to delete file"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

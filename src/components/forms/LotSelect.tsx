@@ -45,17 +45,19 @@ export function LotSelect({ label, value, projectId, onSave, filterStatuses, cla
 
   const filteredLots = filterStatuses ? lots.filter((l) => filterStatuses.includes(l.status)) : lots;
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
-    } catch {
-      setStatus("error");
-    }
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
+      } catch {
+        setStatus("error");
+      }
+    });
   };
 
   return (

@@ -69,33 +69,35 @@ export function MunicipalitySelect({
     },
   });
 
-  const handleChange = async (newValue: string) => {
+  const handleChange = (newValue: string) => {
     setLocalValue(newValue);
     if (newValue === (value ?? "")) return;
     setStatus("saving");
-    try {
-      await onSave(newValue);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2000);
+    Promise.resolve().then(async () => {
+      try {
+        await onSave(newValue);
+        setStatus("saved");
+        setTimeout(() => setStatus("idle"), 2000);
 
-      if (onFeesLoaded && newValue) {
-        const selected = municipalities.find((m) => m.id === newValue);
-        if (selected) {
-          onFeesLoaded({
-            water_tap: selected.water_tap,
-            sewer_tap: selected.sewer_tap,
-            gas_tap: selected.gas_tap,
-            permitting: selected.permitting,
-            impact: selected.impact,
-            architect: selected.architect,
-            engineering: selected.engineering,
-            survey: selected.survey,
-          });
+        if (onFeesLoaded && newValue) {
+          const selected = municipalities.find((m) => m.id === newValue);
+          if (selected) {
+            onFeesLoaded({
+              water_tap: selected.water_tap,
+              sewer_tap: selected.sewer_tap,
+              gas_tap: selected.gas_tap,
+              permitting: selected.permitting,
+              impact: selected.impact,
+              architect: selected.architect,
+              engineering: selected.engineering,
+              survey: selected.survey,
+            });
+          }
         }
+      } catch {
+        setStatus("error");
       }
-    } catch {
-      setStatus("error");
-    }
+    });
   };
 
   return (
