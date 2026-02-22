@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { useAutoSave, type SaveStatus } from "@/hooks/useAutoSave";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId/plans-pricing")({
   component: PlansPricing,
@@ -22,9 +25,115 @@ interface FloorPlan {
   base_construction_cost: number | null;
 }
 
+/* ─── Inline currency cell with auto-save ─── */
+
+function InlineCurrencyCell({
+  planId,
+  field,
+  value,
+  projectId,
+}: {
+  planId: string;
+  field: "base_sale_price" | "base_construction_cost";
+  value: number | null;
+  projectId: string;
+}) {
+  const queryClient = useQueryClient();
+  const [displayValue, setDisplayValue] = useState(formatForDisplay(value));
+  const [numericValue, setNumericValue] = useState(value ?? 0);
+  const initialRef = useRef(value);
+
+  useEffect(() => {
+    setDisplayValue(formatForDisplay(value));
+    setNumericValue(value ?? 0);
+    initialRef.current = value;
+  }, [value]);
+
+  const saveFn = useCallback(
+    async (v: number) => {
+      if (v === (initialRef.current ?? 0)) return;
+      const { error } = await supabase
+        .from("floor_plans")
+        .update({ [field]: v })
+        .eq("id", planId);
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["floor-plans", projectId] });
+    },
+    [planId, field, projectId, queryClient],
+  );
+
+  const { status } = useAutoSave(numericValue, saveFn);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    setDisplayValue(raw);
+    const cleaned = raw.replace(/[^0-9.-]/g, "");
+    const num = Number.parseFloat(cleaned);
+    setNumericValue(Number.isNaN(num) ? 0 : num);
+  };
+
+  const handleBlur = () => {
+    setDisplayValue(formatForDisplay(numericValue));
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="relative">
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted">$</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          value={displayValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className="w-28 rounded border border-border bg-background py-1 pl-5 pr-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
+        />
+      </div>
+      <StatusDot status={status} />
+    </div>
+  );
+}
+
+function StatusDot({ status }: { status: SaveStatus }) {
+  if (status === "idle") return null;
+  const dotColor =
+    status === "saving"
+      ? "bg-warning animate-pulse"
+      : status === "saved"
+        ? "bg-success"
+        : "bg-destructive";
+  return <span className={cn("h-2 w-2 shrink-0 rounded-full", dotColor)} title={status} />;
+}
+
+function formatForDisplay(val: number | null | undefined): string {
+  if (val == null || val === 0) return "";
+  return val.toLocaleString("en-US");
+}
+
+/* ─── Main component ─── */
+
 function PlansPricing() {
   const { projectId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+  const user = useAuthStore((s) => s.user);
+
+  // Check user role for edit guard
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase
+        .from("user_profiles")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+
+  const canEdit = userRole === "admin" || userRole === "software_admin";
 
   const { data: plans = [], isLoading } = useQuery<FloorPlan[]>({
     queryKey: ["floor-plans", projectId],
@@ -79,23 +188,43 @@ function PlansPricing() {
       header: "Heated SF",
       cell: ({ row }) => {
         const val = row.getValue("heated_sqft") as number | null;
-        return val ? `${val.toLocaleString()}` : "—";
+        return val ? `${val.toLocaleString()}` : "\u2014";
       },
     },
     {
       accessorKey: "base_sale_price",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Base Price" />,
       cell: ({ row }) => {
+        if (isEditing) {
+          return (
+            <InlineCurrencyCell
+              planId={row.original.id}
+              field="base_sale_price"
+              value={row.original.base_sale_price}
+              projectId={projectId}
+            />
+          );
+        }
         const val = row.getValue("base_sale_price") as number | null;
-        return val ? formatCurrency(val) : "—";
+        return val ? formatCurrency(val) : "\u2014";
       },
     },
     {
       accessorKey: "base_construction_cost",
       header: "Build Cost",
       cell: ({ row }) => {
+        if (isEditing) {
+          return (
+            <InlineCurrencyCell
+              planId={row.original.id}
+              field="base_construction_cost"
+              value={row.original.base_construction_cost}
+              projectId={projectId}
+            />
+          );
+        }
         const val = row.getValue("base_construction_cost") as number | null;
-        return val ? formatCurrency(val) : "—";
+        return val ? formatCurrency(val) : "\u2014";
       },
     },
     {
@@ -104,7 +233,7 @@ function PlansPricing() {
       cell: ({ row }) => {
         const price = row.original.base_sale_price;
         const cost = row.original.base_construction_cost;
-        if (!price || !cost) return "—";
+        if (!price || !cost) return "\u2014";
         const margin = ((price - cost) / price) * 100;
         return `${margin.toFixed(1)}%`;
       },
@@ -136,12 +265,20 @@ function PlansPricing() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 rounded-lg border border-border bg-transparent px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-50"
-          >
-            Edit Pricing
-          </button>
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => setIsEditing(!isEditing)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+                isEditing
+                  ? "border-primary bg-primary-50 text-primary"
+                  : "border-border bg-transparent text-foreground hover:bg-primary-50",
+              )}
+            >
+              {isEditing ? "Done Editing" : "Edit Pricing"}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => addPlan.mutate()}
