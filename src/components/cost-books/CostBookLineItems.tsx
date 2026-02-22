@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { useCostBookLineItems } from "@/hooks/useCostBooks";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 import { formatCurrency } from "@/lib/utils";
 
 interface CostBookLineItemsProps {
@@ -51,7 +52,7 @@ export function CostBookLineItems({ bookId, planId, planName, onBack }: CostBook
           .from("cost_book_line_items")
           .update({ [field]: value })
           .eq("id", id);
-        if (error) console.error(`Failed to save ${field}:`, error);
+        if (error) Sentry.captureException(error);
         queryClient.invalidateQueries({ queryKey });
       }, 800);
     },

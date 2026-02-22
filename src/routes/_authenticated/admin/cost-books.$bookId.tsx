@@ -10,6 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCloneCostBook, useCostBook } from "@/hooks/useCostBooks";
 import { STATUS_COLORS } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 export const Route = createFileRoute("/_authenticated/admin/cost-books/$bookId")({
   component: CostBookDetail,
@@ -42,7 +43,7 @@ function CostBookDetail() {
           .from("cost_books")
           .update({ [field]: value })
           .eq("id", bookId);
-        if (error) console.error(`Failed to save ${field}:`, error);
+        if (error) Sentry.captureException(error);
         queryClient.invalidateQueries({ queryKey });
       }, 800);
     },
@@ -55,7 +56,7 @@ function CostBookDetail() {
         .from("cost_books")
         .update({ [field]: value })
         .eq("id", bookId);
-      if (error) console.error(`Failed to save ${field}:`, error);
+      if (error) Sentry.captureException(error);
       queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: ["cost-books"] });
     },

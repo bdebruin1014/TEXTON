@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 export interface UploadedFile {
   file_name: string;
@@ -31,7 +32,7 @@ export function FileUploadZone({ storageBucket, uploadedFiles, onFilesChange }: 
           const path = `intake-uploads/${Date.now()}-${file.name}`;
           const { error } = await supabase.storage.from(storageBucket).upload(path, file);
           if (error) {
-            console.error("Upload error:", error);
+            Sentry.captureException(error);
             continue;
           }
           newFiles.push({
@@ -41,7 +42,7 @@ export function FileUploadZone({ storageBucket, uploadedFiles, onFilesChange }: 
             mime_type: file.type,
           });
         } catch (err) {
-          console.error("Upload failed:", err);
+          Sentry.captureException(err);
         }
       }
 

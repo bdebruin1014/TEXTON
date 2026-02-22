@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RecordLinker } from "@/components/matters/RecordLinker";
 import { VoiceInputButton } from "@/components/matters/VoiceInputButton";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -150,7 +151,7 @@ export function MatterIntakeChat({
           const path = `intake-uploads/${Date.now()}-${file.name}`;
           const { error } = await supabase.storage.from("matter-documents").upload(path, file);
           if (error) {
-            console.error("Upload error:", error);
+            Sentry.captureException(error);
             continue;
           }
           newFiles.push({
@@ -160,7 +161,7 @@ export function MatterIntakeChat({
             mime_type: file.type,
           });
         } catch (err) {
-          console.error("Upload failed:", err);
+          Sentry.captureException(err);
         }
       }
 

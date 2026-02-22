@@ -8,6 +8,7 @@ import { ScenarioComparison } from "@/components/deal-sheet/ScenarioComparison";
 import { ScenarioTabBar } from "@/components/deal-sheet/ScenarioTabBar";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId/deal-sheet")({
   component: DealSheet,
@@ -114,11 +115,11 @@ function DealSheet() {
       });
       if (!res.ok) {
         const errBody = await res.text();
-        console.error("AI scenario generation failed:", errBody);
+        Sentry.captureMessage(`AI scenario generation failed: ${errBody}`, "error");
       }
       queryClient.invalidateQueries({ queryKey: sheetsQueryKey });
     } catch (err) {
-      console.error("Suggest scenarios error:", err);
+      Sentry.captureException(err);
     } finally {
       setAiLoading(false);
     }

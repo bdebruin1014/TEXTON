@@ -53,15 +53,15 @@ function EntityAccountingLayout() {
     {
       label: "Banking",
       items: [
-        { label: "Bank Accounts", path: `${basePath}/banking` },
-        { label: "Reconciliation", path: `${basePath}/reconciliations` },
+        { label: "Bank Accounts", path: "/accounting/banking" },
+        { label: "Reconciliation", path: "/accounting/reconciliations" },
         { label: "Aggregate Payments", path: `${basePath}/aggregate-payments` },
       ],
     },
     {
       label: "Payables / Receivables",
       items: [
-        { label: "Invoices", path: `${basePath}/invoices` },
+        { label: "Invoices", path: "/accounting/invoices" },
         { label: "AP", path: "/accounting/ap" },
         { label: "AR", path: "/accounting/ar" },
       ],
@@ -69,7 +69,7 @@ function EntityAccountingLayout() {
     {
       label: "Reporting",
       items: [
-        { label: "Reports", path: `${basePath}/reports` },
+        { label: "Reports", path: "/accounting/reports" },
         { label: "Job Costing", path: "/accounting/job-costing" },
         { label: "Period Close", path: "/accounting/period-close" },
       ],

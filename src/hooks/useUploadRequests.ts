@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 interface UploadRequestItem {
   id: string;
@@ -136,7 +137,7 @@ export function useCreateUploadRequest() {
             recipient_name: input.recipient_name,
           },
         });
-        if (emailError) console.warn("Email notification failed:", emailError.message);
+        if (emailError) Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
       }
 
       return request as UploadRequest;

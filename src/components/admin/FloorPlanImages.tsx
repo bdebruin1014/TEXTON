@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 interface FloorPlanImage {
   id: string;
@@ -59,7 +60,7 @@ export function FloorPlanImages({ planId }: FloorPlanImagesProps) {
             upsert: false,
           });
           if (uploadError) {
-            console.error("Upload error:", uploadError);
+            Sentry.captureException(uploadError);
             continue;
           }
 
@@ -71,7 +72,7 @@ export function FloorPlanImages({ planId }: FloorPlanImagesProps) {
             is_primary: images.filter((i) => i.image_type === uploadType).length === 0,
             display_order: nextOrder,
           });
-          if (insertError) console.error("Insert error:", insertError);
+          if (insertError) Sentry.captureException(insertError);
         }
         queryClient.invalidateQueries({ queryKey });
       } finally {

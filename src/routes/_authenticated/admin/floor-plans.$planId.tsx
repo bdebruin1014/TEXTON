@@ -5,6 +5,7 @@ import { FloorPlanImages } from "@/components/admin/FloorPlanImages";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 import { formatCurrency } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/floor-plans/$planId")({
@@ -102,7 +103,7 @@ function FloorPlanDetail() {
           .from("floor_plans")
           .update({ [field]: value })
           .eq("id", planId);
-        if (error) console.error(`Failed to save ${field}:`, error);
+        if (error) Sentry.captureException(error);
         queryClient.invalidateQueries({ queryKey });
       }, 800);
     },
@@ -115,7 +116,7 @@ function FloorPlanDetail() {
         .from("floor_plans")
         .update({ [field]: value })
         .eq("id", planId);
-      if (error) console.error(`Failed to save ${field}:`, error);
+      if (error) Sentry.captureException(error);
       queryClient.invalidateQueries({ queryKey });
     },
     [planId, queryClient, queryKey],
@@ -132,7 +133,7 @@ function FloorPlanDetail() {
           .from("floor_plans")
           .update({ [field]: num })
           .eq("id", planId);
-        if (error) console.error(`Failed to save ${field}:`, error);
+        if (error) Sentry.captureException(error);
         queryClient.invalidateQueries({ queryKey });
       }, 800);
     },
@@ -174,7 +175,7 @@ function FloorPlanDetail() {
           .from("sticks_bricks_items")
           .update({ [field]: value })
           .eq("id", id);
-        if (error) console.error(`Failed to save S&B ${field}:`, error);
+        if (error) Sentry.captureException(error);
         queryClient.invalidateQueries({ queryKey: sbQueryKey });
       }, 800);
     },

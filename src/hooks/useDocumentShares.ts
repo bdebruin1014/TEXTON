@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { Sentry } from "@/lib/sentry";
 
 interface DocumentShare {
   id: string;
@@ -120,7 +121,7 @@ export function useCreateShare() {
             recipient_name: input.recipient_name,
           },
         });
-        if (emailError) console.warn("Email notification failed:", emailError.message);
+        if (emailError) Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
       }
 
       return share as DocumentShare;
