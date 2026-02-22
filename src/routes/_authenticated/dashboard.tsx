@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KpiCard } from "@/components/shared/KpiCard";
@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useRealtime } from "@/hooks/useRealtime";
 import { MATTER_STATUS_LABELS } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Matter } from "@/types/matters";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -22,6 +22,34 @@ interface Opportunity {
   updated_at: string;
 }
 
+interface Project {
+  id: string;
+  project_name: string;
+  status: string;
+  project_type: string | null;
+  budget_total: number | null;
+  updated_at: string;
+}
+
+interface Job {
+  id: string;
+  record_number: string | null;
+  lot_number: string | null;
+  project_name: string | null;
+  status: string;
+  floor_plan_name: string | null;
+  updated_at: string;
+}
+
+interface Disposition {
+  id: string;
+  lot_number: string | null;
+  buyer_name: string | null;
+  status: string;
+  contract_price: number | null;
+  closing_date: string | null;
+}
+
 const QUICK_ACTIONS = [
   { label: "Daily Log", borderColor: "var(--color-success)" },
   { label: "New PO", borderColor: "var(--color-info)" },
@@ -33,6 +61,7 @@ const QUICK_ACTIONS = [
 
 function DashboardPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["dashboard-pipeline"],
@@ -42,6 +71,48 @@ function DashboardPage() {
         .select("id, opportunity_name, status, estimated_value, updated_at")
         .not("status", "in", '("Closed Won","Closed Lost")')
         .order("updated_at", { ascending: false })
+        .limit(5);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: projects = [] } = useQuery<Project[]>({
+    queryKey: ["dashboard-projects"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("id, project_name, status, project_type, budget_total, updated_at")
+        .in("status", ["Pre-Development", "Active"])
+        .order("updated_at", { ascending: false })
+        .limit(5);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: activeJobs = [] } = useQuery<Job[]>({
+    queryKey: ["dashboard-jobs"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("id, record_number, lot_number, project_name, status, floor_plan_name, updated_at")
+        .in("status", ["In Progress", "Framing", "Foundation", "Rough-In", "Drywall", "Trim", "Punch"])
+        .order("updated_at", { ascending: false })
+        .limit(5);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: pendingClosings = [] } = useQuery<Disposition[]>({
+    queryKey: ["dashboard-closings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("dispositions")
+        .select("id, lot_number, buyer_name, status, contract_price, closing_date")
+        .in("status", ["Under Contract", "Pending Close"])
+        .order("closing_date", { ascending: true })
         .limit(5);
       if (error) throw error;
       return data ?? [];
@@ -62,10 +133,47 @@ function DashboardPage() {
     },
   });
 
+  // Counts for KPIs (separate count queries for accurate totals)
+  const { data: projectCount = 0 } = useQuery<number>({
+    queryKey: ["dashboard-project-count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("projects")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["Pre-Development", "Active"]);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
+  const { data: jobCount = 0 } = useQuery<number>({
+    queryKey: ["dashboard-job-count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("jobs")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["In Progress", "Framing", "Foundation", "Rough-In", "Drywall", "Trim", "Punch"]);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
+  const { data: closingCount = 0 } = useQuery<number>({
+    queryKey: ["dashboard-closing-count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("dispositions")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["Under Contract", "Pending Close"]);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
   useRealtime({ table: "opportunities", invalidateKeys: [["dashboard-pipeline"]] });
-  useRealtime({ table: "projects", invalidateKeys: [["dashboard-pipeline"]] });
-  useRealtime({ table: "jobs", invalidateKeys: [["dashboard-pipeline"]] });
-  useRealtime({ table: "dispositions", invalidateKeys: [["dashboard-pipeline"]] });
+  useRealtime({ table: "projects", invalidateKeys: [["dashboard-projects"], ["dashboard-project-count"]] });
+  useRealtime({ table: "jobs", invalidateKeys: [["dashboard-jobs"], ["dashboard-job-count"]] });
+  useRealtime({ table: "dispositions", invalidateKeys: [["dashboard-closings"], ["dashboard-closing-count"]] });
   useRealtime({ table: "matters", invalidateKeys: [["dashboard-matters"]] });
 
   const pipelineValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
@@ -87,6 +195,7 @@ function DashboardPage() {
         <div className="flex items-center gap-2">
           <button
             type="button"
+            onClick={() => queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string).startsWith("dashboard-") })}
             className="rounded-[var(--radius)] border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-card-hover"
           >
             Refresh
@@ -117,27 +226,69 @@ function DashboardPage() {
 
       {/* KPI Cards */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Active Projects" value="0" sub="Across all entities" accentColor="var(--color-primary)" />
-        <KpiCard label="Jobs in Progress" value="0" sub="Under construction" accentColor="var(--color-info)" />
+        <KpiCard label="Active Projects" value={String(projectCount)} sub="Across all entities" accentColor="var(--color-primary)" />
+        <KpiCard label="Jobs in Progress" value={String(jobCount)} sub="Under construction" accentColor="var(--color-info)" />
         <KpiCard
           label="Pipeline Value"
           value={formatCurrency(pipelineValue)}
           sub={`${pipelineCount} active opportunit${pipelineCount === 1 ? "y" : "ies"}`}
           accentColor="var(--color-warning)"
         />
-        <KpiCard label="Pending Closings" value="0" sub="Under contract" accentColor="var(--color-success)" />
+        <KpiCard label="Pending Closings" value={String(closingCount)} sub="Under contract" accentColor="var(--color-success)" />
       </div>
 
       {/* Content Grid — text-only headers, no icons */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Active Projects */}
         <DashboardCard title="Active Projects" viewAllPath="/projects">
-          <EmptyState title="No projects yet" description="Create your first project to get started" />
+          {projects.length === 0 ? (
+            <EmptyState title="No projects yet" description="Create your first project to get started" />
+          ) : (
+            <div className="divide-y divide-border">
+              {projects.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
+                  onClick={() => navigate({ to: "/projects/$projectId/basic-info", params: { projectId: p.id } })}
+                >
+                  <div>
+                    <p className="text-[13px] font-semibold text-foreground">{p.project_name}</p>
+                    <p className="text-[11px] text-muted">
+                      {p.project_type ?? "No type"} {p.budget_total ? `· ${formatCurrency(p.budget_total)}` : ""}
+                    </p>
+                  </div>
+                  <StatusBadge status={p.status} />
+                </button>
+              ))}
+            </div>
+          )}
         </DashboardCard>
 
         {/* Active Jobs */}
         <DashboardCard title="Active Jobs" viewAllPath="/construction">
-          <EmptyState title="No jobs yet" description="Jobs are created from project lot inventory" />
+          {activeJobs.length === 0 ? (
+            <EmptyState title="No jobs yet" description="Jobs are created from project lot inventory" />
+          ) : (
+            <div className="divide-y divide-border">
+              {activeJobs.map((j) => (
+                <button
+                  key={j.id}
+                  type="button"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
+                  onClick={() => navigate({ to: "/construction/$jobId/job-info", params: { jobId: j.id } })}
+                >
+                  <div>
+                    <p className="text-[13px] font-semibold text-foreground">
+                      {j.lot_number ?? j.record_number ?? "Job"} {j.floor_plan_name ? `· ${j.floor_plan_name}` : ""}
+                    </p>
+                    <p className="text-[11px] text-muted">{j.project_name ?? "No project"}</p>
+                  </div>
+                  <StatusBadge status={j.status} />
+                </button>
+              ))}
+            </div>
+          )}
         </DashboardCard>
 
         {/* Pipeline */}
@@ -170,10 +321,34 @@ function DashboardPage() {
 
         {/* Upcoming Closings */}
         <DashboardCard title="Upcoming Closings" viewAllPath="/disposition">
-          <EmptyState
-            title="No closings scheduled"
-            description="Closings appear when dispositions are under contract"
-          />
+          {pendingClosings.length === 0 ? (
+            <EmptyState
+              title="No closings scheduled"
+              description="Closings appear when dispositions are under contract"
+            />
+          ) : (
+            <div className="divide-y divide-border">
+              {pendingClosings.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
+                  onClick={() => navigate({ to: `/disposition/${d.id}/overview` as string })}
+                >
+                  <div>
+                    <p className="text-[13px] font-semibold text-foreground">
+                      {d.lot_number ?? "—"} {d.buyer_name ? `· ${d.buyer_name}` : ""}
+                    </p>
+                    <p className="text-[11px] text-muted">
+                      {d.closing_date ? `Closing ${formatDate(d.closing_date)}` : "No closing date"}
+                      {d.contract_price ? ` · ${formatCurrency(d.contract_price)}` : ""}
+                    </p>
+                  </div>
+                  <StatusBadge status={d.status} />
+                </button>
+              ))}
+            </div>
+          )}
         </DashboardCard>
 
         {/* Open Matters */}
