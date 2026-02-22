@@ -5,6 +5,7 @@ export const OPPORTUNITY_STATUSES = [
   "Due Diligence",
   "Under Contract",
   "Closed Won",
+  "Converted",
   "Closed Lost",
   "On Hold",
 ] as const;

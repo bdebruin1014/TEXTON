@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { DetailSidebar, type ShortcutGroup, type SidebarSection } from "@/components/layout/DetailSidebar";
+import { ConvertToProjectModal } from "@/components/pipeline/ConvertToProjectModal";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId")({
@@ -10,13 +12,15 @@ export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId")(
 
 function OpportunityLayout() {
   const { opportunityId } = Route.useParams();
+  const navigate = useNavigate();
+  const [showConvertModal, setShowConvertModal] = useState(false);
 
   const { data: opp } = useQuery({
     queryKey: ["opportunity", opportunityId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("opportunities")
-        .select("id, opportunity_name, status")
+        .select("id, opportunity_name, status, project_type, entity_id, address_street, address_city, address_state, address_zip, county, lot_price, contract_price, total_lots, acreage, project_id")
         .eq("id", opportunityId)
         .single();
       if (error) throw error;
@@ -25,6 +29,7 @@ function OpportunityLayout() {
   });
 
   const basePath = `/pipeline/${opportunityId}`;
+  const isConverted = opp?.status === "Converted";
 
   const sections: SidebarSection[] = [
     {
@@ -79,6 +84,8 @@ function OpportunityLayout() {
     },
   ];
 
+  const canConvert = opp?.status === "Closed Won";
+
   const sidebar = (
     <div className="flex h-full flex-col">
       <DetailSidebar
@@ -91,21 +98,37 @@ function OpportunityLayout() {
       />
       {/* Convert to Project button at bottom of sidebar */}
       <div
-        className="bg-sidebar px-4 py-3"
+        className="shrink-0 px-4 py-3"
         style={{
-          width: "var(--sidebar-width)",
-          borderRight: "1px solid var(--sidebar-border)",
+          backgroundColor: "var(--color-sidebar)",
           borderTop: "1px solid var(--sidebar-border)",
         }}
       >
-        <button
-          type="button"
-          className="w-full rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
-          disabled={opp?.status !== "Closed Won"}
-          title={opp?.status !== "Closed Won" ? "Status must be Closed Won to convert" : "Convert to Project"}
-        >
-          Convert to Project &#9654;
-        </button>
+        {isConverted && opp.project_id ? (
+          <Link
+            to="/projects/$projectId/basic-info"
+            params={{ projectId: opp.project_id }}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
+          >
+            View Project {"\u2192"}
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowConvertModal(true)}
+            className="w-full rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!canConvert}
+            title={
+              isConverted
+                ? "Already converted to project"
+                : !canConvert
+                  ? "Status must be Closed Won to convert"
+                  : "Convert to Project"
+            }
+          >
+            Convert to Project {"\u25B6"}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -113,6 +136,17 @@ function OpportunityLayout() {
   return (
     <PageWithSidebar sidebar={sidebar}>
       <Outlet />
+      {opp && (
+        <ConvertToProjectModal
+          open={showConvertModal}
+          onClose={() => setShowConvertModal(false)}
+          opportunity={opp}
+          onConverted={(projectId) => {
+            setShowConvertModal(false);
+            navigate({ to: "/projects/$projectId/basic-info", params: { projectId } });
+          }}
+        />
+      )}
     </PageWithSidebar>
   );
 }

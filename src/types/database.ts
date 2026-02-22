@@ -5464,6 +5464,7 @@ export type Database = {
           parcel_id: string | null
           priority: string | null
           probability: number | null
+          project_id: string | null
           project_type: string | null
           record_number: string | null
           sewer_status: string | null
@@ -5531,6 +5532,7 @@ export type Database = {
           parcel_id?: string | null
           priority?: string | null
           probability?: number | null
+          project_id?: string | null
           project_type?: string | null
           record_number?: string | null
           sewer_status?: string | null
@@ -5598,6 +5600,7 @@ export type Database = {
           parcel_id?: string | null
           priority?: string | null
           probability?: number | null
+          project_id?: string | null
           project_type?: string | null
           record_number?: string | null
           sewer_status?: string | null
@@ -5628,6 +5631,13 @@ export type Database = {
             columns: ["municipality_id"]
             isOneToOne: false
             referencedRelation: "municipalities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
