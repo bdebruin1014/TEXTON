@@ -7,17 +7,23 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify webhook secret — DocuSeal sends this in the X-Webhook-Secret header
+    // SECURITY: Reject all requests if webhook secret is not configured.
+    // This prevents accepting forged e-sign completion events.
     const webhookSecret = Deno.env.get("DOCUSEAL_WEBHOOK_SECRET");
-    if (webhookSecret) {
-      const providedSecret =
-        req.headers.get("x-webhook-secret") ?? req.headers.get("authorization")?.replace("Bearer ", "");
-      if (providedSecret !== webhookSecret) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+    if (!webhookSecret) {
+      return new Response(JSON.stringify({ error: "Webhook secret not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const providedSecret =
+      req.headers.get("x-webhook-secret") ?? req.headers.get("authorization")?.replace("Bearer ", "");
+    if (providedSecret !== webhookSecret) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const event = await req.json();
