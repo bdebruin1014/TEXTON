@@ -50,7 +50,9 @@ function InvestorsLayout() {
               currentPath.startsWith("/investors/") &&
               !currentPath.startsWith("/investors/capital-calls") &&
               !currentPath.startsWith("/investors/distributions");
-            const active = isActive || isFundDetail;
+            const isDistributionDetail =
+              item.path === "/investors/distributions" && currentPath.startsWith("/investors/distributions/");
+            const active = isActive || isFundDetail || isDistributionDetail;
             return (
               <Link
                 key={item.path}

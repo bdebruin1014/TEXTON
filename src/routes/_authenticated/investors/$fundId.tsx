@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 import { AutoSaveField, AutoSaveSelect } from "@/components/forms/AutoSaveField";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
@@ -37,7 +39,21 @@ interface Investor {
   called_amount: number | null;
   distributed_amount: number | null;
   ownership_pct: number | null;
+  is_gp: boolean;
+  contribution_date: string | null;
   status: string;
+}
+
+interface WaterfallTier {
+  id: string;
+  fund_id: string;
+  tier_order: number;
+  tier_name: string;
+  description: string | null;
+  pref_rate: number | null;
+  catch_up_pct: number | null;
+  gp_split_pct: number | null;
+  lp_split_pct: number | null;
 }
 
 const FUND_TYPES = ["Equity Fund", "Debt Fund", "Opportunity Fund", "Development Fund", "Joint Venture"];
@@ -78,6 +94,19 @@ function FundDetail() {
     },
   });
 
+  const { data: waterfallTiers = [] } = useQuery<WaterfallTier[]>({
+    queryKey: ["waterfall-tiers", fundId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("waterfall_tiers")
+        .select("*")
+        .eq("fund_id", fundId)
+        .order("tier_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const addInvestor = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("investments").insert({
@@ -89,6 +118,56 @@ function FundDetail() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fund-investors", fundId] });
+    },
+  });
+
+  const updateInvestment = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("investments").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fund-investors", fundId] });
+    },
+  });
+
+  const addDefaultTiers = useMutation({
+    mutationFn: async () => {
+      const prefRate = fund?.preferred_return ?? 0.08;
+      const tiers = [
+        { fund_id: fundId, tier_order: 1, tier_name: "return_of_capital", description: "Return of Capital" },
+        { fund_id: fundId, tier_order: 2, tier_name: "preferred_return", description: "Preferred Return", pref_rate: prefRate },
+        { fund_id: fundId, tier_order: 3, tier_name: "catch_up", description: "GP Catch-Up", catch_up_pct: 0.2 },
+        { fund_id: fundId, tier_order: 4, tier_name: "profit_split", description: "Profit Split", gp_split_pct: 0.2, lp_split_pct: 0.8 },
+      ];
+      const { error } = await supabase.from("waterfall_tiers").insert(tiers);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["waterfall-tiers", fundId] });
+      toast.success("Default waterfall tiers added");
+    },
+    onError: () => toast.error("Failed to add tiers — they may already exist"),
+  });
+
+  const updateTier = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("waterfall_tiers").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["waterfall-tiers", fundId] });
+    },
+  });
+
+  const deleteTier = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("waterfall_tiers").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["waterfall-tiers", fundId] });
+      toast.success("Tier removed");
     },
   });
 
@@ -109,6 +188,26 @@ function FundDetail() {
       accessorKey: "investor_name",
       header: "Investor",
       cell: ({ row }) => <span className="font-medium">{row.getValue("investor_name") ?? "—"}</span>,
+    },
+    {
+      accessorKey: "is_gp",
+      header: "GP/LP",
+      cell: ({ row }) => {
+        const isGp = row.original.is_gp;
+        return (
+          <button
+            type="button"
+            onClick={() =>
+              updateInvestment.mutate({ id: row.original.id, updates: { is_gp: !isGp } })
+            }
+            className={`rounded-full px-2 py-0.5 text-xs font-medium transition-colors ${
+              isGp ? "bg-info-bg text-info-text" : "bg-accent text-muted-foreground"
+            }`}
+          >
+            {isGp ? "GP" : "LP"}
+          </button>
+        );
+      },
     },
     {
       accessorKey: "commitment_amount",
@@ -140,6 +239,14 @@ function FundDetail() {
       cell: ({ row }) => {
         const val = row.getValue("ownership_pct") as number | null;
         return val != null ? formatPercent(val) : "—";
+      },
+    },
+    {
+      accessorKey: "contribution_date",
+      header: "Contribution Date",
+      cell: ({ row }) => {
+        const val = row.original.contribution_date;
+        return val ? <span className="text-xs">{val}</span> : <span className="text-xs text-muted">—</span>;
       },
     },
     {
@@ -225,6 +332,55 @@ function FundDetail() {
         <AutoSaveField label="" value={fund.description ?? ""} onSave={save("description")} type="textarea" rows={4} />
       </div>
 
+      {/* Waterfall Configuration */}
+      <div className="mb-8 rounded-lg border border-border bg-card p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted">Waterfall Tiers</h2>
+          {waterfallTiers.length === 0 && (
+            <button
+              type="button"
+              onClick={() => addDefaultTiers.mutate()}
+              disabled={addDefaultTiers.isPending}
+              className="flex items-center gap-1.5 rounded-lg bg-button px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
+            >
+              + Add Default Tiers
+            </button>
+          )}
+        </div>
+        {waterfallTiers.length === 0 ? (
+          <p className="py-4 text-center text-sm text-muted">
+            No waterfall tiers configured. Add default tiers to enable distribution calculations.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs font-medium uppercase text-muted">
+                  <th className="px-3 py-2">Order</th>
+                  <th className="px-3 py-2">Tier</th>
+                  <th className="px-3 py-2">Description</th>
+                  <th className="px-3 py-2">Pref Rate</th>
+                  <th className="px-3 py-2">Catch-Up %</th>
+                  <th className="px-3 py-2">GP Split</th>
+                  <th className="px-3 py-2">LP Split</th>
+                  <th className="px-3 py-2" />
+                </tr>
+              </thead>
+              <tbody>
+                {waterfallTiers.map((tier) => (
+                  <WaterfallTierRow
+                    key={tier.id}
+                    tier={tier}
+                    onUpdate={(updates) => updateTier.mutate({ id: tier.id, updates })}
+                    onDelete={() => deleteTier.mutate(tier.id)}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
       {/* Investors Sub-table */}
       <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
@@ -249,5 +405,81 @@ function FundDetail() {
         )}
       </div>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Waterfall tier inline-editable row
+// ---------------------------------------------------------------------------
+
+const TIER_LABELS: Record<string, string> = {
+  return_of_capital: "Return of Capital",
+  preferred_return: "Preferred Return",
+  catch_up: "GP Catch-Up",
+  profit_split: "Profit Split",
+};
+
+function WaterfallTierRow({
+  tier,
+  onUpdate,
+  onDelete,
+}: {
+  tier: WaterfallTier;
+  onUpdate: (updates: Record<string, unknown>) => void;
+  onDelete: () => void;
+}) {
+  const [editing, setEditing] = useState<string | null>(null);
+
+  const pctCell = (field: string, value: number | null) => {
+    const display = value != null ? `${(value * 100).toFixed(1)}%` : "—";
+    return (
+      <td className="px-3 py-2">
+        {editing === field ? (
+          <input
+            type="number"
+            step="0.1"
+            className="w-20 rounded border border-border bg-background px-2 py-1 text-xs"
+            defaultValue={value != null ? (value * 100).toFixed(1) : ""}
+            autoFocus
+            onBlur={(e) => {
+              const v = e.target.value ? Number(e.target.value) / 100 : null;
+              onUpdate({ [field]: v });
+              setEditing(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+              if (e.key === "Escape") setEditing(null);
+            }}
+          />
+        ) : (
+          <button type="button" className="text-xs hover:underline" onClick={() => setEditing(field)}>
+            {display}
+          </button>
+        )}
+      </td>
+    );
+  };
+
+  return (
+    <tr className="border-b border-border last:border-0">
+      <td className="px-3 py-2 font-mono text-xs">{tier.tier_order}</td>
+      <td className="px-3 py-2 text-xs font-medium">{TIER_LABELS[tier.tier_name] ?? tier.tier_name}</td>
+      <td className="px-3 py-2 text-xs text-muted">{tier.description ?? "—"}</td>
+      {pctCell("pref_rate", tier.pref_rate)}
+      {pctCell("catch_up_pct", tier.catch_up_pct)}
+      {pctCell("gp_split_pct", tier.gp_split_pct)}
+      {pctCell("lp_split_pct", tier.lp_split_pct)}
+      <td className="px-3 py-2">
+        <button
+          type="button"
+          className="text-xs text-destructive hover:underline"
+          onClick={() => {
+            if (window.confirm("Remove this tier?")) onDelete();
+          }}
+        >
+          Remove
+        </button>
+      </td>
+    </tr>
   );
 }

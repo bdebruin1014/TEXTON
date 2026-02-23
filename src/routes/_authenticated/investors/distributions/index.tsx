@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
-export const Route = createFileRoute("/_authenticated/investors/distributions")({
+export const Route = createFileRoute("/_authenticated/investors/distributions/")({
   component: Distributions,
 });
 
@@ -28,9 +28,24 @@ interface Distribution {
   status: string;
 }
 
+interface FundOption {
+  id: string;
+  name: string;
+}
+
 function Distributions() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+
+  const { data: funds = [] } = useQuery<FundOption[]>({
+    queryKey: ["funds-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("funds").select("id, name").order("name");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
 
   const { data: distributions = [], isLoading } = useQuery<Distribution[]>({
     queryKey: ["distributions"],
@@ -47,11 +62,14 @@ function Distributions() {
   const addDistribution = useMutation({
     mutationFn: async (values: Record<string, string>) => {
       const count = distributions.length + 1;
+      const selectedFund = funds.find((f) => f.id === values.fund_id);
       const { error } = await supabase.from("distributions").insert({
-        distribution_number: `DIST-${String(count).padStart(4, "0")}`,
+        distribution_number: `DIST-${String(count).padStart(4, `0`)}`,
         distribution_date: values.distribution_date,
         total_amount: values.total_amount ? Number(values.total_amount) : null,
         distribution_type: values.distribution_type || null,
+        fund_id: values.fund_id || null,
+        fund_name: selectedFund?.name ?? null,
         status: "Draft",
       });
       if (error) throw error;
@@ -205,6 +223,7 @@ function Distributions() {
           data={distributions}
           searchKey="fund_name"
           searchPlaceholder="Search distributions..."
+          onRowClick={(row) => navigate({ to: `/investors/distributions/${row.id}` })}
         />
       )}
 
@@ -213,6 +232,14 @@ function Distributions() {
         onClose={() => setShowModal(false)}
         title="New Distribution"
         fields={[
+          {
+            name: "fund_id",
+            label: "Fund",
+            type: "select",
+            required: true,
+            options: funds.map((f) => ({ label: f.name, value: f.id })),
+            placeholder: "Select fund",
+          },
           {
             name: "distribution_date",
             label: "Distribution date",
