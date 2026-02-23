@@ -18,6 +18,7 @@ const NAV_SECTIONS = [
     label: "Organization",
     items: [
       { label: "Entities", path: "/admin/entities" },
+      { label: "COA Templates", path: "/admin/coa-templates" },
       { label: "Bank Accounts", path: "/admin/bank-accounts" },
       { label: "Fee Schedule", path: "/admin/fee-schedule" },
     ],

@@ -200,6 +200,7 @@ import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
 import { Route as AuthenticatedAdminDocumentTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/document-templates.$templateId'
 import { Route as AuthenticatedAdminCostBooksBookIdRouteImport } from './routes/_authenticated/admin/cost-books.$bookId'
+import { Route as AuthenticatedAdminCoaTemplatesNewRouteImport } from './routes/_authenticated/admin/coa-templates/new'
 import { Route as AuthenticatedAdminCoaTemplatesTemplateIdRouteImport } from './routes/_authenticated/admin/coa-templates/$templateId'
 import { Route as AuthenticatedAccountingReportsTrialBalanceRouteImport } from './routes/_authenticated/accounting/reports/trial-balance'
 import { Route as AuthenticatedAccountingReportsIncomeStatementRouteImport } from './routes/_authenticated/accounting/reports/income-statement'
@@ -1360,6 +1361,12 @@ const AuthenticatedAdminCostBooksBookIdRoute =
     path: '/$bookId',
     getParentRoute: () => AuthenticatedAdminCostBooksRoute,
   } as any)
+const AuthenticatedAdminCoaTemplatesNewRoute =
+  AuthenticatedAdminCoaTemplatesNewRouteImport.update({
+    id: '/coa-templates/new',
+    path: '/coa-templates/new',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminCoaTemplatesTemplateIdRoute =
   AuthenticatedAdminCoaTemplatesTemplateIdRouteImport.update({
     id: '/coa-templates/$templateId',
@@ -1657,6 +1664,7 @@ export interface FileRoutesByFullPath {
   '/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
   '/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
+  '/admin/coa-templates/new': typeof AuthenticatedAdminCoaTemplatesNewRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
@@ -1860,6 +1868,7 @@ export interface FileRoutesByTo {
   '/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
   '/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
+  '/admin/coa-templates/new': typeof AuthenticatedAdminCoaTemplatesNewRoute
   '/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
@@ -2082,6 +2091,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/reports/income-statement': typeof AuthenticatedAccountingReportsIncomeStatementRoute
   '/_authenticated/accounting/reports/trial-balance': typeof AuthenticatedAccountingReportsTrialBalanceRoute
   '/_authenticated/admin/coa-templates/$templateId': typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
+  '/_authenticated/admin/coa-templates/new': typeof AuthenticatedAdminCoaTemplatesNewRoute
   '/_authenticated/admin/cost-books/$bookId': typeof AuthenticatedAdminCostBooksBookIdRoute
   '/_authenticated/admin/document-templates/$templateId': typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
@@ -2304,6 +2314,7 @@ export interface FileRouteTypes {
     | '/accounting/reports/income-statement'
     | '/accounting/reports/trial-balance'
     | '/admin/coa-templates/$templateId'
+    | '/admin/coa-templates/new'
     | '/admin/cost-books/$bookId'
     | '/admin/document-templates/$templateId'
     | '/admin/documents/storage'
@@ -2507,6 +2518,7 @@ export interface FileRouteTypes {
     | '/accounting/reports/income-statement'
     | '/accounting/reports/trial-balance'
     | '/admin/coa-templates/$templateId'
+    | '/admin/coa-templates/new'
     | '/admin/cost-books/$bookId'
     | '/admin/document-templates/$templateId'
     | '/admin/documents/storage'
@@ -2728,6 +2740,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/reports/income-statement'
     | '/_authenticated/accounting/reports/trial-balance'
     | '/_authenticated/admin/coa-templates/$templateId'
+    | '/_authenticated/admin/coa-templates/new'
     | '/_authenticated/admin/cost-books/$bookId'
     | '/_authenticated/admin/document-templates/$templateId'
     | '/_authenticated/admin/documents/storage'
@@ -4183,6 +4196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCostBooksBookIdRouteImport
       parentRoute: typeof AuthenticatedAdminCostBooksRoute
     }
+    '/_authenticated/admin/coa-templates/new': {
+      id: '/_authenticated/admin/coa-templates/new'
+      path: '/coa-templates/new'
+      fullPath: '/admin/coa-templates/new'
+      preLoaderRoute: typeof AuthenticatedAdminCoaTemplatesNewRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/coa-templates/$templateId': {
       id: '/_authenticated/admin/coa-templates/$templateId'
       path: '/coa-templates/$templateId'
@@ -4587,6 +4607,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminCoaTemplatesTemplateIdRoute: typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
+  AuthenticatedAdminCoaTemplatesNewRoute: typeof AuthenticatedAdminCoaTemplatesNewRoute
   AuthenticatedAdminDocumentTemplatesTemplateIdRoute: typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
   AuthenticatedAdminCoaTemplatesIndexRoute: typeof AuthenticatedAdminCoaTemplatesIndexRoute
 }
@@ -4621,6 +4642,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
     AuthenticatedAdminCoaTemplatesTemplateIdRoute:
       AuthenticatedAdminCoaTemplatesTemplateIdRoute,
+    AuthenticatedAdminCoaTemplatesNewRoute:
+      AuthenticatedAdminCoaTemplatesNewRoute,
     AuthenticatedAdminDocumentTemplatesTemplateIdRoute:
       AuthenticatedAdminDocumentTemplatesTemplateIdRoute,
     AuthenticatedAdminCoaTemplatesIndexRoute:
