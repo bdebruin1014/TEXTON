@@ -77,7 +77,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: () => toast.error("Failed to add budget line"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add budget line"),
   });
 
   const importTemplate = useMutation({
@@ -93,7 +93,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: () => toast.error("Failed to import template"),
+    onError: (err: any) => toast.error(err?.message || "Failed to import template"),
   });
 
   const deleteLine = useMutation({
@@ -102,7 +102,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: () => toast.error("Failed to delete budget line"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete budget line"),
   });
 
   const totalBudgeted = lines.reduce((sum, l) => sum + (l.budgeted ?? 0), 0);

@@ -278,7 +278,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["distribution-line-items", distributionId] });
       toast.success("Calculation saved");
     },
-    onError: () => toast.error("Failed to save calculation"),
+    onError: (err: any) => toast.error(err?.message || "Failed to save calculation"),
   });
 
   const approveCalculation = useMutation({
@@ -294,7 +294,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["distribution-calculation", distributionId] });
       toast.success("Calculation approved");
     },
-    onError: () => toast.error("Failed to approve"),
+    onError: (err: any) => toast.error(err?.message || "Failed to approve"),
   });
 
   const recordDistribution = useMutation({
@@ -335,7 +335,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["fund-investments", fundId] });
       toast.success("Distribution recorded — investor balances updated");
     },
-    onError: () => toast.error("Failed to record distribution"),
+    onError: (err: any) => toast.error(err?.message || "Failed to record distribution"),
   });
 
   // Use saved results if available, otherwise live calculation

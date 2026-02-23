@@ -161,7 +161,7 @@ function AccountsPayable() {
       toast.success("Bill created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create bill"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create bill"),
   });
 
   const bulkAction = useMutation({
@@ -257,7 +257,7 @@ function AccountsPayable() {
       toast.success("Payment recorded");
       setShowPayModal(null);
     },
-    onError: () => toast.error("Failed to record payment"),
+    onError: (err: any) => toast.error(err?.message || "Failed to record payment"),
   });
 
   const toggleSelect = (id: string) => {

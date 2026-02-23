@@ -72,7 +72,7 @@ function AccountsReceivable() {
       toast.success("Draw request created");
       setShowDrawModal(false);
     },
-    onError: () => toast.error("Failed to create draw request"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create draw request"),
   });
 
   const addInvoice = useMutation({
@@ -96,7 +96,7 @@ function AccountsReceivable() {
       toast.success("Invoice created");
       setShowInvoiceModal(false);
     },
-    onError: () => toast.error("Failed to create invoice"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create invoice"),
   });
 
   const recordPayment = useMutation({
@@ -131,7 +131,7 @@ function AccountsReceivable() {
       toast.success("Payment recorded");
       setShowPayModal(null);
     },
-    onError: () => toast.error("Failed to record payment"),
+    onError: (err: any) => toast.error(err?.message || "Failed to record payment"),
   });
 
   const totalReceivable = receivables

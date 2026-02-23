@@ -79,7 +79,7 @@ function Distributions() {
       toast.success("Distribution created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create distribution"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create distribution"),
   });
 
   const issueNotice = useMutation({
@@ -99,7 +99,7 @@ function Distributions() {
       queryClient.invalidateQueries({ queryKey: ["distributions"] });
       toast.success("Distribution deleted");
     },
-    onError: () => toast.error("Failed to delete distribution"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete distribution"),
   });
 
   const totalDistributed = distributions.reduce((sum, d) => sum + (d.total_amount ?? 0), 0);

@@ -49,7 +49,7 @@ function Settlement() {
       if (uploadError) throw uploadError;
       await mutation.mutateAsync({ [field]: path });
     },
-    onError: () => toast.error("Failed to upload document"),
+    onError: (err: any) => toast.error(err?.message || "Failed to upload document"),
   });
 
   const handleUpload = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -62,7 +62,7 @@ function PunchList() {
       toast.success("Punch item added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add punch item"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add punch item"),
   });
 
   const toggleItem = useMutation({

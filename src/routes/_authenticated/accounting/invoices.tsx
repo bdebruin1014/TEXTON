@@ -121,7 +121,7 @@ function Invoices() {
       toast.success("Invoice created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create invoice"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create invoice"),
   });
 
   const updateStatus = useMutation({

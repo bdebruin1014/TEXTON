@@ -60,7 +60,7 @@ function CapitalCalls() {
       toast.success("Capital call created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create capital call"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create capital call"),
   });
 
   const issueNotice = useMutation({
@@ -80,7 +80,7 @@ function CapitalCalls() {
       queryClient.invalidateQueries({ queryKey: ["capital-calls"] });
       toast.success("Capital call deleted");
     },
-    onError: () => toast.error("Failed to delete capital call"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete capital call"),
   });
 
   const totalCalled = calls.reduce((sum, c) => sum + (c.total_amount ?? 0), 0);

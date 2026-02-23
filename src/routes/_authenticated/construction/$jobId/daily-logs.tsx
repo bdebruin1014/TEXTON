@@ -62,7 +62,7 @@ function DailyLogs() {
       toast.success("Daily log created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create daily log"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create daily log"),
   });
 
   const user = useAuthStore((s) => s.user);

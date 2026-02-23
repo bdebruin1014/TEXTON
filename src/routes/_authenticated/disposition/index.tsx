@@ -92,7 +92,7 @@ function DispositionIndex() {
       queryClient.invalidateQueries({ queryKey: ["dispositions"] });
       toast.success("Disposition deleted");
     },
-    onError: () => toast.error("Failed to delete disposition"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete disposition"),
   });
 
   const { data: dispositions = [], isLoading } = useQuery<Disposition[]>({

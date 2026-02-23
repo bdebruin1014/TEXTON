@@ -140,7 +140,7 @@ export function ContactDetailTabs({ recordType, recordId }: ContactDetailTabsPro
       // Select the new contact (will be at end)
       setActiveContactIdx(filtered.length);
     },
-    onError: () => toast.error("Failed to add contact"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add contact"),
   });
 
   // Remove contact assignment mutation
@@ -154,7 +154,7 @@ export function ContactDetailTabs({ recordType, recordId }: ContactDetailTabsPro
       toast.success("Contact removed");
       setActiveContactIdx(0);
     },
-    onError: () => toast.error("Failed to remove contact"),
+    onError: (err: any) => toast.error(err?.message || "Failed to remove contact"),
   });
 
   // Auto-save handler for contact fields

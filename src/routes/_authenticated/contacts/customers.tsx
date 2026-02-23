@@ -65,7 +65,7 @@ function Customers() {
       toast.success("Customer added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add customer"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add customer"),
   });
 
   const deleteMutation = useMutation({
@@ -77,7 +77,7 @@ function Customers() {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast.success("Customer deleted");
     },
-    onError: () => toast.error("Failed to delete customer"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete customer"),
   });
 
   const columns: ColumnDef<Customer, unknown>[] = [

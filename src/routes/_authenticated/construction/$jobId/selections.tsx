@@ -62,7 +62,7 @@ function Selections() {
       toast.success("Selection added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add selection"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add selection"),
   });
 
   const deleteSelection = useMutation({

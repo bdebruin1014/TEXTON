@@ -176,7 +176,7 @@ function AccountingIndex() {
         navigate({ to: `/accounting/${data.id}/register` as string });
       }
     },
-    onError: () => toast.error("Failed to create entity"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create entity"),
   });
 
   return (

@@ -67,7 +67,7 @@ function Warranty() {
       toast.success("Warranty claim created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create warranty claim"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create warranty claim"),
   });
 
   const deleteClaim = useMutation({

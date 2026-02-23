@@ -147,7 +147,7 @@ function FundDetail() {
       queryClient.invalidateQueries({ queryKey: ["waterfall-tiers", fundId] });
       toast.success("Default waterfall tiers added");
     },
-    onError: () => toast.error("Failed to add tiers — they may already exist"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add tiers — they may already exist"),
   });
 
   const updateTier = useMutation({

@@ -92,7 +92,7 @@ export function FloorPlanImages({ planId }: FloorPlanImagesProps) {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
-    onError: () => toast.error("Failed to delete image"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete image"),
   });
 
   const togglePrimary = useMutation({

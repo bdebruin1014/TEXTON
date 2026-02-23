@@ -61,7 +61,7 @@ function Showings() {
       toast.success("Showing added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add showing"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add showing"),
   });
 
   const deleteShowing = useMutation({

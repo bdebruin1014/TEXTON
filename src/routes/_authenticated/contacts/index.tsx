@@ -138,7 +138,7 @@ function CompaniesIndex() {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
       toast.success("Company deleted");
     },
-    onError: () => toast.error("Failed to delete company"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete company"),
   });
 
   const allColumns = useMemo(
@@ -191,7 +191,7 @@ function CompaniesIndex() {
         navigate({ to: `/contacts/${data.id}` as string });
       }
     },
-    onError: () => toast.error("Failed to create company"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create company"),
   });
 
   return (

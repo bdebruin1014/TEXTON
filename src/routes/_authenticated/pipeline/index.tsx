@@ -88,7 +88,7 @@ function PipelineIndex() {
       queryClient.invalidateQueries({ queryKey: ["opportunities"] });
       toast.success("Opportunity deleted");
     },
-    onError: () => toast.error("Failed to delete opportunity"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete opportunity"),
   });
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({

@@ -96,7 +96,7 @@ function CalendarPage() {
       toast.success("Event created");
       closeModal();
     },
-    onError: () => toast.error("Failed to create event"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create event"),
   });
 
   const updateEvent = useMutation({
@@ -119,7 +119,7 @@ function CalendarPage() {
       toast.success("Event updated");
       closeModal();
     },
-    onError: () => toast.error("Failed to update event"),
+    onError: (err: any) => toast.error(err?.message || "Failed to update event"),
   });
 
   const deleteEvent = useMutation({
@@ -132,7 +132,7 @@ function CalendarPage() {
       toast.success("Event deleted");
       closeModal();
     },
-    onError: () => toast.error("Failed to delete event"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete event"),
   });
 
   const closeModal = () => {

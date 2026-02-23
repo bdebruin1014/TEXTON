@@ -196,8 +196,9 @@ function EntitiesAdmin() {
       setShowModal(false);
       resetForm();
     },
-    onError: () => {
-      toast.error("Failed to add entity");
+    onError: (err: any) => {
+      console.error("Entity creation error:", err);
+      toast.error(err?.message || "Failed to add entity");
     },
   });
 

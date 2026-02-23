@@ -102,7 +102,7 @@ function ConstructionIndex() {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Job deleted");
     },
-    onError: () => toast.error("Failed to delete job"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete job"),
   });
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({

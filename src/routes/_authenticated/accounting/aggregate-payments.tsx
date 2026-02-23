@@ -67,7 +67,7 @@ function AggregatePayments() {
       toast.success("Batch payment created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create batch payment"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create batch payment"),
   });
 
   const deleteBatch = useMutation({

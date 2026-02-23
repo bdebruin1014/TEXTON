@@ -66,7 +66,7 @@ function ChangeOrders() {
       toast.success("Change order created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create change order"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create change order"),
   });
 
   const user = useAuthStore((s) => s.user);

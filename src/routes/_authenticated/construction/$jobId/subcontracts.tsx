@@ -64,7 +64,7 @@ function Subcontracts() {
       toast.success("Subcontract created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create subcontract"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create subcontract"),
   });
 
   const user = useAuthStore((s) => s.user);

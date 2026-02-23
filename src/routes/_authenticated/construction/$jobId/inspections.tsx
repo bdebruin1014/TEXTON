@@ -63,7 +63,7 @@ function Inspections() {
       toast.success("Inspection scheduled");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to schedule inspection"),
+    onError: (err: any) => toast.error(err?.message || "Failed to schedule inspection"),
   });
 
   const updateInspection = useMutation({

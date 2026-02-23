@@ -73,9 +73,18 @@ export function AIIntakePage({ config }: AIIntakePageProps) {
         body: payload,
       });
 
-      if (fnError) throw fnError;
+      if (fnError) {
+        console.error("Edge function error:", fnError);
+        throw fnError;
+      }
       if (!data?.success || !data?.record_id) {
-        throw new Error(`Failed to create ${config.label.toLowerCase()}. Please try again.`);
+        const detail = data?.detail || data?.error || "";
+        console.error("Record creation failed:", data);
+        throw new Error(
+          detail
+            ? `Failed to create ${config.label.toLowerCase()}: ${detail}`
+            : `Failed to create ${config.label.toLowerCase()}. Please try again.`,
+        );
       }
 
       // Navigate to the detail page

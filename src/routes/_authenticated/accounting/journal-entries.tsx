@@ -114,7 +114,7 @@ function JournalEntries() {
       toast.success("Journal entry created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create journal entry"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create journal entry"),
   });
 
   const updateStatus = useMutation({
@@ -216,7 +216,7 @@ function JournalEntries() {
       queryClient.invalidateQueries({ queryKey: ["journal-entries", activeEntityId] });
       toast.success("Reversal entry created");
     },
-    onError: () => toast.error("Failed to create reversal"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create reversal"),
   });
 
   const expandedEntry = entries.find((e) => e.id === expandedJE);

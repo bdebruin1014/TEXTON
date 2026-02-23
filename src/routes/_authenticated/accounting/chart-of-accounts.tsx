@@ -81,7 +81,7 @@ function ChartOfAccounts() {
       toast.success("Account added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add account"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add account"),
   });
 
   const deleteAccount = useMutation({

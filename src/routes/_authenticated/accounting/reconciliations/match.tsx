@@ -115,7 +115,7 @@ function TransactionMatching() {
       setSelectedLineId(null);
       toast.success("Transaction matched successfully");
     },
-    onError: () => toast.error("Failed to match transaction"),
+    onError: (err: any) => toast.error(err?.message || "Failed to match transaction"),
   });
 
   const autoMatchMutation = useMutation({

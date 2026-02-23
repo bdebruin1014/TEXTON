@@ -60,7 +60,7 @@ function ContractFiles() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
-    onError: () => toast.error("Failed to upload file"),
+    onError: (err: any) => toast.error(err?.message || "Failed to upload file"),
   });
 
   const deleteFile = useMutation({
@@ -73,7 +73,7 @@ function ContractFiles() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
-    onError: () => toast.error("Failed to delete file"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete file"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

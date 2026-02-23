@@ -53,7 +53,7 @@ function Photos() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
-    onError: () => toast.error("Failed to upload photo"),
+    onError: (err: any) => toast.error(err?.message || "Failed to upload photo"),
   });
 
   const deletePhoto = useMutation({
@@ -66,7 +66,7 @@ function Photos() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
-    onError: () => toast.error("Failed to delete photo"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete photo"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

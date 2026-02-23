@@ -68,7 +68,7 @@ function FundsList() {
         navigate({ to: `/investors/${data.id}` as string });
       }
     },
-    onError: () => toast.error("Failed to create fund"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create fund"),
   });
 
   const deleteFund = useMutation({
@@ -80,7 +80,7 @@ function FundsList() {
       queryClient.invalidateQueries({ queryKey: ["funds"] });
       toast.success("Fund deleted");
     },
-    onError: () => toast.error("Failed to delete fund"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete fund"),
   });
 
   const totalCommitted = funds.reduce((sum, f) => sum + (f.total_committed ?? 0), 0);

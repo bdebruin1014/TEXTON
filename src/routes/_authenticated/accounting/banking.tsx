@@ -96,7 +96,7 @@ function Banking() {
       toast.success("Bank account added");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to add bank account"),
+    onError: (err: any) => toast.error(err?.message || "Failed to add bank account"),
   });
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {

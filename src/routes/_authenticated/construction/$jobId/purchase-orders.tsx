@@ -65,7 +65,7 @@ function PurchaseOrders() {
       toast.success("Purchase order created");
       setShowModal(false);
     },
-    onError: () => toast.error("Failed to create purchase order"),
+    onError: (err: any) => toast.error(err?.message || "Failed to create purchase order"),
   });
 
   const user = useAuthStore((s) => s.user);

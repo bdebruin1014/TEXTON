@@ -88,7 +88,7 @@ function Marketing() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["listing-photos", dispositionId] }),
-    onError: () => toast.error("Failed to delete photo"),
+    onError: (err: any) => toast.error(err?.message || "Failed to delete photo"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
