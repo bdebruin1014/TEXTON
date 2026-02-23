@@ -3,6 +3,14 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
+/** Converts a raw network `TypeError: Failed to fetch` into a user-friendly Error. */
+function wrapNetworkError(err: unknown): never {
+  if (err instanceof TypeError && err.message === "Failed to fetch") {
+    throw new Error("Unable to reach the authentication service. Please check your connection.");
+  }
+  throw err;
+}
+
 export function useAuth() {
   const { user, session, isLoading, setAuth, clear } = useAuthStore();
   const { activeEntityId, setActiveEntity } = useEntityStore();
@@ -15,8 +23,10 @@ export function useAuth() {
         if (data?.entity_id) {
           setActiveEntity(data.entity_id);
         }
-      } catch {
-        // Unable to load user profile; continue without entity context
+      } catch (err) {
+        if (import.meta.env.DEV) {
+          console.warn("[useAuth] Could not load user profile:", err);
+        }
       }
     };
 
@@ -45,10 +55,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
     } catch (err) {
-      if (err instanceof TypeError && err.message === "Failed to fetch") {
-        throw new Error("Unable to reach the authentication service. Please check your connection.");
-      }
-      throw err;
+      wrapNetworkError(err);
     }
   };
 
@@ -61,10 +68,7 @@ export function useAuth() {
       });
       if (error) throw error;
     } catch (err) {
-      if (err instanceof TypeError && err.message === "Failed to fetch") {
-        throw new Error("Unable to reach the authentication service. Please check your connection.");
-      }
-      throw err;
+      wrapNetworkError(err);
     }
   };
 
@@ -75,10 +79,7 @@ export function useAuth() {
       });
       if (error) throw error;
     } catch (err) {
-      if (err instanceof TypeError && err.message === "Failed to fetch") {
-        throw new Error("Unable to reach the authentication service. Please check your connection.");
-      }
-      throw err;
+      wrapNetworkError(err);
     }
   };
 
@@ -87,10 +88,7 @@ export function useAuth() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
     } catch (err) {
-      if (err instanceof TypeError && err.message === "Failed to fetch") {
-        throw new Error("Unable to reach the authentication service. Please check your connection.");
-      }
-      throw err;
+      wrapNetworkError(err);
     }
   };
 
@@ -99,10 +97,7 @@ export function useAuth() {
       const { error } = await supabase.auth.updateUser({ data });
       if (error) throw error;
     } catch (err) {
-      if (err instanceof TypeError && err.message === "Failed to fetch") {
-        throw new Error("Unable to reach the authentication service. Please check your connection.");
-      }
-      throw err;
+      wrapNetworkError(err);
     }
   };
 

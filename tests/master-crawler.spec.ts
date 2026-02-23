@@ -64,7 +64,6 @@ test("Deep Crawl: Forms, Buttons, and Links", async ({ page }) => {
     }
 
     // --- C. RECURSIVE LINKS ---
-    const _links = await page.locator("a").allInnerTexts();
     const hrefs = await page.locator("a").evaluateAll((list) => list.map((el) => (el as HTMLAnchorElement).href));
 
     for (const href of hrefs) {
