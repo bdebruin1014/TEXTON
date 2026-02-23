@@ -10,6 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { useAuthStore } from "@/stores/authStore";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -68,6 +69,35 @@ function ChangeOrders() {
     onError: () => toast.error("Failed to create change order"),
   });
 
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deleteCO = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("change_orders").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["change-orders", jobId] });
+      toast.success("Change order deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete change order");
+      setConfirmDeleteId(null);
+    },
+  });
+
   const totalAmount = cos.reduce((sum, c) => sum + (c.amount ?? 0), 0);
   const approvedAmount = cos.filter((c) => c.status === "Approved").reduce((sum, c) => sum + (c.amount ?? 0), 0);
 
@@ -115,6 +145,47 @@ function ChangeOrders() {
       accessorKey: "approved_date",
       header: "Approved",
       cell: ({ row }) => formatDate(row.getValue("approved_date")),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this CO?</span>
+              <button
+                type="button"
+                onClick={() => deleteCO.mutate(row.original.id)}
+                disabled={deleteCO.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deleteCO.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        if (!canDelete) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmDeleteId(row.original.id);
+            }}
+            className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+          >
+            Delete
+          </button>
+        );
+      },
     },
   ];
 

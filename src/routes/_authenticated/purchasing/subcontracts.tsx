@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -8,6 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/purchasing/subcontracts")({
@@ -57,6 +60,49 @@ function Subcontracts() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["subcontracts", activeEntityId] }),
+  });
+
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deleteSubcontract = useMutation({
+    mutationFn: async (id: string) => {
+      const { count: invCount } = await supabase
+        .from("invoices")
+        .select("id", { count: "exact", head: true })
+        .eq("subcontract_id", id);
+      if (invCount && invCount > 0) {
+        throw new Error(`Cannot delete: ${invCount} linked invoice(s) exist. Remove them first.`);
+      }
+      const { count: coCount } = await supabase
+        .from("change_orders")
+        .select("id", { count: "exact", head: true })
+        .eq("subcontract_id", id);
+      if (coCount && coCount > 0) {
+        throw new Error(`Cannot delete: ${coCount} linked change order(s) exist. Remove them first.`);
+      }
+      const { error } = await supabase.from("subcontracts").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subcontracts", activeEntityId] });
+      toast.success("Subcontract deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete subcontract");
+      setConfirmDeleteId(null);
+    },
   });
 
   const totalContracted = subcontracts.reduce((sum, s) => sum + (s.contract_amount ?? 0), 0);
@@ -128,6 +174,47 @@ function Subcontracts() {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this subcontract?</span>
+              <button
+                type="button"
+                onClick={() => deleteSubcontract.mutate(row.original.id)}
+                disabled={deleteSubcontract.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deleteSubcontract.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        if (!canDelete) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmDeleteId(row.original.id);
+            }}
+            className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+          >
+            Delete
+          </button>
+        );
+      },
     },
   ];
 

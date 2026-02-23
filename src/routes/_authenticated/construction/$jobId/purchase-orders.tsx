@@ -10,6 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { useAuthStore } from "@/stores/authStore";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -67,6 +68,42 @@ function PurchaseOrders() {
     onError: () => toast.error("Failed to create purchase order"),
   });
 
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deletePO = useMutation({
+    mutationFn: async (id: string) => {
+      const { count } = await supabase
+        .from("invoices")
+        .select("id", { count: "exact", head: true })
+        .eq("po_id", id);
+      if (count && count > 0) {
+        throw new Error(`Cannot delete: ${count} linked invoice(s) exist. Remove them first.`);
+      }
+      const { error } = await supabase.from("purchase_orders").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["purchase-orders", jobId] });
+      toast.success("Purchase order deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete purchase order");
+      setConfirmDeleteId(null);
+    },
+  });
+
   const totalAmount = pos.reduce((sum, p) => sum + (p.amount ?? 0), 0);
 
   const columns: ColumnDef<PO, unknown>[] = [
@@ -107,6 +144,47 @@ function PurchaseOrders() {
       accessorKey: "issued_date",
       header: "Issued",
       cell: ({ row }) => formatDate(row.getValue("issued_date")),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this PO?</span>
+              <button
+                type="button"
+                onClick={() => deletePO.mutate(row.original.id)}
+                disabled={deletePO.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deletePO.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        if (!canDelete) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmDeleteId(row.original.id);
+            }}
+            className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+          >
+            Delete
+          </button>
+        );
+      },
     },
   ];
 

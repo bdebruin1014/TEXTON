@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -8,6 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/purchasing/estimates")({
@@ -63,6 +66,35 @@ function Estimates() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["estimates", activeEntityId] }),
   });
 
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deleteEstimate = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("estimates").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["estimates", activeEntityId] });
+      toast.success("Estimate deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete estimate");
+      setConfirmDeleteId(null);
+    },
+  });
+
   const totalEstimated = estimates.reduce((sum, e) => sum + (e.total_amount ?? 0), 0);
 
   const columns: ColumnDef<Estimate, unknown>[] = [
@@ -109,20 +141,58 @@ function Estimates() {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) =>
-        row.original.status === "Draft" || row.original.status === "Approved" ? (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              convertToBudget.mutate(row.original.id);
-            }}
-            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
-          >
-            {"\u2192"}
-            Convert to Budget
-          </button>
-        ) : null,
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this estimate?</span>
+              <button
+                type="button"
+                onClick={() => deleteEstimate.mutate(row.original.id)}
+                disabled={deleteEstimate.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deleteEstimate.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div className="flex items-center gap-2">
+            {(row.original.status === "Draft" || row.original.status === "Approved") && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  convertToBudget.mutate(row.original.id);
+                }}
+                className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-info-bg"
+              >
+                Convert to Budget
+              </button>
+            )}
+            {canDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDeleteId(row.original.id);
+                }}
+                className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        );
+      },
     },
   ];
 

@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/purchasing/vendors")({
@@ -55,6 +58,42 @@ function Vendors() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["vendors", activeEntityId] }),
+  });
+
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deleteVendor = useMutation({
+    mutationFn: async (id: string) => {
+      const { count } = await supabase
+        .from("purchase_orders")
+        .select("id", { count: "exact", head: true })
+        .eq("vendor_id", id);
+      if (count && count > 0) {
+        throw new Error(`Cannot delete: ${count} linked purchase order(s) exist. Remove them first.`);
+      }
+      const { error } = await supabase.from("vendors").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vendors", activeEntityId] });
+      toast.success("Vendor deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete vendor");
+      setConfirmDeleteId(null);
+    },
   });
 
   const isExpiringSoon = (dateStr: string | null) => {
@@ -155,6 +194,47 @@ function Vendors() {
         const status = row.getValue("status") as string;
         const color = status === "Active" ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>{status}</span>;
+      },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this vendor?</span>
+              <button
+                type="button"
+                onClick={() => deleteVendor.mutate(row.original.id)}
+                disabled={deleteVendor.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deleteVendor.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        if (!canDelete) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmDeleteId(row.original.id);
+            }}
+            className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+          >
+            Delete
+          </button>
+        );
       },
     },
   ];

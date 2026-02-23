@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -8,6 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/purchasing/purchase-orders")({
@@ -68,6 +71,42 @@ function PurchaseOrders() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["purchase-orders", activeEntityId] }),
   });
 
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deletePO = useMutation({
+    mutationFn: async (id: string) => {
+      const { count } = await supabase
+        .from("invoices")
+        .select("id", { count: "exact", head: true })
+        .eq("po_id", id);
+      if (count && count > 0) {
+        throw new Error(`Cannot delete: ${count} linked invoice(s) exist. Remove them first.`);
+      }
+      const { error } = await supabase.from("purchase_orders").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["purchase-orders", activeEntityId] });
+      toast.success("Purchase order deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete purchase order");
+      setConfirmDeleteId(null);
+    },
+  });
+
   const totalCommitted = purchaseOrders
     .filter((po) => po.status !== "Void" && po.status !== "Draft")
     .reduce((sum, po) => sum + (po.amount ?? 0), 0);
@@ -126,20 +165,58 @@ function PurchaseOrders() {
     {
       id: "actions",
       header: "",
-      cell: ({ row }) =>
-        row.original.status === "Draft" || row.original.status === "Pending Approval" ? (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              approvePO.mutate(row.original.id);
-            }}
-            className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
-          >
-            <span className="text-success font-bold">{"\u2022"}</span>
-            Approve
-          </button>
-        ) : null,
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this PO?</span>
+              <button
+                type="button"
+                onClick={() => deletePO.mutate(row.original.id)}
+                disabled={deletePO.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deletePO.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div className="flex items-center gap-2">
+            {(row.original.status === "Draft" || row.original.status === "Pending Approval") && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  approvePO.mutate(row.original.id);
+                }}
+                className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-success transition-colors hover:bg-success-bg"
+              >
+                Approve
+              </button>
+            )}
+            {canDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDeleteId(row.original.id);
+                }}
+                className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        );
+      },
     },
   ];
 

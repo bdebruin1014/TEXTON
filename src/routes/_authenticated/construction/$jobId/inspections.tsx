@@ -10,6 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
+import { useAuthStore } from "@/stores/authStore";
 import { supabase } from "@/lib/supabase";
 import { formatDate } from "@/lib/utils";
 
@@ -73,6 +74,35 @@ function Inspections() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["inspections", jobId] }),
   });
 
+  const user = useAuthStore((s) => s.user);
+  const { data: userRole } = useQuery({
+    queryKey: ["user-role", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
+      return data?.role ?? null;
+    },
+    enabled: !!user?.id,
+  });
+  const canDelete = userRole === "admin" || userRole === "software_admin";
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const deleteInspection = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("inspections").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["inspections", jobId] });
+      toast.success("Inspection deleted");
+      setConfirmDeleteId(null);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to delete inspection");
+      setConfirmDeleteId(null);
+    },
+  });
+
   const passedCount = inspections.filter((i) => i.result === "Pass").length;
 
   const columns: ColumnDef<Inspection, unknown>[] = [
@@ -127,6 +157,47 @@ function Inspections() {
       accessorKey: "completed_date",
       header: "Completed",
       cell: ({ row }) => formatDate(row.getValue("completed_date")),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (confirmDeleteId === row.original.id) {
+          return (
+            <div className="flex items-center gap-2 text-xs" onClick={(e) => e.stopPropagation()}>
+              <span className="text-muted">Delete this inspection?</span>
+              <button
+                type="button"
+                onClick={() => deleteInspection.mutate(row.original.id)}
+                disabled={deleteInspection.isPending}
+                className="font-medium text-destructive hover:underline"
+              >
+                {deleteInspection.isPending ? "Deleting..." : "Delete"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="font-medium text-muted hover:underline"
+              >
+                Cancel
+              </button>
+            </div>
+          );
+        }
+        if (!canDelete) return null;
+        return (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmDeleteId(row.original.id);
+            }}
+            className="rounded p-1 text-xs text-muted transition-colors hover:text-destructive"
+          >
+            Delete
+          </button>
+        );
+      },
     },
   ];
 
