@@ -14,6 +14,6 @@ export const useEntityStore = create<EntityState>()(
       setActiveEntity: (id) => set({ activeEntityId: id }),
       clearActiveEntity: () => set({ activeEntityId: null }),
     }),
-    { name: "tekton-entity" },
+    { name: "kova-entity" },
   ),
 );

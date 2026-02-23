@@ -1,18 +1,18 @@
-# Tekton
+# KOVA
 
 **The master builder's platform for real estate development.**
 
-Tekton is a comprehensive, process-driven operations platform for production home builders and real estate developers. It manages the complete development lifecycle — from land acquisition and deal analysis through construction management, home sales, and investor distributions — across multiple entities, projects, and communities.
+KOVA is a comprehensive, process-driven operations platform for production home builders and real estate developers. It manages the complete development lifecycle — from land acquisition and deal analysis through construction management, home sales, and investor distributions — across multiple entities, projects, and communities.
 
 Built for [Red Cedar Homes](https://redcedarhomessc.com) and affiliated entities operating across the I-85 corridor from Charlotte, NC to Greenville, SC.
 
-## Why "Tekton"
+## Why "KOVA"
 
-From the ancient Greek τέκτων (téktōn) — a builder, a craftsman, a master carpenter. The word that gave us "architect" (ἀρχιτέκτων, chief builder) and "technology" (τεχνολογία, the science of craft). Tekton is the builder at their most fundamental: someone who takes raw material and shapes it into something that shelters, endures, and serves.
+KOVA — originally inspired by the ancient Greek τέκτων (téktōn, "master builder") — represents our commitment to craftsmanship in real estate development. The name embodies precision, structure, and the art of building something that endures.
 
 ## Architecture
 
-Tekton is organized around a hub-and-spoke model with **Projects** at the center:
+KOVA is organized around a hub-and-spoke model with **Projects** at the center:
 
 ```
                           ┌──────────────┐
@@ -64,7 +64,7 @@ The three primary perspectives serve different stakeholders viewing the same und
 
 ## Project Types
 
-Tekton supports four distinct development models:
+KOVA supports four distinct development models:
 
 1. **Scattered Lot** — Buy individual lots, build, sell
 2. **Community Development** — Assemble land, entitle, develop infrastructure, build, sell
@@ -104,6 +104,7 @@ Tekton supports four distinct development models:
 ### Installation
 
 ```bash
+# Note: GitHub repo uses legacy "tekton" name
 git clone https://github.com/vanrock-holdings/tekton.git
 cd tekton
 npm install
@@ -143,7 +144,7 @@ npm run build
 ## Project Structure
 
 ```
-tekton/
+kova/
 ├── src/
 │   ├── routes/                    # TanStack Router file-based routes
 │   │   ├── dashboard/
@@ -176,7 +177,7 @@ tekton/
 
 ## Design
 
-Tekton uses a professional construction-industry aesthetic with a Qualia-inspired navigation pattern:
+KOVA uses a professional construction-industry aesthetic with a Qualia-inspired navigation pattern:
 
 - **Primary**: #1B3022 (deep forest green)
 - **Nav**: #112233 (near-black navy)

@@ -1,6 +1,6 @@
-# TEKTON — Document Sharing & Upload Requests Addendum
+# KOVA — Document Sharing & Upload Requests Addendum
 
-**Addendum to:** `tekton-document-management-system.md`
+**Addendum to:** `tekton-document-management-system.md` _(note: file not renamed)_
 **Scope:** External sharing of folders/documents with third parties + upload request system
 
 ---
@@ -9,15 +9,15 @@
 
 Two tightly related capabilities that extend the Document Management System:
 
-**Document Sharing** — From any record's Documents tab, a Tekton user can share a folder or a selection of specific files with an external party. The recipient receives a link to a branded Tekton page where they can view and download only what was shared. They see nothing else. No login required. Links are tracked and expire automatically.
+**Document Sharing** — From any record's Documents tab, a KOVA user can share a folder or a selection of specific files with an external party. The recipient receives a link to a branded KOVA page where they can view and download only what was shared. They see nothing else. No login required. Links are tracked and expire automatically.
 
-**Upload Requests** — From any record, a Tekton user can send a request to a contact asking them to upload specific documents. The recipient receives an email with a link to a branded upload page listing exactly what's needed. They drag-and-drop files onto each requested item. Uploaded files land directly in the correct folder in Tekton with the correct metadata. Think of it as a checklist the external party fills by uploading documents.
+**Upload Requests** — From any record, a KOVA user can send a request to a contact asking them to upload specific documents. The recipient receives an email with a link to a branded upload page listing exactly what's needed. They drag-and-drop files onto each requested item. Uploaded files land directly in the correct folder in KOVA with the correct metadata. Think of it as a checklist the external party fills by uploading documents.
 
 ### Real-World Scenarios
 
 1. Bryan is working on a community development project. The civil engineer needs the survey and topo to start the grading plan. Bryan goes to the project's Documents tab, selects the survey PDF and topo PDF from the Plans & Surveys folder, clicks "Share," enters the engineer's email, and sends. The engineer gets an email with a branded link, sees only those two files, downloads them. Done.
 
-2. A title company needs to upload the title commitment and title search for a closing. Bryan goes to the Disposition record, clicks "Request Upload," selects the contact (De Bruin Law Firm — already in Contacts), picks the "Title & Survey" folder as the destination, adds two line items to the request ("Title Commitment" and "Title Search Report"), and sends. The title company gets an email, clicks the link, sees a branded page with two upload slots, drops the files in, and Bryan gets notified they're in Tekton.
+2. A title company needs to upload the title commitment and title search for a closing. Bryan goes to the Disposition record, clicks "Request Upload," selects the contact (De Bruin Law Firm — already in Contacts), picks the "Title & Survey" folder as the destination, adds two line items to the request ("Title Commitment" and "Title Search Report"), and sends. The title company gets an email, clicks the link, sees a branded page with two upload slots, drops the files in, and Bryan gets notified they're in KOVA.
 
 3. A lender needs draw request documentation. Bryan selects the current draw package folder from the Project's Financing folder, shares it as read-only with the lender. The lender can view and download everything in that folder and its subfolders but cannot upload or modify anything.
 
@@ -63,7 +63,7 @@ CREATE TABLE document_shares (
   recipient_name TEXT,                       -- "Mike Thompson"
   recipient_email TEXT,                      -- "mike@civilengineeringfirm.com"
   recipient_company TEXT,                    -- "Thompson Civil Engineering"
-  recipient_contact_id UUID REFERENCES contacts(id), -- link to Tekton contact if exists
+  recipient_contact_id UUID REFERENCES contacts(id), -- link to KOVA contact if exists
   
   -- Sender context
   message TEXT,                              -- personal note shown on share page
@@ -812,7 +812,7 @@ serve(async (req) => {
 
 ## 5. Public-Facing Pages (No Auth Required)
 
-These are lightweight, branded pages served at public routes. They do NOT require a Tekton login. They are validated entirely by the share/request token.
+These are lightweight, branded pages served at public routes. They do NOT require a KOVA login. They are validated entirely by the share/request token.
 
 ### Route: `/share/:token` — Document Share Page
 
@@ -853,14 +853,14 @@ These are lightweight, branded pages served at public routes. They do NOT requir
 │                                                                      │
 │  ─────────────────────────────────────────────────────────────────   │
 │  This link expires July 15, 2026                                     │
-│  Powered by Tekton · Red Cedar Homes                                 │
+│  Powered by KOVA · Red Cedar Homes                                 │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 **Design details:**
 - White background, centered card layout (max-width 640px)
-- Tekton logo at top (small, muted — this is branded but not heavy)
+- KOVA logo at top (small, muted — this is branded but not heavy)
 - Sender name, company, date
 - Personal message in a subtle callout box
 - File list: icon, name, size, upload date, individual download button per file
@@ -923,7 +923,7 @@ These are lightweight, branded pages served at public routes. They do NOT requir
 │                                                                      │
 │  ─────────────────────────────────────────────────────────────────   │
 │  This link expires July 15, 2026                                     │
-│  Powered by Tekton · Red Cedar Homes                                 │
+│  Powered by KOVA · Red Cedar Homes                                 │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -985,7 +985,7 @@ All three open the **Share Dialog:**
 │  ☐ CC me on the email                                            │
 │                                                                  │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  Preview link: https://tekton.app/share/a8f3b2c1...     │    │
+│  │  Preview link: https://kova.app/share/a8f3b2c1...     │    │
 │  │  [Copy Link]                                             │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
@@ -1064,7 +1064,7 @@ All three open the **Share Dialog:**
 - Contact search with autocomplete (same as share dialog)
 - Destination folder picker scoped to the current record's folder tree
 - Each item can override the destination folder (e.g., "Title Commitment" goes to Title & Survey folder, "Payoff Letter" goes to Financing folder)
-- Auto-tag per item so uploaded files are automatically tagged in Tekton
+- Auto-tag per item so uploaded files are automatically tagged in KOVA
 - File type restrictions are enforced on the public upload page
 - "Send Upload Request" creates the record, sends the email, and shows a confirmation with the link
 - The request appears in the record's activity feed and in a new "Upload Requests" section
@@ -1102,7 +1102,7 @@ Subject: Bryan Van Dyk shared documents with you — Plans & Surveys
 
 ───────────────────────────────────────────────────────────
 
-[TEKTON LOGO]
+[KOVA LOGO]
 
 Bryan Van Dyk from Red Cedar Homes has shared documents with you.
 
@@ -1116,7 +1116,7 @@ Bryan Van Dyk from Red Cedar Homes has shared documents with you.
 This link expires July 15, 2026.
 
 ───────────────────────────────────────────────────────────
-Red Cedar Homes · Powered by Tekton
+Red Cedar Homes · Powered by KOVA
 ```
 
 ### Upload Request Email
@@ -1126,7 +1126,7 @@ Subject: Red Cedar Homes is requesting documents — Jasper Ridge Closing
 
 ───────────────────────────────────────────────────────────
 
-[TEKTON LOGO]
+[KOVA LOGO]
 
 Bryan Van Dyk from Red Cedar Homes is requesting the following documents:
 
@@ -1147,10 +1147,10 @@ Due: June 30, 2026
 This link expires July 15, 2026.
 
 ───────────────────────────────────────────────────────────
-Red Cedar Homes · Powered by Tekton
+Red Cedar Homes · Powered by KOVA
 ```
 
-### Upload Complete Notification (sent to Tekton user)
+### Upload Complete Notification (sent to KOVA user)
 
 ```
 Subject: ✅ All documents received — Jasper Ridge Closing
@@ -1163,7 +1163,7 @@ De Bruin Law Firm has uploaded all requested documents for
   ✅  Survey (ALTA) — ALTA_Survey_Jasper_Ridge.pdf
   ✅  Lender Payoff Letter — Payoff_Letter_FirstBank.pdf
 
-                [ View in Tekton → ]
+                [ View in KOVA → ]
 ```
 
 ### Reminder Email (manual trigger or auto at due date - 3 days)
@@ -1173,7 +1173,7 @@ Subject: Reminder: Documents still needed — Jasper Ridge Closing
 
 ───────────────────────────────────────────────────────────
 
-[TEKTON LOGO]
+[KOVA LOGO]
 
 This is a reminder from Bryan Van Dyk at Red Cedar Homes.
 

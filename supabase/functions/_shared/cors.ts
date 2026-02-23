@@ -1,4 +1,4 @@
-const allowedOrigin = Deno.env.get("APP_URL") || "https://tekton.app";
+const allowedOrigin = Deno.env.get("APP_URL") || "https://kova.app";
 
 export const corsHeaders = {
   "Access-Control-Allow-Origin": allowedOrigin,

@@ -54,13 +54,20 @@ import { Route as AuthenticatedToolsLotPurchaseProformaRouteImport } from './rou
 import { Route as AuthenticatedToolsLotDevProformaRouteImport } from './routes/_authenticated/tools/lot-dev-proforma'
 import { Route as AuthenticatedToolsDealAnalyzerRouteImport } from './routes/_authenticated/tools/deal-analyzer'
 import { Route as AuthenticatedToolsCommunityProformaRouteImport } from './routes/_authenticated/tools/community-proforma'
+import { Route as AuthenticatedReportsTrialBalanceRouteImport } from './routes/_authenticated/reports/trial-balance'
+import { Route as AuthenticatedReportsProjectSummaryRouteImport } from './routes/_authenticated/reports/project-summary'
+import { Route as AuthenticatedReportsLotInventoryRouteImport } from './routes/_authenticated/reports/lot-inventory'
+import { Route as AuthenticatedReportsJobCostRouteImport } from './routes/_authenticated/reports/job-cost'
+import { Route as AuthenticatedReportsInvestorSummaryRouteImport } from './routes/_authenticated/reports/investor-summary'
+import { Route as AuthenticatedReportsDispositionPipelineRouteImport } from './routes/_authenticated/reports/disposition-pipeline'
+import { Route as AuthenticatedReportsConstructionScheduleRouteImport } from './routes/_authenticated/reports/construction-schedule'
+import { Route as AuthenticatedReportsApAgingRouteImport } from './routes/_authenticated/reports/ap-aging'
 import { Route as AuthenticatedPurchasingVendorsRouteImport } from './routes/_authenticated/purchasing/vendors'
 import { Route as AuthenticatedPurchasingSubcontractsRouteImport } from './routes/_authenticated/purchasing/subcontracts'
 import { Route as AuthenticatedPurchasingPurchaseOrdersRouteImport } from './routes/_authenticated/purchasing/purchase-orders'
 import { Route as AuthenticatedPurchasingEstimatesRouteImport } from './routes/_authenticated/purchasing/estimates'
 import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
 import { Route as AuthenticatedPipelineNewRouteImport } from './routes/_authenticated/pipeline/new'
-import { Route as AuthenticatedInvestorsDistributionsRouteImport } from './routes/_authenticated/investors/distributions'
 import { Route as AuthenticatedInvestorsCapitalCallsRouteImport } from './routes/_authenticated/investors/capital-calls'
 import { Route as AuthenticatedInvestorsFundIdRouteImport } from './routes/_authenticated/investors/$fundId'
 import { Route as AuthenticatedDispositionNewRouteImport } from './routes/_authenticated/disposition/new'
@@ -108,6 +115,7 @@ import { Route as AuthenticatedOperationsRchContractsIndexRouteImport } from './
 import { Route as AuthenticatedOperationsMattersIndexRouteImport } from './routes/_authenticated/operations/matters/index'
 import { Route as AuthenticatedOperationsEsignIndexRouteImport } from './routes/_authenticated/operations/esign/index'
 import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './routes/_authenticated/operations/deal-sheets/index'
+import { Route as AuthenticatedInvestorsDistributionsIndexRouteImport } from './routes/_authenticated/investors/distributions/index'
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
 import { Route as AuthenticatedAdminCoaTemplatesIndexRouteImport } from './routes/_authenticated/admin/coa-templates/index'
@@ -154,6 +162,7 @@ import { Route as AuthenticatedOperationsMattersNewRouteImport } from './routes/
 import { Route as AuthenticatedOperationsMattersMatterIdRouteImport } from './routes/_authenticated/operations/matters/$matterId'
 import { Route as AuthenticatedOperationsEsignEsignIdRouteImport } from './routes/_authenticated/operations/esign/$esignId'
 import { Route as AuthenticatedOperationsDealSheetsDealSheetIdRouteImport } from './routes/_authenticated/operations/deal-sheets/$dealSheetId'
+import { Route as AuthenticatedInvestorsDistributionsDistributionIdRouteImport } from './routes/_authenticated/investors/distributions/$distributionId'
 import { Route as AuthenticatedDispositionDispositionIdWarrantyRouteImport } from './routes/_authenticated/disposition/$dispositionId/warranty'
 import { Route as AuthenticatedDispositionDispositionIdUploadRequestsRouteImport } from './routes/_authenticated/disposition/$dispositionId/upload-requests'
 import { Route as AuthenticatedDispositionDispositionIdShowingsRouteImport } from './routes/_authenticated/disposition/$dispositionId/showings'
@@ -476,6 +485,54 @@ const AuthenticatedToolsCommunityProformaRoute =
     path: '/tools/community-proforma',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedReportsTrialBalanceRoute =
+  AuthenticatedReportsTrialBalanceRouteImport.update({
+    id: '/trial-balance',
+    path: '/trial-balance',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsProjectSummaryRoute =
+  AuthenticatedReportsProjectSummaryRouteImport.update({
+    id: '/project-summary',
+    path: '/project-summary',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsLotInventoryRoute =
+  AuthenticatedReportsLotInventoryRouteImport.update({
+    id: '/lot-inventory',
+    path: '/lot-inventory',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsJobCostRoute =
+  AuthenticatedReportsJobCostRouteImport.update({
+    id: '/job-cost',
+    path: '/job-cost',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsInvestorSummaryRoute =
+  AuthenticatedReportsInvestorSummaryRouteImport.update({
+    id: '/investor-summary',
+    path: '/investor-summary',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsDispositionPipelineRoute =
+  AuthenticatedReportsDispositionPipelineRouteImport.update({
+    id: '/disposition-pipeline',
+    path: '/disposition-pipeline',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsConstructionScheduleRoute =
+  AuthenticatedReportsConstructionScheduleRouteImport.update({
+    id: '/construction-schedule',
+    path: '/construction-schedule',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
+const AuthenticatedReportsApAgingRoute =
+  AuthenticatedReportsApAgingRouteImport.update({
+    id: '/ap-aging',
+    path: '/ap-aging',
+    getParentRoute: () => AuthenticatedReportsRouteRoute,
+  } as any)
 const AuthenticatedPurchasingVendorsRoute =
   AuthenticatedPurchasingVendorsRouteImport.update({
     id: '/vendors',
@@ -511,12 +568,6 @@ const AuthenticatedPipelineNewRoute =
     id: '/new',
     path: '/new',
     getParentRoute: () => AuthenticatedPipelineRouteRoute,
-  } as any)
-const AuthenticatedInvestorsDistributionsRoute =
-  AuthenticatedInvestorsDistributionsRouteImport.update({
-    id: '/distributions',
-    path: '/distributions',
-    getParentRoute: () => AuthenticatedInvestorsRouteRoute,
   } as any)
 const AuthenticatedInvestorsCapitalCallsRoute =
   AuthenticatedInvestorsCapitalCallsRouteImport.update({
@@ -799,6 +850,12 @@ const AuthenticatedOperationsDealSheetsIndexRoute =
     path: '/operations/deal-sheets/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedInvestorsDistributionsIndexRoute =
+  AuthenticatedInvestorsDistributionsIndexRouteImport.update({
+    id: '/distributions/',
+    path: '/distributions/',
+    getParentRoute: () => AuthenticatedInvestorsRouteRoute,
+  } as any)
 const AuthenticatedDispositionDispositionIdIndexRoute =
   AuthenticatedDispositionDispositionIdIndexRouteImport.update({
     id: '/',
@@ -1074,6 +1131,12 @@ const AuthenticatedOperationsDealSheetsDealSheetIdRoute =
     id: '/operations/deal-sheets/$dealSheetId',
     path: '/operations/deal-sheets/$dealSheetId',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedInvestorsDistributionsDistributionIdRoute =
+  AuthenticatedInvestorsDistributionsDistributionIdRouteImport.update({
+    id: '/distributions/$distributionId',
+    path: '/distributions/$distributionId',
+    getParentRoute: () => AuthenticatedInvestorsRouteRoute,
   } as any)
 const AuthenticatedDispositionDispositionIdWarrantyRoute =
   AuthenticatedDispositionDispositionIdWarrantyRouteImport.update({
@@ -1540,13 +1603,20 @@ export interface FileRoutesByFullPath {
   '/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
-  '/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
   '/pipeline/new': typeof AuthenticatedPipelineNewRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/reports/ap-aging': typeof AuthenticatedReportsApAgingRoute
+  '/reports/construction-schedule': typeof AuthenticatedReportsConstructionScheduleRoute
+  '/reports/disposition-pipeline': typeof AuthenticatedReportsDispositionPipelineRoute
+  '/reports/investor-summary': typeof AuthenticatedReportsInvestorSummaryRoute
+  '/reports/job-cost': typeof AuthenticatedReportsJobCostRoute
+  '/reports/lot-inventory': typeof AuthenticatedReportsLotInventoryRoute
+  '/reports/project-summary': typeof AuthenticatedReportsProjectSummaryRoute
+  '/reports/trial-balance': typeof AuthenticatedReportsTrialBalanceRoute
   '/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
   '/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
   '/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
@@ -1624,6 +1694,7 @@ export interface FileRoutesByFullPath {
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/investors/distributions/$distributionId': typeof AuthenticatedInvestorsDistributionsDistributionIdRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
@@ -1670,6 +1741,7 @@ export interface FileRoutesByFullPath {
   '/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/investors/distributions/': typeof AuthenticatedInvestorsDistributionsIndexRoute
   '/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
   '/operations/matters/': typeof AuthenticatedOperationsMattersIndexRoute
@@ -1734,13 +1806,20 @@ export interface FileRoutesByTo {
   '/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
-  '/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
   '/pipeline/new': typeof AuthenticatedPipelineNewRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/reports/ap-aging': typeof AuthenticatedReportsApAgingRoute
+  '/reports/construction-schedule': typeof AuthenticatedReportsConstructionScheduleRoute
+  '/reports/disposition-pipeline': typeof AuthenticatedReportsDispositionPipelineRoute
+  '/reports/investor-summary': typeof AuthenticatedReportsInvestorSummaryRoute
+  '/reports/job-cost': typeof AuthenticatedReportsJobCostRoute
+  '/reports/lot-inventory': typeof AuthenticatedReportsLotInventoryRoute
+  '/reports/project-summary': typeof AuthenticatedReportsProjectSummaryRoute
+  '/reports/trial-balance': typeof AuthenticatedReportsTrialBalanceRoute
   '/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
   '/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
   '/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
@@ -1818,6 +1897,7 @@ export interface FileRoutesByTo {
   '/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/investors/distributions/$distributionId': typeof AuthenticatedInvestorsDistributionsDistributionIdRoute
   '/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
@@ -1864,6 +1944,7 @@ export interface FileRoutesByTo {
   '/admin/coa-templates': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/investors/distributions': typeof AuthenticatedInvestorsDistributionsIndexRoute
   '/operations/deal-sheets': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/operations/esign': typeof AuthenticatedOperationsEsignIndexRoute
   '/operations/matters': typeof AuthenticatedOperationsMattersIndexRoute
@@ -1947,13 +2028,20 @@ export interface FileRoutesById {
   '/_authenticated/disposition/new': typeof AuthenticatedDispositionNewRoute
   '/_authenticated/investors/$fundId': typeof AuthenticatedInvestorsFundIdRoute
   '/_authenticated/investors/capital-calls': typeof AuthenticatedInvestorsCapitalCallsRoute
-  '/_authenticated/investors/distributions': typeof AuthenticatedInvestorsDistributionsRoute
   '/_authenticated/pipeline/new': typeof AuthenticatedPipelineNewRoute
   '/_authenticated/projects/new': typeof AuthenticatedProjectsNewRoute
   '/_authenticated/purchasing/estimates': typeof AuthenticatedPurchasingEstimatesRoute
   '/_authenticated/purchasing/purchase-orders': typeof AuthenticatedPurchasingPurchaseOrdersRoute
   '/_authenticated/purchasing/subcontracts': typeof AuthenticatedPurchasingSubcontractsRoute
   '/_authenticated/purchasing/vendors': typeof AuthenticatedPurchasingVendorsRoute
+  '/_authenticated/reports/ap-aging': typeof AuthenticatedReportsApAgingRoute
+  '/_authenticated/reports/construction-schedule': typeof AuthenticatedReportsConstructionScheduleRoute
+  '/_authenticated/reports/disposition-pipeline': typeof AuthenticatedReportsDispositionPipelineRoute
+  '/_authenticated/reports/investor-summary': typeof AuthenticatedReportsInvestorSummaryRoute
+  '/_authenticated/reports/job-cost': typeof AuthenticatedReportsJobCostRoute
+  '/_authenticated/reports/lot-inventory': typeof AuthenticatedReportsLotInventoryRoute
+  '/_authenticated/reports/project-summary': typeof AuthenticatedReportsProjectSummaryRoute
+  '/_authenticated/reports/trial-balance': typeof AuthenticatedReportsTrialBalanceRoute
   '/_authenticated/tools/community-proforma': typeof AuthenticatedToolsCommunityProformaRoute
   '/_authenticated/tools/deal-analyzer': typeof AuthenticatedToolsDealAnalyzerRoute
   '/_authenticated/tools/lot-dev-proforma': typeof AuthenticatedToolsLotDevProformaRoute
@@ -2031,6 +2119,7 @@ export interface FileRoutesById {
   '/_authenticated/disposition/$dispositionId/showings': typeof AuthenticatedDispositionDispositionIdShowingsRoute
   '/_authenticated/disposition/$dispositionId/upload-requests': typeof AuthenticatedDispositionDispositionIdUploadRequestsRoute
   '/_authenticated/disposition/$dispositionId/warranty': typeof AuthenticatedDispositionDispositionIdWarrantyRoute
+  '/_authenticated/investors/distributions/$distributionId': typeof AuthenticatedInvestorsDistributionsDistributionIdRoute
   '/_authenticated/operations/deal-sheets/$dealSheetId': typeof AuthenticatedOperationsDealSheetsDealSheetIdRoute
   '/_authenticated/operations/esign/$esignId': typeof AuthenticatedOperationsEsignEsignIdRoute
   '/_authenticated/operations/matters/$matterId': typeof AuthenticatedOperationsMattersMatterIdRoute
@@ -2077,6 +2166,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
+  '/_authenticated/investors/distributions/': typeof AuthenticatedInvestorsDistributionsIndexRoute
   '/_authenticated/operations/deal-sheets/': typeof AuthenticatedOperationsDealSheetsIndexRoute
   '/_authenticated/operations/esign/': typeof AuthenticatedOperationsEsignIndexRoute
   '/_authenticated/operations/matters/': typeof AuthenticatedOperationsMattersIndexRoute
@@ -2160,13 +2250,20 @@ export interface FileRouteTypes {
     | '/disposition/new'
     | '/investors/$fundId'
     | '/investors/capital-calls'
-    | '/investors/distributions'
     | '/pipeline/new'
     | '/projects/new'
     | '/purchasing/estimates'
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
     | '/purchasing/vendors'
+    | '/reports/ap-aging'
+    | '/reports/construction-schedule'
+    | '/reports/disposition-pipeline'
+    | '/reports/investor-summary'
+    | '/reports/job-cost'
+    | '/reports/lot-inventory'
+    | '/reports/project-summary'
+    | '/reports/trial-balance'
     | '/tools/community-proforma'
     | '/tools/deal-analyzer'
     | '/tools/lot-dev-proforma'
@@ -2244,6 +2341,7 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/showings'
     | '/disposition/$dispositionId/upload-requests'
     | '/disposition/$dispositionId/warranty'
+    | '/investors/distributions/$distributionId'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
     | '/operations/matters/$matterId'
@@ -2290,6 +2388,7 @@ export interface FileRouteTypes {
     | '/admin/coa-templates/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
+    | '/investors/distributions/'
     | '/operations/deal-sheets/'
     | '/operations/esign/'
     | '/operations/matters/'
@@ -2354,13 +2453,20 @@ export interface FileRouteTypes {
     | '/disposition/new'
     | '/investors/$fundId'
     | '/investors/capital-calls'
-    | '/investors/distributions'
     | '/pipeline/new'
     | '/projects/new'
     | '/purchasing/estimates'
     | '/purchasing/purchase-orders'
     | '/purchasing/subcontracts'
     | '/purchasing/vendors'
+    | '/reports/ap-aging'
+    | '/reports/construction-schedule'
+    | '/reports/disposition-pipeline'
+    | '/reports/investor-summary'
+    | '/reports/job-cost'
+    | '/reports/lot-inventory'
+    | '/reports/project-summary'
+    | '/reports/trial-balance'
     | '/tools/community-proforma'
     | '/tools/deal-analyzer'
     | '/tools/lot-dev-proforma'
@@ -2438,6 +2544,7 @@ export interface FileRouteTypes {
     | '/disposition/$dispositionId/showings'
     | '/disposition/$dispositionId/upload-requests'
     | '/disposition/$dispositionId/warranty'
+    | '/investors/distributions/$distributionId'
     | '/operations/deal-sheets/$dealSheetId'
     | '/operations/esign/$esignId'
     | '/operations/matters/$matterId'
@@ -2484,6 +2591,7 @@ export interface FileRouteTypes {
     | '/admin/coa-templates'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
+    | '/investors/distributions'
     | '/operations/deal-sheets'
     | '/operations/esign'
     | '/operations/matters'
@@ -2566,13 +2674,20 @@ export interface FileRouteTypes {
     | '/_authenticated/disposition/new'
     | '/_authenticated/investors/$fundId'
     | '/_authenticated/investors/capital-calls'
-    | '/_authenticated/investors/distributions'
     | '/_authenticated/pipeline/new'
     | '/_authenticated/projects/new'
     | '/_authenticated/purchasing/estimates'
     | '/_authenticated/purchasing/purchase-orders'
     | '/_authenticated/purchasing/subcontracts'
     | '/_authenticated/purchasing/vendors'
+    | '/_authenticated/reports/ap-aging'
+    | '/_authenticated/reports/construction-schedule'
+    | '/_authenticated/reports/disposition-pipeline'
+    | '/_authenticated/reports/investor-summary'
+    | '/_authenticated/reports/job-cost'
+    | '/_authenticated/reports/lot-inventory'
+    | '/_authenticated/reports/project-summary'
+    | '/_authenticated/reports/trial-balance'
     | '/_authenticated/tools/community-proforma'
     | '/_authenticated/tools/deal-analyzer'
     | '/_authenticated/tools/lot-dev-proforma'
@@ -2650,6 +2765,7 @@ export interface FileRouteTypes {
     | '/_authenticated/disposition/$dispositionId/showings'
     | '/_authenticated/disposition/$dispositionId/upload-requests'
     | '/_authenticated/disposition/$dispositionId/warranty'
+    | '/_authenticated/investors/distributions/$distributionId'
     | '/_authenticated/operations/deal-sheets/$dealSheetId'
     | '/_authenticated/operations/esign/$esignId'
     | '/_authenticated/operations/matters/$matterId'
@@ -2696,6 +2812,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/coa-templates/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
+    | '/_authenticated/investors/distributions/'
     | '/_authenticated/operations/deal-sheets/'
     | '/_authenticated/operations/esign/'
     | '/_authenticated/operations/matters/'
@@ -3044,6 +3161,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedToolsCommunityProformaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/reports/trial-balance': {
+      id: '/_authenticated/reports/trial-balance'
+      path: '/trial-balance'
+      fullPath: '/reports/trial-balance'
+      preLoaderRoute: typeof AuthenticatedReportsTrialBalanceRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/project-summary': {
+      id: '/_authenticated/reports/project-summary'
+      path: '/project-summary'
+      fullPath: '/reports/project-summary'
+      preLoaderRoute: typeof AuthenticatedReportsProjectSummaryRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/lot-inventory': {
+      id: '/_authenticated/reports/lot-inventory'
+      path: '/lot-inventory'
+      fullPath: '/reports/lot-inventory'
+      preLoaderRoute: typeof AuthenticatedReportsLotInventoryRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/job-cost': {
+      id: '/_authenticated/reports/job-cost'
+      path: '/job-cost'
+      fullPath: '/reports/job-cost'
+      preLoaderRoute: typeof AuthenticatedReportsJobCostRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/investor-summary': {
+      id: '/_authenticated/reports/investor-summary'
+      path: '/investor-summary'
+      fullPath: '/reports/investor-summary'
+      preLoaderRoute: typeof AuthenticatedReportsInvestorSummaryRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/disposition-pipeline': {
+      id: '/_authenticated/reports/disposition-pipeline'
+      path: '/disposition-pipeline'
+      fullPath: '/reports/disposition-pipeline'
+      preLoaderRoute: typeof AuthenticatedReportsDispositionPipelineRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/construction-schedule': {
+      id: '/_authenticated/reports/construction-schedule'
+      path: '/construction-schedule'
+      fullPath: '/reports/construction-schedule'
+      preLoaderRoute: typeof AuthenticatedReportsConstructionScheduleRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
+    '/_authenticated/reports/ap-aging': {
+      id: '/_authenticated/reports/ap-aging'
+      path: '/ap-aging'
+      fullPath: '/reports/ap-aging'
+      preLoaderRoute: typeof AuthenticatedReportsApAgingRouteImport
+      parentRoute: typeof AuthenticatedReportsRouteRoute
+    }
     '/_authenticated/purchasing/vendors': {
       id: '/_authenticated/purchasing/vendors'
       path: '/vendors'
@@ -3085,13 +3258,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/pipeline/new'
       preLoaderRoute: typeof AuthenticatedPipelineNewRouteImport
       parentRoute: typeof AuthenticatedPipelineRouteRoute
-    }
-    '/_authenticated/investors/distributions': {
-      id: '/_authenticated/investors/distributions'
-      path: '/distributions'
-      fullPath: '/investors/distributions'
-      preLoaderRoute: typeof AuthenticatedInvestorsDistributionsRouteImport
-      parentRoute: typeof AuthenticatedInvestorsRouteRoute
     }
     '/_authenticated/investors/capital-calls': {
       id: '/_authenticated/investors/capital-calls'
@@ -3422,6 +3588,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOperationsDealSheetsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/investors/distributions/': {
+      id: '/_authenticated/investors/distributions/'
+      path: '/distributions'
+      fullPath: '/investors/distributions/'
+      preLoaderRoute: typeof AuthenticatedInvestorsDistributionsIndexRouteImport
+      parentRoute: typeof AuthenticatedInvestorsRouteRoute
+    }
     '/_authenticated/disposition/$dispositionId/': {
       id: '/_authenticated/disposition/$dispositionId/'
       path: '/'
@@ -3743,6 +3916,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/operations/deal-sheets/$dealSheetId'
       preLoaderRoute: typeof AuthenticatedOperationsDealSheetsDealSheetIdRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/investors/distributions/$distributionId': {
+      id: '/_authenticated/investors/distributions/$distributionId'
+      path: '/distributions/$distributionId'
+      fullPath: '/investors/distributions/$distributionId'
+      preLoaderRoute: typeof AuthenticatedInvestorsDistributionsDistributionIdRouteImport
+      parentRoute: typeof AuthenticatedInvestorsRouteRoute
     }
     '/_authenticated/disposition/$dispositionId/warranty': {
       id: '/_authenticated/disposition/$dispositionId/warranty'
@@ -4639,8 +4819,9 @@ const AuthenticatedDispositionRouteRouteWithChildren =
 interface AuthenticatedInvestorsRouteRouteChildren {
   AuthenticatedInvestorsFundIdRoute: typeof AuthenticatedInvestorsFundIdRoute
   AuthenticatedInvestorsCapitalCallsRoute: typeof AuthenticatedInvestorsCapitalCallsRoute
-  AuthenticatedInvestorsDistributionsRoute: typeof AuthenticatedInvestorsDistributionsRoute
   AuthenticatedInvestorsIndexRoute: typeof AuthenticatedInvestorsIndexRoute
+  AuthenticatedInvestorsDistributionsDistributionIdRoute: typeof AuthenticatedInvestorsDistributionsDistributionIdRoute
+  AuthenticatedInvestorsDistributionsIndexRoute: typeof AuthenticatedInvestorsDistributionsIndexRoute
 }
 
 const AuthenticatedInvestorsRouteRouteChildren: AuthenticatedInvestorsRouteRouteChildren =
@@ -4648,9 +4829,11 @@ const AuthenticatedInvestorsRouteRouteChildren: AuthenticatedInvestorsRouteRoute
     AuthenticatedInvestorsFundIdRoute: AuthenticatedInvestorsFundIdRoute,
     AuthenticatedInvestorsCapitalCallsRoute:
       AuthenticatedInvestorsCapitalCallsRoute,
-    AuthenticatedInvestorsDistributionsRoute:
-      AuthenticatedInvestorsDistributionsRoute,
     AuthenticatedInvestorsIndexRoute: AuthenticatedInvestorsIndexRoute,
+    AuthenticatedInvestorsDistributionsDistributionIdRoute:
+      AuthenticatedInvestorsDistributionsDistributionIdRoute,
+    AuthenticatedInvestorsDistributionsIndexRoute:
+      AuthenticatedInvestorsDistributionsIndexRoute,
   }
 
 const AuthenticatedInvestorsRouteRouteWithChildren =
@@ -4857,11 +5040,33 @@ const AuthenticatedPurchasingRouteRouteWithChildren =
   )
 
 interface AuthenticatedReportsRouteRouteChildren {
+  AuthenticatedReportsApAgingRoute: typeof AuthenticatedReportsApAgingRoute
+  AuthenticatedReportsConstructionScheduleRoute: typeof AuthenticatedReportsConstructionScheduleRoute
+  AuthenticatedReportsDispositionPipelineRoute: typeof AuthenticatedReportsDispositionPipelineRoute
+  AuthenticatedReportsInvestorSummaryRoute: typeof AuthenticatedReportsInvestorSummaryRoute
+  AuthenticatedReportsJobCostRoute: typeof AuthenticatedReportsJobCostRoute
+  AuthenticatedReportsLotInventoryRoute: typeof AuthenticatedReportsLotInventoryRoute
+  AuthenticatedReportsProjectSummaryRoute: typeof AuthenticatedReportsProjectSummaryRoute
+  AuthenticatedReportsTrialBalanceRoute: typeof AuthenticatedReportsTrialBalanceRoute
   AuthenticatedReportsIndexRoute: typeof AuthenticatedReportsIndexRoute
 }
 
 const AuthenticatedReportsRouteRouteChildren: AuthenticatedReportsRouteRouteChildren =
   {
+    AuthenticatedReportsApAgingRoute: AuthenticatedReportsApAgingRoute,
+    AuthenticatedReportsConstructionScheduleRoute:
+      AuthenticatedReportsConstructionScheduleRoute,
+    AuthenticatedReportsDispositionPipelineRoute:
+      AuthenticatedReportsDispositionPipelineRoute,
+    AuthenticatedReportsInvestorSummaryRoute:
+      AuthenticatedReportsInvestorSummaryRoute,
+    AuthenticatedReportsJobCostRoute: AuthenticatedReportsJobCostRoute,
+    AuthenticatedReportsLotInventoryRoute:
+      AuthenticatedReportsLotInventoryRoute,
+    AuthenticatedReportsProjectSummaryRoute:
+      AuthenticatedReportsProjectSummaryRoute,
+    AuthenticatedReportsTrialBalanceRoute:
+      AuthenticatedReportsTrialBalanceRoute,
     AuthenticatedReportsIndexRoute: AuthenticatedReportsIndexRoute,
   }
 

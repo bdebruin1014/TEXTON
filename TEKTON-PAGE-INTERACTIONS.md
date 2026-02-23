@@ -1,8 +1,8 @@
-# TEKTON — Page Interaction Patterns
+# KOVA — Page Interaction Patterns
 
-## Supplemental to TEKTON-BUILDOUT-PLAN.md
+## Supplemental to KOVA-BUILDOUT-PLAN.md
 
-This document defines the data entry pattern for every page in Tekton. There are three patterns:
+This document defines the data entry pattern for every page in KOVA. There are three patterns:
 
 1. **Inline Form (Auto-Save)** — Fields render directly on the page. User types, selects, toggles. 800ms debounce saves automatically. No buttons needed.
 

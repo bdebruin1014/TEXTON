@@ -1,15 +1,15 @@
-# SL Deal Analyzer — Tekton Integration Package
+# SL Deal Analyzer — KOVA Integration Package
 
 Scattered Lot Deal Analyzer for Red Cedar Homes. One lot, one house, one sale.
 
-This package contains everything needed to add the SL Deal Analyzer to the Tekton codebase. It is NOT a standalone app — it is a set of files designed to be placed directly into the `tekton/` repository.
+This package contains everything needed to add the SL Deal Analyzer to the KOVA codebase. It is NOT a standalone app — it is a set of files designed to be placed directly into the `kova/` repository.
 
 ## File Placement
 
-Copy each file into the corresponding location in your Tekton repo:
+Copy each file into the corresponding location in your KOVA repo:
 
 ```
-tekton/
+kova/
 ├── src/
 │   ├── lib/
 │   │   ├── sl-deal-engine.ts          ← Pure computation engine

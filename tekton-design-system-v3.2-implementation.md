@@ -1,10 +1,10 @@
-# TEK·TON Design System v3.2 — Implementation Prompt for Claude Code
+# KOVA Design System v3.2 — Implementation Prompt for Claude Code
 
 ## Mission
 
-Apply the approved TEK·TON Design System v3.2 to the existing Tekton codebase. This covers six deliverables:
+Apply the approved KOVA Design System v3.2 to the existing KOVA codebase. This covers six deliverables:
 
-1. Rebrand from "TEKTON" to "TEK·TON" across all UI touchpoints
+1. Rebrand from "TEKTON" to "KOVA" across all UI touchpoints
 2. Replace the existing CSS token system with v3.2 HSL-formatted design tokens
 3. Theme all shadcn/ui components to match the v3.2 palette
 4. Rebuild the Dashboard page to match the approved design
@@ -13,7 +13,7 @@ Apply the approved TEK·TON Design System v3.2 to the existing Tekton codebase. 
 
 **CRITICAL DESIGN RULE: NO ICONS. NO EMOJIS. ANYWHERE.**
 
-This application uses text-only navigation, text-only labels, and text-only UI elements. Do not install `lucide-react` or any icon library. Do not use SVG icons, emoji characters, or icon fonts anywhere in the interface. The design achieves hierarchy through typography, color, spacing, and weight — never through icons. Every place where a typical SaaS app would use an icon, TEK·TON uses well-set text instead. This is a deliberate design choice that gives the app a premium, editorial feel.
+This application uses text-only navigation, text-only labels, and text-only UI elements. Do not install `lucide-react` or any icon library. Do not use SVG icons, emoji characters, or icon fonts anywhere in the interface. The design achieves hierarchy through typography, color, spacing, and weight — never through icons. Every place where a typical SaaS app would use an icon, KOVA uses well-set text instead. This is a deliberate design choice that gives the app a premium, editorial feel.
 
 Do NOT change any application architecture, routing, database schema, business logic, or component structure. This is a visual-only refactor.
 
@@ -36,7 +36,7 @@ find . -name "*.css" -not -path "*/node_modules/*" | head -20
 find . -name "globals.css" -not -path "*/node_modules/*"
 find . -name "tokens.css" -not -path "*/node_modules/*"
 find . -path "*/components/ui/*" -not -path "*/node_modules/*" | head -30
-grep -r "TEKTON\|Tekton\|tekton" --include="*.tsx" --include="*.ts" --include="*.css" -l | head -20
+grep -r "KOVA\|Kova\|kova" --include="*.tsx" --include="*.ts" --include="*.css" -l | head -20
 grep -r "lucide\|Icon\|icon\|emoji" --include="*.tsx" --include="*.ts" -l | head -20
 cat app/globals.css
 cat tailwind.config.js
@@ -48,7 +48,7 @@ Read the output carefully before proceeding. Adapt the instructions below to the
 
 ---
 
-## Deliverable 1: Rebrand to TEK·TON
+## Deliverable 1: Rebrand to KOVA
 
 ### What to Change
 
@@ -56,21 +56,21 @@ Every instance of the brand name in the UI must be updated:
 
 | Context | Old | New |
 |---------|-----|-----|
-| Nav bar logo text | `TEKTON` | `TEK·TON` |
-| Page titles / meta tags | `Tekton` | `TEK·TON` |
-| `<title>` tag | `Tekton` | `TEK·TON` |
-| README / comments | `Tekton` | `TEK·TON` (display) or `Tekton` (prose references) |
-| package.json `name` field | Keep as `tekton` (no special chars in npm names) |
+| Nav bar logo text | `TEKTON` | `KOVA` |
+| Page titles / meta tags | `Tekton` | `KOVA` |
+| `<title>` tag | `Tekton` | `KOVA` |
+| README / comments | `Tekton` | `KOVA` (display) or `KOVA` (prose references) |
+| package.json `name` field | Keep as `kova` (no special chars in npm names) |
 
-The middle dot (·) is Unicode `U+00B7` (middle dot). In JSX: `TEK·TON` or `TEK\u00B7TON`. In HTML: `TEK&middot;TON`.
+The brand name is simply `KOVA`. In JSX and HTML, use `KOVA` directly.
 
 ### Logo Mark Component
 
-The logo mark is a 28×28px rounded square with a gradient green background and a white "T" letterform. No icons — just the letter:
+The logo mark is a 28×28px rounded square with a gradient green background and a white "K" letterform. No icons — just the letter:
 
 ```tsx
 // components/logo.tsx
-export function TektonLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg' }) {
+export function KovaLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg' }) {
   const dims = { sm: 24, default: 28, lg: 36 }[size];
   const fontSize = { sm: 11, default: 13, lg: 16 }[size];
   
@@ -87,13 +87,13 @@ export function TektonLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg
           boxShadow: '0 0 12px hsl(var(--primary-accent) / 0.2)',
         }}
       >
-        T
+        K
       </div>
       <span
         className="font-bold tracking-[0.15em] text-[15px]"
         style={{ color: 'hsl(var(--primary-accent))' }}
       >
-        TEK·TON
+        KOVA
       </span>
     </div>
   );
@@ -109,7 +109,7 @@ export function TektonLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg
 Find the existing CSS variables file (likely `app/globals.css` or a dedicated `tokens.css`). Replace ALL color variables with the v3.2 system using HSL format for Tailwind opacity support.
 
 ```css
-/* tokens.css — TEK·TON Design System v3.2 */
+/* tokens.css — KOVA Design System v3.2 */
 /* HSL values (no hsl() wrapper) for Tailwind bg-primary/90 support */
 
 @layer base {
@@ -441,7 +441,7 @@ The nav bar uses TEXT-ONLY links. No icons anywhere.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│ [T] TEK·TON   Pipeline  Projects  Construction  Disposition  Accounting            │
+│ [K] KOVA   Pipeline  Projects  Construction  Disposition  Accounting            │
 │                Contacts  Calendar  Admin                       [Search ⌘K]  ● [BD] │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -451,7 +451,7 @@ The nav bar uses TEXT-ONLY links. No icons anywhere.
 - Background: `hsl(var(--nav-bg))` — #0D1B24
 - Height: 52px
 - Bottom border: 1px gradient line `linear-gradient(90deg, transparent, hsl(var(--nav-active) / 0.2), transparent)`
-- Logo: TektonLogo component (gradient square with "T" + "TEK·TON" text)
+- Logo: KovaLogo component (gradient square with "K" + "KOVA" text)
 - Nav links: `text-[13px] font-medium` in `hsl(var(--nav-muted))`. TEXT ONLY. No icons.
 - Active link: `text-white` with a 2px bottom border in `hsl(var(--nav-active))` with `box-shadow: 0 0 8px hsl(var(--nav-active) / 0.4)`
 - Hover: `text-[#C8D6CF]` with `bg-white/4` background
@@ -781,14 +781,14 @@ Work through these in sequence. After each step, verify the app still builds (`n
 4. Update `tailwind.config.js`
 5. Update `app/globals.css` with the global reset
 6. Update `app/layout.tsx` with fonts + body classes
-7. Create `components/logo.tsx` (TEK·TON logo mark)
+7. Create `components/logo.tsx` (KOVA logo mark)
 8. Update the top nav bar component with v3.2 styling — text-only links, no icons
 9. Update/create shadcn/ui Badge with status variants
 10. Update shadcn/ui Button and Card with v3.2 styling
 11. Rebuild the Dashboard page (text-only quick actions, stat cards without icon chips, content grid)
 12. Install `framer-motion` and create `components/page-transition.tsx`
 13. Wrap existing pages with `<PageTransition>`
-14. Search for any remaining "TEKTON" strings and replace with "TEK·TON"
+14. Search for any remaining "TEKTON" strings and replace with "KOVA"
 15. Run the icon removal checklist (grep for any remaining icons/emojis)
 16. Run `npm run build` to verify no errors
 
@@ -826,7 +826,7 @@ For copy-pasting into components:
 After completing all deliverables, verify:
 
 - [ ] `npm run build` succeeds with no errors
-- [ ] Nav bar shows "TEK·TON" with logo mark on #0D1B24 background
+- [ ] Nav bar shows "KOVA" with logo mark on #0D1B24 background
 - [ ] Nav links are TEXT ONLY — no icons anywhere in the nav
 - [ ] Nav active state has green bottom border with glow
 - [ ] Dashboard renders with stat cards, quick actions, and content grid
@@ -838,7 +838,7 @@ After completing all deliverables, verify:
 - [ ] Focus rings are forest green (#1B3022)
 - [ ] Body font is DM Sans, code font is JetBrains Mono
 - [ ] No remaining references to old color values (#1a5632, #2c3e50, #10B981, #F59E0B, #3B82F6, #ef4444)
-- [ ] No remaining "TEKTON" (all-caps without dot) in UI-facing text
+- [ ] No remaining "TEKTON" (old brand name) in UI-facing text
 - [ ] ZERO icon imports (lucide-react, heroicons, react-icons) except shadcn/ui internal deps
 - [ ] ZERO emoji characters anywhere in the rendered UI
 - [ ] ZERO SVG icon elements in custom components

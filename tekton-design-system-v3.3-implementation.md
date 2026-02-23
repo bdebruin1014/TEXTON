@@ -1,4 +1,4 @@
-# TEK·TON Design System v3.3 — Claude Code Implementation Prompt
+# KOVA Design System v3.3 — Claude Code Implementation Prompt
 
 Read this entire document before writing any code. Then execute each section in order.
 
@@ -13,7 +13,7 @@ find . -name "*.css" -not -path "*/node_modules/*" | head -20
 find . -name "globals.css" -not -path "*/node_modules/*"
 find . -path "*/components/ui/*" -not -path "*/node_modules/*" | head -30
 grep -r "lucide\|Icon\|icon\|emoji" --include="*.tsx" --include="*.ts" -l | head -20
-grep -r "TEKTON\|Tekton\|tekton" --include="*.tsx" --include="*.ts" --include="*.css" -l | head -20
+grep -r "KOVA\|Kova\|kova" --include="*.tsx" --include="*.ts" --include="*.css" -l | head -20
 cat app/globals.css
 cat tailwind.config.* 2>/dev/null || cat tailwind.config.js
 ls -la app/
@@ -37,15 +37,15 @@ ls -la app/layout.tsx 2>/dev/null || ls -la app/layout.jsx
 
 ---
 
-## Section 1: Rebrand to TEK-TON
+## Section 1: Rebrand to KOVA
 
-Find every UI-facing instance of "TEKTON" or "Tekton" and replace with "TEK-TON". The middle dot is Unicode U+00B7. In JSX use the literal character. Keep tekton (lowercase, no dot) in package.json name, file paths, and code identifiers.
+Find every UI-facing instance of "TEKTON" or "Tekton" and replace with "KOVA". Keep kova (lowercase) in package.json name, file paths, and code identifiers.
 
 ```bash
-grep -rn "TEKTON\|Tekton" --include="*.tsx" --include="*.ts" --include="*.css" --include="*.html" . | grep -v node_modules | grep -v ".git"
+grep -rn "KOVA\|Kova" --include="*.tsx" --include="*.ts" --include="*.css" --include="*.html" . | grep -v node_modules | grep -v ".git"
 ```
 
-Replace each match. Page titles, meta tags, nav bar text, README display text all become TEK-TON.
+Replace each match. Page titles, meta tags, nav bar text, README display text all become KOVA.
 
 ---
 
@@ -225,7 +225,7 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mon
 Create components/logo.tsx. The logo is a small gradient green square with a T letterform plus the wordmark. No icons.
 
 ```tsx
-export function TektonLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg' }) {
+export function KovaLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg' }) {
   const dims = { sm: 22, default: 26, lg: 34 }[size];
   const fontSize = { sm: 10, default: 12, lg: 15 }[size];
   const textSize = { sm: '12px', default: '14px', lg: '17px' }[size];
@@ -233,7 +233,7 @@ export function TektonLogo({ size = 'default' }: { size?: 'sm' | 'default' | 'lg
     <div className="flex items-center gap-2">
       <div className="flex items-center justify-center rounded-md font-bold"
         style={{ width:dims, height:dims, fontSize, background:'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-700)) 100%)', color:'hsl(var(--primary-accent))', boxShadow:'0 0 12px hsl(var(--primary-accent) / 0.15)' }}>T</div>
-      <span className="font-bold" style={{ fontSize:textSize, letterSpacing:'1.5px', color:'hsl(var(--primary-accent))' }}>TEK·TON</span>
+      <span className="font-bold" style={{ fontSize:textSize, letterSpacing:'1.5px', color:'hsl(var(--primary-accent))' }}>KOVA</span>
     </div>
   );
 }
@@ -363,7 +363,7 @@ Fix all results. Verify build passes.
 14. Build dashboard
 15. Theme shadcn/ui Badge, Button, Card
 16. Install framer-motion + page transitions
-17. Rebrand TEKTON to TEK-TON everywhere
+17. Rebrand TEKTON to KOVA everywhere
 18. Final icon/Tools sweep
 19. npm run build
 

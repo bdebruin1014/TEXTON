@@ -4,8 +4,8 @@ import { corsHeaders } from "../_shared/cors.ts";
 import { getAuthUser } from "../_shared/auth.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const FROM_EMAIL = "notifications@tekton.app";
-const APP_URL = Deno.env.get("APP_URL") || "https://tekton.app";
+const FROM_EMAIL = "notifications@kova.app";
+const APP_URL = Deno.env.get("APP_URL") || "https://kova.app";
 
 interface EmailPayload {
   template: "share_notification" | "upload_request" | "upload_complete" | "reminder";
@@ -16,7 +16,7 @@ interface EmailPayload {
 }
 
 function buildShareEmail(share: Record<string, unknown>): { subject: string; html: string } {
-  const subject = `Documents shared with you — ${share.subject || "Tekton"}`;
+  const subject = `Documents shared with you — ${share.subject || "KOVA"}`;
   const shareUrl = `${APP_URL}/share/${share.share_token}`;
 
   const html = `
@@ -32,7 +32,7 @@ function buildShareEmail(share: Record<string, unknown>): { subject: string; htm
         </div>
         ${share.expires_at ? `<p style="font-size:12px;color:#94a3b8;text-align:center">This link expires ${new Date(share.expires_at as string).toLocaleDateString()}</p>` : ""}
       </div>
-      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by Tekton</p>
+      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by KOVA</p>
     </div>
   `;
 
@@ -67,7 +67,7 @@ function buildUploadRequestEmail(
           <a href="${uploadUrl}" style="display:inline-block;background:#1B3022;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px">Upload Documents →</a>
         </div>
       </div>
-      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by Tekton</p>
+      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by KOVA</p>
     </div>
   `;
 
@@ -102,7 +102,7 @@ function buildReminderEmail(
           <a href="${uploadUrl}" style="display:inline-block;background:#1B3022;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;font-size:14px">Upload Documents →</a>
         </div>
       </div>
-      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by Tekton</p>
+      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:16px">Powered by KOVA</p>
     </div>
   `;
 
@@ -120,6 +120,20 @@ serve(async (req) => {
       status: 401,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+  }
+
+  // Check for email service configuration before proceeding
+  if (!RESEND_API_KEY) {
+    return new Response(
+      JSON.stringify({
+        error: "Email service not configured",
+        message: "RESEND_API_KEY environment variable is not set. Contact admin to configure Resend.",
+      }),
+      {
+        status: 503,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 
   const payload: EmailPayload = await req.json();
@@ -173,31 +187,27 @@ serve(async (req) => {
   }
 
   // Send via Resend
-  if (RESEND_API_KEY) {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: payload.recipient_email,
-        subject: emailSubject,
-        html: emailHtml,
-      }),
-    });
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+    },
+    body: JSON.stringify({
+      from: FROM_EMAIL,
+      to: payload.recipient_email,
+      subject: emailSubject,
+      html: emailHtml,
+    }),
+  });
 
-    if (!res.ok) {
-      const errorBody = await res.text();
-      console.error("Resend error:", errorBody);
-      return new Response(JSON.stringify({ error: "Failed to send email" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-  } else {
-    // RESEND_API_KEY not set — email send skipped
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error("Resend error:", errorBody);
+    return new Response(JSON.stringify({ error: "Failed to send email", details: errorBody }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   return new Response(JSON.stringify({ success: true }), {

@@ -1,4 +1,4 @@
-# TEKTON — Document Management System: Complete Build Specification
+# KOVA — Document Management System: Complete Build Specification
 
 ## Table of Contents
 
@@ -20,19 +20,19 @@
 
 ### What We're Building
 
-A full document management system for Tekton that provides three core capabilities:
+A full document management system for KOVA that provides three core capabilities:
 
 1. **Folder-based file organization** — hierarchical folders and files within every Project, Job, and Disposition record, with the ability to create, rename, move, and delete folders and files.
 
 2. **Templated folder structures** — configurable in Admin so that when a new Project, Job, or Disposition is created, the system auto-generates a standard folder tree (e.g., every new Scattered Lot Project gets folders for "Contracts," "Due Diligence," "Permits," "Closing Documents," etc.).
 
-3. **Edit-in-place via WebDAV** — click a Word, Excel, or PowerPoint file in Tekton and have it open directly in the desktop Office application. Save in Word/Excel and the changes appear back in Tekton automatically. This replicates the Qualia document editing experience exactly.
+3. **Edit-in-place via WebDAV** — click a Word, Excel, or PowerPoint file in KOVA and have it open directly in the desktop Office application. Save in Word/Excel and the changes appear back in KOVA automatically. This replicates the Qualia document editing experience exactly.
 
 ### Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  TEKTON FRONTEND (React)                                           │
+│  KOVA FRONTEND (React)                                             │
 │                                                                     │
 │  Documents Tab (in Project / Job / Disposition detail view)         │
 │  ┌─────────────────────────────────────────────────────────────┐   │
@@ -51,7 +51,7 @@ A full document management system for Tekton that provides three core capabiliti
 │  │  📄 Site_Photos_Compilation.pdf           Jun 10, 2026      │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
-│  "Edit in Word" click → ms-word:ofe|u|https://dav.tekton.app/...  │
+│  "Edit in Word" click → ms-word:ofe|u|https://dav.kova.app/...  │
 └─────────────────────────────────────┬───────────────────────────────┘
                                       │
                     ┌─────────────────┼──────────────────┐
@@ -611,12 +611,12 @@ export function getStoragePath(
 
 ### Overview
 
-A lightweight Node.js service deployed alongside Tekton (on Vercel as a serverless function or as a small always-on service on Railway/Fly.io) that speaks WebDAV on the front end and translates to Supabase Storage API calls on the back end. This enables the "click → opens in Word → save → it's back in Tekton" experience identical to Qualia.
+A lightweight Node.js service deployed alongside KOVA (on Vercel as a serverless function or as a small always-on service on Railway/Fly.io) that speaks WebDAV on the front end and translates to Supabase Storage API calls on the back end. This enables the "click → opens in Word → save → it's back in KOVA" experience identical to Qualia.
 
 ### How It Works
 
-1. User clicks "Edit in Word" on a `.docx` file in Tekton
-2. Tekton constructs a protocol URI: `ms-word:ofe|u|https://dav.tekton.app/files/{document_id}`
+1. User clicks "Edit in Word" on a `.docx` file in KOVA
+2. KOVA constructs a protocol URI: `ms-word:ofe|u|https://dav.kova.app/files/{document_id}`
 3. The browser hands this URI to Microsoft Word via the `ms-word:` protocol handler
 4. Word sends a WebDAV `GET` request to the proxy, which fetches the file from Supabase Storage and returns it
 5. Word opens the file with a live WebDAV connection
@@ -628,7 +628,7 @@ A lightweight Node.js service deployed alongside Tekton (on Vercel as a serverle
 ```typescript
 // lib/documents/webdav.ts
 
-const WEBDAV_BASE = import.meta.env.VITE_WEBDAV_URL; // https://dav.tekton.app
+const WEBDAV_BASE = import.meta.env.VITE_WEBDAV_URL; // https://dav.kova.app
 
 const OFFICE_PROTOCOLS: Record<string, string> = {
   '.docx': 'ms-word',
@@ -856,12 +856,12 @@ app.listen(PORT, () => console.log(`WebDAV proxy on :${PORT}`));
 The challenge with WebDAV is passing auth tokens to Word. The `ms-word:` protocol handler doesn't support custom headers. The solution is **cookie-based auth** with a short-lived session:
 
 ```typescript
-// When user clicks "Edit in Word", Tekton first calls this endpoint
+// When user clicks "Edit in Word", KOVA first calls this endpoint
 // to create a short-lived WebDAV session cookie, then opens the protocol URI.
 
 // services/webdav-proxy/auth-session.ts
 app.post('/auth/session', async (req, res) => {
-  const user = await authenticate(req);  // validates Bearer token from Tekton
+  const user = await authenticate(req);  // validates Bearer token from KOVA
   
   const sessionId = crypto.randomUUID();
   const expiry = Date.now() + 8 * 60 * 60 * 1000; // 8 hours
@@ -869,12 +869,12 @@ app.post('/auth/session', async (req, res) => {
   // Store session (Redis in production, in-memory map for dev)
   sessions.set(sessionId, { userId: user.id, email: user.email, expiry });
   
-  res.cookie('tekton_dav_session', sessionId, {
+  res.cookie('kova_dav_session', sessionId, {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
     maxAge: 8 * 60 * 60 * 1000,
-    domain: '.tekton.app',
+    domain: '.kova.app',
   });
   
   res.json({ ok: true });
@@ -908,7 +908,7 @@ async function handleEditInPlace(document: Document) {
 The WebDAV proxy should be deployed as a small always-on service (not serverless, because WebDAV connections are long-lived):
 
 - **Railway** or **Fly.io**: $5-7/month for a small instance
-- Custom domain: `dav.tekton.app` with TLS
+- Custom domain: `dav.kova.app` with TLS
 - Environment variables: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET`
 
 ---
@@ -1016,7 +1016,7 @@ This is the key page — a visual tree editor where admins build folder hierarch
 
 4. **Delete** — confirms with a dialog: "This will remove this folder from the template. Existing folders on records will not be affected."
 
-5. **Save Template** — this is one of the few pages in Tekton with an explicit Save button (per the auto-save exception for workflow templates and bulk actions).
+5. **Save Template** — this is one of the few pages in KOVA with an explicit Save button (per the auto-save exception for workflow templates and bulk actions).
 
 6. **Apply to Existing Records** — runs the `apply_folder_template` function against all matching records, but only adds missing folders (compares by `template_item_id` to avoid duplicates).
 
@@ -1788,7 +1788,7 @@ CREATE POLICY "documents_entity_access" ON documents
 3. Build `EditInPlaceButton` component
 4. Add file locking UI (show lock status, locked-by user)
 5. Test with Word, Excel, and PowerPoint on Windows and Mac
-6. Deploy proxy to Railway/Fly.io with custom domain `dav.tekton.app`
+6. Deploy proxy to Railway/Fly.io with custom domain `dav.kova.app`
 
 ### Phase 4: Polish
 

@@ -1,6 +1,7 @@
-# TEKTON — REPO-WIDE CLEANUP: ENTITY & BUSINESS MODEL CORRECTIONS
+# KOVA — REPO-WIDE CLEANUP: ENTITY & BUSINESS MODEL CORRECTIONS
 
-## Commit to: `tekton/docs/repo-cleanup-entities.md`
+## Commit to: `kova/docs/repo-cleanup-entities.md`
+<!-- NOTE: If your git repository path still uses "tekton", update the repo path accordingly -->
 
 Read this file, then execute all changes described below. Run `npm run build` at the end to verify zero TypeScript errors.
 

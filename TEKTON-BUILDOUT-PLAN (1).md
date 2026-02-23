@@ -1,4 +1,4 @@
-# TEKTON — Complete Buildout Plan
+# KOVA — Complete Buildout Plan
 
 ## For: Claude Code + GitHub + Supabase + Vercel
 
@@ -10,7 +10,7 @@
 ## Architecture Overview
 
 ```
-GitHub Repo (vanrock-holdings/tekton)
+GitHub Repo (vanrock-holdings/kova)
   │
   ├── Push to main ──→ Vercel (auto-deploy production)
   ├── Push to dev  ──→ Vercel (preview deployments)
@@ -45,8 +45,8 @@ This is what you do before writing any application code. Claude Code handles all
 ### 0.1 — Create the Vite Project
 
 ```bash
-npm create vite@latest tekton -- --template react-ts
-cd tekton
+npm create vite@latest kova -- --template react-ts
+cd kova
 ```
 
 ### 0.2 — Install the Full Stack
@@ -149,7 +149,8 @@ export default defineConfig({
 
 ```bash
 git init
-git remote add origin https://github.com/vanrock-holdings/tekton.git
+git remote add origin https://github.com/vanrock-holdings/kova.git
+# Note: Repository URL may still use the old name "tekton" — update when repo is renamed
 git checkout -b main
 git add .
 git commit -m "chore: initial Vite + React 19 + TypeScript scaffold"
@@ -160,7 +161,7 @@ git push -u origin dev
 
 ### 0.6 — Vercel Setup
 
-1. Go to vercel.com/new, import `vanrock-holdings/tekton`
+1. Go to vercel.com/new, import `vanrock-holdings/kova`
 2. Framework preset: **Vite**
 3. Environment variables:
 
@@ -187,7 +188,7 @@ git push -u origin dev
 ## File Structure (Final Target)
 
 ```
-tekton/
+kova/
 ├── src/
 │   ├── main.tsx                          # Entry point
 │   ├── App.tsx                           # Router provider + QueryClient
@@ -466,7 +467,7 @@ tekton/
 │       └── generate-memo/index.ts        # Underwriting memo generation
 │
 ├── public/
-│   └── tekton-logo.svg
+│   └── kova-logo.svg
 │
 ├── .env.example
 ├── .gitignore
@@ -811,7 +812,7 @@ npx shadcn@latest add button input select badge card dialog dropdown-menu popove
    - `templates.tsx` — Order/project templates: pre-configured workflow + field defaults
 
 2. `src/routes/_authenticated/tools/index.tsx` — Placeholder page:
-   - Shows "Tools — Coming Soon" with the Tekton design system
+   - Shows "Tools — Coming Soon" with the KOVA design system
    - Card layout with placeholder items (future tools TBD)
    - Disabled state in TopNav (visible but grayed, navigable to the placeholder)
 
@@ -1114,7 +1115,7 @@ export const useEntityStore = create<EntityState>()(
       activeEntityId: null,
       setActiveEntity: (id) => set({ activeEntityId: id }),
     }),
-    { name: 'tekton-entity' }
+    { name: 'kova-entity' }
   )
 )
 ```
@@ -1165,4 +1166,4 @@ With Claude Code running full speed and you reviewing/testing each phase before 
 
 ---
 
-*This is Tekton. Build it right. Build it once.*
+*This is KOVA. Build it right. Build it once.*

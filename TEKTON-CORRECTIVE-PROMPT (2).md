@@ -1,15 +1,15 @@
-# TEKTON — Corrective Prompt for Claude Code
+# KOVA — Corrective Prompt for Claude Code
 
 ## Context
 
-You are working on the Tekton codebase — a real estate development platform built with React 19, TypeScript, Vite 6, TanStack Router + Query, Zustand, shadcn/ui, Tailwind CSS v4, and Supabase. The codebase was built from Phases 1-10 of the original prompt set. However, the original prompts contained errors and omissions that need correction. The Supabase database has been corrected (all 3 migrations run), but the frontend code still reflects the old incorrect prompts.
+You are working on the KOVA codebase — a real estate development platform built with React 19, TypeScript, Vite 6, TanStack Router + Query, Zustand, shadcn/ui, Tailwind CSS v4, and Supabase. The codebase was built from Phases 1-10 of the original prompt set. However, the original prompts contained errors and omissions that need correction. The Supabase database has been corrected (all 3 migrations run), but the frontend code still reflects the old incorrect prompts.
 
 **Before making ANY changes, read these files in the repo root:**
-- TEKTON-BUILDOUT-PLAN.md
-- TEKTON-PAGE-INTERACTIONS.md
-- tekton-master-prompt.md
-- TEKTON-SUPPLEMENTAL-UPDATES-FINAL.md
-- TEKTON-PROMPTS-UPDATED.md
+- TEKTON-BUILDOUT-PLAN.md (file name unchanged, content references KOVA)
+- TEKTON-PAGE-INTERACTIONS.md (file name unchanged, content references KOVA)
+- tekton-master-prompt.md (file name unchanged, content references KOVA)
+- TEKTON-SUPPLEMENTAL-UPDATES-FINAL.md (file name unchanged, content references KOVA)
+- TEKTON-PROMPTS-UPDATED.md (file name unchanged, content references KOVA)
 
 Then audit the existing codebase to understand what has already been built. Only then apply the corrections below.
 

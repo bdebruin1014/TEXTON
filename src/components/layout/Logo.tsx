@@ -14,6 +14,3 @@ export function KovaLogo({ size = "default" }: { size?: "sm" | "default" | "lg" 
     </span>
   );
 }
-
-/** @deprecated Use KovaLogo instead */
-export const TektonLogo = KovaLogo;

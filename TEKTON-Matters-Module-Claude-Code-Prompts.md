@@ -1,4 +1,4 @@
-# TEKTON — MATTERS MODULE
+# KOVA — MATTERS MODULE
 ## Claude Code Build Prompts
 
 ---
@@ -7,7 +7,7 @@
 
 ## Context
 
-You are working on **Tekton** (TEK), a full-lifecycle real estate development platform built for Red Cedar Homes (RCH) and its affiliated entities (VanRock Holdings LLC, Scattered Lot Fund II LLC, DCL Holdings, TCMP, SCR Management LLC, plus per-project SPEs). Tekton covers deal pipeline, project management, construction management, disposition, accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration. It serves the I-85 corridor from Charlotte to Greenville, SC.
+You are working on **KOVA**, a full-lifecycle real estate development platform built for Red Cedar Homes (RCH) and its affiliated entities (VanRock Holdings LLC, Scattered Lot Fund II LLC, DCL Holdings, TCMP, SCR Management LLC, plus per-project SPEs). KOVA covers deal pipeline, project management, construction management, disposition, accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration. It serves the I-85 corridor from Charlotte to Greenville, SC.
 
 **Tech Stack:**
 - Build: Vite 6
@@ -49,7 +49,7 @@ You are working on **Tekton** (TEK), a full-lifecycle real estate development pl
 
 **Project Structure:**
 ```
-tekton/
+kova/
 ├── src/
 │   ├── routes/
 │   │   ├── _authenticated/
@@ -89,7 +89,7 @@ tekton/
 **Existing Core Tables (do NOT recreate):**
 - projects, opportunities, contacts, entities, documents, auth.users
 
-**Important:** Tekton is Vite + React SPA. NO Next.js. Server-side logic uses **Supabase Edge Functions** (Deno).
+**Important:** KOVA is Vite + React SPA. NO Next.js. Server-side logic uses **Supabase Edge Functions** (Deno).
 
 ## Task
 
@@ -132,7 +132,7 @@ After running: verify 6 tables exist (matters, matter_contacts, matter_workflow_
 
 ## Context
 
-Same Tekton stack as Prompt 1. Matters database tables exist. Tekton is Vite 6 + React 19 SPA with TanStack Router (file-based routing at `src/routes/_authenticated/`).
+Same KOVA stack as Prompt 1. Matters database tables exist. KOVA is Vite 6 + React 19 SPA with TanStack Router (file-based routing at `src/routes/_authenticated/`).
 
 ## Task
 
@@ -181,7 +181,7 @@ Status badge colors: open=info, in_progress=warning, on_hold=muted, resolved=suc
 
 ## Context
 
-Same Tekton stack. Matters database and list page exist. This is Vite + React SPA (no Next.js). The AI call goes through a Supabase Edge Function (Prompt 4). This prompt builds frontend only.
+Same KOVA stack. Matters database and list page exist. This is Vite + React SPA (no Next.js). The AI call goes through a Supabase Edge Function (Prompt 4). This prompt builds frontend only.
 
 ## Task
 
@@ -226,7 +226,7 @@ Updates per step: title/category suggestion, linked records, goals/priority, doc
 
 ## Context
 
-Same Tekton stack. NO Next.js API routes. Server logic uses **Supabase Edge Functions** (Deno runtime) at `supabase/functions/`.
+Same KOVA stack. NO Next.js API routes. Server logic uses **Supabase Edge Functions** (Deno runtime) at `supabase/functions/`.
 
 ## Task
 
@@ -264,7 +264,7 @@ Update the "Create Matter" handler to call: `supabase.functions.invoke('generate
 
 ## Context
 
-Same Tekton stack. All pieces exist except detail page. Build `src/routes/_authenticated/operations/matters/$matterId.tsx` following the Qualia detail pattern.
+Same KOVA stack. All pieces exist except detail page. Build `src/routes/_authenticated/operations/matters/$matterId.tsx` following the Qualia detail pattern.
 
 ## Task
 
@@ -326,7 +326,7 @@ Collapsible panel with Tasks, Notes, Activity tabs for this matter.
 
 ## Context
 
-Same Tekton stack. Matters module fully functional. Final polish.
+Same KOVA stack. Matters module fully functional. Final polish.
 
 ## Task
 
@@ -436,7 +436,7 @@ The prompts above are summaries. Below is the complete code Claude Code needs fo
 
 ```sql
 -- ============================================================
--- TEKTON MATTERS MODULE — Database Migration
+-- KOVA MATTERS MODULE — Database Migration
 -- ============================================================
 
 CREATE TABLE matters (

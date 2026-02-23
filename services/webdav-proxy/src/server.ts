@@ -42,7 +42,7 @@ const sessions = new Map<string, Session>();
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 function authenticateSession(req: Request): Session {
-  const sessionId = req.cookies?.tekton_dav_session;
+  const sessionId = req.cookies?.kova_dav_session;
   if (!sessionId) {
     throw new Error("No session");
   }
@@ -111,7 +111,7 @@ app.post("/auth/session", async (req: Request, res: Response): Promise<void> => 
     sessions.set(sessionId, session);
 
     // Set HTTP-only cookie
-    res.cookie("tekton_dav_session", sessionId, {
+    res.cookie("kova_dav_session", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
@@ -452,7 +452,7 @@ app.get("/health", (_req: Request, res: Response): void => {
 // ---------------------------------------------------------------------------
 
 app.listen(PORT, () => {
-  console.log(`Tekton WebDAV proxy listening on port ${PORT}`);
+  console.log(`KOVA WebDAV proxy listening on port ${PORT}`);
   console.log(`CORS origin: ${CORS_ORIGIN}`);
   console.log(`Supabase URL: ${SUPABASE_URL}`);
 });

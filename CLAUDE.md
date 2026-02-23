@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Tekton is an operations platform for production home builders and real estate developers (Red Cedar Homes / VanRock Holdings). It manages the full development lifecycle: land acquisition, construction management, home sales, and investor distributions. The codebase is currently in its planning phase with comprehensive documentation but no source code yet.
+KOVA is an operations platform for production home builders and real estate developers (Red Cedar Homes / VanRock Holdings). It manages the full development lifecycle: land acquisition, construction management, home sales, and investor distributions. The codebase is currently in its planning phase with comprehensive documentation but no source code yet.
 
 ## Tech Stack
 
@@ -57,7 +57,7 @@ Formatter: 2 spaces, 120 char line width. Linter uses recommended rules with org
 
 ## Build Plan
 
-The project follows a 10-phase sequential buildout documented in `TEKTON-BUILDOUT-PLAN (1).md`. UI/UX interaction patterns for every page are in `TEKTON-PAGE-INTERACTIONS.md`. Phases build on each other — implement in order.
+The project follows a 10-phase sequential buildout documented in `TEKTON-BUILDOUT-PLAN (1).md`. UI/UX interaction patterns for every page are in `TEKTON-PAGE-INTERACTIONS.md`. (Note: these filenames predate the KOVA rebrand.) Phases build on each other — implement in order.
 
 ## Environment Variables
 

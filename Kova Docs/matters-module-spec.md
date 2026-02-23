@@ -1,13 +1,14 @@
-# TEKTON — MATTERS MODULE SPECIFICATION
-## Commit to: `tekton/docs/matters-module-spec.md`
+# KOVA — MATTERS MODULE SPECIFICATION
+## Commit to: `kova/docs/matters-module-spec.md`
+<!-- NOTE: If your git repository path still uses "tekton", update the repo path accordingly -->
 
-This spec defines the Matters module for Tekton. To build it, read this entire file, then execute Phases 1–6 in order, running `npm run build` after each phase to verify zero TypeScript errors before continuing.
+This spec defines the Matters module for KOVA. To build it, read this entire file, then execute Phases 1-6 in order, running `npm run build` after each phase to verify zero TypeScript errors before continuing.
 
 ---
 
-## TEKTON CONTEXT
+## KOVA CONTEXT
 
-**Tekton** (TEK) is a full-lifecycle real estate development platform for Red Cedar Homes (RCH) and affiliated entities. RCH is a **for-sale residential builder only** — no rentals, no property management. The platform covers deal pipeline, project management, construction management, disposition (sales), accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration across the I-85 corridor from Charlotte to Greenville, SC.
+**KOVA** is a full-lifecycle real estate development platform for Red Cedar Homes (RCH) and affiliated entities. RCH is a **for-sale residential builder only** — no rentals, no property management. The platform covers deal pipeline, project management, construction management, disposition (sales), accounting, purchasing, investor/fund management, contacts, calendar, workflows, and administration across the I-85 corridor from Charlotte to Greenville, SC.
 
 **Entities:**
 - VanRock Holdings LLC — Parent holding company
@@ -85,7 +86,8 @@ Sidebar follows the **Qualia pattern:**
 ## PROJECT STRUCTURE (relevant paths)
 
 ```
-tekton/
+kova/
+<!-- NOTE: If your git repository directory still uses "tekton", update accordingly -->
 ├── src/
 │   ├── routes/_authenticated/
 │   │   ├── operations/
@@ -125,7 +127,7 @@ tekton/
 
 A **catch-all workflow system** for anything outside the standard opportunity → project → construction → disposition pipeline. Examples: contract disputes, loan refinances, insurance claims, zoning appeals, partnership negotiations, vendor disputes, title issues, tax appeals.
 
-A Matter is created through a **conversational AI intake** (chat or voice-to-text) that asks three questions, then Claude generates a structured record with a tailored workflow of milestones, tasks, and deliverables — all linked to existing Tekton records.
+A Matter is created through a **conversational AI intake** (chat or voice-to-text) that asks three questions, then Claude generates a structured record with a tailored workflow of milestones, tasks, and deliverables — all linked to existing KOVA records.
 
 ---
 

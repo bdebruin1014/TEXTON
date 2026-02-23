@@ -12,7 +12,7 @@ This spec updates the entire KOVA visual system. There are 6 major changes:
 2. **Dark sidebar** — Sidebar background changes from white (`#ffffff`) to dark navy (`#112233`) matching the top nav header. All sidebar text, labels, icons, and hover states updated for dark background.
 3. **Project Tab Bar** — New Qualia-style horizontal tab strip between the header+sidebar and the main content area. Lets users open multiple projects as tabs and quickly switch between them. Grey strip background, active tab is white/light.
 4. **Form Field State System** — Four visual states for form inputs: required-empty (salmon), auto-generated (blue), manual-override (yellow + cancel ✕), and normal (white). Required fields clear their red state when filled.
-5. **App renamed** — All user-facing strings change from "Tekton" / "TEK" to "KOVA".
+5. **App renamed** — All user-facing strings now use "KOVA".
 6. **Fully responsive** — Three breakpoints: mobile (<768px), tablet (768–1024px), desktop (>1024px). Sidebar collapses to a slide-over drawer on mobile/tablet. Tab bar scrolls horizontally. Form grids stack. Right panel collapses. Touch-friendly tap targets.
 
 ---
@@ -884,13 +884,13 @@ Ensure `index.html` has:
 
 ## 9. BRANDING
 
-Replace all user-facing instances of "Tekton", "TEK", "TEK·TON", "tekton" with "KOVA" or "kova" as appropriate:
+Verify all user-facing instances use "KOVA" or "kova" as appropriate:
 
 1. Logo component — render "KOVA" in `text-[#4A8C5E] font-bold tracking-[2px]`
 2. `index.html` `<title>` tag → "KOVA"
 3. Any meta tags (og:title, description) → "KOVA"
 4. Login/auth screens → "KOVA"
-5. Package.json name field if it contains "tekton"
+5. Package.json name field — should be "kova"
 6. README.md header
 
 ---
@@ -916,7 +916,7 @@ After implementing, verify:
 - [ ] Clicking ✕ on override field reverts to auto-generated value (turns blue)
 - [ ] Focus rings use #143A23
 - [ ] Badge greens use #D4E2D8 bg with #143A23 text
-- [ ] All "Tekton"/"TEK" references show "KOVA"
+- [ ] All branding references show "KOVA"
 - [ ] **Mobile (375px)**: Hamburger menu visible, sidebar hidden, form fields stack to 1 col, inputs are 44px min height with 16px font
 - [ ] **Mobile**: Tapping hamburger opens sidebar as overlay drawer, tapping overlay closes it
 - [ ] **Mobile**: Tab bar scrolls horizontally with momentum, no scrollbar visible

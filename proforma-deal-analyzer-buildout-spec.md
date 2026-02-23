@@ -1,19 +1,19 @@
-# Tekton — Proforma Tools & Deal Analyzer Buildout Specification
+# KOVA — Proforma Tools & Deal Analyzer Buildout Specification
 
 ## Scope
 
-This specification covers the complete buildout of two interconnected Tekton capabilities: (1) the Deal Analyzer engine (scattered lot underwriting tool embedded in Pipeline), and (2) the Proforma Tools module (standalone tools page for community development, lot development, and lot purchase proformas). Both systems draw from a shared reference data layer — floor plan costs, municipality fee schedules, upgrade packages, site work items, and the fixed per-house fee schedule — all managed through Admin.
+This specification covers the complete buildout of two interconnected KOVA capabilities: (1) the Deal Analyzer engine (scattered lot underwriting tool embedded in Pipeline), and (2) the Proforma Tools module (standalone tools page for community development, lot development, and lot purchase proformas). Both systems draw from a shared reference data layer — floor plan costs, municipality fee schedules, upgrade packages, site work items, and the fixed per-house fee schedule — all managed through Admin.
 
 ## Branding
 
-All user-facing labels, headers, document titles, and UI copy must use **Red Cedar Homes** (or **RCH**) — never "VanRock." Some source Excel files in the repo carry legacy "VanRock" filenames from when the deal sheet was branded under the holding company. Those filenames are fine as-is in the repo, but every Tekton screen, exported document, and proforma output should reference Red Cedar Homes.
+All user-facing labels, headers, document titles, and UI copy must use **Red Cedar Homes** (or **RCH**) — never "VanRock." Some source Excel files in the repo carry legacy "VanRock" filenames from when the deal sheet was branded under the holding company. Those filenames are fine as-is in the repo, but every KOVA screen, exported document, and proforma output should reference Red Cedar Homes.
 
 ## Reference Data Sources (GitHub Repo)
 
-The following files in the TEK-TON repo provide the authoritative data to seed and validate every calculation:
+The following files in the KOVA repo provide the authoritative data to seed and validate every calculation:
 
 1. `RC_Pricing_Guide_Contract_Format (2).xlsx` — 22 floor plans with full 53-line-item sticks & bricks breakdown, 7-category contract cost structure, upgrade menu, and floor plan specifications
-2. `VanRock_SL_Deal_Sheet (1) (1).xlsx` — Working scattered lot deal analyzer (source file uses legacy "VanRock" branding; all Tekton UI and outputs must use "Red Cedar Homes" or "RCH") with Floor Plans tab, Municipalities tab, Site Work Itemization tab, Comps tab, Upgrades tab, and Jenny's Checklist
+2. `VanRock_SL_Deal_Sheet (1) (1).xlsx` — Working scattered lot deal analyzer (source file uses legacy "VanRock" branding; all KOVA UI and outputs must use "Red Cedar Homes" or "RCH") with Floor Plans tab, Municipalities tab, Site Work Itemization tab, Comps tab, Upgrades tab, and Jenny's Checklist
 3. `Ramsey_RedCedar_ProForma (1).xlsx` — Community development JV proforma (Phase 1 horizontal + Phase 2 vertical, LP buyout waterfall, scattered lot fund waterfall)
 4. `24-017 Rutland-Aiken Land Development Model 12.1.24(1).xlsm` — Lot development proforma model
 5. `Floorplan Deck with Renderings and Specs 1 (1) (1).pdf` — Floor plan renderings, specs, and elevation drawings for all plans

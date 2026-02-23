@@ -282,9 +282,9 @@ FILE FORMAT:
 🎯 STEP 7: IMPORT INTO YOUR SYSTEM
 ----------------------------------
 
-🔧 TEK-TON IMPORT:
+🔧 KOVA IMPORT:
 -----------------
-1. Log into Tek-Ton
+1. Log into KOVA
 2. Navigate to: Setup → Chart of Accounts → Import
 3. Click: Import Chart of Accounts
 4. Upload your CSV file
@@ -530,7 +530,7 @@ TEMPLATE ISSUES:
 - Verify all variables replaced
 
 SYSTEM-SPECIFIC IMPORT HELP:
-- Tek-Ton: support.tekton.com
+- KOVA: support.kova.com
 - ERPNext: discuss.erpnext.com or docs.erpnext.com
 - QuickBooks: quickbooks.intuit.com/support
 
