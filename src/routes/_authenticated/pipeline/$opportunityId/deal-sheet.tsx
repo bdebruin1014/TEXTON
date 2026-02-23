@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ComingSoonPlaceholder } from "@/components/deal-sheet/ComingSoonPlaceholder";
+import { CommunityDevDealSheet } from "@/components/deal-sheet/CommunityDevDealSheet";
 import { DealSheetForm, type DealSheetRecord } from "@/components/deal-sheet/DealSheetForm";
+import { LotDevDealSheet } from "@/components/deal-sheet/LotDevDealSheet";
+import { LotPurchaseDealSheet } from "@/components/deal-sheet/LotPurchaseDealSheet";
 import { ProjectTypeGate } from "@/components/deal-sheet/ProjectTypeGate";
 import { ScenarioComparison } from "@/components/deal-sheet/ScenarioComparison";
 import { ScenarioTabBar } from "@/components/deal-sheet/ScenarioTabBar";
@@ -132,9 +134,15 @@ function DealSheet() {
     return <ProjectTypeGate opportunityId={opportunityId} />;
   }
 
-  // Gate 2: Non-Scattered Lot types → coming soon
-  if (opp.project_type !== "Scattered Lot") {
-    return <ComingSoonPlaceholder projectType={opp.project_type} />;
+  // Route by project type
+  if (opp.project_type === "Community Development") {
+    return <CommunityDevDealSheet opportunityId={opportunityId} />;
+  }
+  if (opp.project_type === "Lot Development") {
+    return <LotDevDealSheet opportunityId={opportunityId} />;
+  }
+  if (opp.project_type === "Lot Purchase") {
+    return <LotPurchaseDealSheet opportunityId={opportunityId} />;
   }
 
   // No sheets yet → empty state

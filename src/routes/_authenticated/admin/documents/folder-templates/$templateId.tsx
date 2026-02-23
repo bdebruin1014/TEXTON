@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FormSkeleton } from "@/components/shared/Skeleton";
@@ -145,7 +146,7 @@ function FolderTemplateEditor() {
     },
     onSuccess: (result) => {
       if (result) {
-        alert(`Applied template to ${result.applied} record(s).`);
+        toast.success(`Applied template to ${result.applied} record(s).`);
       }
     },
   });

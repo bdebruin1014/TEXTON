@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import { useState } from "react";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -73,7 +74,7 @@ function CreateJobs() {
       // Update contract status
       await updateContract.mutateAsync({ status: "Jobs Created" });
     } catch (err) {
-      alert("Failed to create jobs. Please try again.");
+      toast.error("Failed to create jobs. Please try again.");
     } finally {
       setCreating(false);
     }

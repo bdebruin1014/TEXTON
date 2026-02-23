@@ -14,21 +14,21 @@ const PROJECT_TYPES = [
     label: "Community Dev",
     description: "Multi-lot subdivisions with horizontal and vertical construction",
     icon: "\u{1F3D8}\uFE0F",
-    enabled: false,
+    enabled: true,
   },
   {
     key: "Lot Development",
     label: "Lot Development",
     description: "Raw land entitlement and horizontal development for lot sales",
     icon: "\u{1F9F1}",
-    enabled: false,
+    enabled: true,
   },
   {
     key: "Lot Purchase",
     label: "Lot Purchase",
     description: "Finished lot acquisitions for inventory or resale",
     icon: "\u{1F4CD}",
-    enabled: false,
+    enabled: true,
   },
 ] as const;
 
@@ -76,11 +76,6 @@ export function ProjectTypeGate({ opportunityId }: ProjectTypeGateProps) {
             <div className="mb-3 text-2xl">{type.icon}</div>
             <h3 className="text-sm font-semibold text-foreground">{type.label}</h3>
             <p className="mt-1 text-xs text-muted">{type.description}</p>
-            {!type.enabled && (
-              <span className="mt-3 inline-block rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                Coming Soon
-              </span>
-            )}
           </button>
         ))}
       </div>

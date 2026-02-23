@@ -18,6 +18,7 @@ function ContractPreview() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pdfGenerating, setPdfGenerating] = useState(false);
 
   const { data: contract, isLoading } = useQuery({
     queryKey: ["rch-contract", contractId],
@@ -178,6 +179,43 @@ function ContractPreview() {
     }
   };
 
+  const handleDownloadPdf = async () => {
+    if (!previewHtml) {
+      toast.error("Generate a contract first");
+      return;
+    }
+    setPdfGenerating(true);
+    try {
+      // Create a temporary container with the HTML content for pdf rendering
+      const container = document.createElement("div");
+      container.innerHTML = previewHtml;
+      container.style.width = "8.5in";
+      container.style.padding = "0.5in";
+      container.style.fontFamily = "Arial, sans-serif";
+      container.style.fontSize = "12px";
+      container.style.lineHeight = "1.6";
+      document.body.appendChild(container);
+
+      const { default: html2pdf } = await import("html2pdf.js");
+      await html2pdf()
+        .from(container)
+        .set({
+          margin: [0.5, 0.5, 0.5, 0.5],
+          filename: `${contract?.contract_number ?? "contract"}.pdf`,
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        })
+        .save();
+
+      document.body.removeChild(container);
+      toast.success("PDF downloaded");
+    } catch (err) {
+      toast.error(`PDF generation failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setPdfGenerating(false);
+    }
+  };
+
   if (isLoading) {
     return <FormSkeleton />;
   }
@@ -208,11 +246,11 @@ function ContractPreview() {
               </button>
               <button
                 type="button"
-                disabled
-                title="PDF generation coming soon"
-                className="rounded-lg border border-border bg-transparent px-3 py-2 text-sm font-medium text-muted transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleDownloadPdf}
+                disabled={pdfGenerating || !previewHtml}
+                className="rounded-lg border border-border bg-transparent px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Download PDF
+                {pdfGenerating ? "Generating PDF..." : "Download PDF"}
               </button>
             </>
           )}

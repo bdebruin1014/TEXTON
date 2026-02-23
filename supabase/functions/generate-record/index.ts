@@ -115,19 +115,25 @@ Respond ONLY with valid JSON — no markdown, no explanation.`,
 
   contacts: `${BASE_CONTEXT}
 
-You are creating a new company/contact record. Extract structured data from the user's \
-description. They may paste email signatures, website info, or free-form descriptions.
+You are creating a new contact record (a person), and optionally a company record if company \
+details are provided. Extract structured data from the user's description. They may paste email \
+signatures, website info, or free-form descriptions.
 
 Return JSON with these fields:
-- company_name (string, max 100 chars)
-- company_type (string or null — e.g., "Subcontractor", "Supplier", "Lender", "Attorney", "Realtor", "Title Company", "Engineer", "Surveyor", "Architect")
-- phone (string or null)
+- first_name (string or null)
+- last_name (string or null)
 - email (string or null)
-- website (string or null)
-- address (string or null)
-- city (string or null)
-- state (string or null)
-- notes (string — 2-4 sentence summary)
+- phone (string or null)
+- title (string or null — job title)
+- company_name (string or null — the company this person works at)
+- company_type (string or null — e.g., "Subcontractor", "Supplier", "Lender", "Attorney", "Realtor", "Title Company", "Engineer", "Surveyor", "Architect")
+- company_phone (string or null — company main phone, if different from contact phone)
+- company_email (string or null — company main email, if different from contact email)
+- company_website (string or null)
+- company_address (string or null)
+- company_city (string or null)
+- company_state (string or null)
+- company_notes (string or null — notes about the company)
 
 Respond ONLY with valid JSON — no markdown, no explanation.`,
 
@@ -137,13 +143,13 @@ You are creating a new fund/investment vehicle record. Extract structured data f
 user's description. They may paste investor communications, fund docs, or term sheets.
 
 Return JSON with these fields:
-- fund_name (string, max 100 chars)
+- name (string, max 100 chars — fund name)
 - fund_type (string or null — e.g., "Equity Fund", "Debt Fund", "Joint Venture", "LP Fund")
 - vintage_year (number or null)
-- target_size (number or null — target fund size in dollars)
-- status (always "Active")
-- gp_entity (string or null — general partner entity name)
-- notes (string — 2-4 sentence summary)
+- total_committed (number or null — target/committed fund size in dollars)
+- preferred_return (number or null — e.g., 0.08 for 8%)
+- promote_structure (string or null — e.g., "80/20 after 8% pref")
+- description (string — 2-4 sentence summary)
 
 Respond ONLY with valid JSON — no markdown, no explanation.`,
 };
@@ -229,28 +235,27 @@ const MODULE_TABLES: Record<string, ModuleTableConfig> = {
     tableName: "contacts",
     idField: "id",
     mapFields: (ai) => ({
-      company: ai.company_name ?? "New Company",
-      company_type: ai.company_type ?? null,
-      phone: ai.phone ?? null,
+      first_name: ai.first_name ?? null,
+      last_name: ai.last_name ?? null,
+      name: [ai.first_name, ai.last_name].filter(Boolean).join(" ") || "New Contact",
       email: ai.email ?? null,
-      website: ai.website ?? null,
-      address: ai.address ?? null,
-      city: ai.city ?? null,
-      state: ai.state ?? null,
-      notes: ai.notes ?? null,
+      phone: ai.phone ?? null,
+      title: ai.title ?? null,
+      company: typeof ai.company_name === "string" ? ai.company_name : null,
     }),
   },
   investors: {
     tableName: "funds",
     idField: "id",
     mapFields: (ai, entityId) => ({
-      fund_name: ai.fund_name ?? "New Fund",
+      name: ai.name ?? (ai as Record<string, unknown>).fund_name ?? "New Fund",
       fund_type: ai.fund_type ?? null,
       vintage_year: ai.vintage_year ?? null,
-      target_size: ai.target_size ?? null,
+      total_committed: ai.total_committed ?? null,
+      preferred_return: ai.preferred_return ?? null,
+      promote_structure: ai.promote_structure ?? null,
       status: "Active",
-      gp_entity: ai.gp_entity ?? null,
-      notes: ai.notes ?? null,
+      description: ai.description ?? null,
       entity_id: entityId ?? null,
     }),
   },
@@ -428,6 +433,51 @@ Deno.serve(async (req) => {
 
     // ── Insert record ────────────────────────────────────────────────────
     const insertData = tableConfig.mapFields(aiData, entityId);
+
+    // For contacts: create company record first if company details provided
+    if (moduleKey === "contacts" && aiData.company_name) {
+      const companyData: Record<string, unknown> = {
+        name: aiData.company_name,
+        company_type: aiData.company_type ?? null,
+        phone: aiData.company_phone ?? null,
+        email: aiData.company_email ?? null,
+        website: aiData.company_website ?? null,
+        address: aiData.company_address ?? null,
+        city: aiData.company_city ?? null,
+        state: aiData.company_state ?? null,
+        notes: aiData.company_notes ?? null,
+        entity_id: entityId ?? null,
+      };
+      const { data: company, error: companyError } = await supabase
+        .from("companies")
+        .insert(companyData)
+        .select("id")
+        .single();
+      if (companyError) {
+        console.warn("Company insert failed (may already exist):", companyError.message);
+      } else if (company) {
+        (insertData as Record<string, unknown>).company_id = company.id;
+      }
+    }
+
+    // Validate mapped fields against known columns (log warnings for unknowns)
+    const knownColumns: Record<string, string[]> = {
+      opportunities: ["opportunity_name", "status", "project_type", "source", "estimated_value", "property_address", "address_city", "address_state", "acreage", "total_lots", "notes", "entity_id"],
+      projects: ["project_name", "status", "project_type", "entity_name", "total_lots", "total_budget", "address_city", "address_state", "property_address", "notes", "entity_id"],
+      jobs: ["lot_number", "floor_plan_name", "project_name", "status", "buyer_name", "budget_total", "start_date", "target_completion", "notes", "entity_id"],
+      dispositions: ["lot_number", "project_name", "buyer_name", "status", "contract_price", "closing_date", "buyer_email", "buyer_phone", "notes", "entity_id"],
+      contacts: ["first_name", "last_name", "name", "email", "phone", "title", "company", "company_id"],
+      funds: ["name", "fund_type", "vintage_year", "total_committed", "preferred_return", "promote_structure", "status", "description", "entity_id"],
+    };
+    const allowed = knownColumns[tableConfig.tableName];
+    if (allowed) {
+      for (const key of Object.keys(insertData as Record<string, unknown>)) {
+        if (!allowed.includes(key)) {
+          console.warn(`[generate-record] Unmapped field "${key}" for table "${tableConfig.tableName}" — skipping`);
+          delete (insertData as Record<string, unknown>)[key];
+        }
+      }
+    }
 
     const { data: record, error: insertError } = await supabase
       .from(tableConfig.tableName)

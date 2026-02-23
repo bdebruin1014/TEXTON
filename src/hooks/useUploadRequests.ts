@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
 
@@ -137,7 +138,14 @@ export function useCreateUploadRequest() {
             recipient_name: input.recipient_name,
           },
         });
-        if (emailError) Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
+        if (emailError) {
+          const isNotConfigured = emailError.message?.includes("503") || emailError.message?.includes("not configured");
+          if (isNotConfigured) {
+            toast.warning("Request created, but email not sent. Email service not configured — contact admin.");
+          } else {
+            Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
+          }
+        }
       }
 
       return request as UploadRequest;
@@ -187,7 +195,13 @@ export function useSendReminder() {
           recipient_name: request.recipient_name,
         },
       });
-      if (emailError) throw new Error("Failed to send reminder email");
+      if (emailError) {
+        const isNotConfigured = emailError.message?.includes("503") || emailError.message?.includes("not configured");
+        if (isNotConfigured) {
+          throw new Error("Email service not configured. Contact admin to set up Resend.");
+        }
+        throw new Error("Failed to send reminder email");
+      }
 
       const { error } = await supabase
         .from("upload_requests")

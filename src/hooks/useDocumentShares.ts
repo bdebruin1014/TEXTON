@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
 
@@ -121,7 +122,14 @@ export function useCreateShare() {
             recipient_name: input.recipient_name,
           },
         });
-        if (emailError) Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
+        if (emailError) {
+          const isNotConfigured = emailError.message?.includes("503") || emailError.message?.includes("not configured");
+          if (isNotConfigured) {
+            toast.warning("Share created, but email not sent. Email service not configured — contact admin.");
+          } else {
+            Sentry.addBreadcrumb({ message: `Email notification failed: ${emailError.message}`, level: "warning" });
+          }
+        }
       }
 
       return share as DocumentShare;
