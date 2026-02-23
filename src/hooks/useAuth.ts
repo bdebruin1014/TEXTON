@@ -10,56 +10,100 @@ export function useAuth() {
   useEffect(() => {
     const initSession = async (userId: string | undefined) => {
       if (!userId || activeEntityId) return;
-      const { data } = await supabase.from("user_profiles").select("entity_id").eq("user_id", userId).single();
-      if (data?.entity_id) {
-        setActiveEntity(data.entity_id);
+      try {
+        const { data } = await supabase.from("user_profiles").select("entity_id").eq("user_id", userId).single();
+        if (data?.entity_id) {
+          setActiveEntity(data.entity_id);
+        }
+      } catch {
+        // Unable to load user profile; continue without entity context
       }
     };
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setAuth(s?.user ?? null, s);
-      initSession(s?.user?.id);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: s } }) => {
+        setAuth(s?.user ?? null, s);
+        initSession(s?.user?.id);
+      })
+      .catch(() => {
+        // Supabase unreachable on init; remain logged out
+      });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setAuth(s?.user ?? null, s);
-      initSession(s?.user?.id);
+      initSession(s?.user?.id).catch(() => {});
     });
 
     return () => subscription.unsubscribe();
   }, [setAuth, activeEntityId, setActiveEntity]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        throw new Error("Unable to reach the authentication service. Please check your connection.");
+      }
+      throw err;
+    }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      if (error) throw error;
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        throw new Error("Unable to reach the authentication service. Please check your connection.");
+      }
+      throw err;
+    }
   };
 
   const resetPasswordForEmail = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        throw new Error("Unable to reach the authentication service. Please check your connection.");
+      }
+      throw err;
+    }
   };
 
   const updatePassword = async (newPassword: string) => {
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        throw new Error("Unable to reach the authentication service. Please check your connection.");
+      }
+      throw err;
+    }
   };
 
   const updateProfile = async (data: { full_name?: string; email?: string }) => {
-    const { error } = await supabase.auth.updateUser({ data });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.updateUser({ data });
+      if (error) throw error;
+    } catch (err) {
+      if (err instanceof TypeError && err.message === "Failed to fetch") {
+        throw new Error("Unable to reach the authentication service. Please check your connection.");
+      }
+      throw err;
+    }
   };
 
   const signOut = async () => {
