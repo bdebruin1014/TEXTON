@@ -7,7 +7,7 @@ import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
-import { useEntityStore } from "@/stores/entityStore";
+
 
 export const Route = createFileRoute("/_authenticated/accounting/")({
   component: AccountingIndex,
@@ -60,7 +60,7 @@ interface EntityCard {
 function AccountingIndex() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const activeEntityId = useEntityStore((s) => s.activeEntityId);
+
   const [showModal, setShowModal] = useState(false);
 
   const { data: entities = [], isLoading: entitiesLoading } = useQuery<Entity[]>({
@@ -161,7 +161,6 @@ function AccountingIndex() {
           name: values.name,
           entity_type: values.entity_type || null,
           status: "Active",
-          entity_id: activeEntityId,
         })
         .select("id")
         .single();
