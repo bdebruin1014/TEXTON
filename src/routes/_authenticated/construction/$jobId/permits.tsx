@@ -10,7 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/permits")({
   component: Permits,
@@ -76,7 +76,7 @@ function Permits() {
       toast.success("Permit added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add permit"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add permit"),
   });
 
   const updatePermit = useMutation({

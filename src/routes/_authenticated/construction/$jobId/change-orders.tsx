@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/change-orders")({
@@ -66,7 +66,7 @@ function ChangeOrders() {
       toast.success("Change order created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create change order"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create change order"),
   });
 
   const user = useAuthStore((s) => s.user);
@@ -92,8 +92,8 @@ function ChangeOrders() {
       toast.success("Change order deleted");
       setConfirmDeleteId(null);
     },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : "Failed to delete change order");
+    onError: (err: unknown) => {
+      toast.error(getErrorMessage(err) || "Failed to delete change order");
       setConfirmDeleteId(null);
     },
   });

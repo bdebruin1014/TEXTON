@@ -182,9 +182,10 @@ app.get("/files/:documentId/:filename", async (req: Request, res: Response): Pro
     });
 
     res.send(buffer);
-  } catch (err: any) {
-    if (err.message === "No session" || err.message === "Session expired") {
-      res.status(401).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "No session" || message === "Session expired") {
+      res.status(401).json({ error: message });
       return;
     }
     console.error("GET file error:", err);
@@ -254,9 +255,10 @@ app.put("/files/:documentId/:filename", async (req: Request, res: Response): Pro
     });
 
     res.status(204).end();
-  } catch (err: any) {
-    if (err.message === "No session" || err.message === "Session expired") {
-      res.status(401).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "No session" || message === "Session expired") {
+      res.status(401).json({ error: message });
       return;
     }
     console.error("PUT file error:", err);
@@ -324,9 +326,10 @@ app.lock("/files/:documentId/:filename", async (req: Request, res: Response): Pr
       "Lock-Token": `<${lockToken}>`,
     });
     res.status(200).send(lockXml);
-  } catch (err: any) {
-    if (err.message === "No session" || err.message === "Session expired") {
-      res.status(401).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "No session" || message === "Session expired") {
+      res.status(401).json({ error: message });
       return;
     }
     console.error("LOCK error:", err);
@@ -369,9 +372,10 @@ app.unlock("/files/:documentId/:filename", async (req: Request, res: Response): 
     });
 
     res.status(204).end();
-  } catch (err: any) {
-    if (err.message === "No session" || err.message === "Session expired") {
-      res.status(401).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "No session" || message === "Session expired") {
+      res.status(401).json({ error: message });
       return;
     }
     console.error("UNLOCK error:", err);
@@ -429,9 +433,10 @@ app.propfind("/files/:documentId/:filename", async (req: Request, res: Response)
       "Content-Type": "application/xml; charset=utf-8",
     });
     res.status(207).send(propXml);
-  } catch (err: any) {
-    if (err.message === "No session" || err.message === "Session expired") {
-      res.status(401).json({ error: err.message });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message === "No session" || message === "Session expired") {
+      res.status(401).json({ error: message });
       return;
     }
     console.error("PROPFIND error:", err);

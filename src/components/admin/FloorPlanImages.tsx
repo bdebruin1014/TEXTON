@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Sentry } from "@/lib/sentry";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 
 interface FloorPlanImage {
   id: string;
@@ -92,7 +93,7 @@ export function FloorPlanImages({ planId }: FloorPlanImagesProps) {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
-    onError: (err: any) => toast.error(err?.message || "Failed to delete image"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete image"),
   });
 
   const togglePrimary = useMutation({

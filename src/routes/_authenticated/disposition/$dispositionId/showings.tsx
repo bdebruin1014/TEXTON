@@ -10,7 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/disposition/$dispositionId/showings")({
   component: Showings,
@@ -61,7 +61,7 @@ function Showings() {
       toast.success("Showing added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add showing"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add showing"),
   });
 
   const deleteShowing = useMutation({

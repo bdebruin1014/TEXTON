@@ -10,7 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { OPPORTUNITY_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/pipeline/")({
@@ -88,7 +88,7 @@ function PipelineIndex() {
       queryClient.invalidateQueries({ queryKey: ["opportunities"] });
       toast.success("Opportunity deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete opportunity"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete opportunity"),
   });
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({

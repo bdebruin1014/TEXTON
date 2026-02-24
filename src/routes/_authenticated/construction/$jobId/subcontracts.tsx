@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/subcontracts")({
@@ -64,7 +64,7 @@ function Subcontracts() {
       toast.success("Subcontract created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create subcontract"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create subcontract"),
   });
 
   const user = useAuthStore((s) => s.user);

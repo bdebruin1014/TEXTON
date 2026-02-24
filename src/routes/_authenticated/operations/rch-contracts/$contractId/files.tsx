@@ -8,7 +8,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/operations/rch-contracts/$contractId/files")({
   component: ContractFiles,
@@ -59,7 +59,7 @@ function ContractFiles() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to upload file"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to upload file"),
   });
 
   const deleteFile = useMutation({
@@ -72,7 +72,7 @@ function ContractFiles() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rch-contract-files", contractId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to delete file"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete file"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 import {
   calculateWaterfall,
   type WaterfallInput,
@@ -278,7 +278,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["distribution-line-items", distributionId] });
       toast.success("Calculation saved");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to save calculation"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to save calculation"),
   });
 
   const approveCalculation = useMutation({
@@ -294,7 +294,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["distribution-calculation", distributionId] });
       toast.success("Calculation approved");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to approve"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to approve"),
   });
 
   const recordDistribution = useMutation({
@@ -335,7 +335,7 @@ function DistributionDetail() {
       queryClient.invalidateQueries({ queryKey: ["fund-investments", fundId] });
       toast.success("Distribution recorded — investor balances updated");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to record distribution"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to record distribution"),
   });
 
   // Use saved results if available, otherwise live calculation

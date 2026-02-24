@@ -9,7 +9,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/contacts/employees")({
@@ -64,7 +64,7 @@ function Employees() {
       toast.success("Employee added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add employee"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add employee"),
   });
 
   const deleteMutation = useMutation({
@@ -76,7 +76,7 @@ function Employees() {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
       toast.success("Employee deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete employee"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete employee"),
   });
 
   const activeCount = employees.filter((e) => e.status === "Active").length;

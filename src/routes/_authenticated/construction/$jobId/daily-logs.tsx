@@ -10,7 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/daily-logs")({
@@ -62,7 +62,7 @@ function DailyLogs() {
       toast.success("Daily log created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create daily log"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create daily log"),
   });
 
   const user = useAuthStore((s) => s.user);
@@ -88,8 +88,8 @@ function DailyLogs() {
       toast.success("Daily log deleted");
       setConfirmDeleteId(null);
     },
-    onError: (err) => {
-      toast.error(err instanceof Error ? err.message : "Failed to delete daily log");
+    onError: (err: unknown) => {
+      toast.error(getErrorMessage(err) || "Failed to delete daily log");
       setConfirmDeleteId(null);
     },
   });

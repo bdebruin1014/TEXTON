@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/journal-entries")({
@@ -114,7 +114,7 @@ function JournalEntries() {
       toast.success("Journal entry created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create journal entry"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create journal entry"),
   });
 
   const updateStatus = useMutation({
@@ -216,7 +216,7 @@ function JournalEntries() {
       queryClient.invalidateQueries({ queryKey: ["journal-entries", activeEntityId] });
       toast.success("Reversal entry created");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create reversal"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create reversal"),
   });
 
   const expandedEntry = entries.find((e) => e.id === expandedJE);

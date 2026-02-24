@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/investors/")({
   component: FundsList,
@@ -68,7 +68,7 @@ function FundsList() {
         navigate({ to: `/investors/${data.id}` as string });
       }
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create fund"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create fund"),
   });
 
   const deleteFund = useMutation({
@@ -80,7 +80,7 @@ function FundsList() {
       queryClient.invalidateQueries({ queryKey: ["funds"] });
       toast.success("Fund deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete fund"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete fund"),
   });
 
   const totalCommitted = funds.reduce((sum, f) => sum + (f.total_committed ?? 0), 0);

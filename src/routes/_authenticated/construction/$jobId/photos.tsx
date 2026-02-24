@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/photos")({
   component: Photos,
@@ -52,7 +52,7 @@ function Photos() {
       if (dbError) throw dbError;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to upload photo"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to upload photo"),
   });
 
   const deletePhoto = useMutation({
@@ -65,7 +65,7 @@ function Photos() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-photos", jobId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to delete photo"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete photo"),
   });
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

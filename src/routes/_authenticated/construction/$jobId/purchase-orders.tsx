@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/purchase-orders")({
@@ -65,7 +65,7 @@ function PurchaseOrders() {
       toast.success("Purchase order created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create purchase order"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create purchase order"),
   });
 
   const user = useAuthStore((s) => s.user);

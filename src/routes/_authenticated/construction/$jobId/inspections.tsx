@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/inspections")({
@@ -63,7 +63,7 @@ function Inspections() {
       toast.success("Inspection scheduled");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to schedule inspection"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to schedule inspection"),
   });
 
   const updateInspection = useMutation({
