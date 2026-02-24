@@ -2,11 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { PageWithSidebar } from "@/components/layout/AppShell";
 import { DetailSidebar, type SidebarSection } from "@/components/layout/DetailSidebar";
+import { SidebarTaskProgress } from "@/components/sidebar/SidebarTaskProgress";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/disposition/$dispositionId")({
   component: DispositionLayout,
 });
+
+interface WfTask {
+  status: string;
+  task_name: string;
+  due_date: string | null;
+}
 
 function DispositionLayout() {
   const { dispositionId } = Route.useParams();
@@ -21,6 +28,27 @@ function DispositionLayout() {
         .single();
       if (error) throw error;
       return data;
+    },
+  });
+
+  /* ── Task query ── */
+  const { data: tasks = [] } = useQuery<WfTask[]>({
+    queryKey: ["disposition-tasks", dispositionId],
+    queryFn: async () => {
+      const { data: instances } = await supabase
+        .from("workflow_instances")
+        .select("id")
+        .eq("record_id", dispositionId)
+        .eq("record_type", "disposition");
+      if (!instances || instances.length === 0) return [];
+      const instanceIds = instances.map((i) => i.id);
+      const { data, error } = await supabase
+        .from("workflow_instance_tasks")
+        .select("status, task_name, due_date")
+        .in("instance_id", instanceIds)
+        .order("sort_order");
+      if (error) throw error;
+      return data ?? [];
     },
   });
 
@@ -80,7 +108,10 @@ function DispositionLayout() {
       title={title}
       subtitle={subtitle}
       sections={sections}
-    />
+    >
+      {/* Task progress */}
+      <SidebarTaskProgress title="Tasks" tasks={tasks} />
+    </DetailSidebar>
   );
 
   return (
