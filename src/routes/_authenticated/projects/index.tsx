@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ModuleIndex, type ModuleKpi, type StatusTab } from "@/components/layout/ModuleIndex";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { CardGridSkeleton } from "@/components/shared/Skeleton";
+import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { PROJECT_STATUSES } from "@/lib/constants";
+import { DataTable } from "@/components/tables/DataTable";
+import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/projects/")({
@@ -22,7 +22,7 @@ interface Project {
   project_type: string | null;
   status: string;
   entity_id: string | null;
-  total_budget: number | null;
+  entity_name: string | null;
   total_lots: number | null;
   address_city: string | null;
   address_state: string | null;
@@ -30,25 +30,127 @@ interface Project {
   updated_at: string;
 }
 
+interface JobRow {
+  id: string;
+  project_id: string | null;
+  status: string;
+}
+
+interface DispositionRow {
+  id: string;
+  project_id: string | null;
+  status: string;
+}
+
+/* ── Project type abbreviation map ── */
+const TYPE_ABBR: Record<string, string> = {
+  "Scattered Lot": "SL",
+  "Community Development": "CD",
+  "Lot Development": "LD",
+  "Lot Purchase": "LP",
+};
+
+/* ── Status pill groupings ── */
+const PROJECT_PILL_GROUPS = [
+  { label: "All", value: "all", statuses: [] as string[] },
+  { label: "Pre-Development", value: "pre-dev", statuses: ["Pre-Development"] },
+  { label: "Active", value: "active", statuses: ["Entitlement", "Horizontal", "Vertical"] },
+  { label: "Selling Out", value: "selling-out", statuses: ["Closeout"] },
+  { label: "Completed", value: "completed", statuses: ["Completed"] },
+  { label: "On Hold", value: "on-hold", statuses: ["On Hold"] },
+];
+
+/* ── Active construction statuses for job counting ── */
+const ACTIVE_JOB_STATUSES = [
+  "Pre-Construction",
+  "Permitting",
+  "Foundation",
+  "Framing",
+  "Rough-Ins",
+  "Insulation & Drywall",
+  "Interior Finishes",
+  "Exterior",
+  "Final Inspections",
+];
+
 function ProjectsIndex() {
   const navigate = useNavigate();
   const [activeStatus, setActiveStatus] = useState("all");
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
+  /* ── Queries ── */
   const { data: projects = [], isLoading } = useQuery<Project[]>({
-    queryKey: ["projects"],
+    queryKey: ["projects", activeEntityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("projects").select("*").order("updated_at", { ascending: false });
+      let query = supabase
+        .from("projects")
+        .select(
+          "id,project_name,record_number,project_type,status,entity_id,entity_name,total_lots,address_city,address_state,created_at,updated_at",
+        )
+        .order("updated_at", { ascending: false });
+      if (activeEntityId) query = query.eq("entity_id", activeEntityId);
+      const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
     },
   });
 
+  const { data: allJobs = [] } = useQuery<JobRow[]>({
+    queryKey: ["jobs-for-projects", activeEntityId],
+    queryFn: async () => {
+      let query = supabase.from("jobs").select("id,project_id,status");
+      if (activeEntityId) query = query.eq("entity_id", activeEntityId);
+      const { data, error } = await query;
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const { data: allDispositions = [] } = useQuery<DispositionRow[]>({
+    queryKey: ["dispositions-for-projects", activeEntityId],
+    queryFn: async () => {
+      let query = supabase.from("dispositions").select("id,project_id,status");
+      if (activeEntityId) query = query.eq("entity_id", activeEntityId);
+      const { data, error } = await query;
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  /* ── Derived maps: per-project job/disposition counts ── */
+  const jobCountsByProject = useMemo(() => {
+    const map: Record<string, { active: number; total: number }> = {};
+    for (const job of allJobs) {
+      if (!job.project_id) continue;
+      const existing = map[job.project_id];
+      const entry = existing ?? { active: 0, total: 0 };
+      entry.total++;
+      if (ACTIVE_JOB_STATUSES.includes(job.status)) entry.active++;
+      map[job.project_id] = entry;
+    }
+    return map;
+  }, [allJobs]);
+
+  const soldLotsByProject = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const d of allDispositions) {
+      if (!d.project_id) continue;
+      if (d.status === "Closed") {
+        map[d.project_id] = (map[d.project_id] ?? 0) + 1;
+      }
+    }
+    return map;
+  }, [allDispositions]);
+
+  /* ── Filtering ── */
   const filteredProjects = useMemo(() => {
     if (activeStatus === "all") return projects;
-    return projects.filter((p) => p.status === activeStatus);
+    const group = PROJECT_PILL_GROUPS.find((g) => g.value === activeStatus);
+    if (!group) return projects;
+    return projects.filter((p) => group.statuses.includes(p.status));
   }, [projects, activeStatus]);
 
+  /* ── Status counts ── */
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const p of projects) {
@@ -57,29 +159,91 @@ function ProjectsIndex() {
     return counts;
   }, [projects]);
 
-  const totalBudget = projects.reduce((sum, p) => sum + (p.total_budget ?? 0), 0);
+  /* ── KPIs ── */
+  const activeProjects = projects.filter((p) => p.status !== "Completed" && p.status !== "On Hold").length;
   const totalLots = projects.reduce((sum, p) => sum + (p.total_lots ?? 0), 0);
+  const underConstruction = allJobs.filter((j) => ACTIVE_JOB_STATUSES.includes(j.status)).length;
+  const pendingSale = allDispositions.filter((d) => d.status !== "Closed" && d.status !== "Cancelled").length;
 
   const kpis: ModuleKpi[] = [
-    { label: "Total Projects", value: projects.length },
-    { label: "Total Budget", value: formatCurrency(totalBudget) },
+    { label: "Active Projects", value: activeProjects, accentColor: "var(--color-primary-accent)" },
     { label: "Total Lots", value: totalLots },
-    {
-      label: "Active",
-      value: statusCounts.Active ?? 0,
-      accentColor: "var(--color-primary-accent)",
-    },
+    { label: "Under Construction", value: underConstruction, accentColor: "#C4841D" },
+    { label: "Pending Sale", value: pendingSale, accentColor: "#3B6FA0" },
   ];
 
-  const statusTabs: StatusTab[] = [
-    { label: "All", value: "all", count: projects.length },
-    ...PROJECT_STATUSES.map((s) => ({
-      label: s,
-      value: s,
-      count: statusCounts[s] ?? 0,
-    })),
-  ];
+  /* ── Status tabs ── */
+  const statusTabs: StatusTab[] = PROJECT_PILL_GROUPS.map((g) => ({
+    label: g.label,
+    value: g.value,
+    count: g.value === "all" ? projects.length : g.statuses.reduce((sum, s) => sum + (statusCounts[s] ?? 0), 0),
+  }));
 
+  /* ── Columns ── */
+  const columns: ColumnDef<Project, unknown>[] = useMemo(
+    () => [
+      {
+        accessorKey: "project_name",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Project Name" />,
+        cell: ({ row }) => <span className="font-medium">{row.getValue("project_name")}</span>,
+      },
+      {
+        accessorKey: "project_type",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+        cell: ({ row }) => {
+          const type = row.getValue("project_type") as string | null;
+          if (!type) return "—";
+          const abbr = TYPE_ABBR[type] ?? type;
+          return (
+            <span className="inline-flex items-center rounded bg-accent px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-muted-foreground">
+              {abbr}
+            </span>
+          );
+        },
+        size: 80,
+      },
+      {
+        id: "municipality",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Municipality" />,
+        accessorFn: (row) => row.address_city ?? "—",
+        cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span>,
+      },
+      {
+        id: "lots",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Lots" />,
+        accessorFn: (row) => {
+          const sold = soldLotsByProject[row.id] ?? 0;
+          const total = row.total_lots ?? 0;
+          return `${sold}/${total}`;
+        },
+        cell: ({ getValue }) => <span className="font-mono text-xs">{getValue() as string}</span>,
+        size: 80,
+      },
+      {
+        id: "active_jobs",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Active Jobs" />,
+        accessorFn: (row) => jobCountsByProject[row.id]?.active ?? 0,
+        cell: ({ getValue }) => {
+          const count = getValue() as number;
+          return <span className={count > 0 ? "font-medium" : "text-muted"}>{count}</span>;
+        },
+        size: 100,
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
+      },
+      {
+        accessorKey: "entity_name",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Entity" />,
+        cell: ({ row }) => <span className="truncate text-xs text-muted">{row.getValue("entity_name") ?? "—"}</span>,
+      },
+    ],
+    [jobCountsByProject, soldLotsByProject],
+  );
+
+  /* ── Create handler ── */
   const handleCreate = async () => {
     try {
       const { data, error } = await supabase
@@ -102,7 +266,11 @@ function ProjectsIndex() {
   return (
     <ModuleIndex
       title="Projects"
-      subtitle={activeStatus === "all" ? "All projects" : activeStatus}
+      subtitle={
+        activeStatus === "all"
+          ? "All projects"
+          : (PROJECT_PILL_GROUPS.find((g) => g.value === activeStatus)?.label ?? activeStatus)
+      }
       kpis={kpis}
       statusTabs={statusTabs}
       activeStatus={activeStatus}
@@ -112,42 +280,15 @@ function ProjectsIndex() {
       onCreateWithAI={() => navigate({ to: "/projects/new" })}
     >
       {isLoading ? (
-        <CardGridSkeleton cards={6} />
-      ) : filteredProjects.length === 0 ? (
-        <EmptyState title="No projects yet" description="Create your first project to get started" />
+        <TableSkeleton rows={8} cols={7} />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredProjects.map((project) => (
-            <button
-              key={project.id}
-              type="button"
-              onClick={() => navigate({ to: "/projects/$projectId/basic-info", params: { projectId: project.id } })}
-              className="rounded-lg border border-border bg-card p-4 text-left transition-all hover:border-primary/30 hover:shadow-sm"
-            >
-              <div className="mb-3 flex items-start justify-between">
-                <div className="min-w-0 flex-1">
-                  {project.record_number && (
-                    <p className="mb-0.5 font-mono text-[10px] text-muted">{project.record_number}</p>
-                  )}
-                  <h3 className="truncate text-sm font-semibold text-foreground">{project.project_name}</h3>
-                  {(project.address_city || project.address_state) && (
-                    <p className="mt-0.5 truncate text-xs text-muted">
-                      {[project.address_city, project.address_state].filter(Boolean).join(", ")}
-                    </p>
-                  )}
-                </div>
-                <StatusBadge status={project.status} />
-              </div>
-              <div className="flex items-center gap-4 text-xs text-muted">
-                {project.project_type && <span>{project.project_type}</span>}
-                {project.total_lots != null && project.total_lots > 0 && <span>{project.total_lots} lots</span>}
-                {project.total_budget != null && project.total_budget > 0 && (
-                  <span>{formatCurrency(project.total_budget)}</span>
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
+        <DataTable
+          columns={columns}
+          data={filteredProjects}
+          searchKey="project_name"
+          searchPlaceholder="Search projects..."
+          onRowClick={(row) => navigate({ to: "/projects/$projectId/basic-info", params: { projectId: row.id } })}
+        />
       )}
     </ModuleIndex>
   );

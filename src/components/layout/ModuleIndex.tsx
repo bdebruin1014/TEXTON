@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { KPICard } from "@/components/dashboard/KPICard";
+import { type StatusPillItem, StatusPills } from "@/components/filters/StatusPills";
 
 export interface ModuleKpi {
   label: string;
   value: string | number;
   sub?: string;
   accentColor?: string;
+  trend?: "up" | "down" | "neutral";
+  trendValue?: string;
+  status?: "success" | "warning" | "danger";
 }
 
 export interface StatusTab {
@@ -102,6 +106,12 @@ export function ModuleIndex({
   onCreateWithAI,
   children,
 }: ModuleIndexProps) {
+  const pills: StatusPillItem[] | undefined = statusTabs?.map((tab) => ({
+    label: tab.label,
+    value: tab.value,
+    count: tab.count ?? 0,
+  }));
+
   return (
     <div>
       {/* Header + create button (simple or dropdown) */}
@@ -123,54 +133,28 @@ export function ModuleIndex({
         ) : null}
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards — uses shared KPICard component */}
       {kpis && kpis.length > 0 && (
         <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {kpis.map((kpi) => (
-            <div
+            <KPICard
               key={kpi.label}
-              className="rounded-lg border border-border bg-card p-4 shadow-sm"
-              style={kpi.accentColor ? { borderLeftWidth: 3, borderLeftColor: kpi.accentColor } : undefined}
-            >
-              <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{kpi.label}</div>
-              <div className="mt-1 text-xl font-bold text-foreground">{kpi.value}</div>
-              {kpi.sub && <div className="mt-0.5 text-xs text-muted">{kpi.sub}</div>}
-            </div>
+              label={kpi.label}
+              value={kpi.value}
+              trend={kpi.trend}
+              trendValue={kpi.trendValue}
+              status={kpi.status}
+              accentColor={kpi.accentColor}
+              className="shadow-sm"
+            />
           ))}
         </div>
       )}
 
-      {/* Status Filter Tabs — horizontal scrollable pills */}
-      {statusTabs && statusTabs.length > 0 && onStatusChange && (
-        <div className="mb-5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {statusTabs.map((tab) => {
-            const isActive = activeStatus === tab.value;
-            return (
-              <button
-                key={tab.value}
-                type="button"
-                onClick={() => onStatusChange(tab.value)}
-                className={cn(
-                  "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-card text-muted-foreground hover:bg-card-hover",
-                )}
-              >
-                {tab.label}
-                {tab.count != null && (
-                  <span
-                    className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[10px] leading-none",
-                      isActive ? "bg-white/20" : "bg-accent",
-                    )}
-                  >
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      {/* Status Filter Pills — uses shared StatusPills component */}
+      {pills && pills.length > 0 && activeStatus && onStatusChange && (
+        <div className="mb-5">
+          <StatusPills statuses={pills} activeStatus={activeStatus} onStatusChange={onStatusChange} />
         </div>
       )}
 
