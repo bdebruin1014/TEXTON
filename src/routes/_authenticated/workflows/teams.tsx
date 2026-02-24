@@ -30,7 +30,10 @@ function TeamsPage() {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Team Name" />,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full" style={{ backgroundColor: row.original.color ?? "#4A8C5E" }} />
+          <span
+            className="h-3 w-3 rounded-full"
+            style={{ backgroundColor: row.original.color ?? "var(--color-primary-accent)" }}
+          />
           <span className="font-medium">{row.getValue("name")}</span>
         </div>
       ),

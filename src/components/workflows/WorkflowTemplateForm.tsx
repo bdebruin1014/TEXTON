@@ -32,22 +32,22 @@ export function WorkflowTemplateForm({ template, onUpdate }: WorkflowTemplateFor
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {/* Name */}
         <div className="space-y-1.5 md:col-span-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Template Name</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Template Name</span>
           <input
             type="text"
             defaultValue={template.name}
             onChange={(e) => debouncedUpdate("name", e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         {/* Status */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Status</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Status</span>
           <select
             defaultValue={template.status}
             onChange={(e) => immediateUpdate("status", e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           >
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
@@ -57,23 +57,23 @@ export function WorkflowTemplateForm({ template, onUpdate }: WorkflowTemplateFor
 
         {/* Description */}
         <div className="space-y-1.5 md:col-span-3">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Description</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Description</span>
           <input
             type="text"
             defaultValue={template.description ?? ""}
             onChange={(e) => debouncedUpdate("description", e.target.value)}
             placeholder="What this workflow template does..."
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         {/* Project Type */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Project Type</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Project Type</span>
           <select
             defaultValue={template.project_type ?? "all"}
             onChange={(e) => immediateUpdate("project_type", e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           >
             {(Object.entries(PROJECT_TYPE_LABELS) as [ProjectType, string][]).map(([value, label]) => (
               <option key={value} value={value}>
@@ -85,11 +85,11 @@ export function WorkflowTemplateForm({ template, onUpdate }: WorkflowTemplateFor
 
         {/* Trigger Table */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Trigger Table</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Trigger Table</span>
           <select
             defaultValue={template.trigger_table ?? ""}
             onChange={(e) => immediateUpdate("trigger_table", e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           >
             <option value="">Select...</option>
             {TRIGGER_TABLES.map((t) => (
@@ -102,19 +102,19 @@ export function WorkflowTemplateForm({ template, onUpdate }: WorkflowTemplateFor
 
         {/* Trigger Value */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Trigger Status Value</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Trigger Status Value</span>
           <input
             type="text"
             defaultValue={template.trigger_value ?? ""}
             onChange={(e) => debouncedUpdate("trigger_value", e.target.value)}
             placeholder="e.g. dd, pre_construction"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
         </div>
 
         {/* Active toggle */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Active</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted">Active</span>
           <label className="flex items-center gap-2 py-2">
             <input
               type="checkbox"

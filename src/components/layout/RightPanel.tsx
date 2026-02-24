@@ -76,10 +76,11 @@ export function RightPanel() {
   return (
     <aside
       aria-label="Chat, tasks, and notes panel"
-      className="flex h-full flex-col border-l bg-card"
+      className="flex h-full flex-col border-l"
       style={{
         width: "var(--right-panel-width)",
         borderColor: "var(--color-border)",
+        backgroundColor: "var(--color-right-panel-bg)",
       }}
     >
       {/* CHAT section */}

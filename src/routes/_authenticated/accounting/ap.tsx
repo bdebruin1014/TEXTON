@@ -100,7 +100,9 @@ function AccountsPayable() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bill_lines")
-        .select("id, bill_id, line_number, description, account_id, account_name, account_number, cost_code, job_id, job_name, amount")
+        .select(
+          "id, bill_id, line_number, description, account_id, account_name, account_number, cost_code, job_id, job_name, amount",
+        )
         .eq("bill_id", expandedBill as string)
         .order("line_number");
       if (error) throw error;

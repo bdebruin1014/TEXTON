@@ -10,9 +10,9 @@ export function SharePasswordGate({ onSubmit, error }: SharePasswordGateProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] px-4">
-      <div className="w-full max-w-sm rounded-xl border border-[#E2E8F0] bg-white p-8 shadow-sm text-center">
-        <h1 className="text-lg font-semibold text-slate-900">Password Required</h1>
-        <p className="mt-1 text-sm text-slate-500">This share link is password protected.</p>
+      <div className="w-full max-w-sm rounded-lg border border-[#E2E8F0] bg-white p-8 shadow-sm text-center">
+        <h1 className="text-lg font-semibold text-foreground">Password Required</h1>
+        <p className="mt-1 text-sm text-muted">This share link is password protected.</p>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -26,13 +26,13 @@ export function SharePasswordGate({ onSubmit, error }: SharePasswordGateProps) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
             autoFocus
-            className="w-full rounded-lg border border-[#E2E8F0] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
+            className="w-full rounded-lg border border-[#E2E8F0] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
           <button
             type="submit"
             disabled={!password}
-            className="w-full rounded-lg bg-[#143A23] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#143A23]/90 disabled:opacity-50"
+            className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 disabled:opacity-50"
           >
             View Documents
           </button>

@@ -16,8 +16,8 @@ const STATUS_STYLES: Record<string, string> = {
   pending: "bg-yellow-50 text-yellow-700",
   partial: "bg-blue-50 text-blue-700",
   complete: "bg-green-50 text-green-700",
-  expired: "bg-gray-100 text-gray-600",
-  cancelled: "bg-red-50 text-red-600",
+  expired: "bg-accent text-muted-foreground",
+  cancelled: "bg-destructive-bg text-destructive",
 };
 
 export function UploadRequestsTable({ recordType, recordId }: UploadRequestsTableProps) {

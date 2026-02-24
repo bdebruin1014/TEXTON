@@ -79,22 +79,22 @@ export function UploadRequestItemCard({
   };
 
   return (
-    <div className="rounded-xl border border-[#E2E8F0] bg-white p-4">
+    <div className="rounded-lg border border-[#E2E8F0] bg-white p-4">
       {/* Header */}
       <div className="flex items-start gap-3">
         <div
           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded ${
-            isFulfilled || justUploaded ? "bg-green-100 text-green-600" : "border-2 border-slate-300"
+            isFulfilled || justUploaded ? "bg-success-bg text-green-600" : "border-2 border-border"
           }`}
         >
           {(isFulfilled || justUploaded) && <span className="text-xs">{"\u2713"}</span>}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium text-slate-900">
+          <div className="text-sm font-medium text-foreground">
             {name}
             {isRequired && <span className="ml-1 text-red-500">*</span>}
           </div>
-          {description && <p className="mt-0.5 text-xs text-slate-500">{description}</p>}
+          {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
           {/* Constraints */}
           {(acceptedExtensions || maxFileSize) && !isFulfilled && !justUploaded && (
             <p className="mt-1 text-[10px] text-slate-400">
@@ -111,12 +111,12 @@ export function UploadRequestItemCard({
         {justUploaded ? (
           <UploadSuccessAnimation />
         ) : isFulfilled ? (
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-muted">
             Uploaded {fulfilledAt ? new Date(fulfilledAt).toLocaleDateString() : ""}
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="ml-2 text-[#143A23] font-medium hover:underline"
+              className="ml-2 text-primary font-medium hover:underline"
             >
               Replace
             </button>
@@ -131,26 +131,26 @@ export function UploadRequestItemCard({
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
             className={`cursor-pointer rounded-lg border-2 border-dashed px-4 py-6 text-center transition-colors ${
-              dragOver ? "border-[#143A23] bg-[#143A23]/5" : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
+              dragOver ? "border-primary bg-primary/5" : "border-border hover:border-slate-400 hover:bg-background"
             }`}
           >
             {uploading ? (
               <div className="flex flex-col items-center gap-2">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-[#143A23]" />
-                <span className="text-xs text-slate-500">Uploading...</span>
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-primary" />
+                <span className="text-xs text-muted">Uploading...</span>
               </div>
             ) : (
               <>
                 <span className="mx-auto text-sm text-slate-400">Upload</span>
-                <p className="mt-1 text-xs text-slate-500">
-                  Drag & drop file here or <span className="text-[#143A23] font-medium">click to browse</span>
+                <p className="mt-1 text-xs text-muted">
+                  Drag & drop file here or <span className="text-primary font-medium">click to browse</span>
                 </p>
               </>
             )}
           </div>
         )}
 
-        {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+        {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
       </div>
 
       <input

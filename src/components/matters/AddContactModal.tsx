@@ -85,7 +85,7 @@ export function AddContactModal({ isOpen, onClose, onAdd, isPending }: AddContac
       <button type="button" className="absolute inset-0 bg-black/50" onClick={onClose} aria-label="Close modal" />
 
       {/* Dialog */}
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold text-foreground">Add Contact</h3>
           <button

@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
         {useVirtual ? (
           <div ref={scrollRef} className="max-h-[600px] overflow-y-auto">
             <table className="w-full text-sm">
-              <thead className="sticky top-0 z-10 bg-card">
+              <thead className="sticky top-0 z-10" style={{ backgroundColor: "var(--color-table-header-bg)" }}>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className="border-b border-border">
                     {headerGroup.headers.map((header) => (
@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
                       key={row.id}
                       className={cn(
                         "border-b border-border last:border-0 transition-colors",
-                        onRowClick && "cursor-pointer hover:bg-primary-50",
+                        onRowClick && "cursor-pointer hover:bg-card-hover",
                       )}
                       style={{ height: VIRTUAL_ROW_HEIGHT }}
                       onClick={() => onRowClick?.(row.original)}
@@ -164,7 +164,7 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     className={cn(
                       "border-b border-border last:border-0 transition-colors",
-                      onRowClick && "cursor-pointer hover:bg-primary-50",
+                      onRowClick && "cursor-pointer hover:bg-card-hover",
                     )}
                     onClick={() => onRowClick?.(row.original)}
                   >

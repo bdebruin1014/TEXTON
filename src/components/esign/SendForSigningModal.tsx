@@ -85,7 +85,7 @@ export function SendForSigningModal({ documentId, onClose }: SendForSigningModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="mx-4 w-full max-w-lg rounded-xl border border-border bg-card shadow-2xl">
+      <div className="mx-4 w-full max-w-lg rounded-lg border border-border bg-card shadow-lg">
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-semibold">Send for Signing</h2>
           <button type="button" onClick={onClose} className="text-muted hover:text-foreground" aria-label="Close">

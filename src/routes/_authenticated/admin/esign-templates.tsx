@@ -96,7 +96,7 @@ function ESignTemplates() {
       header: "Status",
       cell: ({ row }) => {
         const active = row.getValue("is_active") as boolean;
-        const color = active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600";
+        const color = active ? "bg-success-bg text-success-text" : "bg-accent text-muted-foreground";
         return (
           <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>
             {active ? "Active" : "Inactive"}

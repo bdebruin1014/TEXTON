@@ -151,7 +151,7 @@ function PipelineIndex() {
     {
       label: "New Leads",
       value: statusCounts["New Lead"] ?? 0,
-      accentColor: "#4A8C5E",
+      accentColor: "var(--color-primary-accent)",
     },
     {
       label: "Under Review",

@@ -9,8 +9,8 @@ interface SharedLinksTableProps {
 
 const STATUS_STYLES: Record<string, string> = {
   active: "bg-green-50 text-green-700",
-  expired: "bg-gray-100 text-gray-600",
-  revoked: "bg-red-50 text-red-600",
+  expired: "bg-accent text-muted-foreground",
+  revoked: "bg-destructive-bg text-destructive",
 };
 
 export function SharedLinksTable({ recordType, recordId }: SharedLinksTableProps) {

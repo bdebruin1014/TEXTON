@@ -12,7 +12,7 @@ interface MatterPreviewPanelProps {
 const TYPE_BADGE_COLORS: Record<string, string> = {
   project: "bg-blue-100 text-blue-700",
   opportunity: "bg-amber-100 text-amber-700",
-  contact: "bg-green-100 text-green-700",
+  contact: "bg-success-bg text-green-700",
   entity: "bg-purple-100 text-purple-700",
 };
 
@@ -73,7 +73,7 @@ export function MatterPreviewPanel({
   );
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-sm">
+    <div className="rounded-lg border border-border bg-card shadow-sm">
       {/* Header */}
       <div className="border-b border-border px-5 py-4">
         <h2 className="text-sm font-semibold text-foreground">Matter Preview</h2>
@@ -136,7 +136,7 @@ export function MatterPreviewPanel({
                   className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-0.5 text-xs"
                 >
                   <span
-                    className={`rounded px-1 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[r.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                    className={`rounded px-1 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[r.record_type] ?? "bg-accent text-muted-foreground"}`}
                   >
                     {r.record_type}
                   </span>

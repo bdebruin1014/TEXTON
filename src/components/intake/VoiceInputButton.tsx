@@ -95,7 +95,7 @@ export function VoiceInputButton({ onTranscript, disabled = false }: VoiceInputB
       title={isListening ? "Stop recording" : "Start voice input"}
       className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors ${
         isListening
-          ? "border-red-400 bg-red-50 text-red-600 hover:bg-red-100"
+          ? "border-red-400 bg-destructive-bg text-destructive hover:bg-red-100"
           : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground"
       } disabled:opacity-50 disabled:cursor-not-allowed`}
     >
@@ -103,7 +103,7 @@ export function VoiceInputButton({ onTranscript, disabled = false }: VoiceInputB
         {isListening ? (
           <span className="relative flex h-3 w-3">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-destructive-bg0" />
           </span>
         ) : (
           "\u25CF"

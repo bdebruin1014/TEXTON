@@ -32,7 +32,7 @@ const TYPE_LABELS: Record<string, string> = {
 const TYPE_BADGE_COLORS: Record<string, string> = {
   project: "bg-blue-100 text-blue-700",
   opportunity: "bg-amber-100 text-amber-700",
-  contact: "bg-green-100 text-green-700",
+  contact: "bg-success-bg text-green-700",
   entity: "bg-purple-100 text-purple-700",
 };
 
@@ -211,7 +211,7 @@ export function RecordLinker({ linkedRecords, onChange }: RecordLinkerProps) {
                     >
                       <span className="truncate flex-1">{item.label}</span>
                       <span
-                        className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[item.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                        className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[item.record_type] ?? "bg-accent text-muted-foreground"}`}
                       >
                         {type}
                       </span>
@@ -233,7 +233,7 @@ export function RecordLinker({ linkedRecords, onChange }: RecordLinkerProps) {
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent/50 px-3 py-1 text-xs text-foreground"
             >
               <span
-                className={`rounded px-1 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[record.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                className={`rounded px-1 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[record.record_type] ?? "bg-accent text-muted-foreground"}`}
               >
                 {record.record_type}
               </span>

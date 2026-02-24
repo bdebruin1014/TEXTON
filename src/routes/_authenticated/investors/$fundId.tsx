@@ -136,9 +136,22 @@ function FundDetail() {
       const prefRate = fund?.preferred_return ?? 0.08;
       const tiers = [
         { fund_id: fundId, tier_order: 1, tier_name: "return_of_capital", description: "Return of Capital" },
-        { fund_id: fundId, tier_order: 2, tier_name: "preferred_return", description: "Preferred Return", pref_rate: prefRate },
+        {
+          fund_id: fundId,
+          tier_order: 2,
+          tier_name: "preferred_return",
+          description: "Preferred Return",
+          pref_rate: prefRate,
+        },
         { fund_id: fundId, tier_order: 3, tier_name: "catch_up", description: "GP Catch-Up", catch_up_pct: 0.2 },
-        { fund_id: fundId, tier_order: 4, tier_name: "profit_split", description: "Profit Split", gp_split_pct: 0.2, lp_split_pct: 0.8 },
+        {
+          fund_id: fundId,
+          tier_order: 4,
+          tier_name: "profit_split",
+          description: "Profit Split",
+          gp_split_pct: 0.2,
+          lp_split_pct: 0.8,
+        },
       ];
       const { error } = await supabase.from("waterfall_tiers").insert(tiers);
       if (error) throw error;
@@ -197,9 +210,7 @@ function FundDetail() {
         return (
           <button
             type="button"
-            onClick={() =>
-              updateInvestment.mutate({ id: row.original.id, updates: { is_gp: !isGp } })
-            }
+            onClick={() => updateInvestment.mutate({ id: row.original.id, updates: { is_gp: !isGp } })}
             className={`rounded-full px-2 py-0.5 text-xs font-medium transition-colors ${
               isGp ? "bg-info-bg text-info-text" : "bg-accent text-muted-foreground"
             }`}

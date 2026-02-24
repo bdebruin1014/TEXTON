@@ -134,7 +134,7 @@ function AssignmentRow({
       {isTeam ? (
         <span
           className="flex h-6 w-6 items-center justify-center rounded text-[10px] font-bold text-white"
-          style={{ backgroundColor: assignment.team?.color ?? "#4A8C5E" }}
+          style={{ backgroundColor: assignment.team?.color ?? "var(--color-primary-accent)" }}
         >
           T
         </span>

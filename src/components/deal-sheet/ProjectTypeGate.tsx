@@ -69,7 +69,7 @@ export function ProjectTypeGate({ opportunityId }: ProjectTypeGateProps) {
             onClick={() => setType.mutate(type.key)}
             className={
               type.enabled
-                ? "group rounded-lg border-2 border-border bg-card p-6 text-left transition-all hover:border-primary hover:shadow-md"
+                ? "group rounded-lg border-2 border-border bg-card p-6 text-left transition-all hover:border-primary"
                 : "rounded-lg border-2 border-border/50 bg-card/50 p-6 text-left opacity-60"
             }
           >

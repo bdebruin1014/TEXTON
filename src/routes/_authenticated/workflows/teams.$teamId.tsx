@@ -101,7 +101,7 @@ function TeamDetail() {
             <input
               id="team-color"
               type="color"
-              value={team.color ?? "#4A8C5E"}
+              value={team.color ?? "var(--color-primary-accent)"}
               onChange={(e) => mutation.mutate({ color: e.target.value })}
               className="h-10 w-full cursor-pointer rounded-lg border border-border"
             />

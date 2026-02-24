@@ -90,7 +90,8 @@ function BalanceSheet() {
                     ))}
                     <tr className="font-semibold">
                       <td className="py-2">
-                        Total {section.type === "Asset" ? "Assets" : section.type === "Liability" ? "Liabilities" : "Equity"}
+                        Total{" "}
+                        {section.type === "Asset" ? "Assets" : section.type === "Liability" ? "Liabilities" : "Equity"}
                       </td>
                       <td className="py-2 text-right">{formatCurrency(section.total)}</td>
                     </tr>

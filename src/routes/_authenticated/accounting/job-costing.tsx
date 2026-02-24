@@ -197,9 +197,7 @@ function JobCosting() {
           type="button"
           onClick={() => setShowCTC(!showCTC)}
           className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-            showCTC
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-border text-foreground hover:bg-card-hover"
+            showCTC ? "border-primary bg-primary/10 text-primary" : "border-border text-foreground hover:bg-card-hover"
           }`}
         >
           {showCTC ? "Standard View" : "Cost to Complete"}

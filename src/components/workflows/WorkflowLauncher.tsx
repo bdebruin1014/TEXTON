@@ -110,7 +110,7 @@ export function WorkflowLauncher({ onClose, defaultRecordType, defaultRecordId }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="mx-4 w-full max-w-2xl rounded-xl border border-border bg-card shadow-2xl">
+      <div className="mx-4 w-full max-w-2xl rounded-lg border border-border bg-card shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>

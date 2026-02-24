@@ -154,7 +154,11 @@ function FundsList() {
           className="text-xs text-destructive hover:underline"
           onClick={(e) => {
             e.stopPropagation();
-            if (window.confirm("Delete this fund? This will also delete all related investments, capital calls, and distributions.")) {
+            if (
+              window.confirm(
+                "Delete this fund? This will also delete all related investments, capital calls, and distributions.",
+              )
+            ) {
               deleteFund.mutate(row.original.id);
             }
           }}

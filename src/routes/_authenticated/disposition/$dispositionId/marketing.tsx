@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
-
 import { useRef } from "react";
+import { toast } from "sonner";
 import { AutoSaveField } from "@/components/forms/AutoSaveField";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";

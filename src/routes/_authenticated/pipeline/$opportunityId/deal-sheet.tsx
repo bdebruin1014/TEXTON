@@ -9,8 +9,8 @@ import { ProjectTypeGate } from "@/components/deal-sheet/ProjectTypeGate";
 import { ScenarioComparison } from "@/components/deal-sheet/ScenarioComparison";
 import { ScenarioTabBar } from "@/components/deal-sheet/ScenarioTabBar";
 import { FormSkeleton } from "@/components/shared/Skeleton";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/pipeline/$opportunityId/deal-sheet")({
   component: DealSheet,

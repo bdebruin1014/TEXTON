@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -182,7 +182,7 @@ function JobCostReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Job Cost Report</h1>
+          <h1 className="text-lg font-medium text-foreground">Job Cost Report</h1>
           <p className="text-sm text-muted">Budget vs. committed vs. actual per job with variance.</p>
         </div>
         <button

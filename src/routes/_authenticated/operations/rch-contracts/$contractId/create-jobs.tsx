@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
-
 import { useState } from "react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -159,7 +158,7 @@ function CreateJobs() {
                 <button
                   type="button"
                   onClick={() => navigate({ to: "/construction" })}
-                  className="mt-3 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50"
+                  className="mt-3 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background"
                 >
                   View Jobs in Construction
                 </button>

@@ -19,9 +19,7 @@ function COATemplateList() {
   const { data: itemCounts = {} } = useQuery<Record<string, number>>({
     queryKey: ["coa-template-item-counts"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("coa_template_items")
-        .select("template_id");
+      const { data, error } = await supabase.from("coa_template_items").select("template_id");
       if (error) throw error;
       const counts: Record<string, number> = {};
       for (const row of data ?? []) {

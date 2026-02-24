@@ -20,23 +20,23 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#143A23] text-xs font-bold text-white">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
             TEK
           </div>
         </div>
 
         {/* Header */}
         <div className="mb-6 text-center">
-          <p className="text-sm text-slate-500">Documents Requested by {request.created_by_name ?? "KOVA User"}</p>
+          <p className="text-sm text-muted">Documents Requested by {request.created_by_name ?? "KOVA User"}</p>
         </div>
 
         {/* Card */}
-        <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">{request.subject}</h2>
+        <div className="rounded-lg border border-[#E2E8F0] bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground">{request.subject}</h2>
 
           {/* Message */}
           {request.message && (
-            <div className="mt-3 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 italic">
+            <div className="mt-3 rounded-lg bg-background px-4 py-3 text-sm text-text-secondary italic">
               "{request.message}"
             </div>
           )}
@@ -44,15 +44,15 @@ export function UploadRequestPage({ data, token }: UploadRequestPageProps) {
           {/* Progress */}
           <div className="mt-4 flex items-center gap-3">
             {request.due_date && (
-              <span className="text-xs text-slate-500">Due: {new Date(request.due_date).toLocaleDateString()}</span>
+              <span className="text-xs text-muted">Due: {new Date(request.due_date).toLocaleDateString()}</span>
             )}
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-muted">
               {fulfilledItems} of {totalItems} items complete
             </span>
           </div>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-border">
             <div
-              className="h-full rounded-full bg-[#143A23] transition-all duration-500"
+              className="h-full rounded-full bg-primary transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>

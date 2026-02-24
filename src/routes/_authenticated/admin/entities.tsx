@@ -102,9 +102,7 @@ function EntitiesAdmin() {
 
   // Filter templates by entity type
   const filteredTemplates = formEntityType
-    ? coaTemplates.filter(
-        (t) => t.is_active !== false && t.entity_types.includes(formEntityType),
-      )
+    ? coaTemplates.filter((t) => t.is_active !== false && t.entity_types.includes(formEntityType))
     : coaTemplates.filter((t) => t.is_active !== false);
 
   // Auto-select default template when entity type changes
@@ -347,9 +345,7 @@ function EntitiesAdmin() {
               {/* Variables Card */}
               {formTemplateId && (
                 <div className="rounded-lg border border-border bg-accent/20 p-4">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
-                    Template Variables
-                  </p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">Template Variables</p>
                   <div className="space-y-3">
                     <div>
                       <label className="mb-1 block text-xs font-medium text-muted-foreground">

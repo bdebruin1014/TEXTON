@@ -223,7 +223,8 @@ function TransactionMatching() {
             <div className="mb-4 flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 p-3">
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-muted">
-                  Bank: <span className="font-medium text-foreground">{selectedTxn?.description ?? "—"}</span> ({formatCurrency(selectedTxn?.amount ?? 0)})
+                  Bank: <span className="font-medium text-foreground">{selectedTxn?.description ?? "—"}</span> (
+                  {formatCurrency(selectedTxn?.amount ?? 0)})
                 </span>
                 <span className="text-muted">&rarr;</span>
                 <span className="text-muted">

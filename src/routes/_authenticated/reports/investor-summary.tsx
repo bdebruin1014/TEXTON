@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -40,7 +40,9 @@ function InvestorSummaryReport() {
 
       const { data: investments, error: investmentsError } = await supabase
         .from("investments")
-        .select("id, fund_id, investor_name, commitment_amount, called_amount, distributed_amount, ownership_pct, status");
+        .select(
+          "id, fund_id, investor_name, commitment_amount, called_amount, distributed_amount, ownership_pct, status",
+        );
       if (investmentsError) throw investmentsError;
 
       const fundMap = new Map<string, { name: string; preferred_return: number | null }>();
@@ -141,23 +143,29 @@ function InvestorSummaryReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Investor Summary</h1>
-          <p className="text-sm text-muted">Capital commitments, calls, distributions, and unreturned capital by investor.</p>
+          <h1 className="text-lg font-medium text-foreground">Investor Summary</h1>
+          <p className="text-sm text-muted">
+            Capital commitments, calls, distributions, and unreturned capital by investor.
+          </p>
         </div>
         <button
           type="button"
           onClick={() =>
-            exportToCsv("investor-summary", [
-              { header: "Investor", accessor: (r) => r.investor_name },
-              { header: "Fund Name", accessor: (r) => r.fund_name },
-              { header: "Status", accessor: (r) => r.status },
-              { header: "Commitment", accessor: (r) => r.commitment_amount },
-              { header: "Called", accessor: (r) => r.called_amount },
-              { header: "Distributed", accessor: (r) => r.distributed_amount },
-              { header: "Unreturned Capital", accessor: (r) => r.unreturned_capital },
-              { header: "Ownership %", accessor: (r) => r.ownership_pct ?? "" },
-              { header: "Pref Return", accessor: (r) => r.preferred_return_rate ?? "" },
-            ], data)
+            exportToCsv(
+              "investor-summary",
+              [
+                { header: "Investor", accessor: (r) => r.investor_name },
+                { header: "Fund Name", accessor: (r) => r.fund_name },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Commitment", accessor: (r) => r.commitment_amount },
+                { header: "Called", accessor: (r) => r.called_amount },
+                { header: "Distributed", accessor: (r) => r.distributed_amount },
+                { header: "Unreturned Capital", accessor: (r) => r.unreturned_capital },
+                { header: "Ownership %", accessor: (r) => r.ownership_pct ?? "" },
+                { header: "Pref Return", accessor: (r) => r.preferred_return_rate ?? "" },
+              ],
+              data,
+            )
           }
           className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
         >
@@ -174,7 +182,9 @@ function InvestorSummaryReport() {
         >
           <option value="all">All Funds</option>
           {funds.map(([id, name]) => (
-            <option key={id} value={id}>{name}</option>
+            <option key={id} value={id}>
+              {name}
+            </option>
           ))}
         </select>
       </div>
@@ -186,7 +196,9 @@ function InvestorSummaryReport() {
           <span className="mr-6">Totals:</span>
           <span className="mr-6">Commitment: {formatCurrency(data.reduce((s, r) => s + r.commitment_amount, 0))}</span>
           <span className="mr-6">Called: {formatCurrency(data.reduce((s, r) => s + r.called_amount, 0))}</span>
-          <span className="mr-6">Distributed: {formatCurrency(data.reduce((s, r) => s + r.distributed_amount, 0))}</span>
+          <span className="mr-6">
+            Distributed: {formatCurrency(data.reduce((s, r) => s + r.distributed_amount, 0))}
+          </span>
           <span>Unreturned: {formatCurrency(data.reduce((s, r) => s + r.unreturned_capital, 0))}</span>
         </div>
       )}

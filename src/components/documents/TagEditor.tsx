@@ -154,7 +154,7 @@ export function TagEditor({ documentId, currentTags, onTagsChange, onClose }: Ta
         {tags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-[#143A23] border border-green-200"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-primary border border-green-200"
           >
             {tag}
             <button
@@ -176,7 +176,7 @@ export function TagEditor({ documentId, currentTags, onTagsChange, onClose }: Ta
         onChange={handleInputChange}
         onKeyDown={handleInputKeyDown}
         placeholder="Add tag..."
-        className="w-full px-2.5 py-1.5 text-sm border border-border rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
+        className="w-full px-2.5 py-1.5 text-sm border border-border rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
       />
 
       {/* Suggested tags */}
@@ -193,8 +193,8 @@ export function TagEditor({ documentId, currentTags, onTagsChange, onClose }: Ta
                 }}
                 className={cn(
                   "px-2 py-0.5 rounded-full text-xs border transition-colors",
-                  "bg-gray-50 text-gray-600 border-gray-200",
-                  "hover:bg-green-50 hover:text-[#143A23] hover:border-green-200",
+                  "bg-background text-muted-foreground border-gray-200",
+                  "hover:bg-green-50 hover:text-primary hover:border-green-200",
                 )}
               >
                 + {tag}
@@ -208,7 +208,7 @@ export function TagEditor({ documentId, currentTags, onTagsChange, onClose }: Ta
       <div className="mt-3 flex justify-end">
         <button
           onClick={onClose}
-          className="px-3 py-1.5 text-xs font-medium rounded-md bg-[#143A23] text-white hover:bg-[#143A23]/90 transition-colors"
+          className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-white hover:bg-primary/90 transition-colors"
         >
           Done
         </button>

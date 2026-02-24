@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -149,7 +149,7 @@ function ConstructionScheduleReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Construction Schedule</h1>
+          <h1 className="text-lg font-medium text-foreground">Construction Schedule</h1>
           <p className="text-sm text-muted">Active jobs with current phase and schedule variance.</p>
         </div>
         <button

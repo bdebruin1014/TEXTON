@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
@@ -28,10 +28,7 @@ function TrialBalanceReport() {
   const { data: entities = [] } = useQuery({
     queryKey: ["report-trial-balance-entities"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("entities")
-        .select("id, name")
-        .order("name");
+      const { data, error } = await supabase.from("entities").select("id, name").order("name");
       if (error) throw error;
       return data ?? [];
     },
@@ -81,9 +78,7 @@ function TrialBalanceReport() {
       if (lineErr) throw lineErr;
 
       // Find selected period for date filtering
-      const selectedPeriod = periodFilter !== "all"
-        ? allPeriods.find((p) => p.id === periodFilter)
-        : null;
+      const selectedPeriod = periodFilter !== "all" ? allPeriods.find((p) => p.id === periodFilter) : null;
 
       // Filter lines by period date range
       const filteredLines = (lines ?? []).filter((line) => {
@@ -106,9 +101,7 @@ function TrialBalanceReport() {
       const rows: TrialBalanceRow[] = [];
       for (const acct of accounts ?? []) {
         const totals = linesByAccount.get(acct.id) ?? { debit: 0, credit: 0 };
-        const balance = acct.normal_balance === "debit"
-          ? totals.debit - totals.credit
-          : totals.credit - totals.debit;
+        const balance = acct.normal_balance === "debit" ? totals.debit - totals.credit : totals.credit - totals.debit;
 
         // Only include accounts with non-zero activity or balance
         if (totals.debit === 0 && totals.credit === 0 && balance === 0) continue;
@@ -172,20 +165,24 @@ function TrialBalanceReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Trial Balance</h1>
+          <h1 className="text-lg font-medium text-foreground">Trial Balance</h1>
           <p className="text-sm text-muted">Account balances with total debits, credits, and net balance by period.</p>
         </div>
         <button
           type="button"
           onClick={() =>
-            exportToCsv("trial-balance", [
-              { header: "Account #", accessor: (r) => r.account_number },
-              { header: "Account Name", accessor: (r) => r.account_name },
-              { header: "Type", accessor: (r) => r.account_type },
-              { header: "Debits", accessor: (r) => r.debit },
-              { header: "Credits", accessor: (r) => r.credit },
-              { header: "Balance", accessor: (r) => r.balance },
-            ], data)
+            exportToCsv(
+              "trial-balance",
+              [
+                { header: "Account #", accessor: (r) => r.account_number },
+                { header: "Account Name", accessor: (r) => r.account_name },
+                { header: "Type", accessor: (r) => r.account_type },
+                { header: "Debits", accessor: (r) => r.debit },
+                { header: "Credits", accessor: (r) => r.credit },
+                { header: "Balance", accessor: (r) => r.balance },
+              ],
+              data,
+            )
           }
           className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
         >
@@ -205,7 +202,9 @@ function TrialBalanceReport() {
         >
           <option value="all">All Entities</option>
           {entities.map((e) => (
-            <option key={e.id} value={e.id}>{e.name}</option>
+            <option key={e.id} value={e.id}>
+              {e.name}
+            </option>
           ))}
         </select>
         <select
@@ -215,7 +214,9 @@ function TrialBalanceReport() {
         >
           <option value="all">All Periods</option>
           {periods.map((p) => (
-            <option key={p.id} value={p.id}>{p.period_name}</option>
+            <option key={p.id} value={p.id}>
+              {p.period_name}
+            </option>
           ))}
         </select>
       </div>

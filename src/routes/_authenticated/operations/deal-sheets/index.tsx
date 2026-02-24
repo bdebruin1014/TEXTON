@@ -31,7 +31,7 @@ function marginColor(value: number | null): string {
   if (value > 0.1) return "text-green-700";
   if (value >= 0.07) return "text-green-600";
   if (value >= 0.05) return "text-amber-600";
-  return "text-red-600";
+  return "text-destructive";
 }
 
 function landRatioColor(value: number | null): string {
@@ -39,7 +39,7 @@ function landRatioColor(value: number | null): string {
   if (value < 0.2) return "text-green-700";
   if (value <= 0.25) return "text-green-600";
   if (value <= 0.3) return "text-amber-600";
-  return "text-red-600";
+  return "text-destructive";
 }
 
 const columns: ColumnDef<DealSheet, unknown>[] = [

@@ -75,7 +75,7 @@ export function FileRow({
                 {doc.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="inline-block rounded-full bg-green-50 px-1.5 py-0.5 text-[9px] font-medium text-[#143A23]"
+                    className="inline-block rounded-full bg-green-50 px-1.5 py-0.5 text-[9px] font-medium text-primary"
                   >
                     {tag}
                   </span>
@@ -101,7 +101,7 @@ export function FileRow({
           <button
             type="button"
             onClick={() => onEditInPlace(doc)}
-            className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#143A23] transition-colors hover:bg-accent/50"
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-accent/50"
           >
             Edit in {officeApp}
           </button>

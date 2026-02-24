@@ -51,7 +51,15 @@ const DEFAULTS = {
   absorption_homes_per_month: 3,
 };
 
-function NumericField({ label, value, onSave }: { label: string; value: number; onSave: (v: number) => Promise<void> }) {
+function NumericField({
+  label,
+  value,
+  onSave,
+}: {
+  label: string;
+  value: number;
+  onSave: (v: number) => Promise<void>;
+}) {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +89,12 @@ function ResultRow({
   value,
   bold,
   highlight,
-}: { label: string; value: string; bold?: boolean; highlight?: boolean }) {
+}: {
+  label: string;
+  value: string;
+  bold?: boolean;
+  highlight?: boolean;
+}) {
   return (
     <div className="flex justify-between">
       <span className={`text-muted ${bold ? "font-semibold" : ""}`}>{label}</span>
@@ -189,11 +202,7 @@ function LotPurchaseForm({ proforma: p, queryKey }: LotPurchaseFormProps) {
             />
             <CurrencyInput label="ASP / Home" value={p.asp_per_home} onSave={save("asp_per_home")} />
             <PercentageInput label="Selling Cost %" value={p.selling_cost_pct} onSave={save("selling_cost_pct")} />
-            <CurrencyInput
-              label="Seller Concession"
-              value={p.seller_concession}
-              onSave={save("seller_concession")}
-            />
+            <CurrencyInput label="Seller Concession" value={p.seller_concession} onSave={save("seller_concession")} />
           </div>
         </div>
 
@@ -222,7 +231,7 @@ function LotPurchaseForm({ proforma: p, queryKey }: LotPurchaseFormProps) {
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-gray-50">
+                <tr className="border-b border-border bg-background">
                   <th className="px-3 py-2 text-left font-medium text-muted">Tranche</th>
                   <th className="px-3 py-2 text-right font-medium text-muted">Lots</th>
                   <th className="px-3 py-2 text-right font-medium text-muted">Price / Lot</th>
@@ -379,7 +388,7 @@ export function LotPurchaseDealSheet({ opportunityId }: LotPurchaseDealSheetProp
 
   if (isError) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-sm text-red-700">
+      <div className="rounded-lg border border-red-200 bg-destructive-bg p-6 text-center text-sm text-red-700">
         Failed to load lot purchase proformas. Please try again.
       </div>
     );

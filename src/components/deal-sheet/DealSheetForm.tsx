@@ -361,7 +361,7 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
             {(Object.entries(FIXED_PER_HOUSE_FEES) as [string, number][]).map(([key, amount]) => {
               if (key === "am_fee" && !sheet.is_rch_related_owner) return null;
               return (
-                <div key={key} className="flex items-center justify-between rounded-md bg-gray-50 px-3 py-1.5">
+                <div key={key} className="flex items-center justify-between rounded-md bg-background px-3 py-1.5">
                   <span className="text-sm text-foreground">{FEE_LABELS[key] ?? key}</span>
                   <span className="font-mono text-sm font-medium text-foreground">{formatCurrency(amount)}</span>
                 </div>
@@ -506,7 +506,7 @@ export function DealSheetForm({ sheet, queryKey }: DealSheetFormProps) {
                 ].map((scenario) => (
                   <div
                     key={scenario.label}
-                    className={`flex items-center justify-between rounded-md px-3 py-1.5 ${scenario.net_profit_margin < 0.05 ? "bg-red-50" : "bg-gray-50"}`}
+                    className={`flex items-center justify-between rounded-md px-3 py-1.5 ${scenario.net_profit_margin < 0.05 ? "bg-destructive-bg" : "bg-background"}`}
                   >
                     <span className="text-xs text-foreground">{scenario.label}</span>
                     <span className="text-xs font-medium text-foreground">
@@ -538,8 +538,8 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
 
 const VERDICT_COLORS: Record<string, string> = {
   STRONG: "#3D7A4E",
-  GOOD: "#4A8C5E",
-  ACCEPTABLE: "#4A8C5E",
+  GOOD: "var(--color-primary-accent)",
+  ACCEPTABLE: "var(--color-primary-accent)",
   MARGINAL: "#C4841D",
   CAUTION: "#C4841D",
   "NO GO": "#B84040",

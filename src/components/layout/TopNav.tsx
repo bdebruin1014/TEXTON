@@ -161,14 +161,10 @@ export function TopNav() {
         >
           {"\u2630"}
         </button>
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-md text-xs font-bold text-white"
-            style={{ backgroundColor: "var(--color-nav-active)" }}
-          >
-            K
-          </div>
-          <span className="text-sm font-semibold text-white">KOVA</span>
+        <Link to="/dashboard" className="flex items-center">
+          <span className="text-sm font-semibold text-white" style={{ letterSpacing: "2px" }}>
+            KOVA
+          </span>
         </Link>
       </div>
 

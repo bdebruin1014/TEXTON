@@ -14,7 +14,7 @@ function ShareRoute() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-[#143A23]" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary" />
       </div>
     );
   }
@@ -23,8 +23,8 @@ function ShareRoute() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F1F5F9] px-4">
         <div className="text-center">
-          <h1 className="text-lg font-semibold text-slate-900">Link Not Available</h1>
-          <p className="mt-2 text-sm text-slate-500">{error.message}</p>
+          <h1 className="text-lg font-semibold text-foreground">Link Not Available</h1>
+          <p className="mt-2 text-sm text-muted">{error.message}</p>
         </div>
       </div>
     );

@@ -167,7 +167,7 @@ function ConstructionIndex() {
     {
       label: "In Progress",
       value: statusCounts["In Progress"] ?? 0,
-      accentColor: "#4A8C5E",
+      accentColor: "var(--color-primary-accent)",
     },
   ];
 

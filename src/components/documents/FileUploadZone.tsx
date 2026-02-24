@@ -100,8 +100,8 @@ export function FileUploadZone({
 
       {/* Drag overlay */}
       {isDragging && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg border-2 border-dashed border-[#143A23] bg-[#143A23]/5">
-          <div className="flex flex-col items-center gap-2 text-[#143A23]">
+        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg border-2 border-dashed border-primary bg-primary/5">
+          <div className="flex flex-col items-center gap-2 text-primary">
             <span className="text-lg font-bold">Upload</span>
             <span className="text-sm font-medium">Drop files to upload</span>
           </div>
@@ -123,7 +123,7 @@ export function FileUploadZone({
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-300",
-                    u.status === "error" ? "bg-destructive" : "bg-[#143A23]",
+                    u.status === "error" ? "bg-destructive" : "bg-primary",
                   )}
                   style={{ width: u.status === "uploading" ? "60%" : "100%" }}
                 />

@@ -114,7 +114,13 @@ function BasicInfo() {
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Project Identity</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <AutoSaveField label="Project Name" value={project.project_name} onSave={save("project_name")} required />
-          <StatusSelect label="Status" value={project.status} onSave={save("status")} statuses={PROJECT_STATUSES} required />
+          <StatusSelect
+            label="Status"
+            value={project.status}
+            onSave={save("status")}
+            statuses={PROJECT_STATUSES}
+            required
+          />
           <AutoSaveSelect
             label="Project Type"
             value={project.project_type}

@@ -164,7 +164,7 @@ function Handoff() {
 
       {/* Progress bar */}
       <div className="mb-4">
-        <div className="h-2 w-full rounded-full bg-gray-100">
+        <div className="h-2 w-full rounded-full bg-accent">
           <div
             className="h-2 rounded-full bg-success transition-all"
             style={{ width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%` }}
@@ -191,7 +191,7 @@ function Handoff() {
             return (
               <div
                 key={handoffItem.id}
-                className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-gray-50/50"
+                className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-background/50"
               >
                 <div className="flex items-start gap-3">
                   {/* Checkbox */}

@@ -83,14 +83,14 @@ export function CreateRecordModal({
 
       {/* Dialog */}
       <div
-        className="relative z-10 w-full max-w-lg rounded-xl border border-border bg-card shadow-xl"
+        className="relative z-10 w-full max-w-lg rounded-lg border border-border bg-card shadow-lg"
         role="dialog"
         aria-modal="true"
         aria-label={title}
       >
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+          <h2 className="text-lg font-medium text-foreground">{title}</h2>
           {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
         </div>
 
@@ -105,7 +105,7 @@ export function CreateRecordModal({
                 <div key={field.name}>
                   <label
                     htmlFor={inputId}
-                    className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted"
+                    className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted"
                   >
                     {field.label}
                     {field.required && <span className="ml-0.5 text-destructive">*</span>}
@@ -118,7 +118,7 @@ export function CreateRecordModal({
                       value={values[field.name] ?? ""}
                       onChange={(e) => setValue(field.name, e.target.value)}
                       required={field.required}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
                     >
                       <option value="">Select...</option>
                       {field.options?.map((opt) => {
@@ -140,7 +140,7 @@ export function CreateRecordModal({
                       required={field.required}
                       placeholder={field.placeholder}
                       rows={3}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
                     />
                   ) : (
                     <input
@@ -151,7 +151,7 @@ export function CreateRecordModal({
                       onChange={(e) => setValue(field.name, e.target.value)}
                       required={field.required}
                       placeholder={field.placeholder}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
                     />
                   )}
                 </div>
@@ -164,14 +164,14 @@ export function CreateRecordModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+              className="h-9 rounded-md border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
+              className="h-9 rounded-md bg-button px-4 text-sm font-medium text-white transition-colors hover:bg-button-hover disabled:opacity-50"
             >
               {loading ? "Creating..." : submitLabel}
             </button>

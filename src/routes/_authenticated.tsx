@@ -42,9 +42,9 @@ function AuthenticatedErrorPage({ error }: ErrorComponentProps) {
   return (
     <AppShell>
       <div className="flex flex-1 items-center justify-center p-8">
-        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 shadow-sm text-center">
+        <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 shadow-sm text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive-bg">
-            <span className="text-xl font-bold text-destructive">!</span>
+            <span className="text-xl font-medium text-destructive">!</span>
           </div>
           <p className="text-lg font-semibold text-foreground">Something went wrong</p>
           <p className="mt-1 text-sm text-muted">An unexpected error occurred while loading this page.</p>

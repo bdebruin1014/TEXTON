@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 interface FloorPlanImage {
   id: string;

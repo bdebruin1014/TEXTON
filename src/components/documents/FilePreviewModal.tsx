@@ -122,7 +122,7 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
     if (isImage(document.file_extension) && signedUrl) {
       return (
         <div
-          className="flex-1 min-h-0 flex items-center justify-center bg-gray-50 overflow-auto p-4"
+          className="flex-1 min-h-0 flex items-center justify-center bg-background overflow-auto p-4"
           onClick={() => setImageZoomed((z) => !z)}
         >
           <img
@@ -141,9 +141,9 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
     if (isOfficeFile(document.file_extension)) {
       return (
         <div className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
+          <div className="w-full max-w-md rounded-lg border border-border bg-background p-8 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-              <FileLabel label={iconConfig.label} className="text-lg text-[#143A23]" />
+              <FileLabel label={iconConfig.label} className="text-lg text-primary" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">{document.name}</h3>
             <p className="text-sm text-gray-500 mb-1 uppercase">{ext.replace(".", "")} Document</p>
@@ -155,14 +155,14 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
               <button
                 type="button"
                 onClick={() => onEditInPlace(document)}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#143A23] px-4 py-2 text-sm font-medium text-white hover:bg-[#143A23]/90 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
               >
                 Edit in {officeAppName}
               </button>
               <button
                 type="button"
                 onClick={() => onDownload(document)}
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-background transition-colors"
               >
                 Download
               </button>
@@ -175,9 +175,9 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
     // Other file types — metadata card with Download only
     return (
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md rounded-lg border border-border bg-gray-50 p-8 text-center">
+        <div className="w-full max-w-md rounded-lg border border-border bg-background p-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white border border-border">
-            <FileLabel label={iconConfig.label} className="text-lg text-[#143A23]" />
+            <FileLabel label={iconConfig.label} className="text-lg text-primary" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-1">{document.name}</h3>
           <p className="text-sm text-gray-500 mb-1 uppercase">{ext ? ext.replace(".", "") : "Unknown"} File</p>
@@ -189,7 +189,7 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
             <button
               type="button"
               onClick={() => onDownload(document)}
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-background transition-colors"
             >
               Download
             </button>
@@ -201,17 +201,17 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={handleBackdropClick}>
-      <div className="rounded-xl bg-white shadow-xl max-w-4xl max-h-[85vh] w-full flex flex-col mx-4">
+      <div className="rounded-lg bg-white shadow-xl max-w-4xl max-h-[85vh] w-full flex flex-col mx-4">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <FileLabel label={iconConfig.label} className="text-sm text-[#143A23] shrink-0" />
+            <FileLabel label={iconConfig.label} className="text-sm text-primary shrink-0" />
             <h2 className="text-base font-semibold text-gray-900 truncate">{document.name}</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="rounded-lg p-1.5 text-gray-400 hover:text-muted-foreground hover:bg-accent transition-colors"
             aria-label="Close preview"
           >
             <span className="text-lg leading-none">&times;</span>
@@ -227,7 +227,7 @@ export function FilePreviewModal({ document, onClose, onDownload, onEditInPlace 
             <button
               type="button"
               onClick={() => onDownload(document)}
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-background transition-colors"
             >
               Download
             </button>

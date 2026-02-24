@@ -241,7 +241,7 @@ function LotPurchaseForm({ proforma, queryKey }: { proforma: LotPurchaseRecord; 
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border bg-gray-50">
+                <tr className="border-b border-border bg-background">
                   <th className="px-3 py-2 text-left font-medium text-muted">Tranche</th>
                   <th className="px-3 py-2 text-right font-medium text-muted">Lots</th>
                   <th className="px-3 py-2 text-right font-medium text-muted">Price / Lot</th>

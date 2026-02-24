@@ -340,8 +340,8 @@ function OutputRow({ label, value, bold }: { label: string; value: string; bold?
 
 const VERDICT_COLORS: Record<string, string> = {
   STRONG: "#3D7A4E",
-  GOOD: "#4A8C5E",
-  ACCEPTABLE: "#4A8C5E",
+  GOOD: "var(--color-primary-accent)",
+  ACCEPTABLE: "var(--color-primary-accent)",
   MARGINAL: "#C4841D",
   CAUTION: "#C4841D",
   "NO GO": "#B84040",
@@ -353,7 +353,7 @@ function VerdictCard({ label, value, verdict }: { label: string; value: string; 
   return (
     <div className="rounded-lg border-2 bg-card p-4 text-center" style={{ borderColor: color }}>
       <p className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</p>
-      <p className="mt-1 text-xl font-bold" style={{ color }}>
+      <p className="mt-1 text-xl font-medium" style={{ color }}>
         {verdict}
       </p>
       <p className="mt-0.5 text-sm text-muted">{value}</p>

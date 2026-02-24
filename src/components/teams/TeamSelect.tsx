@@ -69,7 +69,10 @@ export function TeamSelect({ value, onChange, placeholder = "Select team...", cl
                     team.id === value && "bg-accent",
                   )}
                 >
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: team.color ?? "#4A8C5E" }} />
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: team.color ?? "var(--color-primary-accent)" }}
+                  />
                   <span className="flex-1">{team.name}</span>
                   <span className="text-xs text-muted">{team.member_count} members</span>
                 </button>

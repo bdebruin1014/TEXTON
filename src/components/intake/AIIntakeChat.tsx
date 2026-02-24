@@ -145,7 +145,7 @@ export function AIIntakeChat({
   const showCreateButton = currentStep >= 2;
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-card shadow-sm">
+    <div className="flex h-full flex-col rounded-lg border border-border bg-card shadow-sm">
       {/* Chat messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.map((msg) => (

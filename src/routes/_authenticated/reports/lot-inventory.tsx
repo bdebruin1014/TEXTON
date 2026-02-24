@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -65,8 +65,8 @@ function LotInventoryReport() {
 
       return (lots ?? []).map((lot) => ({
         ...lot,
-        project_name: lot.project_id ? projMap.get(lot.project_id) ?? "" : "",
-        job_name: lot.job_id ? jobMap.get(lot.job_id) ?? "" : "",
+        project_name: lot.project_id ? (projMap.get(lot.project_id) ?? "") : "",
+        job_name: lot.job_id ? (jobMap.get(lot.job_id) ?? "") : "",
         disposition_status: dispMap.get(lot.id) ?? null,
       }));
     },
@@ -118,17 +118,22 @@ function LotInventoryReport() {
     {
       accessorKey: "disposition_status",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Disp. Status" />,
-      cell: ({ row }) => row.original.disposition_status ? <StatusBadge status={row.original.disposition_status} /> : <span className="text-muted">-</span>,
+      cell: ({ row }) =>
+        row.original.disposition_status ? (
+          <StatusBadge status={row.original.disposition_status} />
+        ) : (
+          <span className="text-muted">-</span>
+        ),
     },
     {
       accessorKey: "base_price",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Base Price" />,
-      cell: ({ row }) => row.original.base_price ? formatCurrency(row.original.base_price) : "-",
+      cell: ({ row }) => (row.original.base_price ? formatCurrency(row.original.base_price) : "-"),
     },
     {
       accessorKey: "lot_premium",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Premium" />,
-      cell: ({ row }) => row.original.lot_premium ? formatCurrency(row.original.lot_premium) : "-",
+      cell: ({ row }) => (row.original.lot_premium ? formatCurrency(row.original.lot_premium) : "-"),
     },
   ];
 
@@ -136,22 +141,26 @@ function LotInventoryReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Lot Inventory</h1>
+          <h1 className="text-lg font-medium text-foreground">Lot Inventory</h1>
           <p className="text-sm text-muted">All lots across projects with status, plan, and disposition.</p>
         </div>
         <button
           type="button"
           onClick={() =>
-            exportToCsv("lot-inventory", [
-              { header: "Lot #", accessor: (r) => r.lot_number },
-              { header: "Project", accessor: (r) => r.project_name },
-              { header: "Status", accessor: (r) => r.status },
-              { header: "Floor Plan", accessor: (r) => r.floor_plan_name ?? "" },
-              { header: "Job", accessor: (r) => r.job_name },
-              { header: "Disp. Status", accessor: (r) => r.disposition_status ?? "" },
-              { header: "Base Price", accessor: (r) => r.base_price ?? "" },
-              { header: "Premium", accessor: (r) => r.lot_premium ?? "" },
-            ], data)
+            exportToCsv(
+              "lot-inventory",
+              [
+                { header: "Lot #", accessor: (r) => r.lot_number },
+                { header: "Project", accessor: (r) => r.project_name },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Floor Plan", accessor: (r) => r.floor_plan_name ?? "" },
+                { header: "Job", accessor: (r) => r.job_name },
+                { header: "Disp. Status", accessor: (r) => r.disposition_status ?? "" },
+                { header: "Base Price", accessor: (r) => r.base_price ?? "" },
+                { header: "Premium", accessor: (r) => r.lot_premium ?? "" },
+              ],
+              data,
+            )
           }
           className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
         >
@@ -163,7 +172,10 @@ function LotInventoryReport() {
       {statusCounts.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2">
           {statusCounts.map(([status, count]) => (
-            <span key={status} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground">
+            <span
+              key={status}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground"
+            >
               <StatusBadge status={status} /> {count}
             </span>
           ))}
@@ -172,16 +184,28 @@ function LotInventoryReport() {
 
       {/* Filters */}
       <div className="mb-4 flex items-center gap-3">
-        <select value={projectFilter} onChange={(e) => setProjectFilter(e.target.value)} className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground">
+        <select
+          value={projectFilter}
+          onChange={(e) => setProjectFilter(e.target.value)}
+          className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+        >
           <option value="all">All Projects</option>
           {projects.map((p) => (
-            <option key={p.id} value={p.id}>{p.project_name}</option>
+            <option key={p.id} value={p.id}>
+              {p.project_name}
+            </option>
           ))}
         </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+        >
           <option value="all">All Statuses</option>
           {lotStatuses.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
       </div>

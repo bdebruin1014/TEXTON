@@ -77,13 +77,13 @@ function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-8">
-      <h1 className="text-2xl font-bold text-foreground">Account Settings</h1>
+      <h1 className="text-xl font-medium text-foreground">Account Settings</h1>
       <p className="mt-1 text-sm text-muted">Manage your profile and security settings.</p>
 
       {/* Avatar + email */}
       <div className="mt-8 flex items-center gap-4">
         <div
-          className="flex h-16 w-16 items-center justify-center rounded-xl text-xl font-bold"
+          className="flex h-16 w-16 items-center justify-center rounded-lg text-xl font-medium"
           style={{
             background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-700))",
             color: "var(--color-primary-accent)",
@@ -98,7 +98,7 @@ function SettingsPage() {
       </div>
 
       {/* Profile form */}
-      <form onSubmit={handleProfileSave} className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm">
+      <form onSubmit={handleProfileSave} className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-foreground">Profile</h2>
 
         {profileError && (
@@ -147,7 +147,7 @@ function SettingsPage() {
       </form>
 
       {/* Password change form */}
-      <form onSubmit={handlePasswordChange} className="mt-6 rounded-xl border border-border bg-card p-6 shadow-sm">
+      <form onSubmit={handlePasswordChange} className="mt-6 rounded-lg border border-border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-foreground">Change Password</h2>
 
         {passwordError && (

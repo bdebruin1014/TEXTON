@@ -124,9 +124,15 @@ function CashFlowStatement() {
 
   const allItems = Array.from(accountMap.values()).filter((item) => Math.abs(item.amount) > 0.005);
 
-  const operatingItems = allItems.filter((i) => i.category === "Operating").sort((a, b) => a.account_number.localeCompare(b.account_number));
-  const investingItems = allItems.filter((i) => i.category === "Investing").sort((a, b) => a.account_number.localeCompare(b.account_number));
-  const financingItems = allItems.filter((i) => i.category === "Financing").sort((a, b) => a.account_number.localeCompare(b.account_number));
+  const operatingItems = allItems
+    .filter((i) => i.category === "Operating")
+    .sort((a, b) => a.account_number.localeCompare(b.account_number));
+  const investingItems = allItems
+    .filter((i) => i.category === "Investing")
+    .sort((a, b) => a.account_number.localeCompare(b.account_number));
+  const financingItems = allItems
+    .filter((i) => i.category === "Financing")
+    .sort((a, b) => a.account_number.localeCompare(b.account_number));
 
   const totalOperating = operatingItems.reduce((s, i) => s + i.amount, 0);
   const totalInvesting = investingItems.reduce((s, i) => s + i.amount, 0);
@@ -134,9 +140,27 @@ function CashFlowStatement() {
   const netChange = totalOperating + totalInvesting + totalFinancing;
 
   const sections = [
-    { title: "Operating Activities", subtitle: "Revenue, expenses, and working capital", items: operatingItems, total: totalOperating, color: "text-success" },
-    { title: "Investing Activities", subtitle: "Asset purchases and disposals", items: investingItems, total: totalInvesting, color: "text-info-text" },
-    { title: "Financing Activities", subtitle: "Debt and equity transactions", items: financingItems, total: totalFinancing, color: "text-primary" },
+    {
+      title: "Operating Activities",
+      subtitle: "Revenue, expenses, and working capital",
+      items: operatingItems,
+      total: totalOperating,
+      color: "text-success",
+    },
+    {
+      title: "Investing Activities",
+      subtitle: "Asset purchases and disposals",
+      items: investingItems,
+      total: totalInvesting,
+      color: "text-info-text",
+    },
+    {
+      title: "Financing Activities",
+      subtitle: "Debt and equity transactions",
+      items: financingItems,
+      total: totalFinancing,
+      color: "text-primary",
+    },
   ];
 
   return (
@@ -176,7 +200,9 @@ function CashFlowStatement() {
         <div className="rounded-lg border border-border bg-card">
           {sections.map((section) => (
             <div key={section.title} className="border-b border-border p-4 last:border-b-0">
-              <h2 className={`mb-1 text-sm font-semibold uppercase tracking-wider ${section.color}`}>{section.title}</h2>
+              <h2 className={`mb-1 text-sm font-semibold uppercase tracking-wider ${section.color}`}>
+                {section.title}
+              </h2>
               <p className="mb-3 text-xs text-muted">{section.subtitle}</p>
               {section.items.length === 0 ? (
                 <p className="text-xs text-muted">No activity</p>

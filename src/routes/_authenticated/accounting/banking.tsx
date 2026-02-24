@@ -69,7 +69,9 @@ function Banking() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bank_transactions")
-        .select("id, bank_account_id, transaction_date, description, reference, amount, transaction_type, payee, is_matched, import_batch")
+        .select(
+          "id, bank_account_id, transaction_date, description, reference, amount, transaction_type, payee, is_matched, import_batch",
+        )
         .eq("bank_account_id", selectedAccountId as string)
         .order("transaction_date", { ascending: false })
         .limit(200);
@@ -273,7 +275,9 @@ function Banking() {
         row.getValue("is_matched") ? (
           <span className="rounded-full bg-success-bg px-2 py-0.5 text-xs font-medium text-success-text">Matched</span>
         ) : (
-          <span className="rounded-full bg-warning-bg px-2 py-0.5 text-xs font-medium text-warning-text">Unmatched</span>
+          <span className="rounded-full bg-warning-bg px-2 py-0.5 text-xs font-medium text-warning-text">
+            Unmatched
+          </span>
         ),
     },
   ];
@@ -333,9 +337,7 @@ function Banking() {
                 <span className="text-xs text-muted">{transactions.length} transactions</span>
               </div>
               {transactions.length === 0 ? (
-                <p className="text-sm text-muted">
-                  No transactions — use "Import Transactions" to load a CSV file.
-                </p>
+                <p className="text-sm text-muted">No transactions — use "Import Transactions" to load a CSV file.</p>
               ) : (
                 <DataTable
                   columns={txnColumns}

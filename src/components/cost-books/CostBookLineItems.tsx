@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { useCostBookLineItems } from "@/hooks/useCostBooks";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 
 interface CostBookLineItemsProps {

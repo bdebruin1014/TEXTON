@@ -93,16 +93,11 @@ function TrialBalance() {
   return (
     <div>
       <div className="mb-6">
-        <Link
-          to="/accounting/reports"
-          className="mb-2 inline-block text-xs font-medium text-primary hover:underline"
-        >
+        <Link to="/accounting/reports" className="mb-2 inline-block text-xs font-medium text-primary hover:underline">
           &larr; Back to Reports
         </Link>
         <h1 className="text-xl font-semibold text-foreground">Trial Balance</h1>
-        <p className="mt-0.5 text-sm text-muted">
-          {rows.length} accounts · Posted journal entries only
-        </p>
+        <p className="mt-0.5 text-sm text-muted">{rows.length} accounts · Posted journal entries only</p>
       </div>
 
       {isLoading ? (

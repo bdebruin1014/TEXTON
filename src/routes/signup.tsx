@@ -45,8 +45,8 @@ function SignupPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="w-full max-w-sm text-center">
-          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
-          <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm">
+          <h1 className="text-2xl font-semibold tracking-[2px] text-primary-accent">KOVA</h1>
+          <div className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm">
             <div className="mb-2 text-lg font-semibold text-foreground">Check your email</div>
             <p className="text-sm text-muted">
               We sent a confirmation link to <strong>{email}</strong>. Click the link to activate your account.
@@ -67,11 +67,11 @@ function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
+          <h1 className="text-2xl font-semibold tracking-[2px] text-primary-accent">KOVA</h1>
           <p className="mt-1 text-sm text-muted">Create your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 shadow-sm">
           {error && <div className="mb-4 rounded-lg bg-destructive-bg px-3 py-2 text-sm text-destructive">{error}</div>}
 
           <div className="mb-4">

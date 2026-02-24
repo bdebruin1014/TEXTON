@@ -4,8 +4,8 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { FloorPlanImages } from "@/components/admin/FloorPlanImages";
 import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/floor-plans/$planId")({

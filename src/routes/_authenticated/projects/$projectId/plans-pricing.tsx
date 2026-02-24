@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
-import { useAutoSave, type SaveStatus } from "@/hooks/useAutoSave";
+import { type SaveStatus, useAutoSave } from "@/hooks/useAutoSave";
 import { supabase } from "@/lib/supabase";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
@@ -97,11 +97,7 @@ function InlineCurrencyCell({
 function StatusDot({ status }: { status: SaveStatus }) {
   if (status === "idle") return null;
   const dotColor =
-    status === "saving"
-      ? "bg-warning animate-pulse"
-      : status === "saved"
-        ? "bg-success"
-        : "bg-destructive";
+    status === "saving" ? "bg-warning animate-pulse" : status === "saved" ? "bg-success" : "bg-destructive";
   return <span className={cn("h-2 w-2 shrink-0 rounded-full", dotColor)} title={status} />;
 }
 
@@ -123,11 +119,7 @@ function PlansPricing() {
     queryKey: ["user-role", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const { data } = await supabase
-        .from("user_profiles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
+      const { data } = await supabase.from("user_profiles").select("role").eq("user_id", user.id).single();
       return data?.role ?? null;
     },
     enabled: !!user?.id,

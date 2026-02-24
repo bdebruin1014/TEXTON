@@ -163,9 +163,7 @@ function COATemplateDetail() {
     {
       accessorKey: "root_type",
       header: "Root",
-      cell: ({ row }) => (
-        <span className="text-xs text-muted">{row.original.root_type ?? "—"}</span>
-      ),
+      cell: ({ row }) => <span className="text-xs text-muted">{row.original.root_type ?? "—"}</span>,
     },
     {
       id: "flags",
@@ -249,19 +247,19 @@ function COATemplateDetail() {
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">Total Accounts</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{items.length}</p>
+          <p className="mt-1 text-xl font-semibold text-foreground">{items.length}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">Groups</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{groupCount}</p>
+          <p className="mt-1 text-xl font-semibold text-foreground">{groupCount}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">Leaf Accounts</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{leafCount}</p>
+          <p className="mt-1 text-xl font-semibold text-foreground">{leafCount}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-xs font-medium uppercase tracking-wider text-muted">Entities Using</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{assignments.length}</p>
+          <p className="mt-1 text-xl font-semibold text-foreground">{assignments.length}</p>
         </div>
       </div>
 
@@ -370,15 +368,11 @@ function COATemplateDetail() {
               <tbody>
                 {assignments.map((a) => (
                   <tr key={a.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-2 font-medium text-foreground">
-                      {a.entities?.name ?? a.entity_id}
-                    </td>
+                    <td className="px-4 py-2 font-medium text-foreground">{a.entities?.name ?? a.entity_id}</td>
                     <td className="px-4 py-2 font-mono text-sm text-muted">
                       {(a.variables as Record<string, string>)?.ABBR ?? "—"}
                     </td>
-                    <td className="px-4 py-2 text-xs text-muted">
-                      {new Date(a.assigned_at).toLocaleDateString()}
-                    </td>
+                    <td className="px-4 py-2 text-xs text-muted">{new Date(a.assigned_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>

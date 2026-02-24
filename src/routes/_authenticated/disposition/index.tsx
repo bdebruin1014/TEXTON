@@ -156,7 +156,7 @@ function DispositionIndex() {
 
   const kpis: ModuleKpi[] = [
     { label: "Total Dispositions", value: dispositions.length },
-    { label: "Revenue (Closed)", value: formatCurrency(totalRevenue), accentColor: "#4A8C5E" },
+    { label: "Revenue (Closed)", value: formatCurrency(totalRevenue), accentColor: "var(--color-primary-accent)" },
     { label: "Pipeline Value", value: formatCurrency(pipeline), accentColor: "#3B6FA0" },
     {
       label: "Pending Close",

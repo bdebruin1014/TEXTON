@@ -271,7 +271,7 @@ function EntityRegister() {
           className="mb-5 rounded-lg border border-border bg-card px-5 py-4"
           style={{ borderLeft: "4px solid var(--color-primary)" }}
         >
-          <span className="text-2xl font-bold text-foreground">{formatCurrency(accountBalance)}</span>
+          <span className="text-xl font-semibold text-foreground">{formatCurrency(accountBalance)}</span>
           <p
             className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider"
             style={{ color: "var(--color-text-secondary)" }}
