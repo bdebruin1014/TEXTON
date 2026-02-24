@@ -9,9 +9,8 @@ import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
-import { JOB_STATUSES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/construction/")({
@@ -24,68 +23,49 @@ interface Job {
   lot_number: string | null;
   floor_plan_name: string | null;
   project_name: string | null;
+  project_id: string | null;
   status: string;
   budget_total: number | null;
   spent_total: number | null;
   start_date: string | null;
   target_completion: string | null;
+  actual_completion: string | null;
+  builder: string | null;
   updated_at: string;
 }
 
-const columns: ColumnDef<Job, unknown>[] = [
+/* ── Status pill groupings ── */
+const CONSTRUCTION_PILL_GROUPS = [
+  { label: "All", value: "all", statuses: [] as string[] },
+  { label: "Pre-Construction", value: "pre-con", statuses: ["Pre-Construction", "Permitting"] },
   {
-    accessorKey: "record_number",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="#" />,
-    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("record_number") ?? "—"}</span>,
-    size: 180,
+    label: "In Progress",
+    value: "in-progress",
+    statuses: ["Foundation", "Framing", "Rough-Ins", "Insulation & Drywall", "Interior Finishes", "Exterior"],
   },
-  {
-    accessorKey: "lot_number",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Lot" />,
-    cell: ({ row }) => <span className="font-medium">{row.getValue("lot_number") ?? "—"}</span>,
-  },
-  {
-    accessorKey: "project_name",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Project" />,
-    cell: ({ row }) => <span className="text-muted">{row.getValue("project_name") ?? "—"}</span>,
-  },
-  {
-    accessorKey: "floor_plan_name",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Plan" />,
-    cell: ({ row }) => <span className="text-muted">{row.getValue("floor_plan_name") ?? "—"}</span>,
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
-    cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
-  },
-  {
-    accessorKey: "budget_total",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Budget" />,
-    cell: ({ row }) => {
-      const val = row.getValue("budget_total") as number | null;
-      return val ? formatCurrency(val) : "—";
-    },
-  },
-  {
-    accessorKey: "spent_total",
-    header: "Spent",
-    cell: ({ row }) => {
-      const val = row.getValue("spent_total") as number | null;
-      return val ? formatCurrency(val) : "—";
-    },
-  },
-  {
-    accessorKey: "start_date",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Start" />,
-    cell: ({ row }) => formatDate(row.getValue("start_date")),
-  },
-  {
-    accessorKey: "updated_at",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Updated" />,
-    cell: ({ row }) => formatDate(row.getValue("updated_at")),
-  },
+  { label: "Punch", value: "punch", statuses: ["Final Inspections"] },
+  { label: "CO Received", value: "co-received", statuses: ["CO Issued"] },
+  { label: "Completed", value: "completed", statuses: ["Warranty", "Closed"] },
 ];
+
+/* ── Active statuses (for KPI counting) ── */
+const ACTIVE_STATUSES = [
+  "Pre-Construction",
+  "Permitting",
+  "Foundation",
+  "Framing",
+  "Rough-Ins",
+  "Insulation & Drywall",
+  "Interior Finishes",
+  "Exterior",
+  "Final Inspections",
+];
+
+function daysSince(from: string | null): number | null {
+  if (!from) return null;
+  const diff = Date.now() - new Date(from).getTime();
+  return Math.max(0, Math.floor(diff / 86_400_000));
+}
 
 function ConstructionIndex() {
   const navigate = useNavigate();
@@ -93,6 +73,24 @@ function ConstructionIndex() {
   const [activeStatus, setActiveStatus] = useState("all");
   const activeEntityId = useEntityStore((s) => s.activeEntityId);
 
+  /* ── Queries ── */
+  const { data: jobs = [], isLoading } = useQuery<Job[]>({
+    queryKey: ["jobs", activeEntityId],
+    queryFn: async () => {
+      let query = supabase
+        .from("jobs")
+        .select(
+          "id,record_number,lot_number,floor_plan_name,project_name,project_id,status,budget_total,spent_total,start_date,target_completion,actual_completion,builder,updated_at",
+        )
+        .order("updated_at", { ascending: false });
+      if (activeEntityId) query = query.eq("entity_id", activeEntityId);
+      const { data, error } = await query;
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  /* ── Delete mutation ── */
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("jobs").delete().eq("id", id);
@@ -105,22 +103,154 @@ function ConstructionIndex() {
     onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete job"),
   });
 
-  const { data: jobs = [], isLoading } = useQuery<Job[]>({
-    queryKey: ["jobs", activeEntityId],
-    queryFn: async () => {
-      let query = supabase.from("jobs").select("*").order("updated_at", { ascending: false });
-      if (activeEntityId) {
-        query = query.eq("entity_id", activeEntityId);
-      }
-      const { data, error } = await query;
-      if (error) throw error;
-      return data ?? [];
-    },
-  });
+  /* ── Filtering ── */
+  const filteredJobs = useMemo(() => {
+    if (activeStatus === "all") return jobs;
+    const group = CONSTRUCTION_PILL_GROUPS.find((g) => g.value === activeStatus);
+    if (!group) return jobs;
+    return jobs.filter((j) => group.statuses.includes(j.status));
+  }, [jobs, activeStatus]);
 
-  const allColumns = useMemo(
+  /* ── Status counts ── */
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const j of jobs) {
+      counts[j.status] = (counts[j.status] ?? 0) + 1;
+    }
+    return counts;
+  }, [jobs]);
+
+  /* ── KPIs ── */
+  const activeJobs = jobs.filter((j) => ACTIVE_STATUSES.includes(j.status)).length;
+
+  const onSchedule = useMemo(() => {
+    let count = 0;
+    for (const j of jobs) {
+      if (!ACTIVE_STATUSES.includes(j.status)) continue;
+      if (!j.target_completion) {
+        count++;
+        continue;
+      }
+      if (new Date(j.target_completion) >= new Date()) count++;
+    }
+    return count;
+  }, [jobs]);
+
+  const behindSchedule = activeJobs - onSchedule;
+
+  const avgDaysToCO = useMemo(() => {
+    const completed = jobs.filter(
+      (j) => (j.status === "CO Issued" || j.status === "Warranty" || j.status === "Closed") && j.start_date,
+    );
+    if (completed.length === 0) return 0;
+    const total = completed.reduce((sum, j) => {
+      const end = j.actual_completion ? new Date(j.actual_completion) : new Date();
+      const start = new Date(j.start_date as string);
+      return sum + Math.max(0, Math.floor((end.getTime() - start.getTime()) / 86_400_000));
+    }, 0);
+    return Math.round(total / completed.length);
+  }, [jobs]);
+
+  const kpis: ModuleKpi[] = [
+    { label: "Active Jobs", value: activeJobs, accentColor: "var(--color-primary-accent)" },
+    { label: "On Schedule", value: onSchedule, status: "success" },
+    { label: "Behind Schedule", value: behindSchedule, status: behindSchedule > 0 ? "danger" : "success" },
+    { label: "Avg Days to CO", value: avgDaysToCO },
+  ];
+
+  /* ── Status tabs ── */
+  const statusTabs: StatusTab[] = CONSTRUCTION_PILL_GROUPS.map((g) => ({
+    label: g.label,
+    value: g.value,
+    count: g.value === "all" ? jobs.length : g.statuses.reduce((sum, s) => sum + (statusCounts[s] ?? 0), 0),
+  }));
+
+  /* ── Columns ── */
+  const columns: ColumnDef<Job, unknown>[] = useMemo(
     () => [
-      ...columns,
+      {
+        accessorKey: "record_number",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Job Code" />,
+        cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.getValue("record_number") ?? "—"}</span>,
+        size: 140,
+      },
+      {
+        accessorKey: "project_name",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Project" />,
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className="truncate text-sm font-medium text-info-text hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (row.original.project_id) {
+                navigate({
+                  to: "/projects/$projectId/basic-info",
+                  params: { projectId: row.original.project_id },
+                });
+              }
+            }}
+          >
+            {row.getValue("project_name") ?? "—"}
+          </button>
+        ),
+      },
+      {
+        accessorKey: "lot_number",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Lot" />,
+        cell: ({ row }) => <span className="text-muted">{row.getValue("lot_number") ?? "—"}</span>,
+        size: 80,
+      },
+      {
+        accessorKey: "floor_plan_name",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Floor Plan" />,
+        cell: ({ row }) => <span className="text-muted">{row.getValue("floor_plan_name") ?? "—"}</span>,
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        cell: ({ row }) => <StatusBadge status={row.getValue("status")} />,
+      },
+      {
+        id: "current_phase",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Current Phase" />,
+        accessorFn: (row) => row.status,
+        cell: ({ getValue }) => <span className="text-xs text-muted">{getValue() as string}</span>,
+      },
+      {
+        id: "days_since_start",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Days Since Start" />,
+        accessorFn: (row) => daysSince(row.start_date),
+        cell: ({ getValue }) => {
+          const days = getValue() as number | null;
+          return <span className="font-mono text-xs text-muted">{days ?? "—"}</span>;
+        },
+        size: 120,
+      },
+      {
+        accessorKey: "builder",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="PM" />,
+        cell: ({ row }) => <span className="text-muted">{row.getValue("builder") ?? "—"}</span>,
+      },
+      {
+        id: "budget_variance",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Budget Variance" />,
+        accessorFn: (row) => {
+          if (row.budget_total == null) return null;
+          return (row.budget_total ?? 0) - (row.spent_total ?? 0);
+        },
+        cell: ({ getValue }) => {
+          const variance = getValue() as number | null;
+          if (variance == null) return "—";
+          const isNegative = variance < 0;
+          return (
+            <span className={isNegative ? "font-medium text-destructive-text" : "text-success-text"}>
+              {isNegative ? "-" : "+"}
+              {formatCurrency(Math.abs(variance))}
+            </span>
+          );
+        },
+      },
       {
         id: "actions",
         header: "",
@@ -139,47 +269,12 @@ function ConstructionIndex() {
           </button>
         ),
         size: 80,
-      } as ColumnDef<Job, unknown>,
+      },
     ],
-    [deleteMutation],
+    [navigate, deleteMutation],
   );
 
-  const filteredJobs = useMemo(() => {
-    if (activeStatus === "all") return jobs;
-    return jobs.filter((j) => j.status === activeStatus);
-  }, [jobs, activeStatus]);
-
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const job of jobs) {
-      counts[job.status] = (counts[job.status] ?? 0) + 1;
-    }
-    return counts;
-  }, [jobs]);
-
-  const totalBudget = jobs.reduce((sum, j) => sum + (j.budget_total ?? 0), 0);
-  const totalSpent = jobs.reduce((sum, j) => sum + (j.spent_total ?? 0), 0);
-
-  const kpis: ModuleKpi[] = [
-    { label: "Total Jobs", value: jobs.length },
-    { label: "Total Budget", value: formatCurrency(totalBudget) },
-    { label: "Total Spent", value: formatCurrency(totalSpent), accentColor: "#C4841D" },
-    {
-      label: "In Progress",
-      value: statusCounts["In Progress"] ?? 0,
-      accentColor: "var(--color-primary-accent)",
-    },
-  ];
-
-  const statusTabs: StatusTab[] = [
-    { label: "All", value: "all", count: jobs.length },
-    ...JOB_STATUSES.map((s) => ({
-      label: s,
-      value: s,
-      count: statusCounts[s] ?? 0,
-    })),
-  ];
-
+  /* ── Create handler ── */
   const handleCreate = async () => {
     try {
       const { data, error } = await supabase
@@ -202,7 +297,11 @@ function ConstructionIndex() {
   return (
     <ModuleIndex
       title="Construction Management"
-      subtitle={activeStatus === "all" ? "All jobs" : activeStatus}
+      subtitle={
+        activeStatus === "all"
+          ? "All jobs"
+          : (CONSTRUCTION_PILL_GROUPS.find((g) => g.value === activeStatus)?.label ?? activeStatus)
+      }
       kpis={kpis}
       statusTabs={statusTabs}
       activeStatus={activeStatus}
@@ -212,12 +311,12 @@ function ConstructionIndex() {
       onCreateWithAI={() => navigate({ to: "/construction/new" })}
     >
       {isLoading ? (
-        <TableSkeleton rows={8} cols={8} />
+        <TableSkeleton rows={8} cols={9} />
       ) : filteredJobs.length === 0 ? (
         <EmptyState title="No jobs yet" description="Create a new job to start tracking construction" />
       ) : (
         <DataTable
-          columns={allColumns}
+          columns={columns}
           data={filteredJobs}
           searchKey="lot_number"
           searchPlaceholder="Search jobs..."

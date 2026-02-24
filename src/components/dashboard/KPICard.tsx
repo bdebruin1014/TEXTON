@@ -9,6 +9,7 @@ interface KPICardProps {
   trend?: TrendDirection;
   trendValue?: string;
   status?: StatusVariant;
+  accentColor?: string;
   className?: string;
 }
 
@@ -30,9 +31,12 @@ const TREND_ARROWS: Record<TrendDirection, string> = {
   neutral: "\u2192",
 };
 
-export function KPICard({ label, value, trend, trendValue, status, className }: KPICardProps) {
+export function KPICard({ label, value, trend, trendValue, status, accentColor, className }: KPICardProps) {
   return (
-    <div className={cn("rounded-lg border border-border bg-card p-5", className)}>
+    <div
+      className={cn("rounded-lg border border-border bg-card p-5", className)}
+      style={accentColor ? { borderLeftWidth: 3, borderLeftColor: accentColor } : undefined}
+    >
       <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1">{label}</div>
       <div
         className={cn(
