@@ -3,15 +3,12 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/authStore";
 import { useEntityStore } from "@/stores/entityStore";
 
-function isNetworkError(err: unknown): boolean {
-  return err instanceof TypeError && (err.message === "Failed to fetch" || err.message === "NetworkError when attempting to fetch resource.");
-}
-
-function toAuthError(err: unknown): Error {
-  if (isNetworkError(err)) {
-    return new Error("Unable to reach the server. Please check your connection and try again.");
+/** Converts a raw network `TypeError: Failed to fetch` into a user-friendly Error. */
+function wrapNetworkError(err: unknown): never {
+  if (err instanceof TypeError && err.message === "Failed to fetch") {
+    throw new Error("Unable to reach the authentication service. Please check your connection.");
   }
-  return err instanceof Error ? err : new Error(String(err));
+  throw err;
 }
 
 export function useAuth() {
@@ -21,22 +18,33 @@ export function useAuth() {
   useEffect(() => {
     const initSession = async (userId: string | undefined) => {
       if (!userId || activeEntityId) return;
-      const { data } = await supabase.from("user_profiles").select("entity_id").eq("user_id", userId).single();
-      if (data?.entity_id) {
-        setActiveEntity(data.entity_id);
+      try {
+        const { data } = await supabase.from("user_profiles").select("entity_id").eq("user_id", userId).single();
+        if (data?.entity_id) {
+          setActiveEntity(data.entity_id);
+        }
+      } catch (err) {
+        if (import.meta.env.DEV) {
+          console.warn("[useAuth] Could not load user profile:", err);
+        }
       }
     };
 
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setAuth(s?.user ?? null, s);
-      initSession(s?.user?.id);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: s } }) => {
+        setAuth(s?.user ?? null, s);
+        initSession(s?.user?.id);
+      })
+      .catch(() => {
+        // Supabase unreachable on init; remain logged out
+      });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setAuth(s?.user ?? null, s);
-      initSession(s?.user?.id);
+      initSession(s?.user?.id).catch(() => {});
     });
 
     return () => subscription.unsubscribe();
@@ -47,7 +55,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
     } catch (err) {
-      throw toAuthError(err);
+      wrapNetworkError(err);
     }
   };
 
@@ -60,7 +68,7 @@ export function useAuth() {
       });
       if (error) throw error;
     } catch (err) {
-      throw toAuthError(err);
+      wrapNetworkError(err);
     }
   };
 
@@ -71,7 +79,7 @@ export function useAuth() {
       });
       if (error) throw error;
     } catch (err) {
-      throw toAuthError(err);
+      wrapNetworkError(err);
     }
   };
 
@@ -80,7 +88,7 @@ export function useAuth() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
     } catch (err) {
-      throw toAuthError(err);
+      wrapNetworkError(err);
     }
   };
 
@@ -89,7 +97,7 @@ export function useAuth() {
       const { error } = await supabase.auth.updateUser({ data });
       if (error) throw error;
     } catch (err) {
-      throw toAuthError(err);
+      wrapNetworkError(err);
     }
   };
 
