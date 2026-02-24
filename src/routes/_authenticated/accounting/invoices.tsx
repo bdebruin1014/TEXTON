@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/invoices")({
@@ -123,7 +123,7 @@ function Invoices() {
       toast.success("Invoice created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create invoice"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create invoice"),
   });
 
   const updateStatus = useMutation({

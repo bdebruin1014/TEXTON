@@ -6,7 +6,7 @@ import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/accounting/")({
   component: AccountingIndex,
@@ -174,7 +174,7 @@ function AccountingIndex() {
         navigate({ to: `/accounting/${data.id}/register` as string });
       }
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create entity"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create entity"),
   });
 
   return (

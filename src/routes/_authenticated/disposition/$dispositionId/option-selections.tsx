@@ -10,7 +10,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/disposition/$dispositionId/option-selections")({
   component: OptionSelections,
@@ -61,7 +61,7 @@ function OptionSelections() {
       toast.success("Option added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add option"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add option"),
   });
 
   const deleteOption = useMutation({

@@ -9,7 +9,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/contacts/customers")({
@@ -65,7 +65,7 @@ function Customers() {
       toast.success("Customer added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add customer"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add customer"),
   });
 
   const deleteMutation = useMutation({
@@ -77,7 +77,7 @@ function Customers() {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast.success("Customer deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete customer"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete customer"),
   });
 
   const columns: ColumnDef<Customer, unknown>[] = [

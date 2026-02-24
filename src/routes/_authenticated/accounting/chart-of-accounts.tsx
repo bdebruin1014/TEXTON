@@ -6,6 +6,7 @@ import { CreateRecordModal } from "@/components/shared/CreateRecordModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/chart-of-accounts")({
@@ -81,7 +82,7 @@ function ChartOfAccounts() {
       toast.success("Account added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add account"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add account"),
   });
 
   const deleteAccount = useMutation({

@@ -8,7 +8,7 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/budget")({
   component: JobBudget,
@@ -77,7 +77,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to add budget line"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add budget line"),
   });
 
   const importTemplate = useMutation({
@@ -93,7 +93,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to import template"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to import template"),
   });
 
   const deleteLine = useMutation({
@@ -102,7 +102,7 @@ function JobBudget() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["job-budget", jobId] }),
-    onError: (err: any) => toast.error(err?.message || "Failed to delete budget line"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete budget line"),
   });
 
   const totalBudgeted = lines.reduce((sum, l) => sum + (l.budgeted ?? 0), 0);

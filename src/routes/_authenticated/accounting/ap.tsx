@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/ap")({
@@ -163,7 +163,7 @@ function AccountsPayable() {
       toast.success("Bill created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create bill"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create bill"),
   });
 
   const bulkAction = useMutation({
@@ -259,7 +259,7 @@ function AccountsPayable() {
       toast.success("Payment recorded");
       setShowPayModal(null);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to record payment"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to record payment"),
   });
 
   const toggleSelect = (id: string) => {

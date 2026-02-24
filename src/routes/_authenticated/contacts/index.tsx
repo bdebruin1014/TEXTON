@@ -10,6 +10,7 @@ import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { COMPANY_TYPE_CATEGORIES, COMPANY_TYPES } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/contacts/")({
@@ -138,7 +139,7 @@ function CompaniesIndex() {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
       toast.success("Company deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete company"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete company"),
   });
 
   const allColumns = useMemo(
@@ -191,7 +192,7 @@ function CompaniesIndex() {
         navigate({ to: `/contacts/${data.id}` as string });
       }
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create company"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create company"),
   });
 
   return (

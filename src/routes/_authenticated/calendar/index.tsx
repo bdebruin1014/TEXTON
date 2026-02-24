@@ -7,6 +7,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/calendar/")({
   component: CalendarPage,
@@ -96,7 +97,7 @@ function CalendarPage() {
       toast.success("Event created");
       closeModal();
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create event"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create event"),
   });
 
   const updateEvent = useMutation({
@@ -119,7 +120,7 @@ function CalendarPage() {
       toast.success("Event updated");
       closeModal();
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to update event"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to update event"),
   });
 
   const deleteEvent = useMutation({
@@ -132,7 +133,7 @@ function CalendarPage() {
       toast.success("Event deleted");
       closeModal();
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete event"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete event"),
   });
 
   const closeModal = () => {

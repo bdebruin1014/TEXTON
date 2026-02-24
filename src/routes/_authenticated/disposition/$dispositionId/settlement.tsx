@@ -6,7 +6,7 @@ import { CurrencyInput } from "@/components/forms/CurrencyInput";
 import { PercentageInput } from "@/components/forms/PercentageInput";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/disposition/$dispositionId/settlement")({
   component: Settlement,
@@ -48,7 +48,7 @@ function Settlement() {
       if (uploadError) throw uploadError;
       await mutation.mutateAsync({ [field]: path });
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to upload document"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to upload document"),
   });
 
   const handleUpload = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {

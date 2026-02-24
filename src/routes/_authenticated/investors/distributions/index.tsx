@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/investors/distributions/")({
   component: Distributions,
@@ -79,7 +79,7 @@ function Distributions() {
       toast.success("Distribution created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create distribution"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create distribution"),
   });
 
   const issueNotice = useMutation({
@@ -99,7 +99,7 @@ function Distributions() {
       queryClient.invalidateQueries({ queryKey: ["distributions"] });
       toast.success("Distribution deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete distribution"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete distribution"),
   });
 
   const totalDistributed = distributions.reduce((sum, d) => sum + (d.total_amount ?? 0), 0);

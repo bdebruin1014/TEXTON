@@ -6,6 +6,7 @@ import { FilterClickList, FilterSection, RightFilterPanel } from "@/components/l
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 
 interface ContactAssignment {
   id: string;
@@ -140,7 +141,7 @@ export function ContactDetailTabs({ recordType, recordId }: ContactDetailTabsPro
       // Select the new contact (will be at end)
       setActiveContactIdx(filtered.length);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add contact"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add contact"),
   });
 
   // Remove contact assignment mutation
@@ -154,7 +155,7 @@ export function ContactDetailTabs({ recordType, recordId }: ContactDetailTabsPro
       toast.success("Contact removed");
       setActiveContactIdx(0);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to remove contact"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to remove contact"),
   });
 
   // Auto-save handler for contact fields

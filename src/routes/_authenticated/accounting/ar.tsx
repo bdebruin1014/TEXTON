@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/ar")({
@@ -72,7 +72,7 @@ function AccountsReceivable() {
       toast.success("Draw request created");
       setShowDrawModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create draw request"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create draw request"),
   });
 
   const addInvoice = useMutation({
@@ -96,7 +96,7 @@ function AccountsReceivable() {
       toast.success("Invoice created");
       setShowInvoiceModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create invoice"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create invoice"),
   });
 
   const recordPayment = useMutation({
@@ -131,7 +131,7 @@ function AccountsReceivable() {
       toast.success("Payment recorded");
       setShowPayModal(null);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to record payment"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to record payment"),
   });
 
   const totalReceivable = receivables

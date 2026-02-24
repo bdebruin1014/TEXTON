@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { TableSkeleton } from "@/components/shared/Skeleton";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/reconciliations/match")({
@@ -115,7 +115,7 @@ function TransactionMatching() {
       setSelectedLineId(null);
       toast.success("Transaction matched successfully");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to match transaction"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to match transaction"),
   });
 
   const autoMatchMutation = useMutation({

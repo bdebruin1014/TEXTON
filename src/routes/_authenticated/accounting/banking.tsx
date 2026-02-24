@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 import { useEntityStore } from "@/stores/entityStore";
 
 export const Route = createFileRoute("/_authenticated/accounting/banking")({
@@ -98,7 +98,7 @@ function Banking() {
       toast.success("Bank account added");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to add bank account"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to add bank account"),
   });
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/investors/capital-calls")({
   component: CapitalCalls,
@@ -60,7 +60,7 @@ function CapitalCalls() {
       toast.success("Capital call created");
       setShowModal(false);
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to create capital call"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to create capital call"),
   });
 
   const issueNotice = useMutation({
@@ -80,7 +80,7 @@ function CapitalCalls() {
       queryClient.invalidateQueries({ queryKey: ["capital-calls"] });
       toast.success("Capital call deleted");
     },
-    onError: (err: any) => toast.error(err?.message || "Failed to delete capital call"),
+    onError: (err: unknown) => toast.error(getErrorMessage(err) || "Failed to delete capital call"),
   });
 
   const totalCalled = calls.reduce((sum, c) => sum + (c.total_amount ?? 0), 0);

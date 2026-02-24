@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/entities")({
   component: EntitiesAdmin,
@@ -194,9 +195,9 @@ function EntitiesAdmin() {
       setShowModal(false);
       resetForm();
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       console.error("Entity creation error:", err);
-      toast.error(err?.message || "Failed to add entity");
+      toast.error(getErrorMessage(err) || "Failed to add entity");
     },
   });
 
