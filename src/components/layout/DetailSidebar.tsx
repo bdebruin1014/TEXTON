@@ -42,6 +42,8 @@ interface DetailSidebarProps {
   shortcuts?: Array<{ label: string; path: string }>;
   /** Grouped bottom shortcuts with section labels (TASKS, INTEGRATIONS, etc.) */
   shortcutGroups?: ShortcutGroup[];
+  /** Extra content rendered after nav sections (e.g. linked record lists) */
+  children?: React.ReactNode;
 }
 
 /**
@@ -67,6 +69,7 @@ export function DetailSidebar({
   sections,
   shortcuts,
   shortcutGroups,
+  children,
 }: DetailSidebarProps) {
   const location = useRouterState({ select: (s) => s.location });
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
@@ -220,6 +223,9 @@ export function DetailSidebar({
             </div>
           );
         })}
+
+        {/* Linked record lists injected by parent route */}
+        {children}
       </nav>
 
       {/* Bottom shortcuts — pinned below scroll area */}
