@@ -45,7 +45,7 @@ function SignupPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="w-full max-w-sm text-center">
-          <h1 className="text-3xl font-bold tracking-[0.15em] text-primary">TEK{"\u00B7"}TON</h1>
+          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
           <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="mb-2 text-lg font-semibold text-foreground">Check your email</div>
             <p className="text-sm text-muted">
@@ -67,7 +67,7 @@ function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-[0.15em] text-primary">TEK{"\u00B7"}TON</h1>
+          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
           <p className="mt-1 text-sm text-muted">Create your account</p>
         </div>
 
