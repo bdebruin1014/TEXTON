@@ -118,6 +118,7 @@ import { Route as AuthenticatedOperationsDealSheetsIndexRouteImport } from './ro
 import { Route as AuthenticatedInvestorsDistributionsIndexRouteImport } from './routes/_authenticated/investors/distributions/index'
 import { Route as AuthenticatedDispositionDispositionIdIndexRouteImport } from './routes/_authenticated/disposition/$dispositionId/index'
 import { Route as AuthenticatedConstructionJobIdIndexRouteImport } from './routes/_authenticated/construction/$jobId/index'
+import { Route as AuthenticatedAdminWorkflowsIndexRouteImport } from './routes/_authenticated/admin/workflows/index'
 import { Route as AuthenticatedAdminCoaTemplatesIndexRouteImport } from './routes/_authenticated/admin/coa-templates/index'
 import { Route as AuthenticatedAccountingReportsIndexRouteImport } from './routes/_authenticated/accounting/reports/index'
 import { Route as AuthenticatedAccountingReconciliationsIndexRouteImport } from './routes/_authenticated/accounting/reconciliations/index'
@@ -195,6 +196,7 @@ import { Route as AuthenticatedConstructionJobIdFilesRouteImport } from './route
 import { Route as AuthenticatedConstructionJobIdDailyLogsRouteImport } from './routes/_authenticated/construction/$jobId/daily-logs'
 import { Route as AuthenticatedConstructionJobIdChangeOrdersRouteImport } from './routes/_authenticated/construction/$jobId/change-orders'
 import { Route as AuthenticatedConstructionJobIdBudgetRouteImport } from './routes/_authenticated/construction/$jobId/budget'
+import { Route as AuthenticatedAdminWorkflowsTemplateIdRouteImport } from './routes/_authenticated/admin/workflows/$templateId'
 import { Route as AuthenticatedAdminFloorPlansPlanIdRouteImport } from './routes/_authenticated/admin/floor-plans.$planId'
 import { Route as AuthenticatedAdminDocumentsTagsRouteImport } from './routes/_authenticated/admin/documents/tags'
 import { Route as AuthenticatedAdminDocumentsStorageRouteImport } from './routes/_authenticated/admin/documents/storage'
@@ -869,6 +871,12 @@ const AuthenticatedConstructionJobIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedAdminWorkflowsIndexRoute =
+  AuthenticatedAdminWorkflowsIndexRouteImport.update({
+    id: '/workflows/',
+    path: '/workflows/',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminCoaTemplatesIndexRoute =
   AuthenticatedAdminCoaTemplatesIndexRouteImport.update({
     id: '/coa-templates/',
@@ -1331,6 +1339,12 @@ const AuthenticatedConstructionJobIdBudgetRoute =
     path: '/budget',
     getParentRoute: () => AuthenticatedConstructionJobIdRouteRoute,
   } as any)
+const AuthenticatedAdminWorkflowsTemplateIdRoute =
+  AuthenticatedAdminWorkflowsTemplateIdRouteImport.update({
+    id: '/workflows/$templateId',
+    path: '/workflows/$templateId',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminFloorPlansPlanIdRoute =
   AuthenticatedAdminFloorPlansPlanIdRouteImport.update({
     id: '/$planId',
@@ -1670,6 +1684,7 @@ export interface FileRoutesByFullPath {
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
+  '/admin/workflows/$templateId': typeof AuthenticatedAdminWorkflowsTemplateIdRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1747,6 +1762,7 @@ export interface FileRoutesByFullPath {
   '/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/accounting/reports/': typeof AuthenticatedAccountingReportsIndexRoute
   '/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
+  '/admin/workflows/': typeof AuthenticatedAdminWorkflowsIndexRoute
   '/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/investors/distributions/': typeof AuthenticatedInvestorsDistributionsIndexRoute
@@ -1874,6 +1890,7 @@ export interface FileRoutesByTo {
   '/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
+  '/admin/workflows/$templateId': typeof AuthenticatedAdminWorkflowsTemplateIdRoute
   '/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -1951,6 +1968,7 @@ export interface FileRoutesByTo {
   '/accounting/reconciliations': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/accounting/reports': typeof AuthenticatedAccountingReportsIndexRoute
   '/admin/coa-templates': typeof AuthenticatedAdminCoaTemplatesIndexRoute
+  '/admin/workflows': typeof AuthenticatedAdminWorkflowsIndexRoute
   '/construction/$jobId': typeof AuthenticatedConstructionJobIdIndexRoute
   '/disposition/$dispositionId': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/investors/distributions': typeof AuthenticatedInvestorsDistributionsIndexRoute
@@ -2097,6 +2115,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/documents/storage': typeof AuthenticatedAdminDocumentsStorageRoute
   '/_authenticated/admin/documents/tags': typeof AuthenticatedAdminDocumentsTagsRoute
   '/_authenticated/admin/floor-plans/$planId': typeof AuthenticatedAdminFloorPlansPlanIdRoute
+  '/_authenticated/admin/workflows/$templateId': typeof AuthenticatedAdminWorkflowsTemplateIdRoute
   '/_authenticated/construction/$jobId/budget': typeof AuthenticatedConstructionJobIdBudgetRoute
   '/_authenticated/construction/$jobId/change-orders': typeof AuthenticatedConstructionJobIdChangeOrdersRoute
   '/_authenticated/construction/$jobId/daily-logs': typeof AuthenticatedConstructionJobIdDailyLogsRoute
@@ -2174,6 +2193,7 @@ export interface FileRoutesById {
   '/_authenticated/accounting/reconciliations/': typeof AuthenticatedAccountingReconciliationsIndexRoute
   '/_authenticated/accounting/reports/': typeof AuthenticatedAccountingReportsIndexRoute
   '/_authenticated/admin/coa-templates/': typeof AuthenticatedAdminCoaTemplatesIndexRoute
+  '/_authenticated/admin/workflows/': typeof AuthenticatedAdminWorkflowsIndexRoute
   '/_authenticated/construction/$jobId/': typeof AuthenticatedConstructionJobIdIndexRoute
   '/_authenticated/disposition/$dispositionId/': typeof AuthenticatedDispositionDispositionIdIndexRoute
   '/_authenticated/investors/distributions/': typeof AuthenticatedInvestorsDistributionsIndexRoute
@@ -2320,6 +2340,7 @@ export interface FileRouteTypes {
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
+    | '/admin/workflows/$templateId'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -2397,6 +2418,7 @@ export interface FileRouteTypes {
     | '/accounting/reconciliations/'
     | '/accounting/reports/'
     | '/admin/coa-templates/'
+    | '/admin/workflows/'
     | '/construction/$jobId/'
     | '/disposition/$dispositionId/'
     | '/investors/distributions/'
@@ -2524,6 +2546,7 @@ export interface FileRouteTypes {
     | '/admin/documents/storage'
     | '/admin/documents/tags'
     | '/admin/floor-plans/$planId'
+    | '/admin/workflows/$templateId'
     | '/construction/$jobId/budget'
     | '/construction/$jobId/change-orders'
     | '/construction/$jobId/daily-logs'
@@ -2601,6 +2624,7 @@ export interface FileRouteTypes {
     | '/accounting/reconciliations'
     | '/accounting/reports'
     | '/admin/coa-templates'
+    | '/admin/workflows'
     | '/construction/$jobId'
     | '/disposition/$dispositionId'
     | '/investors/distributions'
@@ -2746,6 +2770,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/documents/storage'
     | '/_authenticated/admin/documents/tags'
     | '/_authenticated/admin/floor-plans/$planId'
+    | '/_authenticated/admin/workflows/$templateId'
     | '/_authenticated/construction/$jobId/budget'
     | '/_authenticated/construction/$jobId/change-orders'
     | '/_authenticated/construction/$jobId/daily-logs'
@@ -2823,6 +2848,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accounting/reconciliations/'
     | '/_authenticated/accounting/reports/'
     | '/_authenticated/admin/coa-templates/'
+    | '/_authenticated/admin/workflows/'
     | '/_authenticated/construction/$jobId/'
     | '/_authenticated/disposition/$dispositionId/'
     | '/_authenticated/investors/distributions/'
@@ -3622,6 +3648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdIndexRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/admin/workflows/': {
+      id: '/_authenticated/admin/workflows/'
+      path: '/workflows'
+      fullPath: '/admin/workflows/'
+      preLoaderRoute: typeof AuthenticatedAdminWorkflowsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/coa-templates/': {
       id: '/_authenticated/admin/coa-templates/'
       path: '/coa-templates'
@@ -4161,6 +4194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConstructionJobIdBudgetRouteImport
       parentRoute: typeof AuthenticatedConstructionJobIdRouteRoute
     }
+    '/_authenticated/admin/workflows/$templateId': {
+      id: '/_authenticated/admin/workflows/$templateId'
+      path: '/workflows/$templateId'
+      fullPath: '/admin/workflows/$templateId'
+      preLoaderRoute: typeof AuthenticatedAdminWorkflowsTemplateIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/floor-plans/$planId': {
       id: '/_authenticated/admin/floor-plans/$planId'
       path: '/$planId'
@@ -4609,7 +4649,9 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCoaTemplatesTemplateIdRoute: typeof AuthenticatedAdminCoaTemplatesTemplateIdRoute
   AuthenticatedAdminCoaTemplatesNewRoute: typeof AuthenticatedAdminCoaTemplatesNewRoute
   AuthenticatedAdminDocumentTemplatesTemplateIdRoute: typeof AuthenticatedAdminDocumentTemplatesTemplateIdRoute
+  AuthenticatedAdminWorkflowsTemplateIdRoute: typeof AuthenticatedAdminWorkflowsTemplateIdRoute
   AuthenticatedAdminCoaTemplatesIndexRoute: typeof AuthenticatedAdminCoaTemplatesIndexRoute
+  AuthenticatedAdminWorkflowsIndexRoute: typeof AuthenticatedAdminWorkflowsIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
@@ -4646,8 +4688,12 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
       AuthenticatedAdminCoaTemplatesNewRoute,
     AuthenticatedAdminDocumentTemplatesTemplateIdRoute:
       AuthenticatedAdminDocumentTemplatesTemplateIdRoute,
+    AuthenticatedAdminWorkflowsTemplateIdRoute:
+      AuthenticatedAdminWorkflowsTemplateIdRoute,
     AuthenticatedAdminCoaTemplatesIndexRoute:
       AuthenticatedAdminCoaTemplatesIndexRoute,
+    AuthenticatedAdminWorkflowsIndexRoute:
+      AuthenticatedAdminWorkflowsIndexRoute,
   }
 
 const AuthenticatedAdminRouteRouteWithChildren =
