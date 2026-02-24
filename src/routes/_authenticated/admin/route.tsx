@@ -40,6 +40,12 @@ const NAV_SECTIONS = [
     ],
   },
   {
+    label: "Workflows",
+    items: [
+      { label: "Templates", path: "/admin/workflows" },
+    ],
+  },
+  {
     label: "System",
     items: [
       { label: "Integrations", path: "/admin/integrations" },
