@@ -1,449 +1,405 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { KpiCard } from "@/components/shared/KpiCard";
+import { createFileRoute } from "@tanstack/react-router";
+import { useCallback, useState } from "react";
+import { KPICard } from "@/components/dashboard/KPICard";
+import { type StatusPillItem, StatusPills } from "@/components/filters/StatusPills";
 import { DashboardSkeleton } from "@/components/shared/Skeleton";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { TaskListPanel } from "@/components/tasks/TaskListPanel";
+import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
+import { type TaskFilter, useMyTasks, useTaskFilterCounts } from "@/hooks/useMyTasks";
 import { useRealtime } from "@/hooks/useRealtime";
-import { MATTER_STATUS_LABELS } from "@/lib/constants";
+import { useCompleteTask, useUpdateTaskNotes } from "@/hooks/useTaskActions";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate } from "@/lib/utils";
-import type { Matter } from "@/types/matters";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-interface Opportunity {
-  id: string;
-  opportunity_name: string;
-  status: string;
-  estimated_value: number | null;
-  updated_at: string;
-}
+// ── Zone 3 types ─────────────────────────────────────────────
 
-interface Project {
+interface AlertTask {
   id: string;
-  project_name: string;
-  status: string;
-  project_type: string | null;
-  budget_total: number | null;
-  updated_at: string;
-}
-
-interface Job {
-  id: string;
-  record_number: string | null;
-  lot_number: string | null;
+  name: string;
+  assigned_to_name: string | null;
+  due_date: string | null;
+  completed_at: string | null;
+  completed_by_name: string | null;
   project_name: string | null;
+  is_overdue: boolean;
   status: string;
-  floor_plan_name: string | null;
-  updated_at: string;
 }
 
-interface Disposition {
-  id: string;
-  lot_number: string | null;
-  buyer_name: string | null;
-  status: string;
-  contract_price: number | null;
-  closing_date: string | null;
-}
-
-const QUICK_ACTIONS = [
-  { label: "Daily Log", borderColor: "var(--color-success)", path: "/construction" },
-  { label: "New PO", borderColor: "var(--color-info)", path: "/purchasing/purchase-orders" },
-  { label: "Inspection", borderColor: "var(--color-warning)", path: "/construction" },
-  { label: "Create RFI", borderColor: "var(--color-destructive)", path: "/construction" },
-  { label: "Punch List", borderColor: "#6B5B80", path: "/construction" },
-  { label: "Reports", borderColor: "var(--color-muted-foreground)", path: "/reports" },
-] as const;
+// ── Dashboard ────────────────────────────────────────────────
 
 function DashboardPage() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");
 
-  const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
-    queryKey: ["dashboard-pipeline"],
+  // Zone 1: KPIs
+  const { data: kpis, isLoading: kpisLoading } = useDashboardKPIs();
+
+  // Zone 2: My Tasks
+  const { data: tasks = [] } = useMyTasks(taskFilter);
+  const { data: filterCounts } = useTaskFilterCounts();
+  const completeTask = useCompleteTask();
+  const updateNotes = useUpdateTaskNotes();
+
+  // Zone 3: Alerts — overdue across all users
+  const { data: overdueAlerts = [] } = useQuery<AlertTask[]>({
+    queryKey: ["dashboard-alerts", "overdue"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("opportunities")
-        .select("id, opportunity_name, status, estimated_value, updated_at")
-        .not("status", "in", '("Closed Won","Closed Lost")')
-        .order("updated_at", { ascending: false })
-        .limit(5);
+        .from("task_instances")
+        .select("id, name, due_date, is_overdue, status, project_id, assigned_to")
+        .eq("is_overdue", true)
+        .in("status", ["pending", "active"])
+        .order("due_date", { ascending: true })
+        .limit(20);
       if (error) throw error;
-      return data ?? [];
+      if (!data || data.length === 0) return [];
+
+      // Resolve user names and project names
+      const userIds = [...new Set(data.map((t: Record<string, unknown>) => t.assigned_to).filter(Boolean))] as string[];
+      const projectIds = [
+        ...new Set(data.map((t: Record<string, unknown>) => t.project_id).filter(Boolean)),
+      ] as string[];
+
+      const [usersRes, projectsRes] = await Promise.all([
+        userIds.length > 0
+          ? supabase.from("user_profiles").select("user_id, full_name").in("user_id", userIds)
+          : Promise.resolve({ data: [] }),
+        projectIds.length > 0
+          ? supabase.from("projects").select("id, project_name").in("id", projectIds)
+          : Promise.resolve({ data: [] }),
+      ]);
+
+      const userMap = new Map(
+        (usersRes.data ?? []).map((u: { user_id: string; full_name: string | null }) => [u.user_id, u.full_name]),
+      );
+      const projectMap = new Map(
+        (projectsRes.data ?? []).map((p: { id: string; project_name: string }) => [p.id, p.project_name]),
+      );
+
+      return data.map((t: Record<string, unknown>) => ({
+        id: t.id as string,
+        name: t.name as string,
+        assigned_to_name: userMap.get(t.assigned_to as string) ?? "Unassigned",
+        due_date: t.due_date as string | null,
+        completed_at: null,
+        completed_by_name: null,
+        project_name: projectMap.get(t.project_id as string) ?? null,
+        is_overdue: t.is_overdue as boolean,
+        status: t.status as string,
+      }));
     },
+    staleTime: 30_000,
   });
 
-  const { data: projects = [] } = useQuery<Project[]>({
-    queryKey: ["dashboard-projects"],
+  // Zone 3: Recent completions
+  const { data: recentCompletions = [] } = useQuery<AlertTask[]>({
+    queryKey: ["dashboard-alerts", "recent"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("projects")
-        .select("id, project_name, status, project_type, budget_total, updated_at")
-        .in("status", ["Pre-Development", "Active"])
-        .order("updated_at", { ascending: false })
-        .limit(5);
+        .from("task_instances")
+        .select("id, name, completed_at, completed_by, project_id")
+        .eq("status", "completed")
+        .order("completed_at", { ascending: false })
+        .limit(20);
       if (error) throw error;
-      return data ?? [];
+      if (!data || data.length === 0) return [];
+
+      const userIds = [
+        ...new Set(data.map((t: Record<string, unknown>) => t.completed_by).filter(Boolean)),
+      ] as string[];
+      const projectIds = [
+        ...new Set(data.map((t: Record<string, unknown>) => t.project_id).filter(Boolean)),
+      ] as string[];
+
+      const [usersRes, projectsRes] = await Promise.all([
+        userIds.length > 0
+          ? supabase.from("user_profiles").select("user_id, full_name").in("user_id", userIds)
+          : Promise.resolve({ data: [] }),
+        projectIds.length > 0
+          ? supabase.from("projects").select("id, project_name").in("id", projectIds)
+          : Promise.resolve({ data: [] }),
+      ]);
+
+      const userMap = new Map(
+        (usersRes.data ?? []).map((u: { user_id: string; full_name: string | null }) => [u.user_id, u.full_name]),
+      );
+      const projectMap = new Map(
+        (projectsRes.data ?? []).map((p: { id: string; project_name: string }) => [p.id, p.project_name]),
+      );
+
+      return data.map((t: Record<string, unknown>) => ({
+        id: t.id as string,
+        name: t.name as string,
+        assigned_to_name: null,
+        due_date: null,
+        completed_at: t.completed_at as string | null,
+        completed_by_name: userMap.get(t.completed_by as string) ?? "Unknown",
+        project_name: projectMap.get(t.project_id as string) ?? null,
+        is_overdue: false,
+        status: "completed",
+      }));
     },
+    staleTime: 30_000,
   });
 
-  const { data: activeJobs = [] } = useQuery<Job[]>({
-    queryKey: ["dashboard-jobs"],
+  // Zone 3: Upcoming deadlines (next 3 days)
+  const { data: upcomingDeadlines = [] } = useQuery<AlertTask[]>({
+    queryKey: ["dashboard-alerts", "upcoming"],
     queryFn: async () => {
+      const now = new Date();
+      const threeDays = new Date(now.getTime() + 3 * 86_400_000);
+
       const { data, error } = await supabase
-        .from("jobs")
-        .select("id, record_number, lot_number, project_name, status, floor_plan_name, updated_at")
-        .in("status", ["In Progress", "Framing", "Foundation", "Rough-In", "Drywall", "Trim", "Punch"])
-        .order("updated_at", { ascending: false })
-        .limit(5);
+        .from("task_instances")
+        .select("id, name, due_date, assigned_to, project_id, status")
+        .in("status", ["pending", "active"])
+        .gte("due_date", now.toISOString())
+        .lte("due_date", threeDays.toISOString())
+        .order("due_date", { ascending: true })
+        .limit(20);
       if (error) throw error;
-      return data ?? [];
+      if (!data || data.length === 0) return [];
+
+      const userIds = [...new Set(data.map((t: Record<string, unknown>) => t.assigned_to).filter(Boolean))] as string[];
+      const projectIds = [
+        ...new Set(data.map((t: Record<string, unknown>) => t.project_id).filter(Boolean)),
+      ] as string[];
+
+      const [usersRes, projectsRes] = await Promise.all([
+        userIds.length > 0
+          ? supabase.from("user_profiles").select("user_id, full_name").in("user_id", userIds)
+          : Promise.resolve({ data: [] }),
+        projectIds.length > 0
+          ? supabase.from("projects").select("id, project_name").in("id", projectIds)
+          : Promise.resolve({ data: [] }),
+      ]);
+
+      const userMap = new Map(
+        (usersRes.data ?? []).map((u: { user_id: string; full_name: string | null }) => [u.user_id, u.full_name]),
+      );
+      const projectMap = new Map(
+        (projectsRes.data ?? []).map((p: { id: string; project_name: string }) => [p.id, p.project_name]),
+      );
+
+      return data.map((t: Record<string, unknown>) => ({
+        id: t.id as string,
+        name: t.name as string,
+        assigned_to_name: userMap.get(t.assigned_to as string) ?? "Unassigned",
+        due_date: t.due_date as string | null,
+        completed_at: null,
+        completed_by_name: null,
+        project_name: projectMap.get(t.project_id as string) ?? null,
+        is_overdue: false,
+        status: t.status as string,
+      }));
     },
+    staleTime: 30_000,
   });
 
-  const { data: pendingClosings = [] } = useQuery<Disposition[]>({
-    queryKey: ["dashboard-closings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("dispositions")
-        .select("id, lot_number, buyer_name, status, contract_price, closing_date")
-        .in("status", ["Under Contract", "Pending Close"])
-        .order("closing_date", { ascending: true })
-        .limit(5);
-      if (error) throw error;
-      return data ?? [];
-    },
+  // Realtime subscriptions
+  useRealtime({
+    table: "task_instances",
+    invalidateKeys: [["my-tasks"], ["my-task-counts"], ["dashboard-kpis"], ["dashboard-alerts"]],
   });
+  useRealtime({ table: "projects", invalidateKeys: [["dashboard-kpis"]] });
+  useRealtime({ table: "jobs", invalidateKeys: [["dashboard-kpis"]] });
+  useRealtime({ table: "dispositions", invalidateKeys: [["dashboard-kpis"]] });
+  useRealtime({ table: "opportunities", invalidateKeys: [["dashboard-kpis"]] });
 
-  const { data: openMatters = [] } = useQuery<Matter[]>({
-    queryKey: ["dashboard-matters"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("matters")
-        .select("id, matter_number, title, status, priority, category, created_at")
-        .in("status", ["open", "in_progress", "on_hold"])
-        .order("created_at", { ascending: false })
-        .limit(5);
-      if (error) throw error;
-      return (data ?? []) as Matter[];
+  const handleCompleteTask = useCallback(
+    (taskId: string) => {
+      completeTask.mutate(taskId);
     },
-  });
+    [completeTask],
+  );
 
-  // Counts for KPIs (separate count queries for accurate totals)
-  const { data: projectCount = 0 } = useQuery<number>({
-    queryKey: ["dashboard-project-count"],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("projects")
-        .select("id", { count: "exact", head: true })
-        .in("status", ["Pre-Development", "Active"]);
-      if (error) throw error;
-      return count ?? 0;
+  const handleUpdateNotes = useCallback(
+    async (taskId: string, notes: string) => {
+      await updateNotes.mutateAsync({ taskId, notes });
     },
-  });
+    [updateNotes],
+  );
 
-  const { data: jobCount = 0 } = useQuery<number>({
-    queryKey: ["dashboard-job-count"],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("jobs")
-        .select("id", { count: "exact", head: true })
-        .in("status", ["In Progress", "Framing", "Foundation", "Rough-In", "Drywall", "Trim", "Punch"]);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
+  // Filter pill items
+  const statusPills: StatusPillItem[] = [
+    { label: "All", value: "all", count: filterCounts?.all ?? 0 },
+    { label: "Overdue", value: "overdue", count: filterCounts?.overdue ?? 0 },
+    { label: "Due Today", value: "due_today", count: filterCounts?.due_today ?? 0 },
+    { label: "Due This Week", value: "due_this_week", count: filterCounts?.due_this_week ?? 0 },
+    { label: "Completed", value: "completed", count: filterCounts?.completed ?? 0 },
+  ];
 
-  const { data: closingCount = 0 } = useQuery<number>({
-    queryKey: ["dashboard-closing-count"],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("dispositions")
-        .select("id", { count: "exact", head: true })
-        .in("status", ["Under Contract", "Pending Close"]);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
+  if (kpisLoading) return <DashboardSkeleton />;
 
-  useRealtime({ table: "opportunities", invalidateKeys: [["dashboard-pipeline"]] });
-  useRealtime({ table: "projects", invalidateKeys: [["dashboard-projects"], ["dashboard-project-count"]] });
-  useRealtime({ table: "jobs", invalidateKeys: [["dashboard-jobs"], ["dashboard-job-count"]] });
-  useRealtime({ table: "dispositions", invalidateKeys: [["dashboard-closings"], ["dashboard-closing-count"]] });
-  useRealtime({ table: "matters", invalidateKeys: [["dashboard-matters"]] });
-
-  const pipelineValue = opportunities.reduce((sum, o) => sum + (o.estimated_value ?? 0), 0);
-  const pipelineCount = opportunities.length;
-
-  const criticalMatters = openMatters.filter((m) => m.priority === "critical").length;
-  const highMatters = openMatters.filter((m) => m.priority === "high").length;
-
-  if (isLoading) return <DashboardSkeleton />;
+  const scheduleStatus =
+    (kpis?.onSchedulePct ?? 100) >= 90 ? "success" : (kpis?.onSchedulePct ?? 100) >= 70 ? "warning" : "danger";
 
   return (
     <div>
       {/* Page Header */}
-      <div className="mb-6 flex items-end justify-between">
+      <div className="mb-5 flex items-end justify-between">
         <div>
           <h1 className="text-xl font-medium text-foreground">Dashboard</h1>
-          <p className="mt-0.5 text-sm text-muted">Overview of your operations</p>
+          <p className="mt-0.5 text-sm text-muted">Operations command center</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string).startsWith("dashboard-") })
-            }
-            className="h-9 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
-          >
-            Refresh
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/pipeline" })}
-            className="h-9 rounded-md bg-button px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-button-hover"
-          >
-            + New Opportunity
-          </button>
+        <button
+          type="button"
+          onClick={() =>
+            queryClient.invalidateQueries({
+              predicate: (q) => {
+                const key = q.queryKey[0] as string;
+                return key.startsWith("dashboard-") || key.startsWith("my-task");
+              },
+            })
+          }
+          className="h-9 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+        >
+          Refresh
+        </button>
+      </div>
+
+      {/* ═══ ZONE 1: Portfolio KPI Strip ═══ */}
+      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+        <KPICard label="Active Projects" value={kpis?.activeProjects ?? 0} />
+        <KPICard label="Under Construction" value={kpis?.homesUnderConstruction ?? 0} />
+        <KPICard label="Closings This Month" value={kpis?.closingsThisMonth ?? 0} />
+        <KPICard label="Pipeline Value" value={formatCurrency(kpis?.pipelineValue ?? 0)} />
+        <KPICard
+          label="Overdue Tasks"
+          value={kpis?.overdueTasks ?? 0}
+          status={(kpis?.overdueTasks ?? 0) > 0 ? "danger" : undefined}
+        />
+        <KPICard label="On Schedule" value={`${kpis?.onSchedulePct ?? 100}%`} status={scheduleStatus} />
+      </div>
+
+      {/* ═══ ZONE 2 + ZONE 3 side-by-side ═══ */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        {/* ZONE 2: My Tasks (left 2/3) */}
+        <div className="lg:col-span-2">
+          <div className="rounded-lg border border-border bg-card">
+            <div className="border-b border-border px-4 py-3">
+              <h2 className="text-sm font-medium text-foreground mb-3">My Tasks</h2>
+              <StatusPills
+                statuses={statusPills}
+                activeStatus={taskFilter}
+                onStatusChange={(v) => setTaskFilter(v as TaskFilter)}
+              />
+            </div>
+            <TaskListPanel tasks={tasks} onComplete={handleCompleteTask} onUpdateNotes={handleUpdateNotes} />
+          </div>
         </div>
-      </div>
 
-      {/* Quick Actions — text-only cards with colored top borders */}
-      <div className="mb-6 grid grid-cols-3 gap-2.5 sm:grid-cols-6">
-        {QUICK_ACTIONS.map((action) => (
-          <button
-            key={action.label}
-            type="button"
-            onClick={() => navigate({ to: action.path })}
-            className="bg-card border border-border rounded-lg px-3 py-4 text-center transition-colors hover:bg-card-hover cursor-pointer"
-            style={{ borderTopWidth: 3, borderTopColor: action.borderColor }}
-          >
-            <span className="text-xs font-semibold text-text-secondary">{action.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* KPI Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          label="Active Projects"
-          value={String(projectCount)}
-          sub="Across all entities"
-          accentColor="var(--color-primary)"
-        />
-        <KpiCard
-          label="Jobs in Progress"
-          value={String(jobCount)}
-          sub="Under construction"
-          accentColor="var(--color-info)"
-        />
-        <KpiCard
-          label="Pipeline Value"
-          value={formatCurrency(pipelineValue)}
-          sub={`${pipelineCount} active opportunit${pipelineCount === 1 ? "y" : "ies"}`}
-          accentColor="var(--color-warning)"
-        />
-        <KpiCard
-          label="Pending Closings"
-          value={String(closingCount)}
-          sub="Under contract"
-          accentColor="var(--color-success)"
-        />
-      </div>
-
-      {/* Content Grid — text-only headers, no icons */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        {/* Active Projects */}
-        <DashboardCard title="Active Projects" viewAllPath="/projects">
-          {projects.length === 0 ? (
-            <EmptyState title="No projects yet" description="Create your first project to get started" />
-          ) : (
-            <div className="divide-y divide-border">
-              {projects.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                  onClick={() => navigate({ to: "/projects/$projectId/basic-info", params: { projectId: p.id } })}
-                >
-                  <div>
-                    <p className="text-[13px] font-medium text-foreground">{p.project_name}</p>
-                    <p className="text-[11px] text-muted">
-                      {p.project_type ?? "No type"} {p.budget_total ? `· ${formatCurrency(p.budget_total)}` : ""}
-                    </p>
-                  </div>
-                  <StatusBadge status={p.status} />
-                </button>
-              ))}
-            </div>
-          )}
-        </DashboardCard>
-
-        {/* Active Jobs */}
-        <DashboardCard title="Active Jobs" viewAllPath="/construction">
-          {activeJobs.length === 0 ? (
-            <EmptyState title="No jobs yet" description="Jobs are created from project lot inventory" />
-          ) : (
-            <div className="divide-y divide-border">
-              {activeJobs.map((j) => (
-                <button
-                  key={j.id}
-                  type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                  onClick={() => navigate({ to: "/construction/$jobId/job-info", params: { jobId: j.id } })}
-                >
-                  <div>
-                    <p className="text-[13px] font-medium text-foreground">
-                      {j.lot_number ?? j.record_number ?? "Job"} {j.floor_plan_name ? `· ${j.floor_plan_name}` : ""}
-                    </p>
-                    <p className="text-[11px] text-muted">{j.project_name ?? "No project"}</p>
-                  </div>
-                  <StatusBadge status={j.status} />
-                </button>
-              ))}
-            </div>
-          )}
-        </DashboardCard>
-
-        {/* Pipeline */}
-        <DashboardCard title="Pipeline" viewAllPath="/pipeline">
-          {opportunities.length === 0 ? (
-            <EmptyState title="No opportunities yet" description="Add deals to your pipeline" />
-          ) : (
-            <div className="divide-y divide-border">
-              {opportunities.map((opp) => (
-                <button
-                  key={opp.id}
-                  type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                  onClick={() =>
-                    navigate({ to: "/pipeline/$opportunityId/basic-info", params: { opportunityId: opp.id } })
-                  }
-                >
-                  <div>
-                    <p className="text-[13px] font-medium text-foreground">{opp.opportunity_name}</p>
-                    <p className="text-[11px] text-muted">
-                      {opp.estimated_value ? formatCurrency(opp.estimated_value) : "No value set"}
-                    </p>
-                  </div>
-                  <StatusBadge status={opp.status} />
-                </button>
-              ))}
-            </div>
-          )}
-        </DashboardCard>
-
-        {/* Upcoming Closings */}
-        <DashboardCard title="Upcoming Closings" viewAllPath="/disposition">
-          {pendingClosings.length === 0 ? (
-            <EmptyState
-              title="No closings scheduled"
-              description="Closings appear when dispositions are under contract"
-            />
-          ) : (
-            <div className="divide-y divide-border">
-              {pendingClosings.map((d) => (
-                <button
-                  key={d.id}
-                  type="button"
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                  onClick={() => navigate({ to: `/disposition/${d.id}/overview` as string })}
-                >
-                  <div>
-                    <p className="text-[13px] font-medium text-foreground">
-                      {d.lot_number ?? "—"} {d.buyer_name ? `· ${d.buyer_name}` : ""}
-                    </p>
-                    <p className="text-[11px] text-muted">
-                      {d.closing_date ? `Closing ${formatDate(d.closing_date)}` : "No closing date"}
-                      {d.contract_price ? ` · ${formatCurrency(d.contract_price)}` : ""}
-                    </p>
-                  </div>
-                  <StatusBadge status={d.status} />
-                </button>
-              ))}
-            </div>
-          )}
-        </DashboardCard>
-
-        {/* Open Matters */}
-        <DashboardCard title="Open Matters" viewAllPath="/operations/matters">
-          {openMatters.length === 0 ? (
-            <EmptyState title="No open matters" description="Matters track workflows outside the standard pipeline" />
-          ) : (
-            <div>
-              {/* Priority breakdown */}
-              <div className="flex items-center gap-4 border-b border-border px-4 py-2.5">
-                {criticalMatters > 0 && (
-                  <span className="text-[11px] font-semibold text-destructive-text">{criticalMatters} Critical</span>
-                )}
-                {highMatters > 0 && (
-                  <span className="text-[11px] font-semibold text-warning-text">{highMatters} High</span>
-                )}
-                <span className="text-[11px] text-muted">{openMatters.length} total open</span>
+        {/* ZONE 3: Alerts & Activity (right 1/3) */}
+        <div className="space-y-4">
+          {/* Overdue Alerts */}
+          <AlertCard
+            title="Overdue Alerts"
+            borderColor="border-l-destructive"
+            items={overdueAlerts}
+            renderItem={(item) => (
+              <div key={item.id} className="border-b border-border/50 last:border-0 px-4 py-2.5">
+                <p className="text-[13px] font-medium text-foreground leading-tight">{item.name}</p>
+                <p className="text-[11px] text-muted mt-0.5">
+                  {item.assigned_to_name} · {daysOverdueText(item.due_date)} · {item.project_name ?? "No project"}
+                </p>
               </div>
-              <div className="divide-y divide-border">
-                {openMatters.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card-hover"
-                    onClick={() => navigate({ to: "/operations/matters/$matterId", params: { matterId: m.id } })}
-                  >
-                    <div>
-                      <p className="text-[13px] font-medium text-foreground">{m.title}</p>
-                      <p className="text-[11px] text-muted">
-                        {m.matter_number} · {MATTER_STATUS_LABELS[m.status] ?? m.status}
-                      </p>
-                    </div>
-                    <StatusBadge status={m.priority} />
-                  </button>
-                ))}
+            )}
+            emptyText="No overdue tasks"
+          />
+
+          {/* Recent Activity */}
+          <AlertCard
+            title="Recent Activity"
+            borderColor="border-l-success"
+            items={recentCompletions}
+            renderItem={(item) => (
+              <div key={item.id} className="border-b border-border/50 last:border-0 px-4 py-2.5">
+                <p className="text-[13px] font-medium text-foreground leading-tight">{item.name}</p>
+                <p className="text-[11px] text-muted mt-0.5">
+                  {item.completed_by_name} · {relativeTime(item.completed_at)} · {item.project_name ?? "No project"}
+                </p>
               </div>
-              {/* New Matter action */}
-              <div className="border-t border-border px-4 py-2.5">
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/operations/matters/new" })}
-                  className="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
-                >
-                  + New Matter
-                </button>
+            )}
+            emptyText="No recent completions"
+          />
+
+          {/* Upcoming Deadlines */}
+          <AlertCard
+            title="Upcoming Deadlines"
+            borderColor="border-l-warning"
+            items={upcomingDeadlines}
+            renderItem={(item) => (
+              <div key={item.id} className="border-b border-border/50 last:border-0 px-4 py-2.5">
+                <p className="text-[13px] font-medium text-foreground leading-tight">{item.name}</p>
+                <p className="text-[11px] text-muted mt-0.5">
+                  {item.assigned_to_name} · {formatShortDate(item.due_date)} · {item.project_name ?? "No project"}
+                </p>
               </div>
-            </div>
-          )}
-        </DashboardCard>
+            )}
+            emptyText="No upcoming deadlines"
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-function DashboardCard({
+// ── Alert Card component ──────────────────────────────────
+
+function AlertCard<T>({
   title,
-  viewAllPath,
-  children,
+  borderColor,
+  items,
+  renderItem,
+  emptyText,
 }: {
   title: string;
-  viewAllPath: string;
-  children: React.ReactNode;
+  borderColor: string;
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+  emptyText: string;
 }) {
-  const navigate = useNavigate();
   return (
-    <div className="rounded-lg border border-border bg-card">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-medium text-foreground">{title}</h2>
-        <button
-          type="button"
-          onClick={() => navigate({ to: viewAllPath })}
-          className="text-xs font-medium text-muted transition-colors hover:text-foreground"
-        >
-          {"View All \u2192"}
-        </button>
+    <div className={cn("rounded-lg border border-border bg-card border-l-4", borderColor)}>
+      <div className="border-b border-border px-4 py-2.5">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
       </div>
-      {children}
+      {items.length === 0 ? (
+        <div className="px-4 py-6 text-center text-xs text-muted-foreground">{emptyText}</div>
+      ) : (
+        <div className="max-h-64 overflow-y-auto">{items.map(renderItem)}</div>
+      )}
     </div>
   );
+}
+
+// ── Helpers ───────────────────────────────────────────────
+
+function daysOverdueText(dueDate: string | null): string {
+  if (!dueDate) return "No date";
+  const diff = Math.floor((Date.now() - new Date(dueDate).getTime()) / 86_400_000);
+  if (diff <= 0) return "Due today";
+  return `${diff}d overdue`;
+}
+
+function relativeTime(dateStr: string | null): string {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60_000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+function formatShortDate(dateStr: string | null): string {
+  if (!dateStr) return "No date";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(dateStr));
 }
