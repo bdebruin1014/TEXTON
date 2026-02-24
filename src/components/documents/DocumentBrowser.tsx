@@ -302,7 +302,7 @@ export function DocumentBrowser({ recordType, recordId }: DocumentBrowserProps) 
 
         {/* Activity Log (collapsible) */}
         {showActivity && (
-          <div className="max-h-48 overflow-y-auto border-t border-border bg-gray-50 px-4 py-3">
+          <div className="max-h-48 overflow-y-auto border-t border-border bg-background px-4 py-3">
             <ActivityLog recordType={recordType} recordId={recordId} />
           </div>
         )}

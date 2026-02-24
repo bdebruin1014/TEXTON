@@ -83,7 +83,7 @@ function FeeSchedule() {
         <div className="space-y-2">
           {(Object.entries(FIXED_PER_HOUSE_FEES) as [keyof typeof FIXED_PER_HOUSE_FEES, number][]).map(
             ([key, amount]) => (
-              <div key={key} className="flex items-center justify-between rounded-md bg-gray-50 px-4 py-2">
+              <div key={key} className="flex items-center justify-between rounded-md bg-background px-4 py-2">
                 <span className="text-sm font-medium text-foreground">{FEE_LABELS[key]}</span>
                 <span className="font-mono text-sm font-semibold text-foreground">{formatCurrency(amount)}</span>
               </div>

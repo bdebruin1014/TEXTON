@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
-
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useDocuSealConfig } from "@/hooks/useDocuSeal";
@@ -228,7 +227,7 @@ function Signatures() {
             onClick={() => setShowConfirm(false)}
             aria-label="Close"
           />
-          <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card shadow-xl">
+          <div className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card shadow-xl">
             <div className="px-6 pt-6 pb-2">
               <h3 className="text-lg font-semibold text-foreground">Send for Signature</h3>
               <p className="mt-0.5 text-sm text-muted">
@@ -237,7 +236,10 @@ function Signatures() {
             </div>
             <div className="space-y-4 px-6 py-4">
               <div>
-                <label htmlFor="signer-name" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted">
+                <label
+                  htmlFor="signer-name"
+                  className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted"
+                >
                   Signer Name
                 </label>
                 <input
@@ -249,7 +251,10 @@ function Signatures() {
                 />
               </div>
               <div>
-                <label htmlFor="signer-email" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted">
+                <label
+                  htmlFor="signer-email"
+                  className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted"
+                >
                   Signer Email <span className="text-destructive">*</span>
                 </label>
                 <input
@@ -263,7 +268,10 @@ function Signatures() {
               </div>
               {esignTemplates.length > 1 && (
                 <div>
-                  <label htmlFor="esign-template" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted">
+                  <label
+                    htmlFor="esign-template"
+                    className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  >
                     E-Sign Template
                   </label>
                   <select

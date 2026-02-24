@@ -62,7 +62,7 @@ export function VersionHistoryPanel({
           <h2 className="text-lg font-semibold text-gray-900">Version History</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-1 rounded-md text-gray-400 hover:text-muted-foreground hover:bg-accent transition-colors"
             aria-label="Close version history"
           >
             <span className="text-lg leading-none">&times;</span>
@@ -70,7 +70,7 @@ export function VersionHistoryPanel({
         </div>
 
         {/* Document info */}
-        <div className="px-4 py-3 border-b border-border bg-gray-50">
+        <div className="px-4 py-3 border-b border-border bg-background">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-gray-900 truncate">{document.original_filename}</span>
           </div>
@@ -80,7 +80,7 @@ export function VersionHistoryPanel({
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="h-6 w-6 border-2 border-[#143A23] border-t-transparent rounded-full animate-spin" />
+              <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : versions.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-gray-500">No version history available.</div>
@@ -92,7 +92,7 @@ export function VersionHistoryPanel({
                 return (
                   <li
                     key={version.id}
-                    className={cn("px-4 py-3 hover:bg-gray-50 transition-colors", isCurrent && "bg-green-50/50")}
+                    className={cn("px-4 py-3 hover:bg-background transition-colors", isCurrent && "bg-green-50/50")}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
@@ -100,13 +100,13 @@ export function VersionHistoryPanel({
                           <span
                             className={cn(
                               "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium",
-                              isCurrent ? "bg-[#143A23] text-white" : "bg-gray-100 text-gray-700",
+                              isCurrent ? "bg-primary text-white" : "bg-accent text-gray-700",
                             )}
                           >
                             v{version.version}
                           </span>
                           {isCurrent && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-success-bg text-success-text">
                               Current
                             </span>
                           )}
@@ -125,7 +125,7 @@ export function VersionHistoryPanel({
                       <div className="flex items-center gap-1 shrink-0 pt-0.5">
                         <button
                           onClick={() => onDownloadVersion(version)}
-                          className="p-1.5 rounded-md text-gray-400 hover:text-[#143A23] hover:bg-gray-100 transition-colors"
+                          className="p-1.5 rounded-md text-gray-400 hover:text-primary hover:bg-accent transition-colors"
                           title="Download this version"
                           aria-label={`Download version ${version.version}`}
                         >
@@ -134,7 +134,7 @@ export function VersionHistoryPanel({
                         {!isCurrent && (
                           <button
                             onClick={() => onRestoreVersion(version)}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-[#143A23] hover:bg-gray-100 transition-colors"
+                            className="p-1.5 rounded-md text-gray-400 hover:text-primary hover:bg-accent transition-colors"
                             title="Restore this version"
                             aria-label={`Restore version ${version.version}`}
                           >
@@ -151,7 +151,7 @@ export function VersionHistoryPanel({
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-border bg-gray-50">
+        <div className="px-4 py-3 border-t border-border bg-background">
           <p className="text-xs text-gray-500">
             {versions.length} version{versions.length !== 1 ? "s" : ""} found
           </p>

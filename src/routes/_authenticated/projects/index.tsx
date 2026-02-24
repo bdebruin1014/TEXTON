@@ -67,7 +67,7 @@ function ProjectsIndex() {
     {
       label: "Active",
       value: statusCounts.Active ?? 0,
-      accentColor: "#4A8C5E",
+      accentColor: "var(--color-primary-accent)",
     },
   ];
 

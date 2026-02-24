@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 interface DocumentShare {
   id: string;

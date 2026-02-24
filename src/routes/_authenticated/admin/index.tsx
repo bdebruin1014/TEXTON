@@ -39,7 +39,9 @@ function AdminOverview() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-xl font-semibold text-foreground">{getGreeting()}, {firstName}</h1>
+        <h1 className="text-xl font-medium text-foreground">
+          {getGreeting()}, {firstName}
+        </h1>
         <p className="mt-0.5 text-sm text-muted">System administration and configuration</p>
       </div>
 
@@ -48,10 +50,10 @@ function AdminOverview() {
           <Link
             key={card.path}
             to={card.path as string}
-            className="group rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary/30"
+            className="group rounded-lg border border-border bg-card p-5 transition-colors hover:bg-card-hover"
           >
             <div>
-              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">{card.label}</h3>
+              <h3 className="text-sm font-medium text-foreground">{card.label}</h3>
               <p className="mt-0.5 text-xs text-muted">{card.description}</p>
             </div>
           </Link>

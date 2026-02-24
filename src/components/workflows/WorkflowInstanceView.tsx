@@ -146,7 +146,7 @@ function TaskRow({ task, onToggle }: { task: InstanceTask; onToggle: () => void 
         {task.team && (
           <span
             className="rounded px-1.5 py-0.5 text-[10px] font-medium text-white"
-            style={{ backgroundColor: task.team.color ?? "#4A8C5E" }}
+            style={{ backgroundColor: task.team.color ?? "var(--color-primary-accent)" }}
           >
             {task.team.name}
           </span>

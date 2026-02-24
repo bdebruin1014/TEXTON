@@ -45,7 +45,7 @@ const BUCKET_COLORS: Record<string, string> = {
   "disposition-docs": "bg-purple-500",
   "entity-docs": "bg-amber-500",
   "contact-docs": "bg-rose-500",
-  templates: "bg-slate-500",
+  templates: "bg-background0",
 };
 
 // ---------------------------------------------------------------------------
@@ -121,8 +121,8 @@ function FormSkeleton() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="bg-white border border-border rounded-lg p-5">
-            <div className="h-3 w-24 bg-slate-200 rounded animate-pulse mb-3" />
-            <div className="h-7 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-3 w-24 bg-border rounded animate-pulse mb-3" />
+            <div className="h-7 w-32 bg-border rounded animate-pulse" />
           </div>
         ))}
       </div>
@@ -131,18 +131,18 @@ function FormSkeleton() {
       <div className="bg-white border border-border rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border bg-slate-50">
+            <tr className="border-b border-border bg-background">
               <th className="text-left px-4 py-3">
-                <div className="h-3 w-20 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-20 bg-border rounded animate-pulse" />
               </th>
               <th className="text-left px-4 py-3">
-                <div className="h-3 w-16 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-border rounded animate-pulse" />
               </th>
               <th className="text-left px-4 py-3">
-                <div className="h-3 w-16 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-16 bg-border rounded animate-pulse" />
               </th>
               <th className="text-left px-4 py-3">
-                <div className="h-3 w-20 bg-slate-200 rounded animate-pulse" />
+                <div className="h-3 w-20 bg-border rounded animate-pulse" />
               </th>
             </tr>
           </thead>
@@ -150,16 +150,16 @@ function FormSkeleton() {
             {Array.from({ length: 6 }).map((_, i) => (
               <tr key={i} className="border-b border-border">
                 <td className="px-4 py-4">
-                  <div className="h-4 w-36 bg-slate-200 rounded animate-pulse" />
+                  <div className="h-4 w-36 bg-border rounded animate-pulse" />
                 </td>
                 <td className="px-4 py-4">
-                  <div className="h-4 w-12 bg-slate-200 rounded animate-pulse" />
+                  <div className="h-4 w-12 bg-border rounded animate-pulse" />
                 </td>
                 <td className="px-4 py-4">
-                  <div className="h-4 w-20 bg-slate-200 rounded animate-pulse" />
+                  <div className="h-4 w-20 bg-border rounded animate-pulse" />
                 </td>
                 <td className="px-4 py-4">
-                  <div className="h-4 w-full bg-slate-200 rounded animate-pulse" />
+                  <div className="h-4 w-full bg-border rounded animate-pulse" />
                 </td>
               </tr>
             ))}
@@ -178,9 +178,9 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white border border-border rounded-lg p-5">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-muted uppercase tracking-wider">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-slate-900">{value}</p>
+      <p className="text-xl font-medium text-foreground">{value}</p>
     </div>
   );
 }
@@ -196,8 +196,8 @@ function StorageUsagePage() {
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Storage Usage</h1>
-        <p className="text-sm text-slate-500 mt-1">Monitor document storage across all buckets</p>
+        <h1 className="text-xl font-medium text-foreground">Storage Usage</h1>
+        <p className="text-sm text-muted mt-1">Monitor document storage across all buckets</p>
       </div>
 
       {isLoading || !storage ? (
@@ -213,8 +213,8 @@ function StorageUsagePage() {
 
           {/* Visual overview bar */}
           <div className="bg-white border border-border rounded-lg p-5">
-            <h2 className="text-sm font-semibold text-slate-700 mb-3">Storage Distribution</h2>
-            <div className="flex h-4 rounded-full overflow-hidden bg-slate-100">
+            <h2 className="text-sm font-semibold text-text-secondary mb-3">Storage Distribution</h2>
+            <div className="flex h-4 rounded-full overflow-hidden bg-accent">
               {storage.buckets
                 .filter((b) => b.percentOfTotal > 0)
                 .map((bucket) => (
@@ -232,7 +232,7 @@ function StorageUsagePage() {
                 .map((bucket) => (
                   <div key={bucket.name} className="flex items-center gap-1.5">
                     <div className={cn("w-3 h-3 rounded-sm", BUCKET_COLORS[bucket.name] ?? "bg-slate-400")} />
-                    <span className="text-xs text-slate-600">{bucket.label}</span>
+                    <span className="text-xs text-muted-foreground">{bucket.label}</span>
                   </div>
                 ))}
             </div>
@@ -242,37 +242,37 @@ function StorageUsagePage() {
           <div className="bg-white border border-border rounded-lg overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border bg-slate-50">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="border-b border-border bg-background">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wider">
                     Bucket
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wider">
                     Files
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wider">
                     Total Size
                   </th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wider">
                     % of Total
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {storage.buckets.map((bucket) => (
-                  <tr key={bucket.name} className="border-b border-border hover:bg-slate-50 transition-colors">
+                  <tr key={bucket.name} className="border-b border-border hover:bg-background transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div
                           className={cn("w-3 h-3 rounded-sm shrink-0", BUCKET_COLORS[bucket.name] ?? "bg-slate-400")}
                         />
-                        <span className="text-sm font-medium text-slate-800">{bucket.label}</span>
+                        <span className="text-sm font-medium text-foreground">{bucket.label}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{bucket.fileCount.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{formatBytes(bucket.totalSize)}</td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">{bucket.fileCount.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">{formatBytes(bucket.totalSize)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="flex-1 h-2 rounded-full bg-accent overflow-hidden">
                           <div
                             className={cn(
                               "h-full rounded-full transition-all",
@@ -281,9 +281,7 @@ function StorageUsagePage() {
                             style={{ width: `${bucket.percentOfTotal}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-500 w-12 text-right">
-                          {bucket.percentOfTotal.toFixed(1)}%
-                        </span>
+                        <span className="text-xs text-muted w-12 text-right">{bucket.percentOfTotal.toFixed(1)}%</span>
                       </div>
                     </td>
                   </tr>

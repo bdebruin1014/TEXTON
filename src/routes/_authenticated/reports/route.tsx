@@ -36,10 +36,7 @@ function ReportsLayout() {
   const currentPath = routerState.location.pathname;
 
   const sidebar = (
-    <div
-      className="flex h-full flex-col"
-      style={{ backgroundColor: "var(--color-sidebar)" }}
-    >
+    <div className="flex h-full flex-col" style={{ backgroundColor: "var(--color-sidebar)" }}>
       {/* Header */}
       <div className="px-4 pt-5 pb-4" style={{ borderBottom: "1px solid var(--sidebar-border)" }}>
         <Link to="/reports" className="block">

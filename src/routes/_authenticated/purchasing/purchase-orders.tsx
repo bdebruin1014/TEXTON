@@ -86,10 +86,7 @@ function PurchaseOrders() {
 
   const deletePO = useMutation({
     mutationFn: async (id: string) => {
-      const { count } = await supabase
-        .from("invoices")
-        .select("id", { count: "exact", head: true })
-        .eq("po_id", id);
+      const { count } = await supabase.from("invoices").select("id", { count: "exact", head: true }).eq("po_id", id);
       if (count && count > 0) {
         throw new Error(`Cannot delete: ${count} linked invoice(s) exist. Remove them first.`);
       }

@@ -57,7 +57,13 @@ function JobInfo() {
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Project & Lot Assignment</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <ProjectSelect label="Project" value={job.project_id} onSave={save("project_id")} />
-          <AutoSaveField label="Lot Number" value={job.lot_number} onSave={save("lot_number")} placeholder="Lot #" required />
+          <AutoSaveField
+            label="Lot Number"
+            value={job.lot_number}
+            onSave={save("lot_number")}
+            placeholder="Lot #"
+            required
+          />
           <AutoSaveField label="Lot ID" value={job.lot_id} onSave={save("lot_id")} placeholder="Lot record ID" />
         </div>
       </div>

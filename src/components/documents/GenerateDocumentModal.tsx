@@ -25,7 +25,7 @@ function getFileLabel(fileType: string) {
     case "docx":
       return <span className="text-sm font-bold text-blue-600">DOCX</span>;
     case "pdf":
-      return <span className="text-sm font-bold text-red-600">PDF</span>;
+      return <span className="text-sm font-bold text-destructive">PDF</span>;
     case "xlsx":
       return <span className="text-sm font-bold text-green-600">XLSX</span>;
     default:
@@ -40,9 +40,9 @@ function getFileTypeBadgeColor(fileType: string) {
     case "pdf":
       return "bg-red-100 text-red-700";
     case "xlsx":
-      return "bg-green-100 text-green-700";
+      return "bg-success-bg text-green-700";
     default:
-      return "bg-gray-100 text-gray-700";
+      return "bg-accent text-gray-700";
   }
 }
 
@@ -136,7 +136,7 @@ export function GenerateDocumentModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center" onClick={onClose}>
       <div
-        className="rounded-xl bg-white shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col mx-4"
+        className="rounded-lg bg-white shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -147,7 +147,7 @@ export function GenerateDocumentModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="rounded-lg p-1.5 text-gray-400 hover:text-muted-foreground hover:bg-accent transition-colors"
           >
             <span className="text-lg leading-none">&times;</span>
           </button>
@@ -161,7 +161,7 @@ export function GenerateDocumentModal({
               placeholder="Search templates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#143A23]/20 focus:border-[#143A23]"
+              className="w-full rounded-lg border border-border bg-white py-2 pl-3 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
         </div>
@@ -193,14 +193,14 @@ export function GenerateDocumentModal({
                     type="button"
                     onClick={() => setSelectedTemplateId(template.id)}
                     className={cn(
-                      "relative flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-all hover:shadow-md",
+                      "relative flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-all",
                       isSelected
-                        ? "border-[#143A23] bg-[#143A23]/5 shadow-sm"
+                        ? "border-primary bg-primary/5 shadow-sm"
                         : "border-border bg-white hover:border-gray-300",
                     )}
                   >
                     {isSelected && (
-                      <span className="absolute top-3 right-3 text-sm font-bold text-[#143A23]">&check;</span>
+                      <span className="absolute top-3 right-3 text-sm font-bold text-primary">&check;</span>
                     )}
                     <div className="flex items-center gap-3">
                       {getFileLabel(template.file_type)}
@@ -228,7 +228,7 @@ export function GenerateDocumentModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-gray-50 rounded-b-xl">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-border bg-background rounded-b-xl">
           <div className="text-sm text-gray-500">
             {selectedTemplate ? (
               <span>
@@ -242,7 +242,7 @@ export function GenerateDocumentModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-background transition-colors"
             >
               Cancel
             </button>
@@ -257,7 +257,7 @@ export function GenerateDocumentModal({
               className={cn(
                 "rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors flex items-center gap-2",
                 selectedTemplateId && !generateMutation.isPending
-                  ? "bg-[#143A23] hover:bg-[#143A23]/90 cursor-pointer"
+                  ? "bg-primary hover:bg-primary/90 cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed",
               )}
             >
@@ -271,8 +271,8 @@ export function GenerateDocumentModal({
 
         {/* Error message */}
         {generateMutation.isError && (
-          <div className="px-6 pb-4 bg-gray-50 rounded-b-xl">
-            <p className="text-sm text-red-600">Failed to generate document. Please try again.</p>
+          <div className="px-6 pb-4 bg-background rounded-b-xl">
+            <p className="text-sm text-destructive">Failed to generate document. Please try again.</p>
           </div>
         )}
       </div>

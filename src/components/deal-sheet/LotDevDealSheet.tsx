@@ -142,9 +142,7 @@ export function LotDevDealSheet({ opportunityId }: LotDevDealSheetProps) {
               type="button"
               onClick={() => setSelectedId(p.id)}
               className={`px-4 py-2 text-sm font-medium transition-colors ${
-                active?.id === p.id
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted hover:text-foreground"
+                active?.id === p.id ? "border-b-2 border-primary text-primary" : "text-muted hover:text-foreground"
               }`}
             >
               {p.scenario_name || p.name}
@@ -245,11 +243,7 @@ function LotDevForm({ record, queryKey }: LotDevFormProps) {
               value={record.entitlement_costs}
               onSave={makeOnSave("entitlement_costs")}
             />
-            <CurrencyInput
-              label="Amenity / Common"
-              value={record.amenity_costs}
-              onSave={makeOnSave("amenity_costs")}
-            />
+            <CurrencyInput label="Amenity / Common" value={record.amenity_costs} onSave={makeOnSave("amenity_costs")} />
             <CurrencyInput
               label="Carry Costs / Lot"
               value={record.carry_costs_per_lot}
@@ -265,11 +259,7 @@ function LotDevForm({ record, queryKey }: LotDevFormProps) {
               value={record.developer_fee_per_lot}
               onSave={makeOnSave("developer_fee_per_lot")}
             />
-            <CurrencyInput
-              label="CM Fee / Lot"
-              value={record.cm_fee_per_lot}
-              onSave={makeOnSave("cm_fee_per_lot")}
-            />
+            <CurrencyInput label="CM Fee / Lot" value={record.cm_fee_per_lot} onSave={makeOnSave("cm_fee_per_lot")} />
             <CurrencyInput
               label="Lot Sales Price"
               value={record.lot_sales_price}
@@ -337,11 +327,7 @@ function LotDevForm({ record, queryKey }: LotDevFormProps) {
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">Returns</h3>
             <div className="space-y-1">
               <ResultRow label="Total Revenue" value={formatCurrency(ret.totalRevenue)} />
-              <ResultRow
-                label="Gross Profit"
-                value={formatCurrency(ret.grossProfit)}
-                highlight={ret.grossProfit > 0}
-              />
+              <ResultRow label="Gross Profit" value={formatCurrency(ret.grossProfit)} highlight={ret.grossProfit > 0} />
               <ResultRow label="Profit Margin" value={formatPercent(ret.profitMargin)} />
               <ResultRow label="Equity Multiple" value={`${ret.equityMultiple.toFixed(2)}x`} />
             </div>

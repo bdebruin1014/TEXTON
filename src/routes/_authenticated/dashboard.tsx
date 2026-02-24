@@ -189,21 +189,23 @@ function DashboardPage() {
       {/* Page Header */}
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <h1 className="text-[22px] font-bold text-foreground">Dashboard</h1>
+          <h1 className="text-xl font-medium text-foreground">Dashboard</h1>
           <p className="mt-0.5 text-sm text-muted">Overview of your operations</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string).startsWith("dashboard-") })}
-            className="rounded-[var(--radius)] border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-card-hover"
+            onClick={() =>
+              queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string).startsWith("dashboard-") })
+            }
+            className="h-9 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
           >
             Refresh
           </button>
           <button
             type="button"
             onClick={() => navigate({ to: "/pipeline" })}
-            className="rounded-[var(--radius)] bg-button px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-button-hover"
+            className="h-9 rounded-md bg-button px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-button-hover"
           >
             + New Opportunity
           </button>
@@ -217,7 +219,7 @@ function DashboardPage() {
             key={action.label}
             type="button"
             onClick={() => navigate({ to: action.path })}
-            className="bg-card border border-border rounded-[var(--radius-lg)] px-3 py-4 text-center shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+            className="bg-card border border-border rounded-lg px-3 py-4 text-center transition-colors hover:bg-card-hover cursor-pointer"
             style={{ borderTopWidth: 3, borderTopColor: action.borderColor }}
           >
             <span className="text-xs font-semibold text-text-secondary">{action.label}</span>
@@ -227,15 +229,30 @@ function DashboardPage() {
 
       {/* KPI Cards */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Active Projects" value={String(projectCount)} sub="Across all entities" accentColor="var(--color-primary)" />
-        <KpiCard label="Jobs in Progress" value={String(jobCount)} sub="Under construction" accentColor="var(--color-info)" />
+        <KpiCard
+          label="Active Projects"
+          value={String(projectCount)}
+          sub="Across all entities"
+          accentColor="var(--color-primary)"
+        />
+        <KpiCard
+          label="Jobs in Progress"
+          value={String(jobCount)}
+          sub="Under construction"
+          accentColor="var(--color-info)"
+        />
         <KpiCard
           label="Pipeline Value"
           value={formatCurrency(pipelineValue)}
           sub={`${pipelineCount} active opportunit${pipelineCount === 1 ? "y" : "ies"}`}
           accentColor="var(--color-warning)"
         />
-        <KpiCard label="Pending Closings" value={String(closingCount)} sub="Under contract" accentColor="var(--color-success)" />
+        <KpiCard
+          label="Pending Closings"
+          value={String(closingCount)}
+          sub="Under contract"
+          accentColor="var(--color-success)"
+        />
       </div>
 
       {/* Content Grid — text-only headers, no icons */}
@@ -254,7 +271,7 @@ function DashboardPage() {
                   onClick={() => navigate({ to: "/projects/$projectId/basic-info", params: { projectId: p.id } })}
                 >
                   <div>
-                    <p className="text-[13px] font-semibold text-foreground">{p.project_name}</p>
+                    <p className="text-[13px] font-medium text-foreground">{p.project_name}</p>
                     <p className="text-[11px] text-muted">
                       {p.project_type ?? "No type"} {p.budget_total ? `· ${formatCurrency(p.budget_total)}` : ""}
                     </p>
@@ -280,7 +297,7 @@ function DashboardPage() {
                   onClick={() => navigate({ to: "/construction/$jobId/job-info", params: { jobId: j.id } })}
                 >
                   <div>
-                    <p className="text-[13px] font-semibold text-foreground">
+                    <p className="text-[13px] font-medium text-foreground">
                       {j.lot_number ?? j.record_number ?? "Job"} {j.floor_plan_name ? `· ${j.floor_plan_name}` : ""}
                     </p>
                     <p className="text-[11px] text-muted">{j.project_name ?? "No project"}</p>
@@ -308,7 +325,7 @@ function DashboardPage() {
                   }
                 >
                   <div>
-                    <p className="text-[13px] font-semibold text-foreground">{opp.opportunity_name}</p>
+                    <p className="text-[13px] font-medium text-foreground">{opp.opportunity_name}</p>
                     <p className="text-[11px] text-muted">
                       {opp.estimated_value ? formatCurrency(opp.estimated_value) : "No value set"}
                     </p>
@@ -337,7 +354,7 @@ function DashboardPage() {
                   onClick={() => navigate({ to: `/disposition/${d.id}/overview` as string })}
                 >
                   <div>
-                    <p className="text-[13px] font-semibold text-foreground">
+                    <p className="text-[13px] font-medium text-foreground">
                       {d.lot_number ?? "—"} {d.buyer_name ? `· ${d.buyer_name}` : ""}
                     </p>
                     <p className="text-[11px] text-muted">
@@ -377,7 +394,7 @@ function DashboardPage() {
                     onClick={() => navigate({ to: "/operations/matters/$matterId", params: { matterId: m.id } })}
                   >
                     <div>
-                      <p className="text-[13px] font-semibold text-foreground">{m.title}</p>
+                      <p className="text-[13px] font-medium text-foreground">{m.title}</p>
                       <p className="text-[11px] text-muted">
                         {m.matter_number} · {MATTER_STATUS_LABELS[m.status] ?? m.status}
                       </p>
@@ -415,9 +432,9 @@ function DashboardCard({
 }) {
   const navigate = useNavigate();
   return (
-    <div className="rounded-[var(--radius-lg)] border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-px">
+    <div className="rounded-lg border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        <h2 className="text-sm font-medium text-foreground">{title}</h2>
         <button
           type="button"
           onClick={() => navigate({ to: viewAllPath })}

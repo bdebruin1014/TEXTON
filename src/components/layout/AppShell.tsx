@@ -62,7 +62,7 @@ export function AppShell({ sidebar, children }: AppShellProps) {
               className={cn(
                 "fixed inset-y-0 left-0 z-40 w-[280px] pt-[var(--topnav-height)]",
                 "transform transition-transform duration-200 ease-in-out",
-                "lg:sticky lg:top-0 lg:z-auto lg:h-full lg:w-[240px] lg:shrink-0 lg:pt-0 lg:translate-x-0",
+                "lg:sticky lg:top-0 lg:z-auto lg:h-full lg:w-[220px] lg:shrink-0 lg:pt-0 lg:translate-x-0",
                 "overflow-y-auto",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full",
               )}
@@ -102,10 +102,7 @@ export function AppShell({ sidebar, children }: AppShellProps) {
 export function PageWithSidebar({ sidebar, children }: AppShellProps) {
   return (
     <div className="flex h-full -m-4 md:-m-6">
-      <div
-        className="sticky top-0 h-full shrink-0 overflow-y-auto"
-        style={{ width: "var(--sidebar-width)" }}
-      >
+      <div className="sticky top-0 h-full shrink-0 overflow-y-auto" style={{ width: "var(--sidebar-width)" }}>
         {sidebar}
       </div>
       <div className="flex-1 overflow-y-auto p-4 md:p-6">{children}</div>

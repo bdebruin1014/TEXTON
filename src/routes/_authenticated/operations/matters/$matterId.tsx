@@ -503,7 +503,7 @@ function BasicInfoSection({
           <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Days to Deadline</div>
           <div
             className={`mt-1 text-2xl font-semibold ${
-              daysToDeadline !== null && daysToDeadline < 0 ? "text-red-600" : "text-foreground"
+              daysToDeadline !== null && daysToDeadline < 0 ? "text-destructive" : "text-foreground"
             }`}
           >
             {daysToDeadline !== null
@@ -676,7 +676,7 @@ function PartiesSection({
                   <td className="px-4 py-3 text-muted-foreground">{c.contact_phone || "---"}</td>
                   <td className="px-4 py-3">
                     {c.is_primary ? (
-                      <span className="rounded bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                      <span className="rounded bg-success-bg px-2 py-0.5 text-[10px] font-semibold text-green-700">
                         Primary
                       </span>
                     ) : (
@@ -922,7 +922,7 @@ function DocumentsSection({
 const RECORD_TYPE_COLORS: Record<string, string> = {
   project: "bg-blue-100 text-blue-700",
   opportunity: "bg-amber-100 text-amber-700",
-  contact: "bg-green-100 text-green-700",
+  contact: "bg-success-bg text-green-700",
   entity: "bg-purple-100 text-purple-700",
   matter: "bg-indigo-100 text-indigo-700",
 };
@@ -960,7 +960,7 @@ function LinkedRecordsSection({
               <div key={`${link.type}-${link.id}`} className="rounded-lg border border-border bg-card p-4">
                 <div className="flex items-center gap-2 mb-1">
                   <span
-                    className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${RECORD_TYPE_COLORS[link.type] ?? "bg-gray-100 text-gray-600"}`}
+                    className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${RECORD_TYPE_COLORS[link.type] ?? "bg-accent text-muted-foreground"}`}
                   >
                     {link.type}
                   </span>
@@ -1016,7 +1016,7 @@ function LinkedRecordsSection({
                   <tr key={lr.id} className="border-b border-border last:border-0">
                     <td className="px-4 py-3">
                       <span
-                        className={`rounded px-2 py-0.5 text-xs font-medium ${RECORD_TYPE_COLORS[lr.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                        className={`rounded px-2 py-0.5 text-xs font-medium ${RECORD_TYPE_COLORS[lr.record_type] ?? "bg-accent text-muted-foreground"}`}
                       >
                         {lr.record_type}
                       </span>

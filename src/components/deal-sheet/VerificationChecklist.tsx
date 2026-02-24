@@ -166,7 +166,9 @@ function ChecklistRow({
   );
 
   return (
-    <div className={`flex items-start gap-3 rounded-md px-3 py-2 ${item.completed ? "bg-green-50/50" : "bg-gray-50"}`}>
+    <div
+      className={`flex items-start gap-3 rounded-md px-3 py-2 ${item.completed ? "bg-green-50/50" : "bg-background"}`}
+    >
       <input
         type="checkbox"
         checked={item.completed}

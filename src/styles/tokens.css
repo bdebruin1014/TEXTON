@@ -1,97 +1,103 @@
-/* KOVA Design System v4.0 — Qualia-accurate (dark sidebar) */
+/* KOVA Design System — Qualia-accurate tokens */
 :root {
   /* ——— PRIMARY — deep forest green ——— */
-  --color-primary: #143A23;
+  --color-primary: #1B3022;
   --color-primary-foreground: #FFFFFF;
-  --color-primary-hover: #1C4D30;
-  --color-primary-700: #1C4D30;
-  --color-primary-accent: #4A8C5E;
-  --color-primary-100: #D4E2D8;
-  --color-primary-50: #EBF2ED;
+  --color-primary-hover: #162A1C;
+  --color-primary-700: #264733;
+  --color-primary-accent: #48BB78;
+  --color-primary-100: #DDE6DF;
+  --color-primary-50: #F1F5F4;
 
   /* ——— BUTTONS ——— */
-  --color-button: #143A23;
-  --color-button-hover: #1C4D30;
+  --color-button: #1B3022;
+  --color-button-hover: #162A1C;
   --color-button-foreground: #FFFFFF;
 
   /* ——— NAVIGATION (top bar — darkest element) ——— */
   --color-nav-bg: #112233;
   --color-nav-foreground: #F1F5F9;
   --color-nav-muted: #94A3B8;
-  --color-nav-active: #4A8C5E;
+  --color-nav-active: #48BB78;
 
-  /* ——— SIDEBAR — DARK SLATE (lighter than nav, like Qualia) ——— */
-  --color-sidebar: #2D3748;
-  --sidebar-width: 240px;
-  --sidebar-active-border: #4A8C5E;
+  /* ——— SIDEBAR — dark charcoal (Qualia-accurate) ——— */
+  --color-sidebar: #1E293B;
+  --sidebar-width: 220px;
+  --sidebar-active-border: #1B3022;
   --sidebar-active-bg: rgba(255, 255, 255, 0.05);
   --sidebar-active-text: #FFFFFF;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
-  --sidebar-text: #A0AEC0;
-  --sidebar-heading: #718096;
+  --sidebar-hover-bg: #334155;
+  --sidebar-text: #CBD5E1;
+  --sidebar-heading: #9CA3AF;
   --sidebar-border: rgba(255, 255, 255, 0.08);
 
   /* ——— SURFACES ——— */
   --color-background: #F1F5F9;
   --color-card: #FFFFFF;
-  --color-card-foreground: #112233;
-  --color-card-hover: #FAFBFC;
+  --color-card-foreground: #111827;
+  --color-card-hover: #F9FAFB;
   --color-popover: #FFFFFF;
-  --color-popover-foreground: #112233;
+  --color-popover-foreground: #111827;
+  --color-table-header-bg: #F8FAFC;
+  --color-table-hover: #F9FAFB;
+  --color-right-panel-bg: #F8FAFC;
 
   /* ——— TEXT HIERARCHY ——— */
-  --color-foreground: #112233;
-  --color-text-secondary: #4A5568;
-  --color-muted: #64748B;
-  --color-muted-foreground: #64748B;
-  --color-text-hint: #94A3B8;
+  --color-foreground: #111827;
+  --color-text-secondary: #374151;
+  --color-text-tertiary: #6B7280;
+  --color-muted: #6B7280;
+  --color-muted-foreground: #6B7280;
+  --color-text-hint: #9CA3AF;
+  --color-text-label: #6B7280;
 
   /* ——— BORDERS ——— */
   --color-border: #E2E8F0;
-  --color-border-light: #EDF2F7;
+  --color-border-light: #F1F5F9;
+  --color-border-subtle: #F1F5F9;
   --color-input: #E2E8F0;
-  --color-ring: #143A23;
+  --color-ring: #1B3022;
 
-  /* ——— STATUS ——— */
-  --color-success: #3D7A4E;
-  --color-success-bg: #D4E2D8;
-  --color-success-text: #2E5440;
+  /* ——— STATUS — Qualia-accurate badge colors ——— */
+  --color-success: #10B981;
+  --color-success-bg: #ECFDF5;
+  --color-success-text: #065F46;
   --color-success-foreground: #FFFFFF;
 
-  --color-warning: #C4841D;
-  --color-warning-bg: #F3E8D0;
-  --color-warning-text: #6B5530;
+  --color-warning: #F59E0B;
+  --color-warning-bg: #FFFBEB;
+  --color-warning-text: #92400E;
 
-  --color-info: #3B6FA0;
-  --color-info-bg: #DBEAFE;
-  --color-info-text: #34506B;
+  --color-info: #3B82F6;
+  --color-info-bg: #EFF6FF;
+  --color-info-text: #1E40AF;
 
-  --color-destructive: #B84040;
-  --color-destructive-bg: #F0D4D4;
-  --color-destructive-text: #6B3E3E;
+  --color-destructive: #EF4444;
+  --color-destructive-bg: #FEF2F2;
+  --color-destructive-text: #991B1B;
   --color-destructive-foreground: #FFFFFF;
 
   /* ——— ACCENT ——— */
-  --color-accent: #EBF2ED;
-  --color-accent-foreground: #143A23;
+  --color-accent: #F1F5F4;
+  --color-accent-foreground: #1B3022;
 
-  --color-secondary: #D4E2D8;
-  --color-secondary-foreground: #143A23;
+  --color-secondary: #DDE6DF;
+  --color-secondary-foreground: #1B3022;
 
   /* ——— PROJECT TAB BAR ——— */
-  --tab-bar-bg: #D5DAE0;
-  --tab-bg: #D5DAE0;
-  --tab-text: #475569;
-  --tab-text-hover: #1E293B;
-  --tab-hover-bg: #E2E7EB;
+  --tab-bar-bg: #2A3540;
+  --tab-bg: #2A3540;
+  --tab-text: #94A3B8;
+  --tab-text-hover: #CBD5E1;
+  --tab-hover-bg: #334155;
   --tab-active-bg: #F1F5F9;
-  --tab-active-text: #112233;
+  --tab-active-text: #111827;
   --tab-close: #94A3B8;
 
   /* ——— FORM FIELD STATES ——— */
   --field-required-bg: #FFF5F5;
   --field-required-border: #F5C6C6;
-  --field-required-label: #B84040;
+  --field-required-label: #DC2626;
   --field-auto-bg: #EFF6FF;
   --field-auto-border: #BFDBFE;
   --field-auto-text: #1E40AF;
@@ -102,25 +108,42 @@
   --field-override-label: #D97706;
 
   /* ——— CHART COLORS ——— */
-  --color-chart-1: #143A23;
-  --color-chart-2: #3B6FA0;
-  --color-chart-3: #C4841D;
-  --color-chart-4: #7C5E99;
-  --color-chart-5: #B84040;
+  --color-chart-1: #1B3022;
+  --color-chart-2: #3B82F6;
+  --color-chart-3: #F59E0B;
+  --color-chart-4: #8B5CF6;
+  --color-chart-5: #EF4444;
 
   /* ——— SHADOWS ——— */
-  --shadow-sm: 0 1px 2px rgba(17, 34, 51, 0.04);
-  --shadow-md: 0 2px 8px rgba(17, 34, 51, 0.06), 0 1px 2px rgba(17, 34, 51, 0.04);
-  --shadow-lg: 0 4px 16px rgba(17, 34, 51, 0.08), 0 2px 4px rgba(17, 34, 51, 0.04);
-  --shadow-xl: 0 8px 32px rgba(17, 34, 51, 0.10), 0 4px 8px rgba(17, 34, 51, 0.06);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.06);
 
   /* ——— RADIUS ——— */
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --radius-sm: 0.375rem;
-  --radius-lg: 0.875rem;
-  --radius-xl: 1.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* ——— SPACING ——— */
+  --page-padding-x: 32px;
+  --page-padding-top: 24px;
+  --section-gap: 32px;
+  --card-padding: 20px;
+  --field-gap-y: 20px;
+  --field-label-gap: 4px;
+
+  /* ——— TYPOGRAPHY ——— */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --label-letter-spacing: 0.05em;
+  --divider-letter-spacing: 0.08em;
 
   /* ——— LAYOUT ——— */
-  --right-panel-width: 260px;
+  --right-panel-width: 280px;
   --topnav-height: 48px;
 }

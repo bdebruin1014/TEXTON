@@ -97,9 +97,7 @@ function CostCodes() {
 
   // ── CSV validation ──────────────────────────────────────────────────────
   const validateRows = useCallback(
-    (
-      rows: Array<Record<string, string>>,
-    ): ImportRow[] => {
+    (rows: Array<Record<string, string>>): ImportRow[] => {
       const existingCodes = new Set(codes.map((c) => c.code.toLowerCase()));
       const seenInFile = new Set<string>();
 
@@ -305,7 +303,20 @@ function CostCodes() {
                 className="rounded-lg p-1.5 text-muted transition-colors hover:bg-card-hover hover:text-foreground"
                 aria-label="Close"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
               </button>
             </div>
 
@@ -320,8 +331,7 @@ function CostCodes() {
                     <p className="mt-1 text-xs text-muted">
                       CSV with columns: <span className="font-mono">code</span> (required),{" "}
                       <span className="font-mono">description</span> (required),{" "}
-                      <span className="font-mono">category</span> (required:{" "}
-                      {VALID_CATEGORIES.join(", ")})
+                      <span className="font-mono">category</span> (required: {VALID_CATEGORIES.join(", ")})
                     </p>
                     <button
                       type="button"
@@ -402,9 +412,7 @@ function CostCodes() {
                               <td className="px-3 py-2 font-mono text-xs">{row.code || "\u2014"}</td>
                               <td className="px-3 py-2 text-xs">{row.description || "\u2014"}</td>
                               <td className="px-3 py-2 text-xs">{row.category || "\u2014"}</td>
-                              <td className="px-3 py-2 text-xs text-destructive">
-                                {row.errors.join("; ")}
-                              </td>
+                              <td className="px-3 py-2 text-xs text-destructive">{row.errors.join("; ")}</td>
                             </tr>
                           );
                         })}

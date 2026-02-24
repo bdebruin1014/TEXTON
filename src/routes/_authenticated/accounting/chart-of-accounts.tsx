@@ -165,9 +165,7 @@ function ChartOfAccounts() {
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted">{isCollapsed ? "+" : "-"}</span>
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_COLORS[type]}`}>
-                      {type}
-                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_COLORS[type]}`}>{type}</span>
                     <span className="text-xs text-muted">{count} accounts</span>
                   </div>
                 </button>

@@ -74,7 +74,9 @@ function Invoices() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("invoice_lines")
-        .select("id, invoice_id, line_number, description, account_id, account_name, account_number, quantity, unit_price, amount")
+        .select(
+          "id, invoice_id, line_number, description, account_id, account_name, account_number, quantity, unit_price, amount",
+        )
         .eq("invoice_id", expandedInvoice as string)
         .order("line_number");
       if (error) throw error;

@@ -9,8 +9,8 @@ import { CostBookUpgrades } from "@/components/cost-books/CostBookUpgrades";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { useCloneCostBook, useCostBook } from "@/hooks/useCostBooks";
 import { STATUS_COLORS } from "@/lib/constants";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/_authenticated/admin/cost-books/$bookId")({
   component: CostBookDetail,

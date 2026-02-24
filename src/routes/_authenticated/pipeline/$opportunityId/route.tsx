@@ -20,7 +20,9 @@ function OpportunityLayout() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("opportunities")
-        .select("id, opportunity_name, status, project_type, entity_id, address_street, address_city, address_state, address_zip, county, lot_price, contract_price, total_lots, acreage, project_id")
+        .select(
+          "id, opportunity_name, status, project_type, entity_id, address_street, address_city, address_state, address_zip, county, lot_price, contract_price, total_lots, acreage, project_id",
+        )
         .eq("id", opportunityId)
         .single();
       if (error) throw error;

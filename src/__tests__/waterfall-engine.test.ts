@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { calculateWaterfall, type WaterfallInput, type WaterfallInvestor, type WaterfallTierConfig } from "@/lib/waterfall-engine";
+import {
+  calculateWaterfall,
+  type WaterfallInput,
+  type WaterfallInvestor,
+  type WaterfallTierConfig,
+} from "@/lib/waterfall-engine";
 
 // ---------------------------------------------------------------------------
 // Standard waterfall tiers (4-tier American style)
@@ -347,8 +352,18 @@ describe("edge cases", () => {
   it("all amounts are non-negative across all scenarios", () => {
     const inputs: WaterfallInput[] = [
       { distribution_date: "2026-01-01", total_distributable: 1, investors: [LP_A], tiers: STANDARD_TIERS },
-      { distribution_date: "2026-01-01", total_distributable: 1_000_000, investors: [LP_A, LP_B], tiers: STANDARD_TIERS },
-      { distribution_date: "2026-01-01", total_distributable: 100, investors: [GP_INVESTOR, LP_A], tiers: STANDARD_TIERS },
+      {
+        distribution_date: "2026-01-01",
+        total_distributable: 1_000_000,
+        investors: [LP_A, LP_B],
+        tiers: STANDARD_TIERS,
+      },
+      {
+        distribution_date: "2026-01-01",
+        total_distributable: 100,
+        investors: [GP_INVESTOR, LP_A],
+        tiers: STANDARD_TIERS,
+      },
     ];
     for (const input of inputs) {
       const result = calculateWaterfall(input);

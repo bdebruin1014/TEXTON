@@ -41,7 +41,7 @@ export function EditInPlaceButton({ document }: EditInPlaceButtonProps) {
     <button
       type="button"
       onClick={handleClick}
-      className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#143A23] transition-colors hover:bg-accent/50"
+      className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary transition-colors hover:bg-accent/50"
     >
       Edit in {appName}
     </button>

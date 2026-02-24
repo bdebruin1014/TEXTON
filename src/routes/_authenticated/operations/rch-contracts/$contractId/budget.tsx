@@ -171,7 +171,7 @@ function ContractBudget() {
       <div className="rounded-lg border-2 border-primary bg-primary/5 px-4 py-4">
         <div className="flex items-center justify-between">
           <p className="text-base font-semibold text-foreground">Grand Total</p>
-          <p className="text-lg font-bold text-primary">{formatCurrency(grandTotal)}</p>
+          <p className="text-lg font-medium text-primary">{formatCurrency(grandTotal)}</p>
         </div>
         <p className="mt-1 text-xs text-muted">
           Sections 1-7 ({formatCurrency(grandTotal - fixedTotal)}) + Fixed Per-House ({formatCurrency(fixedTotal)})

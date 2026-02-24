@@ -18,9 +18,7 @@ export function ComingSoonPlaceholder({ projectType }: ComingSoonPlaceholderProp
       <p className="text-sm font-medium text-foreground">{projectType} Deal Analyzer</p>
       {route ? (
         <>
-          <p className="mt-1 text-xs text-muted">
-            Use the {route.label} tool for this project type.
-          </p>
+          <p className="mt-1 text-xs text-muted">Use the {route.label} tool for this project type.</p>
           <Link
             to={route.path}
             className="mt-4 rounded-lg bg-button px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover"

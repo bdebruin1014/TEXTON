@@ -28,7 +28,7 @@ const TYPE_LABELS: Record<string, string> = {
 const TYPE_BADGE_COLORS: Record<string, string> = {
   project: "bg-blue-100 text-blue-700",
   opportunity: "bg-amber-100 text-amber-700",
-  contact: "bg-green-100 text-green-700",
+  contact: "bg-success-bg text-green-700",
   entity: "bg-purple-100 text-purple-700",
 };
 
@@ -149,7 +149,7 @@ export function LinkRecordModal({ isOpen, onClose, onLink, isPending }: LinkReco
       <button type="button" className="absolute inset-0 bg-black/50" onClick={onClose} aria-label="Close modal" />
 
       {/* Dialog */}
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold text-foreground">Link Record</h3>
           <button
@@ -198,7 +198,7 @@ export function LinkRecordModal({ isOpen, onClose, onLink, isPending }: LinkReco
                       >
                         <span className="truncate flex-1 text-foreground">{item.label}</span>
                         <span
-                          className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[item.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                          className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[item.record_type] ?? "bg-accent text-muted-foreground"}`}
                         >
                           {item.record_type}
                         </span>
@@ -219,7 +219,7 @@ export function LinkRecordModal({ isOpen, onClose, onLink, isPending }: LinkReco
             <div className="mb-4 flex items-center justify-between rounded-lg bg-accent/50 px-3 py-2">
               <div className="flex items-center gap-2">
                 <span
-                  className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[selectedRecord.record_type] ?? "bg-gray-100 text-gray-600"}`}
+                  className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${TYPE_BADGE_COLORS[selectedRecord.record_type] ?? "bg-accent text-muted-foreground"}`}
                 >
                   {selectedRecord.record_type}
                 </span>

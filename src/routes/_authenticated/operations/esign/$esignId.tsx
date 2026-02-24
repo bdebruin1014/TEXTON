@@ -208,7 +208,7 @@ function EsignDetail() {
                   type="button"
                   onClick={() => voidDocument.mutate()}
                   disabled={voidDocument.isPending}
-                  className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {voidDocument.isPending ? "Voiding..." : "Void Document"}
                 </button>

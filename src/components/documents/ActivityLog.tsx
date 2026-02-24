@@ -32,16 +32,16 @@ interface DocumentActivityRecord {
 const ACTION_CONFIG: Record<string, { text: string; label: string; color: string }> = {
   upload: { text: "Up", label: "uploaded", color: "text-emerald-600 bg-emerald-50" },
   download: { text: "Dl", label: "downloaded", color: "text-blue-600 bg-blue-50" },
-  view: { text: "Vw", label: "viewed", color: "text-slate-600 bg-slate-100" },
+  view: { text: "Vw", label: "viewed", color: "text-muted-foreground bg-accent" },
   edit: { text: "Ed", label: "edited", color: "text-amber-600 bg-amber-50" },
   rename: { text: "Rn", label: "renamed", color: "text-purple-600 bg-purple-50" },
   move: { text: "Mv", label: "moved", color: "text-indigo-600 bg-indigo-50" },
   archive: { text: "Ar", label: "archived", color: "text-orange-600 bg-orange-50" },
-  delete: { text: "Del", label: "deleted", color: "text-red-600 bg-red-50" },
+  delete: { text: "Del", label: "deleted", color: "text-destructive bg-destructive-bg" },
 };
 
 function getActionConfig(action: string) {
-  return ACTION_CONFIG[action.toLowerCase()] ?? { text: "?", label: action, color: "text-slate-600 bg-slate-100" };
+  return ACTION_CONFIG[action.toLowerCase()] ?? { text: "?", label: action, color: "text-muted-foreground bg-accent" };
 }
 
 function formatRelativeTime(dateStr: string): string {
@@ -71,10 +71,10 @@ function ActivitySkeleton() {
     <div className="space-y-4">
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-slate-200 animate-pulse shrink-0" />
+          <div className="w-8 h-8 rounded-full bg-border animate-pulse shrink-0" />
           <div className="flex-1 space-y-1.5">
-            <div className="h-4 w-64 bg-slate-200 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-slate-200 rounded animate-pulse" />
+            <div className="h-4 w-64 bg-border rounded animate-pulse" />
+            <div className="h-3 w-20 bg-border rounded animate-pulse" />
           </div>
         </div>
       ))}
@@ -90,7 +90,7 @@ function EmptyActivity() {
   return (
     <div className="text-center py-8">
       <span className="block w-10 h-10 text-slate-300 mx-auto mb-3 text-2xl leading-10 text-center">--</span>
-      <p className="text-sm text-slate-500">No activity recorded yet.</p>
+      <p className="text-sm text-muted">No activity recorded yet.</p>
     </div>
   );
 }
@@ -138,7 +138,7 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
         return (
           <div key={activity.id} className="flex items-start gap-3 relative">
             {/* Timeline line */}
-            {!isLast && <div className="absolute left-4 top-8 w-px h-[calc(100%+4px)] bg-slate-200" />}
+            {!isLast && <div className="absolute left-4 top-8 w-px h-[calc(100%+4px)] bg-border" />}
 
             {/* Icon */}
             <div
@@ -152,12 +152,12 @@ export function ActivityLog({ recordType, recordId, documentId }: ActivityLogPro
 
             {/* Content */}
             <div className="flex-1 min-w-0 py-1">
-              <p className="text-sm text-slate-700">
-                {activity.performed_by && <span className="font-medium text-slate-900">{activity.performed_by}</span>}
+              <p className="text-sm text-text-secondary">
+                {activity.performed_by && <span className="font-medium text-foreground">{activity.performed_by}</span>}
                 {activity.performed_by ? " " : ""}
                 <span>{config.label}</span>{" "}
                 {activity.document && (
-                  <span className="font-medium text-slate-800">
+                  <span className="font-medium text-foreground">
                     {activity.document.name}
                     {activity.document.file_extension ? `.${activity.document.file_extension.replace(".", "")}` : ""}
                   </span>

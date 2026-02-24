@@ -85,7 +85,7 @@ export function ShareDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-lg rounded-xl border border-border bg-white shadow-xl">
+      <div className="w-full max-w-lg rounded-lg border border-border bg-white shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-semibold text-foreground">Share Documents</h2>
@@ -136,21 +136,21 @@ export function ShareDialog({
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   placeholder="Name"
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 <input
                   type="email"
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
                   placeholder="Email"
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 <input
                   type="text"
                   value={recipientCompany}
                   onChange={(e) => setRecipientCompany(e.target.value)}
                   placeholder="Company (optional)"
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             )}
@@ -165,7 +165,7 @@ export function ShareDialog({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
+              className="mt-1 w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
@@ -197,7 +197,7 @@ export function ShareDialog({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#143A23]/20"
+                  className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                 />
               )}
               <div className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export function ShareDialog({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[#143A23] hover:bg-accent/50"
+                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary hover:bg-accent/50"
                 >
                   Copy
                 </button>
@@ -264,7 +264,7 @@ export function ShareDialog({
               type="button"
               onClick={handleSubmit}
               disabled={!recipientEmail || createShare.isPending}
-              className="rounded-md bg-[#143A23] px-4 py-2 text-sm font-semibold text-white hover:bg-[#143A23]/90 disabled:opacity-50"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 disabled:opacity-50"
             >
               {createShare.isPending ? "Sharing..." : "Share & Send Email →"}
             </button>

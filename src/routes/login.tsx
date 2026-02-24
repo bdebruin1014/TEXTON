@@ -35,12 +35,12 @@ function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
+          <h1 className="text-2xl font-semibold tracking-[2px] text-primary-accent">KOVA</h1>
           <p className="mt-1 text-sm text-muted">Sign in to your account</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 shadow-sm">
           {error && <div className="mb-4 rounded-lg bg-destructive-bg px-3 py-2 text-sm text-destructive">{error}</div>}
 
           <div className="mb-4">

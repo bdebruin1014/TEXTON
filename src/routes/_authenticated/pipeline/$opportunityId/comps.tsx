@@ -122,7 +122,7 @@ function Comps() {
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-gray-50">
+              <tr className="border-b border-border bg-background">
                 <th className="px-3 py-2 text-left font-medium text-muted">Address</th>
                 <th className="px-3 py-2 text-left font-medium text-muted">Sale Price</th>
                 <th className="px-3 py-2 text-left font-medium text-muted">Date</th>
@@ -205,7 +205,7 @@ function CompRow({
     "w-full border-0 bg-transparent px-3 py-2 text-sm text-foreground outline-none focus:bg-blue-50 transition-colors";
 
   return (
-    <tr className="border-b border-border last:border-b-0 hover:bg-gray-50">
+    <tr className="border-b border-border last:border-b-0 hover:bg-background">
       <td>
         <input
           defaultValue={comp.address ?? ""}

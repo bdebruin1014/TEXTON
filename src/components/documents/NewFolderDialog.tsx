@@ -22,7 +22,7 @@ export function NewFolderDialog({ onSubmit, onCancel }: NewFolderDialogProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-[#143A23] bg-white px-3 py-2 shadow-sm">
+    <div className="flex items-center gap-2 rounded-lg border border-primary bg-white px-3 py-2 shadow-sm">
       <input
         ref={inputRef}
         autoFocus

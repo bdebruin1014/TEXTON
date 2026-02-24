@@ -79,7 +79,13 @@ function ContractOverview() {
             options={[...CONTRACT_TYPES]}
             placeholder="Select type..."
           />
-          <StatusSelect label="Status" value={contract.status} onSave={save("status")} statuses={CONTRACT_STATUSES} required />
+          <StatusSelect
+            label="Status"
+            value={contract.status}
+            onSave={save("status")}
+            statuses={CONTRACT_STATUSES}
+            required
+          />
           <AutoSaveField
             label="Owner Name"
             value={contract.owner_name}

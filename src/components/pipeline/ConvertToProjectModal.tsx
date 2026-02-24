@@ -26,12 +26,7 @@ interface ConvertToProjectModalProps {
   onConverted: (projectId: string) => void;
 }
 
-export function ConvertToProjectModal({
-  open,
-  onClose,
-  opportunity,
-  onConverted,
-}: ConvertToProjectModalProps) {
+export function ConvertToProjectModal({ open, onClose, opportunity, onConverted }: ConvertToProjectModalProps) {
   const [projectName, setProjectName] = useState("");
   const [projectType, setProjectType] = useState("");
   const [entityId, setEntityId] = useState("");
@@ -43,10 +38,7 @@ export function ConvertToProjectModal({
   const { data: entities = [] } = useQuery({
     queryKey: ["entities-convert"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("entities")
-        .select("id, name")
-        .order("name");
+      const { data, error } = await supabase.from("entities").select("id, name").order("name");
       if (error) throw error;
       return data ?? [];
     },
@@ -132,16 +124,11 @@ export function ConvertToProjectModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-label="Close modal"
-      />
+      <button type="button" className="absolute inset-0 bg-black/50" onClick={onClose} aria-label="Close modal" />
 
       {/* Dialog */}
       <div
-        className="relative z-10 w-full max-w-md rounded-xl border border-border bg-card shadow-xl"
+        className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-label="Convert to Project"
@@ -149,9 +136,7 @@ export function ConvertToProjectModal({
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
           <h2 className="text-lg font-semibold text-foreground">Convert to Project</h2>
-          <p className="mt-0.5 text-sm text-muted">
-            Create a new project from this opportunity
-          </p>
+          <p className="mt-0.5 text-sm text-muted">Create a new project from this opportunity</p>
         </div>
 
         {/* Form */}
@@ -224,11 +209,7 @@ export function ConvertToProjectModal({
           </div>
 
           {/* Error */}
-          {error && (
-            <p className="mt-3 rounded-lg bg-destructive-bg px-3 py-2 text-sm text-destructive">
-              {error}
-            </p>
-          )}
+          {error && <p className="mt-3 rounded-lg bg-destructive-bg px-3 py-2 text-sm text-destructive">{error}</p>}
 
           {/* Actions */}
           <div className="mt-6 flex items-center justify-end gap-3">

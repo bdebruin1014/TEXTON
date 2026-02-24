@@ -54,16 +54,13 @@ function ImportCOATemplate() {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token;
 
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-coa-template`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-coa-template`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: formData,
+      });
 
       if (!res.ok) {
         const err = await res.json();

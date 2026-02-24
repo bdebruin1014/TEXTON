@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RecordLinker } from "@/components/matters/RecordLinker";
 import { VoiceInputButton } from "@/components/matters/VoiceInputButton";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -223,7 +223,7 @@ export function MatterIntakeChat({
   const isDocStep = currentStep >= 4;
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-card shadow-sm">
+    <div className="flex h-full flex-col rounded-lg border border-border bg-card shadow-sm">
       {/* Chat messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.map((msg) => (

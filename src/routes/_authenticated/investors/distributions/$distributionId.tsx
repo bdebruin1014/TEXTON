@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { useAuthStore } from "@/stores/authStore";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 import {
@@ -15,6 +14,7 @@ import {
   type WaterfallOutput,
   type WaterfallTierConfig,
 } from "@/lib/waterfall-engine";
+import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/investors/distributions/$distributionId")({
   component: DistributionDetail,
@@ -342,7 +342,8 @@ function DistributionDetail() {
   const displayResult = waterfallResult ?? (existingCalc?.output_snapshot as WaterfallOutput | undefined) ?? null;
 
   if (isLoading) return <FormSkeleton />;
-  if (!distribution) return <EmptyState title="Distribution not found" description="This record may have been removed" />;
+  if (!distribution)
+    return <EmptyState title="Distribution not found" description="This record may have been removed" />;
 
   const isDraft = distribution.status === "Draft";
   const missingTiers = tiers.length === 0;
@@ -448,12 +449,8 @@ function DistributionDetail() {
                         {inv.is_gp ? "GP" : "LP"}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-right font-mono text-xs">
-                      {formatCurrency(inv.return_of_capital)}
-                    </td>
-                    <td className="px-3 py-2 text-right font-mono text-xs">
-                      {formatCurrency(inv.preferred_return)}
-                    </td>
+                    <td className="px-3 py-2 text-right font-mono text-xs">{formatCurrency(inv.return_of_capital)}</td>
+                    <td className="px-3 py-2 text-right font-mono text-xs">{formatCurrency(inv.preferred_return)}</td>
                     <td className="px-3 py-2 text-right font-mono text-xs">{formatCurrency(inv.catch_up)}</td>
                     <td className="px-3 py-2 text-right font-mono text-xs">{formatCurrency(inv.profit_split)}</td>
                     <td className="px-3 py-2 text-right font-mono text-xs font-semibold">

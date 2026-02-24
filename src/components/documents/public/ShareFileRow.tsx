@@ -26,13 +26,13 @@ export function ShareFileRow({
   isDownloading,
 }: ShareFileRowProps) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-[#E2E8F0] bg-white px-4 py-3 transition-colors hover:bg-slate-50">
+    <div className="flex items-center gap-3 rounded-lg border border-[#E2E8F0] bg-white px-4 py-3 transition-colors hover:bg-background">
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium text-slate-900">
+        <div className="truncate text-sm font-medium text-foreground">
           {name}
           {fileExtension && <span className="text-slate-400">{fileExtension}</span>}
         </div>
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-muted">
           {formatBytes(fileSize)} · {new Date(updatedAt).toLocaleDateString()}
         </div>
       </div>
@@ -41,7 +41,7 @@ export function ShareFileRow({
           type="button"
           onClick={onDownload}
           disabled={isDownloading}
-          className="flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+          className="flex items-center gap-1.5 rounded-lg border border-[#E2E8F0] px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-accent disabled:opacity-50"
         >
           {isDownloading ? "..." : "Download"}
         </button>

@@ -373,7 +373,9 @@ function JournalEntries() {
                 <h3 className="text-sm font-semibold text-foreground">
                   Lines for {expandedEntry?.entry_number}
                   {!isExpandedDraft && (
-                    <span className="ml-2 text-xs font-normal text-muted">(read-only — entry is {expandedEntry?.status})</span>
+                    <span className="ml-2 text-xs font-normal text-muted">
+                      (read-only — entry is {expandedEntry?.status})
+                    </span>
                   )}
                 </h3>
                 {isExpandedDraft && (

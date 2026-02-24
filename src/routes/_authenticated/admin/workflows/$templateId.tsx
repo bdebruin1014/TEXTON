@@ -166,7 +166,7 @@ function WorkflowTemplateDetail() {
           {"\u2190"} Back to Templates
         </Link>
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-semibold text-foreground">{template.name}</h1>
+          <h1 className="text-xl font-medium text-foreground">{template.name}</h1>
           {template.is_active ? (
             <span className="rounded-full bg-success-bg px-2 py-0.5 text-xs font-medium text-success-text">Active</span>
           ) : (
@@ -188,7 +188,7 @@ function WorkflowTemplateDetail() {
 
       {/* Phase sections */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-foreground">Task Definitions</h2>
+        <h2 className="text-sm font-medium text-foreground">Task Definitions</h2>
         <div className="flex items-center gap-2 text-xs text-muted">
           <span className="rounded bg-accent px-1.5 py-0.5 font-medium">
             {tasks.filter((t) => t.is_gate).length} gate{tasks.filter((t) => t.is_gate).length !== 1 ? "s" : ""}
@@ -224,13 +224,13 @@ function WorkflowTemplateDetail() {
                 if (e.key === "Escape") setShowAddPhase(false);
               }}
               placeholder="Phase name (e.g. Permits, Estimating)"
-              className="w-64 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary"
+              className="w-64 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
             />
             <button
               type="button"
               onClick={handleAddPhase}
               disabled={!newPhase.trim()}
-              className="rounded-lg bg-button px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-button-hover disabled:opacity-50"
+              className="h-9 rounded-md bg-button px-3 text-sm font-medium text-white transition-colors hover:bg-button-hover disabled:opacity-50"
             >
               Add Phase
             </button>
@@ -240,7 +240,7 @@ function WorkflowTemplateDetail() {
                 setShowAddPhase(false);
                 setNewPhase("");
               }}
-              className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+              className="h-9 rounded-md border border-border px-3 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
               Cancel
             </button>
@@ -249,7 +249,7 @@ function WorkflowTemplateDetail() {
           <button
             type="button"
             onClick={() => setShowAddPhase(true)}
-            className="rounded-lg border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:border-primary hover:text-primary"
+            className="rounded-md border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:border-primary hover:text-primary"
           >
             + Add Phase
           </button>

@@ -27,11 +27,11 @@ function NotFoundPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
+          <h1 className="text-2xl font-semibold tracking-[2px] text-primary-accent">KOVA</h1>
         </div>
 
         {/* Card */}
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm text-center">
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm text-center">
           <p className="text-5xl font-bold text-foreground">404</p>
           <p className="mt-2 text-lg font-semibold text-foreground">Page Not Found</p>
           <p className="mt-1 text-sm text-muted">The page you're looking for doesn't exist or has been moved.</p>
@@ -54,11 +54,11 @@ function RootErrorPage({ error }: ErrorComponentProps) {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-[2px] text-primary-accent">KOVA</h1>
+          <h1 className="text-2xl font-semibold tracking-[2px] text-primary-accent">KOVA</h1>
         </div>
 
         {/* Card */}
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm text-center">
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm text-center">
           <p className="text-5xl font-bold text-foreground">!</p>
           <p className="mt-2 text-lg font-semibold text-foreground">Something went wrong</p>
           {error instanceof Error && error.message && (

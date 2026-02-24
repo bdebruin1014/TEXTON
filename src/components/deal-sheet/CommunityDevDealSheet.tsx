@@ -127,9 +127,7 @@ export function CommunityDevDealSheet({ opportunityId }: CommunityDevDealSheetPr
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-foreground">Community Development Deal Sheet</h1>
-            <p className="mt-0.5 text-sm text-muted">
-              Phase 1 Horizontal + Phase 2 Vertical with LP Waterfall
-            </p>
+            <p className="mt-0.5 text-sm text-muted">Phase 1 Horizontal + Phase 2 Vertical with LP Waterfall</p>
           </div>
           <button
             type="button"
@@ -172,9 +170,7 @@ export function CommunityDevDealSheet({ opportunityId }: CommunityDevDealSheetPr
               type="button"
               onClick={() => setSelectedId(p.id)}
               className={`px-4 py-2 text-sm font-medium transition-colors ${
-                active?.id === p.id
-                  ? "border-b-2 border-primary text-primary"
-                  : "text-muted hover:text-foreground"
+                active?.id === p.id ? "border-b-2 border-primary text-primary" : "text-muted hover:text-foreground"
               }`}
             >
               {p.scenario_name || p.name}

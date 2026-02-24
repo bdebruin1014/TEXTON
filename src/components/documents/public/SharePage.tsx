@@ -32,26 +32,28 @@ export function SharePage({ data, token }: SharePageProps) {
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#143A23] text-xs font-bold text-white">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
             TEK
           </div>
         </div>
 
         {/* Header */}
         <div className="mb-6 text-center">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted">
             Shared by {share.created_by_name ?? "KOVA User"} · {new Date(share.created_at).toLocaleDateString()}
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-[#E2E8F0] bg-white p-6 shadow-sm">
           {/* Folder name or title */}
-          {share.folder_name && <h2 className="text-lg font-semibold text-slate-900 mb-2">📁 {share.folder_name}</h2>}
+          {share.folder_name && <h2 className="text-lg font-semibold text-foreground mb-2">📁 {share.folder_name}</h2>}
 
           {/* Message */}
           {share.message && (
-            <div className="mb-4 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 italic">"{share.message}"</div>
+            <div className="mb-4 rounded-lg bg-background px-4 py-3 text-sm text-text-secondary italic">
+              "{share.message}"
+            </div>
           )}
 
           {/* Files */}
@@ -75,7 +77,7 @@ export function SharePage({ data, token }: SharePageProps) {
             <div className="mt-4 text-center">
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#143A23] px-4 py-2 text-sm font-semibold text-white hover:bg-[#143A23]/90"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90"
               >
                 Download All
               </button>

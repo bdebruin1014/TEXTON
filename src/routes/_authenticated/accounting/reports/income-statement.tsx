@@ -50,7 +50,10 @@ function IncomeStatement() {
   });
 
   // Aggregate by account (the view groups by entry_date, we re-aggregate here)
-  const accountMap = new Map<string, { account_number: string; account_name: string; account_type: string; net_amount: number }>();
+  const accountMap = new Map<
+    string,
+    { account_number: string; account_name: string; account_type: string; net_amount: number }
+  >();
   for (const row of rows) {
     const key = row.account_id ?? row.account_number ?? "unknown";
     const existing = accountMap.get(key);
@@ -105,7 +108,10 @@ function IncomeStatement() {
       {isLoading ? (
         <TableSkeleton rows={10} cols={3} />
       ) : accounts.length === 0 ? (
-        <EmptyState title="No data" description="Post journal entries with Revenue and Expense accounts to generate P&L" />
+        <EmptyState
+          title="No data"
+          description="Post journal entries with Revenue and Expense accounts to generate P&L"
+        />
       ) : (
         <div className="rounded-lg border border-border bg-card">
           {/* Revenue Section */}

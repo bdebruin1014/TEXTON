@@ -15,7 +15,7 @@ export function RecordTabBar() {
       className="project-tab-bar flex items-end gap-px overflow-x-auto scrollbar-none px-2"
       style={{
         backgroundColor: "var(--tab-bar-bg)",
-        minHeight: 32,
+        minHeight: 36,
       }}
     >
       {recordTabs.map((tab) => {

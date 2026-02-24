@@ -113,7 +113,7 @@ export function WorkflowStepCard({ step, stepIndex, onUpdate, allSteps }: Workfl
         <div
           className={cn(
             "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold",
-            completed ? "bg-green-100 text-green-700" : "bg-accent text-muted-foreground",
+            completed ? "bg-success-bg text-green-700" : "bg-accent text-muted-foreground",
           )}
         >
           {completed ? "\u2713" : stepIndex + 1}
@@ -128,7 +128,7 @@ export function WorkflowStepCard({ step, stepIndex, onUpdate, allSteps }: Workfl
             </span>
             <h4 className={cn("text-sm font-medium text-foreground", completed && "line-through")}>{step.title}</h4>
             {step.ai_generated && (
-              <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">AI</span>
+              <span className="rounded bg-success-bg px-1.5 py-0.5 text-[10px] font-semibold text-green-700">AI</span>
             )}
             {overdue && (
               <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700">Overdue</span>

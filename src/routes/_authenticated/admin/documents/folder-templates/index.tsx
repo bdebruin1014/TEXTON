@@ -81,7 +81,7 @@ function FolderTemplateList() {
             className={cn(
               "border-b-2 px-4 py-2 text-sm font-medium transition-colors",
               activeTab === tab.value
-                ? "border-[#143A23] text-[#143A23]"
+                ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
@@ -119,7 +119,7 @@ function FolderTemplateList() {
                   <td className="px-4 py-3">
                     <Link
                       to={`/admin/documents/folder-templates/${template.id}` as string}
-                      className="text-sm font-medium text-foreground hover:text-[#143A23]"
+                      className="text-sm font-medium text-foreground hover:text-primary"
                     >
                       {template.name}
                     </Link>
@@ -134,7 +134,7 @@ function FolderTemplateList() {
                   </td>
                   <td className="px-4 py-3">
                     {template.is_default && (
-                      <span className="inline-block rounded bg-[#143A23]/10 px-2 py-0.5 text-xs font-semibold text-[#143A23]">
+                      <span className="inline-block rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                         Default
                       </span>
                     )}

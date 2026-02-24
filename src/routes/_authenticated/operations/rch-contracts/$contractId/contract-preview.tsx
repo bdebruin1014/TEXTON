@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
-
 import { useState } from "react";
+import { toast } from "sonner";
 import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
@@ -268,7 +267,10 @@ function ContractPreview() {
       {/* Template selector (if multiple templates available) */}
       {templates.length > 1 && (
         <div className="mb-4">
-          <label htmlFor="template-select" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted">
+          <label
+            htmlFor="template-select"
+            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted"
+          >
             Template
           </label>
           <select
@@ -330,9 +332,7 @@ function ContractPreview() {
           {/* Units Preview */}
           {units.length > 0 && (
             <div className="rounded-lg border border-border bg-card p-6">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">
-                Units ({units.length})
-              </h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Units ({units.length})</h3>
               <div className="space-y-2">
                 {units.map(
                   (unit: {
@@ -371,12 +371,12 @@ function ContractPreview() {
             />
           </div>
         ) : (
-          <div className="rounded-lg border-2 border-dashed border-border bg-gray-50 p-12 text-center">
+          <div className="rounded-lg border-2 border-dashed border-border bg-background p-12 text-center">
             <p className="text-sm font-medium text-foreground">Document Preview</p>
             <p className="mt-1 text-sm text-muted">
               {templates.length === 0
                 ? "No document templates found. Create one in Admin > Documents with record type 'rch_contract'."
-                : "Click \"Generate Contract\" to create a document from the contract data above."}
+                : 'Click "Generate Contract" to create a document from the contract data above.'}
             </p>
             {hasExisting && !hasPreview && (
               <button

@@ -56,8 +56,19 @@ function BasicInfo() {
       <div className="mb-8 rounded-lg border border-border bg-card p-6">
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">Opportunity Identity</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <AutoSaveField label="Opportunity Name" value={opp.opportunity_name} onSave={save("opportunity_name")} required />
-          <StatusSelect label="Status" value={opp.status} onSave={save("status")} statuses={OPPORTUNITY_STATUSES} required />
+          <AutoSaveField
+            label="Opportunity Name"
+            value={opp.opportunity_name}
+            onSave={save("opportunity_name")}
+            required
+          />
+          <StatusSelect
+            label="Status"
+            value={opp.status}
+            onSave={save("status")}
+            statuses={OPPORTUNITY_STATUSES}
+            required
+          />
           <AutoSaveSelect
             label="Project Type"
             value={opp.project_type}

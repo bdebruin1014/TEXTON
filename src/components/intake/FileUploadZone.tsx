@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { Sentry } from "@/lib/sentry";
+import { supabase } from "@/lib/supabase";
 
 export interface UploadedFile {
   file_name: string;

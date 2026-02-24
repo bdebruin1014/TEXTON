@@ -114,7 +114,7 @@ export function CommandPalette() {
       <Command
         role="dialog"
         aria-label="Command palette"
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
+        className="relative z-10 w-full max-w-lg overflow-hidden rounded-lg border border-border bg-card shadow-lg"
         onKeyDown={(e: React.KeyboardEvent) => {
           if (e.key === "Escape") setCommandPaletteOpen(false);
         }}

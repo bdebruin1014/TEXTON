@@ -10,9 +10,9 @@ import { FormSkeleton } from "@/components/shared/Skeleton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
-import { useAuthStore } from "@/stores/authStore";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
 
 export const Route = createFileRoute("/_authenticated/construction/$jobId/purchase-orders")({
   component: PurchaseOrders,
@@ -83,10 +83,7 @@ function PurchaseOrders() {
 
   const deletePO = useMutation({
     mutationFn: async (id: string) => {
-      const { count } = await supabase
-        .from("invoices")
-        .select("id", { count: "exact", head: true })
-        .eq("po_id", id);
+      const { count } = await supabase.from("invoices").select("id", { count: "exact", head: true }).eq("po_id", id);
       if (count && count > 0) {
         throw new Error(`Cannot delete: ${count} linked invoice(s) exist. Remove them first.`);
       }

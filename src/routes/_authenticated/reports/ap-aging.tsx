@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { DataTable } from "@/components/tables/DataTable";
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader";
@@ -27,10 +27,7 @@ function ApAgingReport() {
   const { data: entities = [] } = useQuery({
     queryKey: ["report-ap-aging-entities"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("entities")
-        .select("id, name")
-        .order("name");
+      const { data, error } = await supabase.from("entities").select("id, name").order("name");
       if (error) throw error;
       return data ?? [];
     },
@@ -57,7 +54,14 @@ function ApAgingReport() {
     for (const inv of filtered) {
       const days = Math.floor((now - new Date(inv.invoice_date).getTime()) / 86400000);
       const name = inv.vendor_name ?? "Unknown Vendor";
-      const entry = buckets.get(name) ?? { vendor_name: name, current: 0, days_31_60: 0, days_61_90: 0, days_91_plus: 0, total: 0 };
+      const entry = buckets.get(name) ?? {
+        vendor_name: name,
+        current: 0,
+        days_31_60: 0,
+        days_61_90: 0,
+        days_91_plus: 0,
+        total: 0,
+      };
       const amt = inv.amount ?? 0;
 
       if (days <= 30) entry.current += amt;
@@ -112,20 +116,24 @@ function ApAgingReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">AP Aging</h1>
+          <h1 className="text-lg font-medium text-foreground">AP Aging</h1>
           <p className="text-sm text-muted">Outstanding payables by vendor grouped into aging buckets.</p>
         </div>
         <button
           type="button"
           onClick={() =>
-            exportToCsv("ap-aging", [
-              { header: "Vendor", accessor: (r) => r.vendor_name },
-              { header: "Current (0-30)", accessor: (r) => r.current },
-              { header: "31-60 Days", accessor: (r) => r.days_31_60 },
-              { header: "61-90 Days", accessor: (r) => r.days_61_90 },
-              { header: "91+ Days", accessor: (r) => r.days_91_plus },
-              { header: "Total", accessor: (r) => r.total },
-            ], data)
+            exportToCsv(
+              "ap-aging",
+              [
+                { header: "Vendor", accessor: (r) => r.vendor_name },
+                { header: "Current (0-30)", accessor: (r) => r.current },
+                { header: "31-60 Days", accessor: (r) => r.days_31_60 },
+                { header: "61-90 Days", accessor: (r) => r.days_61_90 },
+                { header: "91+ Days", accessor: (r) => r.days_91_plus },
+                { header: "Total", accessor: (r) => r.total },
+              ],
+              data,
+            )
           }
           className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
         >
@@ -142,7 +150,9 @@ function ApAgingReport() {
         >
           <option value="all">All Entities</option>
           {entities.map((e) => (
-            <option key={e.id} value={e.id}>{e.name}</option>
+            <option key={e.id} value={e.id}>
+              {e.name}
+            </option>
           ))}
         </select>
       </div>

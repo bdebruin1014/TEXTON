@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/tables/DataTable";
@@ -37,19 +37,17 @@ function ProjectSummaryReport() {
     queryFn: async () => {
       const { data: projects, error } = await supabase
         .from("projects")
-        .select("id, project_name, status, project_type, entity_name, total_lots, total_budget, total_spent, total_revenue, total_profit")
+        .select(
+          "id, project_name, status, project_type, entity_name, total_lots, total_budget, total_spent, total_revenue, total_profit",
+        )
         .order("project_name");
       if (error) throw error;
 
       // Fetch lot status counts per project
-      const { data: lots } = await supabase
-        .from("lots")
-        .select("project_id, status");
+      const { data: lots } = await supabase.from("lots").select("project_id, status");
 
       // Fetch sold disposition counts per project
-      const { data: disps } = await supabase
-        .from("dispositions")
-        .select("project_id, status");
+      const { data: disps } = await supabase.from("dispositions").select("project_id, status");
 
       const lotsByProject = new Map<string, { available: number; underConstruction: number }>();
       for (const lot of lots ?? []) {
@@ -147,26 +145,30 @@ function ProjectSummaryReport() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-foreground">Project Summary</h1>
+          <h1 className="text-lg font-medium text-foreground">Project Summary</h1>
           <p className="text-sm text-muted">Active projects with lot counts, investment, and projected margin.</p>
         </div>
         <button
           type="button"
           onClick={() =>
-            exportToCsv("project-summary", [
-              { header: "Project", accessor: (r) => r.project_name },
-              { header: "Status", accessor: (r) => r.status },
-              { header: "Type", accessor: (r) => r.project_type ?? "" },
-              { header: "Entity", accessor: (r) => r.entity_name ?? "" },
-              { header: "Total Lots", accessor: (r) => r.total_lots ?? 0 },
-              { header: "Available", accessor: (r) => r.lots_available },
-              { header: "Under Construction", accessor: (r) => r.lots_under_construction },
-              { header: "Sold", accessor: (r) => r.lots_sold },
-              { header: "Budget", accessor: (r) => r.total_budget ?? 0 },
-              { header: "Spent", accessor: (r) => r.total_spent ?? 0 },
-              { header: "Revenue", accessor: (r) => r.total_revenue ?? 0 },
-              { header: "Profit", accessor: (r) => r.total_profit ?? 0 },
-            ], data)
+            exportToCsv(
+              "project-summary",
+              [
+                { header: "Project", accessor: (r) => r.project_name },
+                { header: "Status", accessor: (r) => r.status },
+                { header: "Type", accessor: (r) => r.project_type ?? "" },
+                { header: "Entity", accessor: (r) => r.entity_name ?? "" },
+                { header: "Total Lots", accessor: (r) => r.total_lots ?? 0 },
+                { header: "Available", accessor: (r) => r.lots_available },
+                { header: "Under Construction", accessor: (r) => r.lots_under_construction },
+                { header: "Sold", accessor: (r) => r.lots_sold },
+                { header: "Budget", accessor: (r) => r.total_budget ?? 0 },
+                { header: "Spent", accessor: (r) => r.total_spent ?? 0 },
+                { header: "Revenue", accessor: (r) => r.total_revenue ?? 0 },
+                { header: "Profit", accessor: (r) => r.total_profit ?? 0 },
+              ],
+              data,
+            )
           }
           className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-card-hover"
         >
@@ -183,7 +185,9 @@ function ProjectSummaryReport() {
         >
           <option value="all">All Statuses</option>
           {statuses.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
       </div>

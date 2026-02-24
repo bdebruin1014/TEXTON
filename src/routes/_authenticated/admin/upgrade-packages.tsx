@@ -72,7 +72,7 @@ function UpgradePackages() {
     const colors: Record<string, string> = {
       Exterior: "bg-blue-100 text-blue-700",
       Interior: "bg-amber-100 text-amber-700",
-      Custom: "bg-gray-100 text-gray-700",
+      Custom: "bg-accent text-gray-700",
     };
     return (
       <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${colors[cat] ?? colors.Custom}`}>

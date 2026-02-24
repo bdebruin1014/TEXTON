@@ -8,7 +8,6 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 
-
 export const Route = createFileRoute("/_authenticated/accounting/")({
   component: AccountingIndex,
 });
@@ -206,8 +205,11 @@ function AccountingIndex() {
 
       {/* KPI Summary Row */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid var(--color-nav-active)" }}>
-          <span className="text-lg font-bold text-foreground">{formatCurrency(totalCash)}</span>
+        <div
+          className="rounded-lg border border-border bg-card px-4 py-3"
+          style={{ borderLeft: "4px solid var(--color-nav-active)" }}
+        >
+          <span className="text-lg font-medium text-foreground">{formatCurrency(totalCash)}</span>
           <p
             className="text-[10px] font-semibold uppercase tracking-wider"
             style={{ color: "var(--color-text-secondary)" }}
@@ -216,7 +218,7 @@ function AccountingIndex() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #B84040" }}>
-          <span className="text-lg font-bold text-foreground">{formatCurrency(totalAP)}</span>
+          <span className="text-lg font-medium text-foreground">{formatCurrency(totalAP)}</span>
           <p
             className="text-[10px] font-semibold uppercase tracking-wider"
             style={{ color: "var(--color-text-secondary)" }}
@@ -225,7 +227,7 @@ function AccountingIndex() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #3B6FA0" }}>
-          <span className="text-lg font-bold text-foreground">{formatCurrency(totalAR)}</span>
+          <span className="text-lg font-medium text-foreground">{formatCurrency(totalAR)}</span>
           <p
             className="text-[10px] font-semibold uppercase tracking-wider"
             style={{ color: "var(--color-text-secondary)" }}
@@ -234,7 +236,7 @@ function AccountingIndex() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card px-4 py-3" style={{ borderLeft: "4px solid #C4841D" }}>
-          <span className="text-lg font-bold text-foreground">{activeEntities}</span>
+          <span className="text-lg font-medium text-foreground">{activeEntities}</span>
           <p
             className="text-[10px] font-semibold uppercase tracking-wider"
             style={{ color: "var(--color-text-secondary)" }}
@@ -254,7 +256,7 @@ function AccountingIndex() {
               key={entity.id}
               type="button"
               onClick={() => navigate({ to: `/accounting/${entity.id}/register` as string })}
-              className="rounded-lg border border-border bg-card p-5 text-left transition-shadow hover:shadow-md"
+              className="rounded-lg border border-border bg-card p-5 text-left transition-shadow"
             >
               {/* Entity header */}
               <div className="mb-3 flex items-start justify-between">
